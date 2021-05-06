@@ -1,7 +1,7 @@
 Oracle Cloud Infrastructure Data Science and AI services Examples  
 =================================================================
 
-The Oracle Cloud Infrastructure (OCI) Data Science product management team is maintaining a series of demos, tutorials, and code examples highlighting the different features of the service. 
+The Oracle Cloud Infrastructure (OCI) Data Science product management team is maintaining a series of demos, tutorials, and code examples highlighting the different features of both [OCI Data Science](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) and AI services. 
 
 Each directory in this repo corresponds to a different demo/lab and contains its own separate README file giving you instructions on how to run the code examples. 
 
