@@ -30,7 +30,7 @@ There are several ways you can access OCI Data Science documentation:
 If you want to know more about Oracle Accelerated Data Science (ADS) Python SDK, please visit our [ADS user documentation website](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html).   
 ## Need Help? 
 
-* Create a github issue. 
+* Create a github [issue](https://github.com/oracle/oci-data-science-ai-samples/issues). 
 
 ## Contributing
 
