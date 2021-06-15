@@ -7,7 +7,6 @@ from tempfile import TemporaryDirectory
 import base64
 from PIL import Image
 import io
-from monitor import record_latency
 
 Image.MAX_IMAGE_PIXELS = None
 
@@ -34,7 +33,6 @@ def load_model(model_file_name=model_name):
         raise FileNotFoundError(f'{model_file_name} is not found in model directory {model_dir}.')
 
 
-@record_latency(name='Tensorflow ResNet152')
 def predict(data, model=load_model()):
     """
     Returns prediction given the model and data to predict

@@ -7,8 +7,6 @@ import tensorflow as tf
 
 from transformers import GPT2Tokenizer, TFGPT2Model
 
-from monitor import record_latency
-
 
 model_name = 'tf_model'
 tokenize_name = 'vocab'
@@ -31,7 +29,6 @@ def load_model(model_file_name=model_name):
         raise FileNotFoundError(f'{model_file_name} is not found in model directory {model_dir}.')
 
 
-@record_latency(name='TF NLP')
 def predict(data, model=load_model()):
     """
     Returns prediction given the model and data to predict

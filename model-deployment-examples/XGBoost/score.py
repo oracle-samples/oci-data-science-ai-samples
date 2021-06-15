@@ -2,7 +2,6 @@ import json
 import os
 from cloudpickle import cloudpickle
 import pandas as pd
-from monitor import record_latency
 
 
 model_name = 'model.pkl'
@@ -30,7 +29,6 @@ def load_model(model_file_name=model_name):
         raise Exception('{0} is not found in model directory {1}'.format(model_file_name, model_dir))
 
 
-@record_latency(name='XGBoost Model')
 def predict(data, model=load_model()):
     """
     Returns prediction given the model and data to predict
