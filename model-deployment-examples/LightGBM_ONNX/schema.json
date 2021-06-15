@@ -1,0 +1,63 @@
+{
+  "predict_arguments": {
+    "CRIM": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "ZN": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "INDUS": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "CHAS": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "NOX": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "RM": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "AGE": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "DIS": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "RAD": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "TAX": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "PTRATIO": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "B": {
+      "type": "continuous",
+      "dtype": "float64"
+    },
+    "LSTAT": {
+      "type": "continuous",
+      "dtype": "float64"
+    }
+  },
+  "predict_response": {
+    "target": {
+      "type": "continuous",
+      "dtype": "float64"
+    }
+  },
+  "problem_type": "regression"
+}

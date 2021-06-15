@@ -1,0 +1,7 @@
+MODEL_ARTIFACT_VERSION: '3.0'
+MODEL_DEPLOYMENT:
+  INFERENCE_CONDA_ENV:
+    INFERENCE_ENV_PATH: {{config.env_path}}
+    INFERENCE_ENV_SLUG: generalmachinelearningforcpusv2
+    INFERENCE_ENV_TYPE: data_science
+    INFERENCE_PYTHON_VERSION: {{config.python_version}}
