@@ -4,7 +4,6 @@ import tensorflow as tf
 import tensorflow.keras as keras
 import numpy as np
 from tensorflow.keras.models import load_model as klm
-from monitor import record_latency
 
  
 # Insert the name of your model here.
@@ -27,7 +26,6 @@ def load_model(model_file_name=model_name):
         raise FileNotFoundError(f'{model_file_name} is not found in model directory {model_dir}.')
  
 
-@record_latency(name='TF Keras') 
 def predict(data, model=load_model()):
     """
     Returns prediction given the model and data to predict

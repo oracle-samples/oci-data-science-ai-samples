@@ -4,7 +4,6 @@ import onnxruntime as rt
 import os
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
-from monitor import record_latency
 
 
 model_name = 'model.onnx'
@@ -32,7 +31,6 @@ def load_model(model_file_name=model_name):
         raise Exception('{0} is not found in model directory {1}'.format(model_file_name, model_dir))
 
 
-@record_latency(name='LightGBM Model ONNX')
 def predict(data, model=load_model()):
     """
     Returns prediction given the model and data to predict
