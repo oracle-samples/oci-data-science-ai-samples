@@ -9,6 +9,12 @@ Each directory in this repo corresponds to a different demo/lab and contains its
 
 * [labs](./labs/) 
   In this directory we have 4 different examples to do things like end-to-end build, train, deploy and invoke a machine learning model using OCI Data Science services.
+* [ads_v_2_2_0](./ads_v_2_2_0/)
+  This directory has all of our generic ADS notebook examples. Here, for example, you can find a notebook about vault connection and model deployment.
+* [environment_examples](./environment_examples/)
+  This directory has subdirectories for the different conda environments offered. Within each subdirectory you will find notebook examples on that topic.
+* [model_deployment_examples](./model_deployment_examples/)
+  Here we have several different examples of model deployments, we have offered sample runtime.yaml and score.py files on several different topics.
 
 ## Documentation 
 

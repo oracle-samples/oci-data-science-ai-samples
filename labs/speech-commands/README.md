@@ -30,8 +30,11 @@ Alternatively, you can use the pre-processed and transformed dataset we use in `
 ## Installation Instructions 
 
 These notebooks were intended to be run on the OCI Data Science service. We install additional Python libraries 
-in notebook `1-intro-to-audio-data.ipynb`. The libraries are listed in ``requirements.txt`` : 
+in notebook `1-intro-to-audio-data.ipynb`. The libraries are listed here: 
 
 ```
-pip install -r requirements.txt
+librosa
+numba
+keras
+tensorflow
 ```
