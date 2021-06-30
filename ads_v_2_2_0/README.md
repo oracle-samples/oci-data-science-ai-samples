@@ -10,9 +10,9 @@ This is a list of ADS related notebooks and the conda environments in which they
 * [model_catalog.ipynb](model_catalog.ipynb)
   Installed in all conda packs except PySpark.
 * [model_deployment.ipynb](model_deployment.ipynb)
-  Installed in all conda packs excpet PySpark.
+  Installed in all conda packs except PySpark.
 * [model_deployment_fn.ipynb](model_deployment_fn.ipynb)
-  Installed in all conda packs excpet PySpark.
+  Installed in all conda packs except PySpark.
 * [project.ipynb](project.ipynb)
   Installed in all conda packs.
 * [vault.ipynb](vault.ipynb)

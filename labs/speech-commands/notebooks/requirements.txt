@@ -1,4 +1,0 @@
-librosa==0.6.2
-numba==0.49.1
-keras==2.2.5
-tensorflow==2.5.0
