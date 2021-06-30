@@ -4,7 +4,7 @@ Natural Language Processing
 The Natural Language Processing for CPU conda environment contains a set of libraries and frameworks for working with text data and performing natural language processing tasks.  This environment includes libraries such as HuggingFace’s Transformers library, keybert, NLTK, Simple-Transformers, Pytorch-Ligthning and UMAP.
 
 
-The notebooks in this folder are meant to be run in our nlp_p37_cpu_v1 conda pack.
+The notebooks in this folder are meant to be run in our NLP conda pack.
 
 
 ## License
