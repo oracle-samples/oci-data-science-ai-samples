@@ -24,3 +24,7 @@ Steps for this:
     - Ensure that your VCN and subnet are configured to route traffic through either the NAT gateway or the service gateway so that the conda environments can be listed
 
     - Connectivity is required in order to use Conda Environments. Choose a different VCN/Subnet for your Notebook Session or see our documentation for [automated](https://docs.oracle.com/en-us/iaas/data-science/using/orm-configure-tenancy.htm) and [manual](https://docs.oracle.com/en-us/iaas/data-science/using/configure-tenancy.htm#create-vcn) instructions in how to configure your OCI Virtual Network
+
+___
+
+*Oracle Cloud Infrastructure (OCI) Advanced Data Science* 
