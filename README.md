@@ -15,6 +15,8 @@ Each directory in this repo corresponds to a different demo/lab and contains its
   This directory has subdirectories for the different conda environments offered. Within each subdirectory you will find notebook examples on that topic.
 * [model_deployment_examples](./model_deployment_examples/)
   Here we have several different examples of model deployments, we have offered sample runtime.yaml and score.py files on several different topics.
+* [knowledge_base](./knowledge_base/)
+  Directory with tips and tricks on a variety of topics.
 
 ## Documentation 
 
