@@ -13,9 +13,7 @@
     1. Select File -> New -> Notebook to open a new notebook.
     1. In the Select Kernel dialog choose the conda environment that you installed. If it does not appear wait a few seconds and try again.
     1. In a cell type `import ads` and execute the cell. ADS should now be available.
-
-For more information see the blog post [New Conda Environment feature available in Oracle Cloud Infrastructure Data Science](https://blogs.oracle.com/ai-and-datascience/post/new-conda-environment-feature-available-in-oracle-cloud-infrastructure-data-science).
-
+    1. For more information see the blog post [New Conda Environment feature available in Oracle Cloud Infrastructure Data Science](https://blogs.oracle.com/ai-and-datascience/post/new-conda-environment-feature-available-in-oracle-cloud-infrastructure-data-science).
 1. Confirm that you have Internet access from the notebook session. Follow these steps to confirm this.
     1. Select File -> New -> Terminal to open a terminal tab.
     1. Run the command `curl -s oracle.com > /dev/null | echo $?`.
