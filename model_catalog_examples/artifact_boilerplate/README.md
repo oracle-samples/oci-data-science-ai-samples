@@ -1,6 +1,6 @@
 # Model Artifact Boilerplate Code
 
-This zip archive contains boilerplate code to generate a model artifact.
+This directory contains boilerplate code to generate a model artifact.
 
 The artifact should minimally contain the following files:
 - score.py
