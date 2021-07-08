@@ -1,7 +1,7 @@
 Environment Examples  
 ====================
 
-Each directory in this repo corresponds to a different conda pack. Note we only have the cpu packs listed here but we also have gpu packs for NLP, PyTorch and TensorFlow. 
+Each directory in this repo corresponds to a different [Data Science Conda Environments](https://docs.oracle.com/en-us/iaas/data-science/using/conda_environ_list.htm). Note we only have the CPU Data Science Conda Environments listed here but we also have GPU packs for NLP, PyTorch and TensorFlow. 
 
 
 ## License
