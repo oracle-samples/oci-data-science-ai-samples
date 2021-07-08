@@ -8,7 +8,7 @@
       For example sqlnet.ora will have a part like `(METHOD_DATA = (DIRECTORY="/Users/rnahar/.database/Wallet_ADW")))`
       2. Check the connection identifier is found in the `tns_names.ora`. 
       For example there should be a section like `dbtest123_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=...`
-      3. Lastly check connection with sql*plus. This will confirm username/password and wallet are valid. Template for commad:
+      3. Lastly check connection with sql*plus. This will confirm username/password and wallet are valid. Template for command:
       `sqlplus <user_name>/<password>@<protocol>://<host>:<port>/<service_name>?wallet_location="<unziped_wallet_location>"`
 2. Incorrect `connection_identifier` (specified in credentials dictionary in `autonomous_database.ipynb` notebook).
    - If this is ADW then the connection identifier will end in _high, _medium or _low. All three allow you to connect to the same database but they give different levels of number of concurrent SQL statements allowed to be run along with different CPU and IO resources available for each.
