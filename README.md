@@ -13,7 +13,7 @@ Each directory in this repo corresponds to a different demo/lab and contains its
   This directory has all of our generic ADS notebook examples. Here, for example, you can find a notebook about vault connection and model deployment.
 * [environment_examples](./environment_examples/)
   This directory has subdirectories for the different conda environments offered. Within each subdirectory you will find notebook examples on that topic.
-* [model_deployment_examples](./model_deployment_examples/)
+* [model_deployment_examples](model_catalog_examples/)
   Here we have several different examples of model deployments, we have offered sample runtime.yaml and score.py files on several different topics.
 * [knowledge_base](./knowledge_base/)
   Directory with tips and tricks on a variety of topics.
