@@ -8,10 +8,13 @@
       For example sqlnet.ora will have a part like `(METHOD_DATA = (DIRECTORY="/home/datascience/.database/MyDatabase")))`
       2. Check the connection identifier is found in the `tns_names.ora`. 
       For example there should be a section like `dbtest123_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=...`
-      3. Lastly check connection with sql*plus. This will confirm username/password and wallet are valid. Template for command:
-      `sqlplus <user_name>/<password>@<protocol>://<host>:<port>/<service_name>?wallet_location="<unziped_wallet_location>"`
+       3. Lastly check connection with sql*plus. This will confirm username/password and wallet are valid.
+       - Template for commad:
+       `sqlplus <user_name>/<password>@<protocol>://<host>:<port>/<service_name>?wallet_location="<unziped_wallet_location>"`
+        e.g. `sqlplus admin/admin_password@tcps://adb.us-ashburn-1.oraclecloud.com:1522/q9tjyjeyzhxqwla_db202011251996_high.adwc.oraclecloud.com?wallet_location="/home/datascience/.database/DB202011251996"`
+        - You can find the `protocol`, `host`, `port` and `service_name` values in the  [`tnsnames.ora`](https://docs.oracle.com/cd/B28359_01/network.111/b28317/tnsnames.htm#NETRF007) file
 2. Incorrect connection identifier (specified as `database_name` in credentials dictionary in `autonomous_database.ipynb` notebook).
-   - If this is Autonomous Database (ADB) which is the ADW and ATP databases, then when updating credentials, for database name we want to be using the [connection identifier](https://docs.oracle.com/cd/E11882_01/network.112/e41945/glossary.htm#BGBBGCEG) which will usually end in _high, _medium or _low. All three allow you to connect to the same database but they give different levels of number of concurrent SQL statements allowed to be run along with different CPU and IO resources available for each.
+   - For most databases, the `database_name` variable is the name of the database. However, for any of the autonomous databases (ADB) you will need to use the connection identifier. Generally, this is the name of the database followed by `_high`, `_medium` or `_low`. However, your database may have non-standard connection identifier names.
 
 Note: This error message will not show up if you have an incorrect username or password, in that case you will get "ORA-01017: invalid username/password; logon denied"
 
