@@ -10,8 +10,8 @@
       For example there should be a section like `dbtest123_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=...`
       3. Lastly check connection with sql*plus. This will confirm username/password and wallet are valid. Template for command:
       `sqlplus <user_name>/<password>@<protocol>://<host>:<port>/<service_name>?wallet_location="<unziped_wallet_location>"`
-2. Incorrect `connection_identifier` (specified in credentials dictionary in `autonomous_database.ipynb` notebook).
-   - If this is ADW then the connection identifier will end in _high, _medium or _low. All three allow you to connect to the same database but they give different levels of number of concurrent SQL statements allowed to be run along with different CPU and IO resources available for each.
+2. Incorrect connection identifier (specified as `database_name` in credentials dictionary in `autonomous_database.ipynb` notebook).
+   - If this is ADW then when updating credentials, for database name we want to be using the [connection identifier](https://docs.oracle.com/cd/E11882_01/network.112/e41945/glossary.htm#BGBBGCEG) which will usually end in _high, _medium or _low. All three allow you to connect to the same database but they give different levels of number of concurrent SQL statements allowed to be run along with different CPU and IO resources available for each.
 
 Note: This error message will not show up if you have an incorrect user name or password, in that case you will get "ORA-01017: invalid username/password; logon denied"
 
