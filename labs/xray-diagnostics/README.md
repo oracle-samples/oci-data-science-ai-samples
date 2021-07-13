@@ -25,4 +25,8 @@ We're going to see how one can tackle real-world artificial intelligence problem
 
 7) Deploy the model as a model deployment.
 
-
+## Further Installation Instructions
+These notebooks were intended to be run on the OCI Data Science service. You may need to install additional Python libraries listed here:
+scikit-image
+keras
+tensorflow

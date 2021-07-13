@@ -1,0 +1,119 @@
+Collecting librosa==0.6.2
+  Downloading librosa-0.6.2.tar.gz (1.6 MB)
+Collecting numba==0.49.1
+  Downloading numba-0.49.1-cp38-cp38-macosx_10_14_x86_64.whl (2.1 MB)
+Collecting keras==2.2.5
+  Downloading Keras-2.2.5-py2.py3-none-any.whl (336 kB)
+Collecting tensorflow==2.5.0
+  Downloading tensorflow-2.5.0-cp38-cp38-macosx_10_11_x86_64.whl (195.7 MB)
+Collecting audioread>=2.0.0
+  Downloading audioread-2.1.9.tar.gz (377 kB)
+Requirement already satisfied: numpy>=1.8.0 in /opt/anaconda3/lib/python3.8/site-packages (from librosa==0.6.2->-r requirements.txt (line 1)) (1.19.2)
+Requirement already satisfied: scipy>=0.14.0 in /opt/anaconda3/lib/python3.8/site-packages (from librosa==0.6.2->-r requirements.txt (line 1)) (1.5.2)
+Requirement already satisfied: scikit-learn!=0.19.0,>=0.14.0 in /opt/anaconda3/lib/python3.8/site-packages (from librosa==0.6.2->-r requirements.txt (line 1)) (0.23.2)
+Requirement already satisfied: joblib>=0.12 in /opt/anaconda3/lib/python3.8/site-packages (from librosa==0.6.2->-r requirements.txt (line 1)) (0.17.0)
+Requirement already satisfied: decorator>=3.0.0 in /opt/anaconda3/lib/python3.8/site-packages (from librosa==0.6.2->-r requirements.txt (line 1)) (4.4.2)
+Requirement already satisfied: six>=1.3 in /opt/anaconda3/lib/python3.8/site-packages (from librosa==0.6.2->-r requirements.txt (line 1)) (1.15.0)
+Collecting resampy>=0.2.0
+  Downloading resampy-0.2.2.tar.gz (323 kB)
+Requirement already satisfied: setuptools in /opt/anaconda3/lib/python3.8/site-packages (from numba==0.49.1->-r requirements.txt (line 2)) (50.3.1.post20201107)
+Collecting llvmlite<=0.33.0.dev0,>=0.31.0.dev0
+  Downloading llvmlite-0.32.1-cp38-cp38-macosx_10_9_x86_64.whl (15.9 MB)
+Requirement already satisfied: pyyaml in /opt/anaconda3/lib/python3.8/site-packages (from keras==2.2.5->-r requirements.txt (line 3)) (5.3.1)
+Collecting keras-applications>=1.0.8
+  Downloading Keras_Applications-1.0.8-py3-none-any.whl (50 kB)
+Collecting keras-preprocessing>=1.1.0
+  Downloading Keras_Preprocessing-1.1.2-py2.py3-none-any.whl (42 kB)
+Requirement already satisfied: h5py in /opt/anaconda3/lib/python3.8/site-packages (from keras==2.2.5->-r requirements.txt (line 3)) (2.10.0)
+Collecting absl-py~=0.10
+  Downloading absl_py-0.12.0-py3-none-any.whl (129 kB)
+Requirement already satisfied: typing-extensions~=3.7.4 in /opt/anaconda3/lib/python3.8/site-packages (from tensorflow==2.5.0->-r requirements.txt (line 4)) (3.7.4.3)
+Collecting wrapt~=1.12.1
+  Downloading wrapt-1.12.1.tar.gz (27 kB)
+Collecting keras-nightly~=2.5.0.dev
+  Downloading keras_nightly-2.5.0.dev2021032900-py2.py3-none-any.whl (1.2 MB)
+Collecting opt-einsum~=3.3.0
+  Downloading opt_einsum-3.3.0-py3-none-any.whl (65 kB)
+Collecting termcolor~=1.1.0
+  Using cached termcolor-1.1.0.tar.gz (3.9 kB)
+Collecting grpcio~=1.34.0
+  Downloading grpcio-1.34.1-cp38-cp38-macosx_10_10_x86_64.whl (3.7 MB)
+Collecting astunparse~=1.6.3
+  Downloading astunparse-1.6.3-py2.py3-none-any.whl (12 kB)
+Collecting google-pasta~=0.2
+  Downloading google_pasta-0.2.0-py3-none-any.whl (57 kB)
+Collecting gast==0.4.0
+  Downloading gast-0.4.0-py3-none-any.whl (9.8 kB)
+Collecting protobuf>=3.9.2
+  Downloading protobuf-3.17.2-cp38-cp38-macosx_10_9_x86_64.whl (959 kB)
+Requirement already satisfied: wheel~=0.35 in /opt/anaconda3/lib/python3.8/site-packages (from tensorflow==2.5.0->-r requirements.txt (line 4)) (0.35.1)
+Collecting tensorboard~=2.5
+  Downloading tensorboard-2.5.0-py3-none-any.whl (6.0 MB)
+Collecting flatbuffers~=1.12.0
+  Downloading flatbuffers-1.12-py2.py3-none-any.whl (15 kB)
+Collecting tensorflow-estimator<2.6.0,>=2.5.0rc0
+  Downloading tensorflow_estimator-2.5.0-py2.py3-none-any.whl (462 kB)
+Requirement already satisfied: threadpoolctl>=2.0.0 in /opt/anaconda3/lib/python3.8/site-packages (from scikit-learn!=0.19.0,>=0.14.0->librosa==0.6.2->-r requirements.txt (line 1)) (2.1.0)
+Requirement already satisfied: requests<3,>=2.21.0 in /opt/anaconda3/lib/python3.8/site-packages (from tensorboard~=2.5->tensorflow==2.5.0->-r requirements.txt (line 4)) (2.24.0)
+Collecting google-auth-oauthlib<0.5,>=0.4.1
+  Downloading google_auth_oauthlib-0.4.4-py2.py3-none-any.whl (18 kB)
+Collecting tensorboard-plugin-wit>=1.6.0
+  Downloading tensorboard_plugin_wit-1.8.0-py3-none-any.whl (781 kB)
+Requirement already satisfied: markdown>=2.6.8 in /opt/anaconda3/lib/python3.8/site-packages/Markdown-3.3.3-py3.8.egg (from tensorboard~=2.5->tensorflow==2.5.0->-r requirements.txt (line 4)) (3.3.3)
+Collecting tensorboard-data-server<0.7.0,>=0.6.0
+  Downloading tensorboard_data_server-0.6.1-py3-none-macosx_10_9_x86_64.whl (3.5 MB)
+Requirement already satisfied: werkzeug>=0.11.15 in /opt/anaconda3/lib/python3.8/site-packages (from tensorboard~=2.5->tensorflow==2.5.0->-r requirements.txt (line 4)) (1.0.1)
+Collecting google-auth<2,>=1.6.3
+  Downloading google_auth-1.30.1-py2.py3-none-any.whl (146 kB)
+Requirement already satisfied: chardet<4,>=3.0.2 in /opt/anaconda3/lib/python3.8/site-packages (from requests<3,>=2.21.0->tensorboard~=2.5->tensorflow==2.5.0->-r requirements.txt (line 4)) (3.0.4)
+Requirement already satisfied: idna<3,>=2.5 in /opt/anaconda3/lib/python3.8/site-packages (from requests<3,>=2.21.0->tensorboard~=2.5->tensorflow==2.5.0->-r requirements.txt (line 4)) (2.10)
+Requirement already satisfied: certifi>=2017.4.17 in /opt/anaconda3/lib/python3.8/site-packages (from requests<3,>=2.21.0->tensorboard~=2.5->tensorflow==2.5.0->-r requirements.txt (line 4)) (2020.6.20)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /opt/anaconda3/lib/python3.8/site-packages (from requests<3,>=2.21.0->tensorboard~=2.5->tensorflow==2.5.0->-r requirements.txt (line 4)) (1.25.11)
+Collecting requests-oauthlib>=0.7.0
+  Downloading requests_oauthlib-1.3.0-py2.py3-none-any.whl (23 kB)
+Collecting pyasn1-modules>=0.2.1
+  Downloading pyasn1_modules-0.2.8-py2.py3-none-any.whl (155 kB)
+Collecting rsa<5,>=3.1.4; python_version >= "3.6"
+  Downloading rsa-4.7.2-py3-none-any.whl (34 kB)
+Collecting cachetools<5.0,>=2.0.0
+  Downloading cachetools-4.2.2-py3-none-any.whl (11 kB)
+Collecting oauthlib>=3.0.0
+  Downloading oauthlib-3.1.1-py2.py3-none-any.whl (146 kB)
+Collecting pyasn1<0.5.0,>=0.4.6
+  Downloading pyasn1-0.4.8-py2.py3-none-any.whl (77 kB)
+Building wheels for collected packages: librosa, audioread, resampy, wrapt, termcolor
+  Building wheel for librosa (setup.py): started
+  Building wheel for librosa (setup.py): finished with status 'done'
+  Created wheel for librosa: filename=librosa-0.6.2-py3-none-any.whl size=1569694 sha256=35769c9dd70e874c88ede74ce37b6b3ba7fa35288caef4ae6924530b0307b152
+  Stored in directory: /Users/rnahar/Library/Caches/pip/wheels/30/c5/8e/b969a6ae45d03506ff090c4d8afaa5e7da3247e6b3b79c84c4
+  Building wheel for audioread (setup.py): started
+  Building wheel for audioread (setup.py): finished with status 'done'
+  Created wheel for audioread: filename=audioread-2.1.9-py3-none-any.whl size=23140 sha256=216e06a10fdfe139dc1f7092ef60c5300cdb90bbdb19f02dda2196c48605483d
+  Stored in directory: /Users/rnahar/Library/Caches/pip/wheels/49/5a/e4/df590783499a992a88de6c0898991d1167453a3196d0d1eeb7
+  Building wheel for resampy (setup.py): started
+  Building wheel for resampy (setup.py): finished with status 'done'
+  Created wheel for resampy: filename=resampy-0.2.2-py3-none-any.whl size=320718 sha256=b0816bfb4dfb7e1c9580bbb947337a6aa16f7ca72a22f233f38cd30737fa811d
+  Stored in directory: /Users/rnahar/Library/Caches/pip/wheels/6f/d1/5d/f13da53b1dcbc2624ff548456c9ffb526c914f53c12c318bb4
+  Building wheel for wrapt (setup.py): started
+  Building wheel for wrapt (setup.py): finished with status 'done'
+  Created wheel for wrapt: filename=wrapt-1.12.1-cp38-cp38-macosx_10_9_x86_64.whl size=32723 sha256=eb2cf82cc247885d4ca5b4344d16ac57b1cfc98310078b9630dc61074b159594
+  Stored in directory: /Users/rnahar/Library/Caches/pip/wheels/5f/fd/9e/b6cf5890494cb8ef0b5eaff72e5d55a70fb56316007d6dfe73
+  Building wheel for termcolor (setup.py): started
+  Building wheel for termcolor (setup.py): finished with status 'done'
+  Created wheel for termcolor: filename=termcolor-1.1.0-py3-none-any.whl size=4830 sha256=2499a2df76b8e2564285a3510d39f19d57ee4ca32dc016c4cda39e7a98bb5041
+  Stored in directory: /Users/rnahar/Library/Caches/pip/wheels/a0/16/9c/5473df82468f958445479c59e784896fa24f4a5fc024b0f501
+Successfully built librosa audioread resampy wrapt termcolor
+Installing collected packages: audioread, llvmlite, numba, resampy, librosa, keras-applications, keras-preprocessing, keras, absl-py, wrapt, keras-nightly, opt-einsum, termcolor, grpcio, astunparse, google-pasta, gast, protobuf, pyasn1, pyasn1-modules, rsa, cachetools, google-auth, oauthlib, requests-oauthlib, google-auth-oauthlib, tensorboard-plugin-wit, tensorboard-data-server, tensorboard, flatbuffers, tensorflow-estimator, tensorflow
+  Attempting uninstall: llvmlite
+    Found existing installation: llvmlite 0.34.0
+    Uninstalling llvmlite-0.34.0:
+      Successfully uninstalled llvmlite-0.34.0
+  Attempting uninstall: numba
+    Found existing installation: numba 0.51.2
+    Uninstalling numba-0.51.2:
+      Successfully uninstalled numba-0.51.2
+  Attempting uninstall: wrapt
+    Found existing installation: wrapt 1.11.2
+    Uninstalling wrapt-1.11.2:
+      Successfully uninstalled wrapt-1.11.2
+Successfully installed absl-py-0.12.0 astunparse-1.6.3 audioread-2.1.9 cachetools-4.2.2 flatbuffers-1.12 gast-0.4.0 google-auth-1.30.1 google-auth-oauthlib-0.4.4 google-pasta-0.2.0 grpcio-1.34.1 keras-2.2.5 keras-applications-1.0.8 keras-nightly-2.5.0.dev2021032900 keras-preprocessing-1.1.2 librosa-0.6.2 llvmlite-0.32.1 numba-0.49.1 oauthlib-3.1.1 opt-einsum-3.3.0 protobuf-3.17.2 pyasn1-0.4.8 pyasn1-modules-0.2.8 requests-oauthlib-1.3.0 resampy-0.2.2 rsa-4.7.2 tensorboard-2.5.0 tensorboard-data-server-0.6.1 tensorboard-plugin-wit-1.8.0 tensorflow-2.5.0 tensorflow-estimator-2.5.0 termcolor-1.1.0 wrapt-1.12.1
