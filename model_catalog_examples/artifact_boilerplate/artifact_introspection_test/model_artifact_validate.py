@@ -17,18 +17,13 @@ import yaml
 logger = logging.getLogger()
 logging.basicConfig(level=logging.DEBUG)
 
-
 _cwd = os.path.dirname(__file__)
 
 TESTS_PATH = os.path.join(_cwd, 'resources', 'tests.yaml')
 HTML_PATH = os.path.join(_cwd, 'resources', 'template.html')
 CONFIG_PATH = os.path.join(_cwd, 'resources', 'config.yaml')
-
 PYTHON_VER_PATTERN = "^([3])(\.[6-9])(\.\d+)?$"
-
-
 PAR_URL = "https://objectstorage.us-ashburn-1.oraclecloud.com/p/q0qASrU7L7G1-BIVtoXOmvcEPMwYKoSVnp4Uum-31MwCYoSAahFLnHG8nA7AdLci/n/ociodscdev/b/service_conda_packs/o/service_pack/index.json"
-
 TESTS = {
     'score_py': {'key': 'score_py', 'category': 'Mandatory Files Check', 'description': 'Check that the file "score.py" exists and is in the top level directory of the artifact directory', 'error_msg': 'File score.py is not present.'},
     'runtime_yaml': {'category': 'Mandatory Files Check', 'description': 'Check that the file "runtime.yaml" exists and is in the top level directory of the artifact directory', 'error_msg': 'File runtime.yaml is not present.'},
@@ -39,13 +34,12 @@ TESTS = {
     'score_predict_arg': {'category': 'score.py', 'description': 'Check that all other arguments in predict() are optional and have default values', 'error_msg': 'All other arguments in predict function in score.py should have default values.'},
     'runtime_version': {'category': 'runtime.yaml', 'description': 'Check that field MODEL_ARTIFACT_VERSION is set to 3.0', 'error_msg': 'In runtime.yaml field MODEL_ARTIFACT_VERSION should be set to 3.0'},
     'runtime_env_python': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION is set to a value of 3.6 or higher', 'error_msg': 'In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION is set to a value of 3.6 or higher'},
-    'runtime_env_type': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is set to a value in (published, data_science)', 'error_msg': 'In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE should be set to a value in (published, data_science)'},
+    'runtime_env_type': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is set to a value in (published, data_science)', 'error_msg': 'In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE should be set to a value in (published, data_science)', 'warn': ""},
     'runtime_env_slug': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set', 'error_msg': 'In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG should be set.'},
     'runtime_env_path': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set', 'error_msg': 'In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH should be set.'},
     'runtime_path_exist': {'category': 'conda_env', 'description': 'If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science and MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set, check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct.', 'error_msg': "In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH doesn't exist."},
     'runtime_slug_exist': {'category': 'conda_env', 'description': 'If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science, check that the slug listed in MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG exists.', 'error_msg': "In runtime.yaml the value of the fileld INFERENCE_ENV_SLUG doesn't exist in the given bucket."}
     }
-
 
 def combine_msgs(test_list) -> str:
     '''
@@ -53,8 +47,6 @@ def combine_msgs(test_list) -> str:
     '''
     msgs = [TESTS[test]['error_msg'] for test in test_list if not TESTS[test].get('success')]
     return '\n'.join(msgs)
-
-
 
 def model_deployment_find_fields(cfg) -> None:
     '''
@@ -80,7 +72,6 @@ def model_deployment_find_fields(cfg) -> None:
         else:
             model_deployment_find_fields(value)
 
-
 def check_runtime_yml(file_path) -> Tuple[bool, str]:
     '''
     Check runtime yaml mandatory fields
@@ -92,11 +83,11 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
     if not isinstance(cfg, dict):
         return False, 'runtime.yaml is not valid.'
 
-    model_arti_ver = cfg.get('MODEL_ARTIFACT_VERSION')  # if not present None
-    if model_arti_ver == '3.0':
+    model_artifact_version = cfg.get('MODEL_ARTIFACT_VERSION')  # if not present None
+    if model_artifact_version == '3.0':
         TESTS['runtime_version']['success'] = True
     else:
-        logger.error(f'MODEL_ARTIFACT_VERSION: {model_arti_ver}')
+        logger.error(f'MODEL_ARTIFACT_VERSION: {model_artifact_version}')
         TESTS['runtime_version']['success'] = False
         return False, TESTS['runtime_version']['error_msg']
 
@@ -110,6 +101,8 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
     if msg:
         return False, msg
     try:
+        if TESTS['runtime_env_type']['value'] == 'published':
+            TESTS['runtime_env_type']['warn'] = 'WARNING: Provide the correct access policy as INFERENCE_ENV_TYPE is published'
         m = re.match(PYTHON_VER_PATTERN, str(TESTS['runtime_env_python']['value']))
         if m and m.group():
             TESTS['runtime_env_python']['success']  = True
@@ -119,8 +112,8 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
                 env_path = TESTS['runtime_env_path']['value']
                 service_pack = next(filter(lambda d: d['pack_path'] == env_path, service_pack_list), None)
                 if service_pack:
-                    TESTS['runtime_path_exist']['success'] = True
                     if TESTS['runtime_env_type']['value'] == 'data_science':
+                        TESTS['runtime_path_exist']['success'] = True
                         slug = service_pack.get('slug')
                         if slug == TESTS['runtime_env_slug'].get('value'):
                             TESTS['runtime_slug_exist']['success'] = True
@@ -130,10 +123,12 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
                             TESTS['runtime_slug_exist']['success'] = False
                             return False, TESTS['runtime_slug_exist']['error_msg']
                     else:
-                            return False, 'WARNING: Provide the correct access policy as INFERENCE_ENV_TYPE is published'
+                        return True, True
                 else:
-                    TESTS['runtime_path_exist']['success'] = False
-                    return False, TESTS['runtime_path_exist']['error_msg']
+                    if TESTS['runtime_env_type']['value'] == 'data_science':
+                        TESTS['runtime_path_exist']['success'] = False
+                        return False, TESTS['runtime_path_exist']['error_msg']
+                    return True, True
             else:
                     TESTS['runtime_path_exist']['success'] = False
                     return False, TESTS['runtime_path_exist']['error_msg']
@@ -145,10 +140,9 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
     except Exception as e:
         return False, str(e)
 
-
 def check_score_file(file_path) -> Tuple[bool, str]:
     '''
-    Change current working directory to temporary direcory and validate python file
+    Change current working directory to temporary directory and validate python file
     '''
     with open(file_path) as f:
         source = f.read()
@@ -172,7 +166,6 @@ def check_score_file(file_path) -> Tuple[bool, str]:
         if msg:
             return False, msg
 
-
         # check if predict function take required argument 'data' and all others are optional with default values
         predict_fn = present_functions['predict']
         if predict_fn['args'][0].arg == 'data':
@@ -191,12 +184,10 @@ def check_score_file(file_path) -> Tuple[bool, str]:
         TESTS['score_syntax']['success'] = False
         return False, TESTS['score_syntax']['error_msg'] + str(e) # error message has ": " e has syntax error details
 
-
 def check_mandatory_files(files_present) -> Tuple[bool, str]:
     '''
     Check if score.py and runtime.yaml are present or not.
     '''
-
     filename_list = [os.path.basename(fileName)for fileName in  files_present]
     TESTS['score_py']['success'] = 'score.py' in filename_list
     TESTS['runtime_yaml']['success'] = 'runtime.yaml' in filename_list
@@ -207,14 +198,12 @@ def check_mandatory_files(files_present) -> Tuple[bool, str]:
     else:
         return True, 'All mandatory files are present.'
 
-
 def validate_artifact(artifact) -> Tuple[bool, str]:
     '''
     Unzip the artifact zip file passed. Check for test cases.
     The method returns the status of check and error message if any.
     :artifact: str
     '''
-
     output_msg = 'Validation Passed.'
     success = True
     # create temporary folder and unzip model artifact
@@ -265,7 +254,6 @@ def validate_artifact(artifact) -> Tuple[bool, str]:
             shutil.rmtree(temp_path)
     return success, output_msg
 
-
 RESULT_LIST =[True, False, None]
 def get_test_result(test_id) -> int:
     '''
@@ -276,8 +264,6 @@ def get_test_result(test_id) -> int:
     '''
     success = TESTS[test_id].get('success')
     return RESULT_LIST.index(success)
-
-
 
 def write_html(output_path) -> None:
     '''
@@ -292,10 +278,14 @@ def write_html(output_path) -> None:
     for key, value in TESTS.items():
         result = get_test_result(key)
         html_response += f'<tr class="{css_classes[result]}"><th class="{count_classes[count%2]}">{count}</th><td>{key}</td><td>{TESTS[key]["description"]}</td><td>{out_classes[result]}</td>'
+
+        if key == 'runtime_env_type' and len(TESTS[key]["warn"]) > 0:
+            html_response += f'<td>{TESTS[key]["warn"]}</td></tr></body>'
+
         if get_test_result(key) == 1:
             html_response += f'<td>{TESTS[key]["error_msg"]}</td></tr></body>'
         else:
-            html_response += f'<td> </td></tr></div></body>'
+            html_response += f'<td> </td></tr></body>'
         count += 1
     html_template = '<html><style>body{font-family:Arial,Helvetica,sans-serif}table{border-collapse:collapse font-family: arial, sans-serif}td,th{padding:0em 0em 0.7em 0.7em}.no-test{background-color:#E7E30C}.fail{background-color:#E73A0C}.pass{background-color:#1CCE70}.odd{background-color:#eef}.even{background-color:white}</style><body><table><tr><th></th><th>Test key</th><th>Test Name</th><th>Result</th><th>Message</th></tr> %s</table></body></html>'
     with open(output_path, 'w') as f:
