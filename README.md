@@ -1,24 +1,22 @@
 Oracle Cloud Infrastructure Data Science and AI services Examples  
 =================================================================
 
-The Oracle Cloud Infrastructure (OCI) Data Science product management team is maintaining a series of demos, tutorials, and code examples highlighting the different features of the service. 
+The Oracle Cloud Infrastructure (OCI) Data Science product management team is maintaining a series of demos, tutorials, and code examples highlighting the different features of both [OCI Data Science](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) and AI services. 
 
 Each directory in this repo corresponds to a different demo/lab and contains its own separate README file giving you instructions on how to run the code examples. 
 
 ## Table of Examples 
 
-* [Employee Attrition](./employee-attrition/) 
-  This example is a modified version of the employee attrition notebook that is available in the OCI Data Science Notebook Session environment. The notebook provides an end-to-end workflow to build, ttrain, deploy, and invoke a machine learning model used to predict employee attrition. 
-
-* [Model Deployment](./model-deploy/) 
-  This example highlights the deployment of a sklearn random forest model trained on synthetic data. The model is deployed programmatically with the OCI Python SDK and invoked with the same SDK.
-
-* [Speech Commands](./speech-commands)
-  In this example you use a convolutional neural network (CNN) to classify speech commands. The notebooks show how you can train a model with Keras and deploy the model using OCI Data Science Model Deployment. 
-
-* [X-ray Diagnostics](./xray-diagnostics)
-  The purpose of this example is to train a model that detects the presence of pneumonia in x-ray images of the chest area. The example showcases and end-to-end workflow for model building, training, and deployment. 
-
+* [labs](./labs/) 
+  In this directory we have 4 different examples to do things like end-to-end build, train, deploy and invoke a machine learning model using OCI Data Science services.
+* [ads_v_2_2_0](./ads_v_2_2_0/)
+  This directory has all of our generic ADS notebook examples. Here, for example, you can find a notebook about vault connection and model deployment.
+* [environment_examples](./environment_examples/)
+  This directory has subdirectories for the different conda environments offered. Within each subdirectory you will find notebook examples on that topic.
+* [model_catalog_examples](model_catalog_examples/)
+  Here we have several different examples of model catalogs, we have offered sample runtime.yaml and score.py files on several different topics that can be used to deploy models.
+* [knowledge_base](./knowledge_base/)
+  Directory with tips and tricks on a variety of topics.
 
 ## Documentation 
 
@@ -30,7 +28,7 @@ There are several ways you can access OCI Data Science documentation:
 If you want to know more about Oracle Accelerated Data Science (ADS) Python SDK, please visit our [ADS user documentation website](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html).   
 ## Need Help? 
 
-* Create a github issue. 
+* Create a github [issue](https://github.com/oracle/oci-data-science-ai-samples/issues). 
 
 ## Contributing
 
