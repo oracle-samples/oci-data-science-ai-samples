@@ -25,20 +25,20 @@ CONFIG_PATH = os.path.join(_cwd, 'resources', 'config.yaml')
 PYTHON_VER_PATTERN = "^([3])(\.[6-9])(\.\d+)?$"
 PAR_URL = "https://objectstorage.us-ashburn-1.oraclecloud.com/p/q0qASrU7L7G1-BIVtoXOmvcEPMwYKoSVnp4Uum-31MwCYoSAahFLnHG8nA7AdLci/n/ociodscdev/b/service_conda_packs/o/service_pack/index.json"
 TESTS = {
-    'score_py': {'key': 'score_py', 'category': 'Mandatory Files Check', 'description': 'Check that the file "score.py" exists and is in the top level directory of the artifact directory', 'error_msg': 'File score.py is not present.'},
-    'runtime_yaml': {'category': 'Mandatory Files Check', 'description': 'Check that the file "runtime.yaml" exists and is in the top level directory of the artifact directory', 'error_msg': 'File runtime.yaml is not present.'},
-    'score_syntax': {'category': 'score.py', 'description': 'Check for Python syntax errors', 'error_msg': 'Syntax error in score.py: '},
+    'score_py': {'key': 'score_py', 'category': 'Mandatory Files Check', 'description': 'Check that the file "score.py" exists and is in the top level directory of the artifact directory', 'error_msg': 'The file \'score.py\' is missing.'},
+    'runtime_yaml': {'category': 'Mandatory Files Check', 'description': 'Check that the file "runtime.yaml" exists and is in the top level directory of the artifact directory', 'error_msg': 'The file \'runtime.yaml\' is missing.'},
+    'score_syntax': {'category': 'score.py', 'description': 'Check for Python syntax errors', 'error_msg': 'There is Syntax error in score.py: '},
     'score_load_model': {'category': 'score.py', 'description': 'Check that load_model() is defined', 'error_msg': 'Function load_model is not present in score.py.'},
     'score_predict': {'category': 'score.py', 'description': 'Check that predict() is defined', 'error_msg': 'Function predict is not present in score.py.'},
-    'score_predict_data': {'category': 'score.py', 'description': 'Check that the only required argument for predict() is named "data"', 'error_msg': 'Function predict in score.py should have argument named "data".'},
-    'score_predict_arg': {'category': 'score.py', 'description': 'Check that all other arguments in predict() are optional and have default values', 'error_msg': 'All other arguments in predict function in score.py should have default values.'},
-    'runtime_version': {'category': 'runtime.yaml', 'description': 'Check that field MODEL_ARTIFACT_VERSION is set to 3.0', 'error_msg': 'In runtime.yaml field MODEL_ARTIFACT_VERSION should be set to 3.0'},
-    'runtime_env_python': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION is set to a value of 3.6 or higher', 'error_msg': 'In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION is set to a value of 3.6 or higher'},
-    'runtime_env_type': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is set to a value in (published, data_science)', 'error_msg': 'In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE should be set to a value in (published, data_science)', 'warn': ""},
-    'runtime_env_slug': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set', 'error_msg': 'In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG should be set.'},
-    'runtime_env_path': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set', 'error_msg': 'In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH should be set.'},
-    'runtime_path_exist': {'category': 'conda_env', 'description': 'If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science and MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set, check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct.', 'error_msg': "In runtime.yaml field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH doesn't exist."},
-    'runtime_slug_exist': {'category': 'conda_env', 'description': 'If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science, check that the slug listed in MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG exists.', 'error_msg': "In runtime.yaml the value of the fileld INFERENCE_ENV_SLUG doesn't exist in the given bucket."}
+    'score_predict_data': {'category': 'score.py', 'description': 'Check that the only required argument for predict() is named "data"', 'error_msg': 'The predict function in score.py must have a formal argument named \'data\'.'},
+    'score_predict_arg': {'category': 'score.py', 'description': 'Check that all other arguments in predict() are optional and have default values', 'error_msg': 'All formal arguments in the predict function must have default values, except that \'data\' argument.'},
+    'runtime_version': {'category': 'runtime.yaml', 'description': 'Check that field MODEL_ARTIFACT_VERSION is set to 3.0', 'error_msg': 'In runtime.yaml, the key MODEL_ARTIFACT_VERSION must be set to 3.0.'},
+    'runtime_env_python': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION is set to a value of 3.6 or higher', 'error_msg': 'In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION must be set to a value of 3.6 or higher.'},
+    'runtime_env_type': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is set to a value in (published, data_science)', 'error_msg': 'In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE must be set to published or data_science.'},
+    'runtime_env_slug': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set', 'error_msg': 'In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG must have a value.'},
+    'runtime_env_path': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set', 'error_msg': 'In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH must have a value.'},
+    'runtime_path_exist': {'category': 'conda_env', 'description': 'If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science and MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set, check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct.', 'error_msg': "In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH does not exist."},
+    'runtime_slug_exist': {'category': 'conda_env', 'description': 'If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science, check that the slug listed in MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG exists.', 'error_msg': "In runtime.yaml, the value of the key INFERENCE_ENV_SLUG is `slug_value` and it doesn't exist in the bucket `bucket_url`. Ensure that the value INFERENCE_ENV_SLUG and the bucket url are correct."}
     }
 
 def combine_msgs(test_list) -> str:
@@ -101,8 +101,6 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
     if msg:
         return False, msg
     try:
-        if TESTS['runtime_env_type']['value'] == 'published':
-            TESTS['runtime_env_type']['warn'] = 'WARNING: Provide the correct access policy as INFERENCE_ENV_TYPE is published'
         m = re.match(PYTHON_VER_PATTERN, str(TESTS['runtime_env_python']['value']))
         if m and m.group():
             TESTS['runtime_env_python']['success']  = True
@@ -182,7 +180,8 @@ def check_score_file(file_path) -> Tuple[bool, str]:
 
     except SyntaxError as e:
         TESTS['score_syntax']['success'] = False
-        return False, TESTS['score_syntax']['error_msg'] + str(e) # error message has ": " e has syntax error details
+        TESTS['score_syntax']['error_msg'] = TESTS['score_syntax']['error_msg'] + str(e) # error message has ": " e has syntax error details
+        return False, TESTS['score_syntax']['error_msg']
 
 def check_mandatory_files(files_present) -> Tuple[bool, str]:
     '''
@@ -278,9 +277,6 @@ def write_html(output_path) -> None:
     for key, value in TESTS.items():
         result = get_test_result(key)
         html_response += f'<tr class="{css_classes[result]}"><th class="{count_classes[count%2]}">{count}</th><td>{key}</td><td>{TESTS[key]["description"]}</td><td>{out_classes[result]}</td>'
-
-        if key == 'runtime_env_type' and len(TESTS[key]["warn"]) > 0:
-            html_response += f'<td>{TESTS[key]["warn"]}</td></tr></body>'
 
         if get_test_result(key) == 1:
             html_response += f'<td>{TESTS[key]["error_msg"]}</td></tr></body>'
