@@ -71,11 +71,11 @@ MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
     INFERENCE_ENV_SLUG: <insert-the-environment-slug> # for example mlcpuv1 see: https://docs.oracle.com/en-us/iaas/data-science/using/conda-gml-fam.htm
     INFERENCE_ENV_TYPE: <env-type> # can either be "published" or "data_science"
-    INFERENCE_ENV_PATH: <conda-environment-path-on-object-storage> # For example: 
+    INFERENCE_ENV_PATH: <conda-environment-path-on-object-storage> # For example: "oci://service_conda_packs@ociodscdev/service_pack/cpu/General Machine Learning for CPUs/1.0/mlcpuv1"
     INFERENCE_PYTHON_VERSION: '3.7' #
 ```
 
-Go to this page(link to https://docs.oracle.com/en-us/iaas/data-science/using/model_runtime_yaml.htm) for a definition of all the parameters that can be included in `runtime.yaml`.  
+Go to this page [link](https://docs.oracle.com/en-us/iaas/data-science/using/model_runtime_yaml.htm) for a definition of all the parameters that can be included in `runtime.yaml`.  
 
 As an example, here's a complete `runtime.yaml` for a data_science conda environment (mlcpuv1) used as a runtime environment for model deployment. 
 In most cases the runtime environment for model deployment should be the same as the conda environment used to train the model. 
@@ -110,14 +110,14 @@ Python version > 3.5 is required to run the tests. Before running the tests loca
 namely `pyyaml` and `requests`. This installation step is a one-time operation. Go to your artifact directory and run the following command: 
 
 ```
-python3 -m pip install --user -r model-artifact-validation/requirements.txt
+python3 -m pip install --user -r artifact_introspection_test/requirements.txt
 ```
 
 ### Running the Tests Locally
 
 Next, replace `<artifact-path>` with the path to your model artifact directory
 ```
-python3 model-artifact-validation/model_artifact_validate.py --artifact <artifact-path>
+python3 artifact_introspection_test/model_artifact_validate.py --artifact <artifact-path>
 ```
 
 The script automatically generates a report of the test results in the same folder . Two files are generated containing the test results in different formats:  
