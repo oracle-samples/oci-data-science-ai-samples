@@ -67,8 +67,10 @@ def model_deployment_find_fields(cfg) -> None:
             TESTS['runtime_env_path']['success'] = True
             TESTS['runtime_env_path']['value'] = value
         elif key == 'INFERENCE_PYTHON_VERSION':
-            TESTS['runtime_env_python']['success'] = True
-            TESTS['runtime_env_python']['value'] = value
+            m = re.match(PYTHON_VER_PATTERN, str(value))
+            if m and m.group():
+                TESTS['runtime_env_python']['success'] = True
+                TESTS['runtime_env_python']['value'] = value
         else:
             model_deployment_find_fields(value)
 
