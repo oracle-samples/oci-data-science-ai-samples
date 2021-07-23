@@ -1,40 +1,41 @@
-# ![oowbanner](https://objectstorage.us-ashburn-1.oraclecloud.com/p/Hybywve1ppjSVxMZpUu2PU1R1p6CAvY9FDrv6gJPpOM/n/bigdatadatasciencelarge/b/hosted-datascience-docs/o/oracle-cloud-infrastructure.png)
+Speech Commands Lab
+===================
 
-# Overview
+In this lab, you create a convolutional neural network (CNN) to classify speech commands. Oracle Cloud Infrastructure (OCI) Data Science service will be used to perform data preparation, and model training. An Oracle Function is used to deploy the model.
 
-In this simple example, we will use a convolutional neural network (CNN) to classify speech commands. We will show how one can use 
-the **Oracle Cloud Infrastructure Data Science service** to perform data preparation, model training with Keras, and deployment of the model as an Oracle Function. 
+The demo follows these steps:
+1. You explore the audio data and the data transformations that are applied before training the neural network. 
+1. You train a convolutional neural network (CNN) model using Keras. 
+1. You test the create an Oracle Function endpoint and deploy a model to it. You then call this endpoint and assess the inferred value from the model.
 
-## Instructions and Example Steps
+# Dataset
 
-* From your notebook session environment, either `git clone` this repo into `/home/datascience/` or drag-and-drop a zip archive of this repo into the JupyterLab interface. 
+Throughout this lab, you use the [Speech Commands Dataset (Warden 2018)](https://arxiv.org/abs/1804.03209). The raw data can be download using the instructions in `notebooks/1-intro-to-audio-data.ipynb`. This obtains the data from a publicly accessible OCI Object Storage bucket. This data is just a copy of the [original](http://download.tensorflow.org/data/speech_commands_v0.01.tar.gz) data.
+The pre-processing of the data can be time-consuming. Alternatively, you can use the pre-processed and transformed dataset `data/processed_data.pkl`. This is the data set that is used in the notebook `notebooks/2-cnn-model-with-keras.ipynb` to train the model.
 
-## Overview 
+# Prerequisites
 
-The demo is in three parts:
+The notebook makes connections to other OCI resources. This is done using [resource principals](https://docs.oracle.com/en-us/iaas/Content/Functions/Tasks/functionsaccessingociresources.htm). If you have not configured your tenancy to use resource principals then you can do so using the instructions that are [here](https://docs.oracle.com/en-us/iaas/data-science/using/create-dynamic-groups.htm). Alternatively, you can use API keys. The preferred method for authentication is resource principals.
 
-* In the first part, we explore audio data and the necessary data transformations we need to apply to the data before training the neural network. Refer to the Jupyter notebook : `notebooks/1-intro-to-audio-data.ipynb`. **Make sure you run this notebook. We also pull the dataset from OCI Object Storage as one of the first steps in the notebook.** 
+Your notebook needs internet access.
 
-* In the second part, we train the CNN model using Keras. This is done in notebook `notebooks/2-cnn-model-with-keras.ipynb`
+# Instructions
 
-* In the last part, you test the model Function endpoint you deployed to Oracle Functions with pre-recorded audio clips. The Instructions are stored in `notebooks/3-testing-model-deployment.ipynb`. 
+1. Open a Data Science Notebook session (i.e. JupyterLab).
+1. Open a file terminal by clicking on File -> New -> Terminal.
+1. In the terminal run the following commands:
+    1. `odsc conda install -s mlcpuv1` to install the General Machine Learning for CPUs conda.
+    1. `conda activate /home/datascience/conda/mlcpuv1` to activate the conda.
+    1. `pip install oci` to install the OCI Python SDK.
+1. Copy the `notebooks` folder into the notebook session.
+1. Copy the `data` folder into the notebook session.
+1. Open the notebook `notebooks/1-intro-to-audio-data.ipynb`.
+1. Change the notebook kernel to `Python [conda env:mlcpuv1]`.
+1. Read the notebook and execute each cell.
+1. Open the notebook `notebooks/2-cnn-model-with-keras.ipynb`.
+1. Change the notebook kernel to `Python [conda env:mlcpuv1]`.
+1. Read the notebook and execute each cell.
+1. Open the notebook `notebooks/3-testing-model-deployment.ipynb`.
+1. Change the notebook kernel to `Python [conda env:mlcpuv1]`.
+1. Read the notebook and execute each cell.
 
-## Dataset 
-
-Throughout this demo, we use the [Speech Commands Dataset (Warden 2018)](https://arxiv.org/abs/1804.03209). You have two options to dowload the raw dataset for this demo: 
-* from Oracle Cloud Infrastructure Object Storage by running the first notebook `1-intro-to-audio-data.ipynb`
-* from its original location [http://download.tensorflow.org/data/speech_commands_v0.01.tar.gz](http://download.tensorflow.org/data/speech_commands_v0.01.tar.gz) 
-
-Alternatively, you can use the pre-processed and transformed dataset we use in `notebooks/2-cnn-model-with-keras.ipynb` to train the model. This dataset has been serialized and can be found in this repo (`data/processed_data.pkl`). Instructions on how to load the data can be found in `notebooks/2-cnn-model-with-keras.ipynb`. 
-
-## Installation Instructions 
-
-These notebooks were intended to be run on the OCI Data Science service. We install additional Python libraries 
-in notebook `1-intro-to-audio-data.ipynb`. The libraries are listed here: 
-
-```
-librosa
-numba
-keras
-tensorflow
-```
