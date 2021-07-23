@@ -1,45 +1,36 @@
-Oracle Cloud Infrastructure Data Science and AI services Examples  
+Oracle Cloud Infrastructure Data Science and AI services Examples
 =================================================================
 
-The Oracle Cloud Infrastructure (OCI) Data Science product management team is maintaining a series of demos, tutorials, and code examples highlighting the different features of both [OCI Data Science](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) and AI services. 
+The Oracle Cloud Infrastructure (OCI) Data Science service has created this repo to make demos, tutorials, and code examples that highlight various features of the [OCI Data Science service](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) and AI services. We welcome your feedback and would like to know what content is useful and what content is missing. Open an [issue](https://github.com/oracle/oci-data-science-ai-samples/issues) to do this. We know that a lot of you are creating great content and we would like to help you share it. See the [contributions](CONTRIBUTING.md) document.
 
-Each directory in this repo corresponds to a different demo/lab and contains its own separate README file giving you instructions on how to run the code examples. 
+# Sections
 
-## Table of Examples 
+* [ads_notebooks](./ads_notebooks/): The [Accelerated Data Science (ADS) SDK](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html) is a data scientist friendly library that helps you speed up common data science tasks and it also provides an interface to other OCI services. This section contains JupyterLab notebooks that provide tutorials on how to use ADS. For example, the [vault.ipynb](./ads_notebooks/vault.ipynb) shows how easy it is to store you secrets in the [OCI Vault service](https://docs.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm).
+* [conda_environment_notebooks](./conda_environment_notebooks/): The [OCI Data Science service](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) uses [conda environments](https://docs.conda.io/projects/conda/en/latest/index.html) to manage the available libraries that a notebook can use. OCI The Data Science service [provides a number of conda environments](https://docs.oracle.com/en-us/iaas/data-science/using/conda_understand_environments.htm) that are designed to give you the best in class libraries for common data science tasks. Each family of conda environments has notebooks that demonstrate how to perform different data science tasks. This section is organized around these conda environment families and provides the notebooks that you need to get you started quickly.
+* [knowledge_base](./knowledge_base/): Are you struggling with a problem? Check out the knowledge base. It has a growing section of articles on how to solve common problems that you may encounter. If you have had a problem and have solved it, please consider [contributing](./CONTRIBUTING.md) your solution. If you had a problem, others probably have had the same one.
+* [labs](./labs/): Looking to walk through an end-to-end problem? Check out this section. It has examples of how to train machine learning models and then deploy them on the OCI Data Science service. Have you built an end-to-end machine learning model and want to share it with others. Please consider [contributing](./CONTRIBUTING.md) it.
+* [model_catalog_examples](model_catalog_examples/): The [model catalog](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/user_guide/modelcatalog/modelcatalog.html) provides a managed and centralized storage space for models. ADS helps you create the artifacts that you need to use this service. However, you need to provide a [`score.py`](https://docs.oracle.com/en-us/iaas/data-science/using/model_score_py.htm) file that will load the model and a function that will make predictions. The [`runtime.yaml`](https://docs.oracle.com/en-us/iaas/data-science/using/model_runtime_yaml.htm) provides information about the runtime conda environment if you want to deploy the model. It also allows you to document a comprehensive set of metadata about the provenance of the model. The section of the repo provides examples of how to create your `score.py` and `runtime.yaml` files for various common machine learning models. There are many different models and configurations. If you have developed a machine learning model that is not in this section, please consider [contributing](./CONTRIBUTING.md) it.
 
-* [labs](./labs/) 
-  In this directory we have 4 different examples to do things like end-to-end build, train, deploy and invoke a machine learning model using OCI Data Science services.
-* [ads_v_2_2_0](./ads_v_2_2_0/)
-  This directory has all of our generic ADS notebook examples. Here, for example, you can find a notebook about vault connection and model deployment.
-* [environment_examples](./environment_examples/)
-  This directory has subdirectories for the different conda environments offered. Within each subdirectory you will find notebook examples on that topic.
-* [model_catalog_examples](model_catalog_examples/)
-  Here we have several different examples of model catalogs, we have offered sample runtime.yaml and score.py files on several different topics that can be used to deploy models.
-* [knowledge_base](./knowledge_base/)
-  Directory with tips and tricks on a variety of topics.
+# Resources
 
-## Documentation 
+Check out the following resources for more information about the OCI Data Science and AI services:
 
-There are several ways you can access OCI Data Science documentation: 
-* our official OCI Data Science [service documentation site](https://docs.oracle.com/en-us/iaas/data-science/using/data-science.htm)
-* our [YouTube playlist](https://www.youtube.com/playlist?list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L)
-* our [AI & Data Science blog](https://blogs.oracle.com/ai-and-datascience/) 
+* [ADS class documentation](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/modules.html)
+* [ADS user guide](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html)
+* [AI & Data Science blog](https://blogs.oracle.com/ai-and-datascience/)
+* [OCI Data Science service guide](https://docs.oracle.com/en-us/iaas/data-science/using/data-science.htm)
+* [OCI Data Science service release notes](https://docs.cloud.oracle.com/en-us/iaas/releasenotes/services/data-science/)
+* [YouTube playlist](https://www.youtube.com/playlist?list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L)
 
-If you want to know more about Oracle Accelerated Data Science (ADS) Python SDK, please visit our [ADS user documentation website](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html).   
-## Need Help? 
+# Need Help?
 
-* Create a github [issue](https://github.com/oracle/oci-data-science-ai-samples/issues). 
+* Create a GitHub [issue](https://github.com/oracle/oci-data-science-ai-samples/issues).
 
-## Contributing
+# Contributing
 
 This project welcomes contributions from the community. Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md).
 
 ## Security
 
-Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process.
+The [Security Guide](./SECURITY.md) contains information about security vulnerability disclosure process. If you discover a vulnerability, consider filing an [issue](https://github.com/oracle/oci-data-science-ai-samples/issues).
 
-## License
-
-Copyright (c) 2021 Oracle and/or its affiliates.
-
-Released under the Universal Permissive License v1.0 as shown at <https://oss.oracle.com/licenses/upl/>.
