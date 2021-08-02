@@ -1,7 +1,7 @@
 MODEL_ARTIFACT_VERSION: '3.0'
 MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
-    INFERENCE_ENV_PATH: {{config.env_path}}
+    INFERENCE_ENV_PATH: oci://conda_pack_bucket@ociodscdev/conda_environments/cpu/mlcpu_nlp/1.0/mlcpu_nlpv1_0
     INFERENCE_ENV_SLUG: generalmachinelearningforcpu_nlp
     INFERENCE_ENV_TYPE: data_science
-    INFERENCE_PYTHON_VERSION: {{config.python_version}}
+    INFERENCE_PYTHON_VERSION: 3.6.11
