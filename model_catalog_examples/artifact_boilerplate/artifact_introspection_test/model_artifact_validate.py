@@ -22,8 +22,8 @@ _cwd = os.path.dirname(__file__)
 TESTS_PATH = os.path.join(_cwd, 'resources', 'tests.yaml')
 HTML_PATH = os.path.join(_cwd, 'resources', 'template.html')
 CONFIG_PATH = os.path.join(_cwd, 'resources', 'config.yaml')
+INDEX_PATH = os.path.dirname(__file__)+'/index.json'
 PYTHON_VER_PATTERN = "^([3])(\.[6-9])(\.\d+)?$"
-PAR_URL = "https://objectstorage.us-ashburn-1.oraclecloud.com/p/q0qASrU7L7G1-BIVtoXOmvcEPMwYKoSVnp4Uum-31MwCYoSAahFLnHG8nA7AdLci/n/ociodscdev/b/service_conda_packs/o/service_pack/index.json"
 TESTS = {
     'score_py': {'key': 'score_py', 'category': 'Mandatory Files Check', 'description': 'Check that the file "score.py" exists and is in the top level directory of the artifact directory', 'error_msg': 'The file \'score.py\' is missing.'},
     'runtime_yaml': {'category': 'Mandatory Files Check', 'description': 'Check that the file "runtime.yaml" exists and is in the top level directory of the artifact directory', 'error_msg': 'The file \'runtime.yaml\' is missing.'},
@@ -106,32 +106,34 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
         m = re.match(PYTHON_VER_PATTERN, str(TESTS['runtime_env_python']['value']))
         if m and m.group():
             TESTS['runtime_env_python']['success']  = True
-            response = requests.request('GET', PAR_URL)
-            if response.ok:
-                service_pack_list = response.json().get('service_packs')
-                env_path = TESTS['runtime_env_path']['value']
-                service_pack = next(filter(lambda d: d['pack_path'] == env_path, service_pack_list), None)
-                if service_pack:
-                    if TESTS['runtime_env_type']['value'] == 'data_science':
-                        TESTS['runtime_path_exist']['success'] = True
-                        slug = service_pack.get('slug')
-                        if slug == TESTS['runtime_env_slug'].get('value'):
-                            TESTS['runtime_slug_exist']['success'] = True
-                            return True, 'slug is valid'
-                        else:
-                            logger.error(f'Mismatch in slug {slug}.')
-                            TESTS['runtime_slug_exist']['success'] = False
-                            return False, TESTS['runtime_slug_exist']['error_msg']
+            try:
+                with open(INDEX_PATH, "r") as index_file:
+                    conda_pack_data = json.load(index_file)
+            except Exception as e:
+                return False, str(e)
+            service_pack_list = conda_pack_data.get('service_packs')
+            env_path = TESTS['runtime_env_path']['value']
+            service_pack = next(filter(lambda d: env_path in d['pack_path'], service_pack_list), None)
+            if service_pack:
+                if TESTS['runtime_env_type']['value'] == 'data_science':
+                    TESTS['runtime_path_exist']['success'] = True
+                    slug = service_pack.get('slug')
+                    if slug == TESTS['runtime_env_slug'].get('value'):
+                        TESTS['runtime_slug_exist']['success'] = True
+                        return True, 'slug is valid'
                     else:
-                        return True, True
+                        slug = TESTS['runtime_env_slug'].get('value')
+                        logger.error(f'Mismatch in slug {slug}.')
+                        TESTS['runtime_slug_exist']['success'] = False
+                        TESTS['runtime_slug_exist']['error_msg'] = f'In runtime.yaml, the value of the key INFERENCE_ENV_SLUG is \'{slug}\' and it doesn\'t exist. Ensure that the value INFERENCE_ENV_SLUG is correct.'
+                        return False, TESTS['runtime_slug_exist']['error_msg']
                 else:
-                    if TESTS['runtime_env_type']['value'] == 'data_science':
-                        TESTS['runtime_path_exist']['success'] = False
-                        return False, TESTS['runtime_path_exist']['error_msg']
                     return True, True
             else:
+                if TESTS['runtime_env_type']['value'] == 'data_science':
                     TESTS['runtime_path_exist']['success'] = False
                     return False, TESTS['runtime_path_exist']['error_msg']
+                return True, True
         else:
             logger.error(f'Mismatch in python version')
             TESTS['runtime_env_python']['success']  = False

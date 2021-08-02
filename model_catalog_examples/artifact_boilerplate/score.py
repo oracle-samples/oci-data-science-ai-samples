@@ -19,12 +19,18 @@ model_name = 'model.pkl'
 def load_model(model_file_name=model_name):
     """
     Loads model from the serialized format
+    WARNING: Please use the same library to load the model which was used to serialise it.
+    Using a different library will result in unexpected behavior.
     Returns
     -------
     model:  a model instance on which predict API can be invoked
     """
     model_dir = os.path.dirname(os.path.realpath(__file__))
     contents = os.listdir(model_dir)
+    # --------------------------WARNING-------------------------
+    #  Please use the same library to load the model which was used to serialise it.
+    #  Using a different library will result in unexpected behavior.
+    # -----------------------------------------------------------
     if model_file_name in contents:
         with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), model_file_name), "rb") as file:
             return cloudpickle.load(file)

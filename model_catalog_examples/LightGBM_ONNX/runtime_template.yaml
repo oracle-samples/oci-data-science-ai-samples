@@ -1,24 +1,8 @@
 MODEL_ARTIFACT_VERSION: '3.0'
 MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
-    INFERENCE_ENV_PATH: {{config.env_path}}
+    INFERENCE_ENV_PATH: oci://service_conda_packs@ociodscdev/service_pack/gpu/General
+      Machine Learning for GPUs/1.0/mlgpuv1
     INFERENCE_ENV_SLUG: mlgpuv1
     INFERENCE_ENV_TYPE: data_science
-    INFERENCE_PYTHON_VERSION: {{config.python_version}}
-MODEL_PROVENANCE:
-  PROJECT_OCID: <INSERT_OCID_HERE>
-  TENANCY_OCID: <INSERT_OCID_HERE> 
-  TRAINING_CODE:
-    ARTIFACT_DIRECTORY: /home/datascience/models/lgbm_reg
-    TRAINING_SCRIPT: /home/datascience/conda/notebooks/mlgpuv1/adsmodel.ipynb
-  TRAINING_COMPARTMENT_OCID: <INSERT_OCID_HERE>
-  TRAINING_CONDA_ENV:
-    TRAINING_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/gpu/General
-      Machine Learning for GPUs/1.0/mlgpuv1
-    TRAINING_ENV_SLUG: mlgpuv1
-    TRAINING_ENV_TYPE: data_science
-    TRAINING_PYTHON_VERSION: 3.6.11
-  TRAINING_REGION: us-ashburn-1
-  TRAINING_RESOURCE_OCID: <INSERT_OCID_HERE>
-  USER_OCID: <INSERT_OCID_HERE> 
-  VM_IMAGE_INTERNAL_ID: NB496-DCGPU49-VMP36-VMA233-JL1.2.3
+    INFERENCE_PYTHON_VERSION: 3.6.11
