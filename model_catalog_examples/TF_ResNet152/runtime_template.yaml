@@ -1,8 +1,7 @@
 MODEL_ARTIFACT_VERSION: '3.0'
 MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
-    INFERENCE_ENV_PATH: oci://service_conda_packs@ociodscdev/service_pack/cpu/General
-      Machine Learning for CPUs/1.0/mlcpuv1
-    INFERENCE_ENV_SLUG: generalmachinelearningforcpusv2
+    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/Tensorflow for CPU Python 3.7/1.0/tensorflow23_p37_cpu_v1
+    INFERENCE_ENV_SLUG: tensorflow23_p37_cpu_v1
     INFERENCE_ENV_TYPE: data_science
     INFERENCE_PYTHON_VERSION: 3.6.11
