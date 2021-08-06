@@ -103,6 +103,15 @@ Next, run a series of introspection tests on your model artifact before saving t
 common model artifact errors before the model is saved to the model catalog. Introspection tests check `score.py` for syntax errors, verify the signature of 
 functions `load_model()` and `predict()`, and validate the content of `runtime.yaml`. The introspection tests are found in `model-artifact-validation/model_artifact_validate.py`.
 
+### Downloading introspection tool from GitHub
+
+The model introspection tool along with all required files and model artifact templates is packaged in artifact_boilerplate.zip file in [github](https://github.com/oracle/oci-data-science-ai-samples/blob/master/model_catalog_examples/artifact_boilerplate/artifact_boilerplate.zip). This zip file can be downloaded from [here](https://github.com/oracle/oci-data-science-ai-samples/raw/master/model_catalog_examples/artifact_boilerplate/artifact_boilerplate.zip).
+
+### Required files
+```
+artifact_introspection_test/requirements.txt
+artifact_introspection_test/index.json
+```
 
 ### Installation
 
