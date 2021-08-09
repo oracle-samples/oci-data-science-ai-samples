@@ -10,36 +10,36 @@ Follow the steps below to successfully create a model artifact.
 
 ## Step 1. Save Your Model Object
 
-You can use a variety of tools to save your model (joblib, cloudpickle, pickle, onnx, etc). We recommend that you save your model 
-object in the top level directory of your model artifact, at the same level as `score.py` and `runtime.yaml`. 
+You can use a variety of tools to save your model (joblib, cloudpickle, pickle, onnx, etc). We recommend that you save your model
+object in the top level directory of your model artifact, at the same level as `score.py` and `runtime.yaml`.
 
 ## Step 2. Modify `score.py`
 
-Two functions are defined in score.py: `load_model()` and `predict()`. You will need to customize the body of the both functions to support your model. 
+Two functions are defined in score.py: `load_model()` and `predict()`. You will need to customize the body of the both functions to support your model.
 
-* `load_model()` reads the model file on disk and returns the estimator object. When modifying `load_model()`, **make sure that you use the same library for serializing 
-and de-serializing the model object**. 
+* `load_model()` reads the model file on disk and returns the estimator object. When modifying `load_model()`, **make sure that you use the same library for serializing
+and de-serializing the model object**.
 
-* `predict()` has two parameters: `data` and `model`. The required parameter is `data` which represents a dataset payload while `model` is an optional parameter. 
+* `predict()` has two parameters: `data` and `model`. The required parameter is `data` which represents a dataset payload while `model` is an optional parameter.
   By default `model` is the object returned by `load_model()`. Ensure that the data type of the `data` parameter matches the payload format you expect with model deployment.
-  By default, Model Deployment assumes that `data` is a JSON payload (application/json). The `predict()` function should be able to convert the JSON payload into, for example,  a Pandas Dataframe or a Numpy array 
+  By default, Model Deployment assumes that `data` is a JSON payload (application/json). The `predict()` function should be able to convert the JSON payload into, for example,  a Pandas Dataframe or a Numpy array
   if that is the data format supported by the the model object. In addition, the body of predict() can include data transformations and other data manipulation tasks before a model prediction is made.
 
-A few additional things to keep in mind: 
+A few additional things to keep in mind:
 
 * The function signatures of `load_model()` and `predict()`, are not editable. Only the body of these functions is customizable.
 
-* any custom Python modules can be imported in score.py if they are available in the artifact file or as part of the conda environment used for inference purposes. 
+* any custom Python modules can be imported in score.py if they are available in the artifact file or as part of the conda environment used for inference purposes.
 
-* You can save more than one model object in your artifact and load more than one estimator object to memory to perform an ensemble evaluation. 
+* You can save more than one model object in your artifact and load more than one estimator object to memory to perform an ensemble evaluation.
   In this case, `load_model()` could return an array of model objects that are processed by `predict()`
 
 
 ## (OPTIONAL) Step 3. Test the score.predict() Function
 
-We recommend that you test the `predict()` function in your local environment before saving the model to the catalog. The code snippet below 
-showcases how you can pass a json payload to predict that would mimic the behavior of your model as deployed through Model Deployment. This is a good 
-way to check that the model object is read by `load_model()` and that the predictions returned by your models are correct and in the format you expect. 
+We recommend that you test the `predict()` function in your local environment before saving the model to the catalog. The code snippet below
+showcases how you can pass a json payload to predict that would mimic the behavior of your model as deployed through Model Deployment. This is a good
+way to check that the model object is read by `load_model()` and that the predictions returned by your models are correct and in the format you expect.
 
 ```
 import sys
@@ -77,8 +77,8 @@ MODEL_DEPLOYMENT:
 
 Go to this page [link](https://docs.oracle.com/en-us/iaas/data-science/using/model_runtime_yaml.htm) for a definition of all the parameters that can be included in `runtime.yaml`.  
 
-As an example, here's a complete `runtime.yaml` for a data_science conda environment (mlcpuv1) used as a runtime environment for model deployment. 
-In most cases the runtime environment for model deployment should be the same as the conda environment used to train the model. 
+As an example, here's a complete `runtime.yaml` for a data_science conda environment (mlcpuv1) used as a runtime environment for model deployment.
+In most cases the runtime environment for model deployment should be the same as the conda environment used to train the model.
 
 ```
 MODEL_ARTIFACT_VERSION: '3.0'
@@ -99,24 +99,26 @@ It is possible to add these schemas after the model has been saved to the catalo
 
 ## (OPTIONAL) Step 6. Run Model Artifact Introspection Tests
 
-Next, run a series of introspection tests on your model artifact before saving the model to the model catalog. The purpose of these tests is to capture many of the 
-common model artifact errors before the model is saved to the model catalog. Introspection tests check `score.py` for syntax errors, verify the signature of 
+Next, run a series of introspection tests on your model artifact before saving the model to the model catalog. The purpose of these tests is to capture many of the
+common model artifact errors before the model is saved to the model catalog. Introspection tests check `score.py` for syntax errors, verify the signature of
 functions `load_model()` and `predict()`, and validate the content of `runtime.yaml`. The introspection tests are found in `model-artifact-validation/model_artifact_validate.py`.
 
-### Downloading introspection tool from GitHub
+### Introspection on a previously created artifact
 
-The model introspection tool along with all required files and model artifact templates is packaged in artifact_boilerplate.zip file in [github](https://github.com/oracle/oci-data-science-ai-samples/blob/master/model_catalog_examples/artifact_boilerplate/artifact_boilerplate.zip). This zip file can be downloaded from [here](https://github.com/oracle/oci-data-science-ai-samples/raw/master/model_catalog_examples/artifact_boilerplate/artifact_boilerplate.zip).
+Perhaps you already have a model artifact in your notebook session or your local laptop and you would like to execute the introspection tests on that artifact. It is possible to execute the introspection tests on a **previously created artifact**.  Simply copy the entire directory `artifact_introspection_test` into the top level directory of your model artifact and follow the steps below.
+
 
 ### Required files
 ```
 artifact_introspection_test/requirements.txt
 artifact_introspection_test/index.json
+artifact_introspection_test/model_artifact_validate.py
 ```
 
 ### Installation
 
-Python version > 3.5 is required to run the tests. Before running the tests locally on your machine, two Python libraries need to be installed 
-namely `pyyaml` and `requests`. This installation step is a one-time operation. Go to your artifact directory and run the following command: 
+Python version > 3.5 is required to run the tests. Before running the tests locally on your machine, two Python libraries need to be installed
+namely `pyyaml` and `requests`. This installation step is a one-time operation. Go to your artifact directory and run the following command:
 
 ```
 python3 -m pip install --user -r artifact_introspection_test/requirements.txt
@@ -133,7 +135,7 @@ The script automatically generates a report of the test results in the same fold
 * `test_json_output.json`
 * `test_html_output.html`
 
-Repeat Steps 1-6 until no error is found. 
+Repeat Steps 1-6 until no error is found.
 
 
 ## Step 7. Create/Save your model to the catalog
@@ -146,16 +148,16 @@ The following section describes the SDK access through OCI configuration file wh
 # Refer to
 # https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm#SDK_and_CLI_Configuration_File
 # for more info
- 
+
 import oci
 from oci.data_science.models import CreateModelDetails, Metadata, CreateModelProvenanceDetails, UpdateModelDetails, UpdateModelProvenanceDetails
 config = oci.config.from_file()
 data_science_client = oci.data_science.DataScienceClient(config=config)
- 
+
 # Initialize service client with user principal (config file)
 config = oci.config.from_file()
 data_science_client = oci.data_science.DataScienceClient(config=config)
- 
+
 # Alternatively initialize service client with resource principal (for example in a notebook session)
 # auth = oci.auth.signers.get_resource_principals_signer()
 # data_science_client = oci.data_science.DataScienceClient({}, signer=auth)
@@ -163,7 +165,7 @@ data_science_client = oci.data_science.DataScienceClient(config=config)
 
 ## Step 7.1 (OPTIONAL) Step 7.1 Document the Model Provenance
 
-You can first document the model provenance. This is optional. The table below includes a list of the supported model provenance metadata 
+You can first document the model provenance. This is optional. The table below includes a list of the supported model provenance metadata
 * When you save a model to the catalog with ADS, ADS automatically captures all provenance metadata values.
 
 |             |                                                               |
@@ -179,7 +181,7 @@ You can first document the model provenance. This is optional. The table below i
 |   |   * JOB_RUN_OCID |
 |   |   Are available for you to use and refer to when you save a model with the OCI SDK. |
 
-An example code snippet: 
+An example code snippet:
 
 MODEL PROVENANCE METADATA
 
@@ -197,7 +199,7 @@ provenance_details = CreateModelProvenanceDetails(repository_url="EXAMPLE-reposi
 
 
 The metadata fields associated with model taxonomy allow you to describe the machine learning use case and framework behind the model.  The defined metadata tags are the list of allowed values for use case type and framework for defined metadata and category values for custom metadata.
-* When you save a model to the catalog with ADS, ADS automatically captures all model taxonomy metadata values. 
+* When you save a model to the catalog with ADS, ADS automatically captures all model taxonomy metadata values.
 
 |             |                                                               |
 | ----------- | ------------------------------------------------------------  |
@@ -249,7 +251,7 @@ The metadata fields associated with model taxonomy allow you to describe the mac
 | Hyperparameters |   The hyperparameters of the model object. This should be a JSON blob.  |
 | ArtifactTestResults |   The JSON output of the artifact tests run on the client side. See (OPTIONAL) Step 7.5 - Document the Introspection Tests Results below. |
 
-Here's a code snippet showing how you can document the model taxonomy. Capture each key-value pair by creating a list of Metadata() objects: 
+Here's a code snippet showing how you can document the model taxonomy. Capture each key-value pair by creating a list of Metadata() objects:
 
 MODEL TAXONOMY METADATA
 
@@ -264,27 +266,27 @@ defined_metadata_list = [
 ]
 ```
 
-## (OPTIONAL) Step 7.3: Add Your Own Custom Metadata 
+## (OPTIONAL) Step 7.3: Add Your Own Custom Metadata
 
-You can add your own custom metadata to document your model. The code snippet shows how you can add custom metadata to capture the model accuracy, the environment , and the source of the training data: 
+You can add your own custom metadata to document your model. The code snippet shows how you can add custom metadata to capture the model accuracy, the environment , and the source of the training data:
 * The max allowed size for all metadata (combined Defined + Custom) is 32 kb
-  
+
 Each custom metadata has four attributes:
 
 ```
 Atribute   |  Required/Optional |  Description
 key        |  Required          |  The key/label of your custom metadata
 value      |  Required          |  The value attached to the key
-category   |  Optional          |  The category of the metadata. Select one of these five values: 
+category   |  Optional          |  The category of the metadata. Select one of these five values:
                                     1. Performance
                                     2. Training Profile
                                     3. Training and Validation Datasets
                                     4. Training Environment
                                     5. other
-            
+
                                    The category attribute is useful to filter custom metadata. This becomes handy when one has a large number of custom metadata for a given model.                                 
 
-description | Optional           | A description of the custom medata. 
+description | Optional           | A description of the custom medata.
 
 ```
 
@@ -305,9 +307,9 @@ custom_metadata_list = [
 ## (Optional) Step 7.4: Document the Model Input and Output Data Schema Definitions
 
 Next, you can document the model input and output data schemas. For more details on the format of the schema definition
-* When you save a model to the catalog with ADS, ADS automatically captures the model input and output data schema definitions. 
+* When you save a model to the catalog with ADS, ADS automatically captures the model input and output data schema definitions.
 * The max allowed size for schemas (combined Input and Output) is 32 kb
-  
+
 DOCUMENT MODEL INPUT AND OUTPUT SCHEMAS
 
 ```
@@ -322,14 +324,14 @@ input_schema_str= json.dumps(input_schema)
 output_schema = load(open('SR_output_schema.json','rb'))
 output_schema_str= json.dumps(output_schema)
 ```
-## (Optional) Step 7.5: Document the Introspection Test Results 
+## (Optional) Step 7.5: Document the Introspection Test Results
 
 This is the results output from step 5 which can be uploaded as a defined metadata key "ArtifactTestResults" with the value of execution output. This is an important step if you wish to see the result in console as "Model Introspection" for future reference and traceability.
 
 DOCUMENT MODEL INPUT AND OUTPUT SCHEMAS
 ```
 # Provide the introspection test results
- 
+
 test_results = load(open('test_json_output.json','rb'))
 test_results_str = json.dumps(test_results)
 defined_metadata_list.extend([Metadata(key="ArtifactTestResults", value=test_results_str)])
@@ -337,7 +339,7 @@ defined_metadata_list.extend([Metadata(key="ArtifactTestResults", value=test_res
 
 ## Step 7.6: Wrapping it All: Creating/Saving the Model in the Model Catalog
 
-Last we create the model in the model catalog. 
+Last we create the model in the model catalog.
 
 CREATE MODEL
 
@@ -352,7 +354,7 @@ model_details = CreateModelDetails(
     defined_metadata_list=defined_metadata_list,
     input_schema=input_schema_str,
     output_schema=output_schema_str)
- 
+
 # creating the model object:
 model = data_science_client.create_model(model_details)
 # adding the provenance:
@@ -386,5 +388,5 @@ Once a model is created you can view it in the console
 12  runtime_env_path    Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set
 13  runtime_path_exist  If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science and MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set, check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct
 14  runtime_slug_exist  If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science, check that the slug listed in MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG exists
-                                              
+
 ```
