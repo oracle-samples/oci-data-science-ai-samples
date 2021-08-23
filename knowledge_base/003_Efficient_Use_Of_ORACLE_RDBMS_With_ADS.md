@@ -103,7 +103,7 @@ Given a dataframe (`df`) writing this to the database is as simple as:
 
 The resulting data types (if the table was created by ADS, as opposed to inserting into an existing table), would be governed by the below table:
 
-|python|Oracle|
+|Pandas|Oracle|
 |------|------|
 |bool|NUMBER(1)|
 |int16|NUMBER(5)|
