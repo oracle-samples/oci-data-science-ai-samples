@@ -119,7 +119,7 @@ The resulting data types (if the table was created by ADS, as opposed to inserti
 |float32|FLOAT
 |float64|FLOAT|
 |datetime64|TIMESTAMP|
-|string|VARCHAR2(<max length of actual data>)|
+|string|VARCHAR2(max length of actual data)|
 
 
 When a table is created the length of any `VARCHAR2` columns is computed from the longest string in the column. The ORM would default to `CLOB` data which is not correct, nor is it efficient. CLOBS are stored efficiently by the database but the c api to query them works differently, the non LOB columns are returned to the client through a cursor, but LOBs are handled differently, resulting in an additional network fetch per row, per LOB column. ADS deals with this by creating the correct data type, and setting the right `VARCHAR2` length.
