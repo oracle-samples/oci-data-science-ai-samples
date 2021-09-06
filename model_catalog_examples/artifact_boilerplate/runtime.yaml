@@ -1,7 +1,20 @@
+# This is template runtime.yaml. It has default conda environment value. You can replace these values.
 MODEL_ARTIFACT_VERSION: '3.0'
 MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
-    INFERENCE_ENV_PATH: <INSERT_INFERENCE_ENV_PATH>
-    INFERENCE_ENV_SLUG: <INSERT_INFERENCE_ENV_SLUG>
-    INFERENCE_ENV_TYPE: <INSERT_INFERENCE_ENV_TYPE>
-    INFERENCE_PYTHON_VERSION: <INSERT_INFERENCE_PYTHON_VERSION>
+    # Replace with the object storage path of the conda environment you want to use.
+    # Go to https://docs.oracle.com/en-us/iaas/data-science/using/conda_environ_list.htm for a list of data_science conda environments you can use out-of-the-box
+    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/Data Exploration and Manipulation for CPU Python 3.7/2.0/dataexpl_p37_cpu_v2
+
+    # Replace with the slug of the environment you want to use.
+    # Slugs for data_science environment can be found for each environment either in the notebook session Environment Explorer or here:
+    # https://docs.oracle.com/en-us/iaas/data-science/using/conda_environ_list.htm
+    INFERENCE_ENV_SLUG: dataexpl_p37_cpu_v2
+
+    # Replace with the type of environment. Either published or data_science.
+    # Published environments are environments that you create and store in your own object storage bucket.
+    # For more information: https://docs.oracle.com/en-us/iaas/data-science/using/conda_publishs_object.htm
+    INFERENCE_ENV_TYPE: data_science
+
+    # Provide the Python version of the environment.
+    INFERENCE_PYTHON_VERSION: 3.7
