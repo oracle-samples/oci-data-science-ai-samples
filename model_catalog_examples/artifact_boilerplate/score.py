@@ -6,17 +6,20 @@ import os
 from cloudpickle import cloudpickle
 
 """
-    Replace with your own model object and your own serialization library (e.g. pickle, onnx, etc).
+    You can provide your own model object and your own serialization library (e.g. pickle, onnx, etc).
+    If no model is specified then predict() by default will return 'Hello World!'
 """
-model_name = 'model.pkl'
 
+"""
+    model_name = 'model.pkl'
+"""
 
 """
    Inference script. This script is used for prediction by scoring server when schema is known.
 """
 
 
-def load_model(model_file_name=model_name):
+def load_model(model_file_name=None):
     """
     Loads model from the serialized format
     WARNING: Please use the same library to load the model which was used to serialise it.
@@ -25,6 +28,8 @@ def load_model(model_file_name=model_name):
     -------
     model:  a model instance on which predict API can be invoked
     """
+    if not model_file_name:
+        return None
     model_dir = os.path.dirname(os.path.realpath(__file__))
     contents = os.listdir(model_dir)
     # --------------------------WARNING-------------------------
@@ -50,6 +55,8 @@ def predict(data, model=load_model()):
     predictions: Output from scoring server
         Format: {'prediction':output from model.predict method}
     """
+    if model is None or len(data) == 0:
+        return {'prediction':'Hello world!'}
     from pandas import read_json, DataFrame
     from io import StringIO
     data = read_json(StringIO(data)) if isinstance(data, str) else DataFrame.from_dict(data)
