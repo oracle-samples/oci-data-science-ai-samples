@@ -1,8 +1,4 @@
 import oci
-import time
-import configparser
-import sys, getopt
-import os
 from datetime import datetime, timedelta
 import logging
 

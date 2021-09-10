@@ -1,0 +1,7 @@
+{
+	"jobType": "DEFAULT",
+	"environmentVariables": {
+		"CONDA_ENV_TYPE": "service",
+		"CONDA_ENV_SLUG": "dataexpl_p37_cpu_v2"
+	}
+}

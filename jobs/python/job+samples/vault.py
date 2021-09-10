@@ -31,9 +31,6 @@ class Jobs:
                 config={}, signer=self.signer
             )
 
-    def install(self, package):
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
     def read_secret_value(self, secret_id):
         secret_bundle = self.secret_client.get_secret_bundle(secret_id)
         base64_secret_content = secret_bundle.data.secret_bundle_content.content

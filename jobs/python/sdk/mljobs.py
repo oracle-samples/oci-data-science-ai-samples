@@ -11,11 +11,8 @@ config_file = "~/.oci/config"
 CONFIG_FILE = ""
 ENV_TYPE = ""
 
-
 class MLJobs:
-    def __init__(
-        self, env_type, config_file, compartment_id, subnet_id, service_endpoint=None
-    ):
+    def __init__(self, env_type, config_file, compartment_id, subnet_id):
         self.config_file = config_file
         self.compartment_id = compartment_id
         self.subnet_id = subnet_id
@@ -24,34 +21,10 @@ class MLJobs:
             print("*** Setting up data science client....")
             self.oci_config = oci.config.from_file(self.config_file, env_type)
             self.identity = oci.identity.IdentityClient(config=self.oci_config)
-
-            if service_endpoint == None:
-                self.dsc = oci.data_science.DataScienceClient(config=self.oci_config)
-            else:
-                self.dsc = oci.data_science.DataScienceClient(
-                    config=self.oci_config, service_endpoint=service_endpoint
-                )
+            self.dsc = oci.data_science.DataScienceClient(config=self.oci_config)
         except Exception as e:
             print(e)
             raise e
-
-    def create_project(self, compartment_id, project_name, project_description):
-        print("-------------------------------------")
-        print("*** Creating Project ...")
-
-        return self.dsc.create_project(
-            create_project_details=oci.data_science.models.CreateProjectDetails(
-                compartment_id=compartment_id,
-                display_name=project_name,
-                description=project_description,
-            )
-        )
-
-    def list_projects(self, compartment_id):
-        print("-------------------------------------")
-        print("*** List Projects ...")
-
-        return self.dsc.list_projects(compartment_id)
 
     def create_job(self, compartment_id, project_id, job_name="Job", subnet_id=None):
         print("-------------------------------------")
@@ -60,7 +33,6 @@ class MLJobs:
         if subnet_id == None:
             subnet_id = self.subnet_id
 
-        # TODO: Make sure shape etc are variables as well
         job_payload = {
             "projectId": project_id,
             "compartmentId": compartment_id,
@@ -68,10 +40,12 @@ class MLJobs:
             "jobConfigurationDetails": {
                 "jobType": "DEFAULT",
                 "environmentVariables": {
+                    # SET env. variables
                     # "CONDA_ENV_TYPE": "service",
                     # "CONDA_ENV_SLUG": "classic_cpu"
                 },
             },
+            # SETS the logging
             # "jobLogConfigurationDetails": {
             #     "enableLogging": True,
             #     "enableAutoLogCreation": False,
@@ -99,7 +73,7 @@ class MLJobs:
 
         return self.dsc.get_job(job_id)
 
-    # NOTICE: Articat cannot be replaceds, once uploaded?
+    # NOTICE: Artifacts cannot be replaced, once uploaded!
     def create_job_artifact(self, job_id, file_name):
         print("-------------------------------------")
         print("*** Create Job Artifact ...")
@@ -124,13 +98,12 @@ class MLJobs:
             "jobConfigurationOverrideDetails": {
                 "jobType": "DEFAULT",
                 "environmentVariables": {
-                    # "LOG_OBJECT_OCID": log_id,
-                    # "JOB_RUN_ENTRYPOINT": "job_arch/entry.py"
-                    # "DOCKER_CUSTOM_IMAGE": "iad.ocir.io/ociodscdev/byod2:2.0"
+                    # "JOB_RUN_ENTRYPOINT": "<main_python_file>.py"
                     # "CONDA_ENV_TYPE": "service",
                     # "CONDA_ENV_SLUG": "mlcpuv1",
                     # "MY_ENV_VAR": "abcde"
                 },
+                "commandLineArguments": "100 linux \"hi there\""
             },
             "jobLogConfigurationOverrideDetails": {
                 "logGroupId": log_id,
@@ -172,19 +145,17 @@ class MLJobs:
 
 
 def main(parser):
-    parser.add_argument("-t", "--tenant", required=True, default="", help='an tenancy to create and run the job')
     parser.add_argument("-f", "--file", required=True, default="", help='file to be used as job artifact')
 
     args = parser.parse_args()
-    tenant = args.tenant
     file = args.file
 
-    return {"tenant": tenant, "file": file}
+    return {"file": file}
 
 
 if __name__ == "__main__":
     """
-    # RUN: python mljobs.py -t <tenant> -f <file>    
+    # RUN: python mljobs.py -f <file>    
     """
     try:
         t = time.time()
@@ -194,36 +165,21 @@ if __name__ == "__main__":
         arguments = main(parser)
 
         print("------------------------------------------")
-        print("TENANT: {}".format(arguments["tenant"]))
         print("FILE: {}".format(arguments["file"]))
         print("------------------------------------------")
 
-        ENV_TYPE = arguments["tenant"]
         JOB_FILE = arguments["file"]
 
-        # parse config
-        dirname = os.path.dirname(os.path.abspath(__file__))
-        CONFIG_FILE = os.path.join(dirname, "config.ini")
-
-        config = configparser.ConfigParser(allow_no_value=True)
-        config.read(CONFIG_FILE)
-
         # params
-        service_endpoint = config.get(ENV_TYPE, "service_endpoint")
-        compartment_id = config.get(ENV_TYPE, "compartment_ocid")
-        project_id = config.get(ENV_TYPE, "project_ocid")
-        log_id = config.get(ENV_TYPE, "log_ocid")
-        log_group_ocid = config.get(ENV_TYPE, "log_group_ocid")
-        subnet_id = config.get(ENV_TYPE, "subnet_ocid")
+        project_id = os.environ['PROJECT']
+        compartment_id = os.environ['COMPARTMENT']
+        log_group_ocid = os.environ['LOGGROUP']
+        subnet_id = os.environ['SUBNET']
+        tenant = os.environ['TENANCY']
+        config = os.environ['CONFIG']
 
         # initialize
-        sdk = MLJobs(ENV_TYPE, config_file, compartment_id, subnet_id, service_endpoint)
-
-        # project_id = sdk.create_project(compartment_id, "JOBS", "This project is used for the Jobs testing.")
-        # print("Project OCID: {}".format(project_id.data))
-
-        # print(sdk.list_projects())
-        # sdk.list_projects()
+        sdk = MLJobs(tenant, config, compartment_id, subnet_id)
 
         job_id = ""
         job_name = "Job " + datetime.now().strftime("%m-%d-%Y %H:%M:%S")

@@ -43,8 +43,28 @@ This samples use a **config.ini** to make the setup easier. In this config you c
 
 ## Run Samples
 
-It is easy to run the samples with the provided **mljobs.py**. To do so just pass which tenancy you want to use from your **config.ini** and the file you want to run as a job, for example:
+It is easy to run the samples with the provided **mljobs.py**. 
+
+Set your environment variables:
 
 ```bash
-python mljobs.py -t DEFAULT -f ../samples/hello_world_job.py 
+export PROJECT=<project ocid>
+export COMPARTMENT=<compartment ocid>
+export SUBNET=<subnet ocid>
+export LOGGROUP=<log group ocid>
+export TENANCY=<ini tenancy name>
+export CONFIG=$HOME/.oci/config
+```
+
+- PROJECT: Data Science Service Project OCID
+- COMPARTMENT: Data Science Service Project Compartment OCID
+- SUBNET: VCN Private Subnet OCID to be used by the Job
+- LOGGROUP: Log Group OCID to be used by the Job Runs to create the logs
+- TENANCY: The name of the tenancy as set in the $HOME/.oci/config
+- CONFIG: OCI API Key configuration location
+
+Then run the **mljobs.py** and provide the file to be executed as a Job.
+
+```bash
+python mljobs.py -f ../samples/hello_world_job.py 
 ```

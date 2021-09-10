@@ -1,0 +1,6 @@
+{
+	"jobInfrastructureType": "STANDALONE",
+	"shapeName": "VM.Standard2.1",
+	"blockStorageSizeInGBs": "100",
+	"subnetId": "<Private Subnet OCID>"
+}
