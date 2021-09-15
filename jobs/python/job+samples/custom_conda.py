@@ -5,13 +5,18 @@ import os
 import sklearn
 import schedule
 
+
 def get_by_key(key, default="LOCAL"):
     return os.environ.get(key, default)
 
+
 print("Custom conda test!")
+
+
 def job():
     print('Hello, Logs')
     time.sleep(5)
+
 
 conda_type = get_by_key("CONDA_ENV_TYPE", "NONE")
 conda_region = get_by_key("CONDA_ENV_REGION", "NONE")

@@ -13,13 +13,15 @@ from oci.loggingingestion.models import PutLogsDetails, LogEntryBatch, LogEntry
 
 JOB_RUN_OCID_KEY = "JOB_RUN_OCID"
 OCI_RESOURCE_PRINCIPAL_VERSION = "OCI_RESOURCE_PRINCIPAL_VERSION"
-# Replace secret_id value below with the ocid of your secret
-SECRET_OCID = "ocid1.vaultsecret.oc1.iad.amaaaaaanif7xwia56zwdrjuhoesurnimnqshon6v2a55fs3x3lqnyr4xkka"
+
+# TODO: Replace with your vault secret ocid!
+SECRET_OCID = "<vaultsecret_ocid>"
 
 
 class Jobs:
     def __init__(self):
-        rp_version = os.environ.get(OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
+        rp_version = os.environ.get(
+            OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
         if rp_version == "UNDEFINED":
             # RUN LOCAL TEST
             self.signer = oci.config.from_file("~/.oci/config", "BIGDATA")
@@ -45,8 +47,10 @@ try:
 
     print("Start Vault Job Logging...")
 
-    print("Logging for job run: {}".format(job.get_by_key(JOB_RUN_OCID_KEY, "LOCAL")))
-    print("Current timestamp in UTC: {}".format(str(datetime.datetime.utcnow())))
+    print("Logging for job run: {}".format(
+        job.get_by_key(JOB_RUN_OCID_KEY, "LOCAL")))
+    print("Current timestamp in UTC: {}".format(
+        str(datetime.datetime.utcnow())))
 
     print("Init Vault")
 

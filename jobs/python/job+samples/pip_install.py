@@ -6,7 +6,7 @@ import oci
 
 OCI_RESOURCE_PRINCIPAL_VERSION = "OCI_RESOURCE_PRINCIPAL_VERSION"
 
-# env. variables send to the job by default
+# env. variables send to the job by default!
 TENANCY_OCID_KEY = "TENANCY_OCID"
 PROJECT_OCID_KEY = "PROJECT_OCID"
 PROJECT_COMPARTMENT_OCID_KEY = "PROJECT_COMPARTMENT_OCID"
@@ -16,10 +16,12 @@ JOB_ARTIFACT_FILE_NAME_KEY = "JOB_ARTIFACT_FILE_NAME"
 JOB_RUN_OCID_KEY = "JOB_RUN_OCID"
 JOB_RUN_COMPARTMENT_OCID_KEY = "JOB_RUN_COMPARTMENT_OCID"
 
+
 class Job:
     def __init__(self):
         # Auto switch between key or resource princiapal, for local run or as job
-        rp_version = os.environ.get(OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
+        rp_version = os.environ.get(
+            OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
         if rp_version == "UNDEFINED":
             # RUN LOCAL TEST
             self.signer = oci.config.from_file("~/.oci/config", "DEFAULT")
@@ -32,7 +34,8 @@ class Job:
             print(log)
 
     def install(self, package):
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", package])
 
     def get_by_key(self, key, default="LOCAL"):
         return os.environ.get(key, default)
@@ -45,8 +48,10 @@ if __name__ == "__main__":
     #
     job.log(
         [
-            "Logging for job run: {}".format(job.get_by_key(JOB_RUN_OCID_KEY, "LOCAL")),
-            "Current timestamp in UTC: {}".format(str(datetime.datetime.utcnow())),
+            "Logging for job run: {}".format(
+                job.get_by_key(JOB_RUN_OCID_KEY, "LOCAL")),
+            "Current timestamp in UTC: {}".format(
+                str(datetime.datetime.utcnow())),
         ]
     )
 
@@ -63,4 +68,3 @@ if __name__ == "__main__":
     print("The scikit-learn version is {}.".format(sklearn.__version__))
 
     print("Job Done.")
-

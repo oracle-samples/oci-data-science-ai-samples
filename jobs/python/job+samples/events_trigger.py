@@ -7,12 +7,17 @@ import subprocess
 
 OCI_RESOURCE_PRINCIPAL_VERSION = "OCI_RESOURCE_PRINCIPAL_VERSION"
 JOB_RUN_OCID_KEY = "JOB_RUN_OCID"
-TOPIC_ID = "ocid1.onstopic.oc1.iad.aaaaaaaasghln63amjhrpjex533vm7rjtdw6iq423vx5y3qnfnp3kc7qnt5a"
 
-# NOTICE: Jobs will have Events implementation in GE, so this will be deprecated by then!
+# TODO: Replace with your topic OCID!
+TOPIC_ID = "<onstopic_ocid>"
+
+# NOTICE: Jobs trigger events on each lifecycle too!
+
+
 class Job:
     def __init__(self):
-        rp_version = os.environ.get(OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
+        rp_version = os.environ.get(
+            OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
         if rp_version == "UNDEFINED":
             # RUN LOCAL TEST
             self.signer = oci.config.from_file("~/.oci/config", "BIGDATA")
@@ -21,10 +26,12 @@ class Job:
             self.signer = oci.auth.signers.get_resource_principals_signer()
 
     def init_publisher(self):
-        rp_version = os.environ.get(OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
+        rp_version = os.environ.get(
+            OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
         if rp_version == "UNDEFINED":
             # RUN LOCAL TEST
-            self.ons_client = oci.ons.NotificationDataPlaneClient(config=self.signer)
+            self.ons_client = oci.ons.NotificationDataPlaneClient(
+                config=self.signer)
         else:
             # RUN AS JOB
             self.ons_client = oci.ons.NotificationDataPlaneClient(
@@ -32,13 +39,15 @@ class Job:
             )
 
     def install(self, package):
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", package])
 
     # https://docs.oracle.com/en-us/iaas/api/#/en/notification/20181201/NotificationTopic/PublishMessage
     def publish_message(self, title, body):
         return self.ons_client.publish_message(
             topic_id=TOPIC_ID,
-            message_details=oci.ons.models.MessageDetails(body=body, title=title),
+            message_details=oci.ons.models.MessageDetails(
+                body=body, title=title),
             opc_request_id=self.job_run_ocid,
         )
 
@@ -52,7 +61,8 @@ try:
                 os.environ.get(JOB_RUN_OCID_KEY, "LOCAL")
             )
         )
-        print("Current timestamp in UTC: {}".format(str(datetime.datetime.utcnow())))
+        print("Current timestamp in UTC: {}".format(
+            str(datetime.datetime.utcnow())))
 
         print("Init publisher")
 
@@ -62,10 +72,12 @@ try:
 
         publish_message_response = job.publish_message(
             "Job Finished",
-            "This is a job OCID: {}".format(os.environ.get(JOB_RUN_OCID_KEY, "LOCAL")),
+            "This is a job OCID: {}".format(
+                os.environ.get(JOB_RUN_OCID_KEY, "LOCAL")),
         )
 
-        print("Published message response :{}".format(publish_message_response.data))
+        print("Published message response :{}".format(
+            publish_message_response.data))
 
         print("Job Done.")
     except Exception as e:
