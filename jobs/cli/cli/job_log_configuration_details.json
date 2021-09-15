@@ -1,0 +1,5 @@
+{
+    "enableLogging": true,
+    "enableAutoLogCreation": false,
+    "logGroupId": "<Log Group OCID>"
+}
