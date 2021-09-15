@@ -25,7 +25,8 @@ class MJobs:
             self.identity = oci.identity.IdentityClient(config=self.oci_config)
 
             if service_endpoint == None:
-                self.dsc = oci.data_science.DataScienceClient(config=self.oci_config)
+                self.dsc = oci.data_science.DataScienceClient(
+                    config=self.oci_config)
             else:
                 self.dsc = oci.data_science.DataScienceClient(
                     config=self.oci_config, service_endpoint=service_endpoint
@@ -104,7 +105,8 @@ class MJobs:
             },
         }
         update_job_payload = (
-            update_job_details if (update_job_details != None) else update_payload
+            update_job_details if (update_job_details !=
+                                   None) else update_payload
         )
         return self.dsc.update_job(job_id=job_id, update_job_details=update_job_payload)
 
@@ -167,9 +169,7 @@ class MJobs:
             "jobConfigurationOverrideDetails": {
                 "jobType": "DEFAULT",
                 "environmentVariables": {
-                    # "LOG_OBJECT_OCID": log_id,
                     # "JOB_RUN_ENTRYPOINT": "job_arch/entry.py"
-                    # "DOCKER_CUSTOM_IMAGE": "iad.ocir.io/ociodscdev/byod2:2.0"
                     "CONDA_ENV_TYPE": "service",
                     "CONDA_ENV_SLUG": "dataexpl_p37_cpu_v2",
                     # "MY_ENV_VAR": "abcde"
