@@ -20,7 +20,7 @@ The Node and NPM versions used to this code:
 You have to install the latest version in order to test this code. 
 
 - [oci-typescript-sdk](https://github.com/oracle/oci-typescript-sdk)
- 
+
 To install the Oracle OCI Node SDK
 
 ```bash

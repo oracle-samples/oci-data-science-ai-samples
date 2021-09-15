@@ -62,7 +62,7 @@ oci data-science job create --help
 ## Job
 
 ```bash
-oci data-science job create --display-name clijob --project-id $PROJECT --compartment-id $COMPARTMENT --configuration-details file://job_config_details.json --infrastructure-configuration-details file://job_infra_config_details.json --log-configuration-details file://job_log_configuration_details.json --config-file /Users/lypelov/.oci/config --profile $TENANCY
+oci data-science job create --display-name clijob --project-id $PROJECT --compartment-id $COMPARTMENT --configuration-details file://job_config_details.json --infrastructure-configuration-details file://job_infra_config_details.json --log-configuration-details file://job_log_configuration_details.json --config-file $CONFIG --profile $TENANCY
 ```
 
 Get the job OCID and export it to use for the rest of the commands.
@@ -72,7 +72,7 @@ export JOB=ocid1.datasciencejob.oc1.iad.amaaaaaanif7xwiaktme3tic34wss5d63afhvl27
 ```
 
 ```bash
-oci data-science job create-job-artifact --job-id $JOB --job-artifact-file hello_world_job.py --content-disposition 'attachment; filename=hello_world_job.py' --config-file /Users/lypelov/.oci/config --profile $TENANCY
+oci data-science job create-job-artifact --job-id $JOB --job-artifact-file hello_world_job.py --content-disposition 'attachment; filename=hello_world_job.py' --config-file $CONFIG --profile $TENANCY
 ```
 
 ```bash

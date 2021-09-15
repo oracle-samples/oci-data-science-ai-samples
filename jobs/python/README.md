@@ -1,6 +1,7 @@
 # Python Job Samples
 
-Oracle Data Science Service Jobs samples demonstrating how to use the OCI SDK Jobs API, as well as actual Python Jobs. 
+Oracle Data Science Service Jobs samples demonstrating how to use the OCI SDK Jobs API, as well as actual Python Jobs.
+
 ## Installation
 
 If you want to try this samples on your local machine, we would recommend you to install and use Conda, as it allows for a good Python environment control
@@ -37,13 +38,14 @@ Download the OCI CLI Preview release
 pip install oci
 oci --version
 ```
+
 ## Setup
 
 This samples use a **config.ini** to make the setup easier. In this config you can setup the OCIDs of your tenancy and use it with the SDK runner to run the Job directly against your tenancy.
 
 ## Run Samples
 
-It is easy to run the samples with the provided **mljobs.py**. 
+It is easy to run the samples with the provided `mljobs.py`.
 
 Set your environment variables:
 
@@ -63,7 +65,7 @@ export CONFIG=$HOME/.oci/config
 - TENANCY: The name of the tenancy as set in the $HOME/.oci/config
 - CONFIG: OCI API Key configuration location
 
-Then run the **mljobs.py** and provide the file to be executed as a Job.
+Then run the `mljobs.py` and provide the file to be executed as a Job.
 
 ```bash
 python mljobs.py -f ../samples/hello_world_job.py 

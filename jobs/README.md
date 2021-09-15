@@ -12,16 +12,15 @@ Using jobs, you can:
 - Execute batches or workloads triggered by events or actions
 - Batch Inference, Mini-Batch or Distributed Batch Jobs
 
-
 ## Introduction
 
-The job sample section contains a folder for each programing langugage we currently provide samples. Every language folder will have two additional folders: 
+The job sample section contains a folder for each programing langugage we currently provide samples. Every language folder will contain samples of how to use the client OCI SDK:
 
-- `node`,`python`,`shell`, `ts+js` different type of programing language samples
+- `cli`, `node`,`python`,`shell`, `ts+js` the programing language client SDK samples
   
 Depending on the programing language, like for example Python, we provide also sample Jobs and SDK client samples in the sub folders.
 
-- `sdk` showing how to use the OCI SDK Jobs API 
+- `sdk` showing how to use the OCI SDK Jobs API
 - `job+samples` actual code samples you could run as a Job.
 
 ## Samples

@@ -5,27 +5,28 @@ This script can be ran as a Job too. Notice it takes Command Line Arguments. Thi
 Programatically the command line arguments can be set over the `commandLineArguments` property like this:
 
 On Job
-```json
-    "jobConfigurationDetails": {
-        "jobType": "DEFAULT",
-        "environmentVariables": {
-        },
-        "commandLineArguments": "100 linux \"hi there\""
-    },
-```
 
+```json
+"jobConfigurationDetails": {
+    "jobType": "DEFAULT",
+    "environmentVariables": {
+    },
+    "commandLineArguments": "100 linux \"hi there\""
+}
+```
 
 On Job Run
+
 ```json
-    "jobConfigurationOverrideDetails": {
-        "jobType": "DEFAULT",
-        "environmentVariables": {
-        },
-        "commandLineArguments": "100 linux \"hi there\""
+"jobConfigurationOverrideDetails": {
+    "jobType": "DEFAULT",
+    "environmentVariables": {
     },
+    "commandLineArguments": "100 linux \"hi there\""
+}
 ```
 
-### Run
+## Run
 
 You can run this file as a Job from the **python/sdk** folder:
 
