@@ -10,7 +10,7 @@ The OCI-CLI is included in the OCI Cloud Shell environment and is pre-authentica
 ```
 oci raw-request \
   --http-method POST \
-  --target-uri <model-deployment-url>//predict  \
+  --target-uri <model-deployment-url>/predict \
   --request-body \
 '{
   "CRIM": {
