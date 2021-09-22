@@ -1,0 +1,9 @@
+MODEL_ARTIFACT_VERSION: '3.0'
+MODEL_DEPLOYMENT:
+  INFERENCE_CONDA_ENV:
+    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/General
+      Machine Learning for CPUs/1.0/mlcpuv1
+    INFERENCE_ENV_SLUG: mlcpuv1
+    INFERENCE_ENV_TYPE: data_science
+    INFERENCE_PYTHON_VERSION: 3.6.11
+
