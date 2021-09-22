@@ -8,10 +8,11 @@
 The OCI-CLI is included in the OCI Cloud Shell environment and is pre-authenticated. This example invokes a model deployment with the CLI:
 
 ```
-oci raw-request << EOF
---http-method POST 
---target-uri <model-deployment-url>/predict 
---request-body '{
+oci raw-request \
+  --http-method POST \
+  --target-uri <model-deployment-url>/predict \
+  --request-body << EOF
+'{
   "mean_radius": {
     "4": 20.29,
     "5": 12.45
