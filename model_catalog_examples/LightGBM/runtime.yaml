@@ -5,4 +5,5 @@ MODEL_DEPLOYMENT:
       Machine Learning for CPUs/1.0/mlcpuv1
     INFERENCE_ENV_SLUG: mlcpuv1
     INFERENCE_ENV_TYPE: data_science
-    INFERENCE_PYTHON_VERSION: {{config.python_version}}
+    INFERENCE_PYTHON_VERSION: 3.6.11
+
