@@ -11,7 +11,7 @@ The OCI-CLI is included in the OCI Cloud Shell environment and is pre-authentica
 oci raw-request \
   --http-method POST \
   --target-uri <model-deployment-url>/predict \
-  --request-body << EOF
+  --request-body \
 '{
   "mean_radius": {
     "4": 20.29,
@@ -134,7 +134,7 @@ oci raw-request \
     "5": 0.1244
   }
 }'
-EOF
+
 ```
 Example CLI response:
 ```
