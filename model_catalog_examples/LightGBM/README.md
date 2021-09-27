@@ -7,7 +7,7 @@
  own client application, for testing purposes.
 The OCI-CLI is included in the OCI Cloud Shell environment and is pre-authenticated. This example invokes a model deployment with the CLI:
 
-```
+```bash
 oci raw-request \
   --http-method POST \
   --target-uri <model-deployment-url>/predict \
@@ -112,7 +112,7 @@ Example CLI response:
 {"prediction": [25.967499846125445, 22.03428725444988, 31.2184389389109, 30.417110598250456, 21.188401444506223]}
 ```
 To call the model endpoint from python using the requests package:
-```
+```python
 import requests
 import oci
 import json
