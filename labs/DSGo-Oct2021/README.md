@@ -16,7 +16,7 @@ If you choose to use an existing OCI trial account, your 30-day trial must still
 You may of course also use a paid OCI account and your account will be charged for the services used during this workshop.
 
 ### Workshop Modules
-  - [Lab 0 - Setup a tenancy for OCI Data Science](odsc-0-tenancy-setup-stack.md)
+  - [Lab 0 - Setup a tenancy for OCI Data Science](procedures/odsc-0-tenancy-setup-stack.md)
   - [Lab 1 - Introduction, Sign-in, and Navigation](odsc-1-intro.md)
   - [Lab 2 - Create a Notebook Session](odsc-2-notebook-setup.md)
   - [Lab 3 - Build A Model Using Python](odsc-3-python-model.md)
