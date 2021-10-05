@@ -67,15 +67,15 @@ In this lab you are creating a notebook session. **This step is optional if the 
 
 ![](./images/github-zip-repo.png) 
 
-1. Open your notebook session. Click on "Open"
+1. Open your notebook session. Click on "Open".
 
 ![](./images/ns-open.png)
 
-1. Drag and drop the folder on your 
+1. Drag and drop the zip archive in the JupyterLab file browser. 
 
 ![](./images/drag-and-drop-zip-file.png)
 
-1. Open a Terminal window 
+1. Open a Terminal window. 
 
 ![](./images/open-terminal.png)
 
