@@ -1,4 +1,4 @@
-# Create a Notebook Session
+# Lab 1 - Create a Notebook Session and Copy the Repository
 
 ## Introduction
 
@@ -19,20 +19,20 @@ After a notebook session is successfully created, it is in an "Active" state. Wh
 
 Once you activate the notebook session, the block volume is re-attached. You can also select a different VM shape if you want or decide to add more storage to your block volume drive.
 
-Estimated Lab Time: 5 minutes
+Estimated Lab Time: 10 minutes
 
 ## Objectives
 In this lab, you will:
 * Use the Console to create a Data Science notebook session
+* Copy code from this repo into the notebook session. 
 
 ## Prerequisites
 
-* You are signed-in to the Oracle Cloud Infrastructure Console using your IDCS credentials
-* You are in the Ashburn region
-* You have selected the *data-science* compartment
-* You have opened the project you created in Lab 0
+* Successful completion of Lab 0. 
 
-## **STEP 1** Create a Notebook Session
+## **(OPTIONAL) STEP 1** Create a Notebook Session
+
+In this lab you are creating a notebook session. **This step is optional if the Resource Manager Stack created a notebook session on your behalf in Lab 0**. If that is the case, you can go directly to **Step 2**. 
 
 1. Confirm you have completed all the prerequisites and are viewing your Data Science project.
 
@@ -55,13 +55,13 @@ In this lab, you will:
 
 1. Click *Create*.
 
-1. While the notebook session is being created, you will be taken to the detail page. *The notebook session will take about 7 minutes to provision*. When it is ready, the *Open* button will be enabled.
+1. While the notebook session is being created, you will be taken to the detail page. *The notebook session will take about 4 minutes to provision*. When it is ready, the *Open* button will be enabled.
     ![](./images/creating-ns.png)
     
 1. You will notice that the notebook session emits four metrics (CPU Utilization, Memory Utilization, Network Receive and Transmit Bytes) and is integrated with OCI Monitoring. In a separate lab you will learn how to trigger alarms when those metrics reach certain pre-defined thresholds.
     ![](./images/notebook-monitoring.png)    
     
-## **STEP 2** Copy The Reposity Notebooks to Your Notebook Session 
+## **STEP 2**: Copy The Content of this Repository to Your Notebook Session 
 
 1. Download a zip archive of this repository to your laptop/local machine. Make sure that you select the **master** branch
 
@@ -88,3 +88,6 @@ In this lab, you will:
   
 1. Open the newly created folder and navigate to this lab folder. 
 
+Alternatively for Step 2, you can use `git clone` command in the terminal window of JupyterLab to clone the content of this repo. Make sure you create private/public ssh key pairs for this and register the public key in your github user settings. 
+
+**Congratulations! You are now ready to proceed to the next lab.**
