@@ -1,17 +1,17 @@
-# Lab 0 - Introduction, Sign-in, and Navigation
+# Lab 0 - Tenancy Setup & Introduction 
 
-Estimated Workshop time: 1 hour 15 minutes
-
-Estimated Lab 0 Time: 10 minutes
+Estimated Lab 0 Time: 20 minutes
 
 ### Objectives
 
 In this first lab, you will:
 
-* Become familiar with concepts and terminology used in the Data Science service
-* Become familiar with the OCI Console and how to access the Data Science service
+* sign up for an Oracle Cloud Free Tier account; 
+* setup your tenancy for OCI Data Science using the OCI Resource Manager Stack feature; 
+* learn about the concepts and features in OCI Data Science;
+* create your first Data Science project. 
 
-## **STEP 0:** Sign up for an Oracle Cloud Free Tier Account 
+## **STEP 1:** Sign up for an Oracle Cloud Free Tier Account 
 
 Sign up [here](https://www.oracle.com/cloud/free/). 
 
@@ -21,7 +21,7 @@ We have created a Terraform script that can be executed throught the Resource Ma
 
 ### **STEP 2.1:** Go to Console > Developer Services > Resource Manager > Stacks 
 
-Click on the hamburger menu in the top left corner of the OCI Console 
+Click on the 3-bar menu in the top left corner of the OCI Console 
 
 ![](./images/stacks-selection.png)
 
@@ -71,11 +71,9 @@ The job should be running. This will take a few minutes to complete.
 
 ![](./images/stack-job-running.png)
 
-## **STEP 2.6:
-
 At the end of this process, the Stack creates in your selected compartment (most likely in the root compartment): 
-* A Data Science Project named "Data Science Project"
-* A Data Science Notebook Session named "Data Science Notebook-0" in that project
+* A **Data Science Project named "Data Science Project"**
+* A **Data Science Notebook Session** named **"Data Science Notebook"** in that project
 
 ## **STEP 3:** Overview of OCI Data Science Concepts
 
