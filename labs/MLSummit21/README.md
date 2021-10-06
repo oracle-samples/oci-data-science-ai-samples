@@ -53,31 +53,3 @@ In [Lab 7](./lab-7-wrap.md) we wrap up the workshop.
 
 
 Enjoy the workshop :) ! 
-
-
-
-
----
- 
-
-## Setup 
-
-add a policy to let notebook sessions create logs and log groups: 
-
-```
-Allow dynamic-group data-science-dynamic-group to manage log-groups in tenancy
-```
-
-## Step X: Installing the TensorFlow v2.6 Conda Environment for CPUs 
-
-
-## Step X: Run Notebook 1-model-training-notebook.ipynb 
-
-Make sure the notebook is running in the TensorFlow v2.6 conda environment 
-INSERT SCREENSHOT. 
-
-set auth / double-check that auth is working in notebook 
-
-## 
-
-- environment is tensorflow23_pytorch_cpu
