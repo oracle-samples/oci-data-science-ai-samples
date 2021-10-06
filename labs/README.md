@@ -1,5 +1,8 @@
 ## Table of Examples 
 
+* [DSGo Workshop Oct2021](./DSGo-Oct2021)
+  This is a workshop for Data Science Go conference attendees built around the employee attrition notebook in OCI Data Science. The user signs-up for, and configures, a new OCI Trial account tenancy and then completes an end-to-end workflow to build, train, deploy, and invoke a machine learning model used to predict employee attrition.
+
 * [Employee Attrition](./employee-attrition/) 
   This example is a modified version of the employee attrition notebook that is available in the OCI Data Science Notebook Session environment. The notebook provides an end-to-end workflow to build, ttrain, deploy, and invoke a machine learning model used to predict employee attrition. 
 
