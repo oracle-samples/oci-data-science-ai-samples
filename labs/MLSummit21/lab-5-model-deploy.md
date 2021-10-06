@@ -38,7 +38,7 @@ Alternatively you can deploy your model directly from the console.
 
 1. Select the compute shape that will be host the model server as well as the number of replica VMs in the pool. 
 
-![](./images/select-compute.png)
+![](./images/select-compute-deployment.png)
 
 Skip the logging setup for now. Click on "Create". Creating a Model Deployment takes a few mins. 
 
