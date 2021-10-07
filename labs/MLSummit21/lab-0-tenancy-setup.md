@@ -75,11 +75,12 @@ At the end of this process, the Stack creates in your selected compartment (most
 * A **Data Science Project named "Data Science Project"**
 * A **Data Science Notebook Session** named **"Data Science Notebook"** in that project
 
-!! IF YOU RUN INTO THIS ERROR WHILE RUNNING THE STACK: 
-   ```
-   Error Message: During creation, Terraform expected the resource to reach state(s): ACTIVE, but the service reported unexpected state: FAILED.
-   ```
-   Do not worry. The notebook creation step failed. You will simply create a notebook manually in the next lab. We are working to solve this issue. 
+:exclamation: **IF YOU RUN INTO THIS ERROR WHILE RUNNING THE STACK** 
+   
+```
+Error Message: During creation, Terraform expected the resource to reach state(s): ACTIVE, but the service reported unexpected state: FAILED.
+```
+Do not worry. The notebook creation step failed. You will simply create a notebook manually in the next lab. We are working to solve this issue. 
    
 ![](./images/tf-error.png)
 
