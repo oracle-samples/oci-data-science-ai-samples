@@ -121,3 +121,53 @@ Review the following concepts and terms to help you get started with the Data Sc
 1. In the next lab you will create a notebook session.
 
 **You are now ready to proceed to the next lab.**
+
+
+---
+# Appendix - Manual Tenancy Setup 
+
+## Create User Group
+1. go to Identity & Security > Groups
+
+1. Create a user group called DataScienceGroup 
+
+1. Add users to the group. If this is your personal free tier tenancy, you are most likely an administrator (and you can do everything in your tenancy) so this group doesn’t matter
+
+
+## Create Dynamic Group
+
+1. Go to Identity & Security > Dynamic Groups 
+
+1. Click on Create Dynamic Group 
+
+1. Give the name “DataScienceDynamicGroup” 
+
+1. Add the matching rule:
+``` 
+ALL {resource.type='datasciencenotebooksession',resource.compartment.id=‘<replace-with-your-compartment-ocid>’}
+```
+Replace with the OCID of the compartment where you will create your notebook session. Go to Identity > Compartments to create or find a compartment and retrieve the OCID value. 
+
+
+# Create Policies
+
+1. Go to Identity & Security > Policies 
+
+1. Create a policy.
+
+1. Include the following statements: 
+```
+Allow group DataScienceGroup to manage data-science-family in tenancy
+Allow group DataScienceGroup to use virtual-network-family in tenancy
+Allow service datascience to use virtual-network-family in tenancy
+Allow dynamic-group DataScienceDynamicGroup to use virtual-network-family in tenancy
+Allow dynamic-group DataScienceDynamicGroup to manage data-science-family in tenancy
+```
+
+# Create VCN + Subnet 
+
+1. Go to Networking > Virtual Cloud Networks
+
+1. Click on  Start VCN Wizard 
+
+1. Select “Create VCN with Internet Connectivity". Follow the steps. 
