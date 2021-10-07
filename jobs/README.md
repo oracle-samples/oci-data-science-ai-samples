@@ -14,7 +14,7 @@ Using jobs, you can:
 
 ## Introduction
 
-The job sample section contains a folder for each programing langugage we currently provide samples. Every language folder will contain samples of how to use the client OCI SDK:
+The job sample section contains a folder for each programing language we currently provide samples. Every language folder will contain samples of how to use the client OCI SDK:
 
 - `cli`, `node`,`python`,`shell`, `ts+js` the programing language client SDK samples
   
