@@ -149,7 +149,7 @@ ALL {resource.type='datasciencenotebooksession',resource.compartment.id=‘<repl
 Replace with the OCID of the compartment where you will create your notebook session. Go to Identity > Compartments to create or find a compartment and retrieve the OCID value. 
 
 
-# Create Policies
+## Create Policies
 
 1. Go to Identity & Security > Policies 
 
@@ -164,7 +164,7 @@ Allow dynamic-group DataScienceDynamicGroup to use virtual-network-family in ten
 Allow dynamic-group DataScienceDynamicGroup to manage data-science-family in tenancy
 ```
 
-# Create VCN + Subnet 
+## Create VCN + Subnet 
 
 1. Go to Networking > Virtual Cloud Networks
 
