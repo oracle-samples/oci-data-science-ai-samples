@@ -15,7 +15,7 @@ In this first lab, you will:
 
 Sign up [here](https://www.oracle.com/cloud/free/). 
 
-:exclamation: If you already have a tenancy make sure that you have not exhausted the Free Trial credits. If you have exhausted the credits or your tenancy is older than 30 days, you will only have access to "Always Free" Services. **OCI Data Science is not yet among the "Always Free" offerings.** You will have to convert your tenancy to a paid tenancy or use a different tenancy.   
+:exclamation: :exclamation: :exclamation: **If you already have a tenancy make sure that you have not exhausted the Free Trial credits**. If you have exhausted the credits or your tenancy is older than 30 days, you will only have access to "Always Free" Services. **OCI Data Science is not yet among the "Always Free" offerings.** You will have to convert your tenancy to a paid tenancy or use a different tenancy.   
 
 ## **STEP 2:** Run the Data Science Stack Template 
 
