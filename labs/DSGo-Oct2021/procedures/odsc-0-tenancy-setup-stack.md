@@ -148,6 +148,5 @@ This stack template configured the following resources in the **DataScienceHOL**
 * Dynamic group named *DataScienceDynamicGroup*
 * A set of policies named *DataSciencePolicies*
 
-TODO - Add user to group DataScienceGroup??
 
-You are now ready to begin the Data Science workshop. You may [proceed to the next lab](#next).
+You are now ready to begin the Data Science workshop. You may [proceed to the next lab](odsc-1-intro.md).

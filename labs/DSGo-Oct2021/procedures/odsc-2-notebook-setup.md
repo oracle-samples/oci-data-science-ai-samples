@@ -51,4 +51,4 @@ In this lab, you will:
     ![](images/creating-ns.png)
 
 
- You may [proceed to the next lab](#next).
+ You may [proceed to the next lab](odsc-3-python-model.md).

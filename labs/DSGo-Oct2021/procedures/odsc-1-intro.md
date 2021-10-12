@@ -101,4 +101,4 @@ Review the following concepts and terms to help you get started with the Data Sc
   ![](images/employee-attrition-project.png)
 
 
-You are now ready to **[proceed to the next lab](#next)**.
+You are now ready to **[proceed to the next lab](odsc-2-notebook-setup.md)**.
