@@ -23,6 +23,7 @@ In this lab, you will:
 
 ## STEP 1 - Deactivating Notebook Sessions
 1. Confirm you have completed all the prerequisites and are viewing your Data Science project.
+    
     ![](images/ds-project.png)
 
 1. Under *Resources*, select **Notebook Sessions** if not already selected.
@@ -30,9 +31,11 @@ In this lab, you will:
 1. Click the name of **LabNotebookSession** notebook session (created in a previous lab) to open the Notebook Session page.
 
 1. Click **Deactivate**.
+    
     ![](images/deactivate.png)
 
 1. Click **Deactivate** to confirm the deactivation. The status of the notebook session changes to **Updating** and then **Inactive** and this takes 1-2 minutes.
+    
     ![](images/deactivate2.png)
 
 ## STEP 2 - Deleting Notebook Sessions
@@ -41,15 +44,19 @@ In this lab, you will:
 If you are going to delete a notebook session but want to preserve the contents of the boot volume and attached block volume, you must back them up before the notebook session is deleted. For example, copy the files to an object storage bucket, or commit and push changes to a Git repository outside the notebook session. All content in the notebook session’s boot volume and attached block volume are deleted when the notebook session is deleted.
 
 1. You should be viewing the inactive notebook session named **LabNotebookSession** and you have the choices to activate or delete it.
+    
     ![](images/ns-inactive.png)
 
 1. Click **More Actions** then **Delete**.
+    
     ![](images/ns-delete.png)
 
 1. Enter **LabNotebookSession** to confirm and click **Delete**.
+    
     ![](images/ns-delete2.png)
 
 1. The notebook session status changes to **Deleting** and then **Deleted** in about a minute.
+    
     ![](images/deleting.png)
 
     ![](images/deleted.png)
