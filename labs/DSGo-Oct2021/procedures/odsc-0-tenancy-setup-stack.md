@@ -10,7 +10,6 @@ Estimated time: 20 minutes
 
 ### Objectives
 * Sign-up for a free Oracle cloud account
-* Create a compartment
 * Configure networking
 * Set access policies
 
@@ -144,7 +143,7 @@ A stack is a blueprint for a collection of cloud resources that can be automatic
 
   ![](images/resource-manager-succeeded.png)
 
-This stack template configured the following resources in the **DataScienceHOL** compartment:
+This stack template configured the following resources in the **root** compartment:
 * Virtual Cloud Network (VCN) named *Data Science VCN*
 * Public and private subnets named *Data Science - Public* and *Data Science - Private*
 * User group named *DataScienceGroup*
