@@ -26,8 +26,7 @@ In this lab you will:
 
 ## **STEP 1:** Open a Project and Notebook Session
 
-1. Confirm you have completed all the prerequisites and are viewing your Data Science project list.
-
+1. Confirm you have completed all the prerequisites and are viewing your Data Science project list. <br/>
   ![](images/projects.png)
 
 1. Click **employee-attrition-project**.
@@ -36,12 +35,10 @@ In this lab you will:
 
 1. Click on the notebook session named **LabNotebookSession** to open it.
 
-1. Click on **Open**. It will open in a separate browser tab. If prompted to sign-in, provide your Oracle Cloud credentials.
-
+1. Click on **Open**. It will open in a separate browser tab. If prompted to sign-in, provide your Oracle Cloud credentials.<br/>
   ![](images/ns-open.png)
 
-1. Ensure you are viewing the browser tab/window displaying *LabNotebookSession*.  
-
+1. Ensure you are viewing the browser tab/window displaying *LabNotebookSession*. <br/> 
   ![](images/notebook-session.png)
 
   This is JupyterLab. It can be seen that the screen is split into two sections. By default, the left side has the file browser open but it can change based on what navigation icons are selected on the far left side of the screen. The right side of the screen contains the workspace. It will have a notebook, terminal, console, launcher, notebook examples, etc..
