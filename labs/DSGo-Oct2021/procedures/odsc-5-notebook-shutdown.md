@@ -19,8 +19,7 @@ In this lab, you will:
 ### Prerequisites
 * You are signed-in to Oracle Cloud
 * You have navigated to Data Science
-* You have selected compartment *DataScienceHOL*
-* You have opened the project you created in Lab 1
+* You have opened the Data Science project
 
 ## STEP 1 - Deactivating Notebook Sessions
 1. Confirm you have completed all the prerequisites and are viewing your Data Science project.

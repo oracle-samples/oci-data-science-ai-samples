@@ -14,8 +14,7 @@ In this lab you will:
 ### Prerequisites
 * You are signed-in to Oracle Cloud
 * You have navigated to Data Science
-* You have selected the **DataScienceHOL** compartment
-* You have opened the project you created in Lab 1
+* You have opened the Data Science project
 * You have a notebook session in your project
 * You have a model stored in the model catalog
 
@@ -27,29 +26,31 @@ Now we're going to deploy the model to its own compute instance so that it can b
 
 1. Under *Resources*, select **Models** to see the list of models in your model catalog.
     ![](images/models.png)
-    TODO update image
 
-1. Find the row containing TODO **sklearn-employee-attrition**. On the right end of the row, click the 3-dot icon to open a pop-up menu.
+1. Find the row containing **sklearn-employee-attrition**. On the right end of the row, click the 3-dot icon to open a pop-up menu.
 
-1. In the pop-up menu, click **Create Deployment**. The *Create Model Deployment* dialog opens.
+1. In the pop-up menu, click **Create model deployment**. The *Create Model Deployment* dialog opens.
     ![](images/project-create-deployment.png)
 
 1. In the *Create Model Deployment* dialog, configure the fields as described below.
     ![](images/create-model-deployment.png)  
-    - Ensure *Compartment* is set to **DataScienceHOL**.
+    - Ensure *Compartment* is set to **root**.
     - Enter *Name* as **MyModelDeployment**
-    - Ensure *Models* is set to TODO **sklearn-employee-attrition**
+    - Ensure *Models* is set to **sklearn-employee-attrition**
     - In the *Compute* box, click **Select**.
     - Enter **1** for *Number of Instances* and check **VM.Standard2.4**. Then click **Submit**.
     ![](images/model-deployment-select-compute.png)
 
     - (We will not configure Logging in this lab.)
 
-    - Click **Submit** in the Create Model deployment dialog. It takes about 10 minutes for the deployment to be provisioned. Wait for the model to be deployed.
+    - Click **Create** in the Create Model deployment dialog. It takes about 10 minutes for the deployment to be provisioned and its status will be *Creating*. Wait for the status to change to *Active* to indicate the model is deployed.
+    ![](images/model-active.png)
 
-> **Note** - You just deployed the model through the OCI Console, but you can also deploy a model using python code in a notebook. The ADS library provides functions to do this. See [Model Deployment with ADS](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/user_guide/model_deployment/model_deployment.html) for more information.
+    > **Note** - You just deployed the model through the OCI Console, but you can also deploy a model using python code in a notebook. The ADS library provides functions to do this. See [Model Deployment with ADS](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/user_guide/model_deployment/model_deployment.html) for more information.
 
-1. When the model is deployed, copy the HTTP endpoint URI to your clipboard (to be used in the next step). You can find the uri in the OCI console in the details page of your model deployment under "Resources > Invoking Your Model".
+1. When the model is Active, copy the HTTP endpoint URI to your clipboard (to be used in the next step). To do that look under **Resources** and click **Invoking Your Model**. Your model endpoint is displayed. Use the **Copy** button to copy it to your clipboard.
+
+  ![](images/model-endpoint.png)
 
 ## **STEP 2:** Invoke the deployed model
 Now that the model is deployed, we will go back to the notebook and invoke its HTTP endpoint.
@@ -77,8 +78,8 @@ uri = ''
 
 1. Execute each code block of the notebook.
 
-1. TODO Review the json inputs and outputs and see that your deployed model returned an attrition prediction for the submitted input data.
+1. Review the output and see that your deployed model returned attrition predictions for the submitted input data.
 
 Congratulations! You have successfully built, trained, cataloged, deployed, and invoked a machine learning model with OCI Data Science.
 
-**You can [proceed to the next lab](odsc-5-notebook-shutdown.md).**
+**You may proceed to the next lab.**

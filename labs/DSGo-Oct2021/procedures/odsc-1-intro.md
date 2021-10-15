@@ -26,8 +26,7 @@ This is the agenda:
 * Lab 1 - Introduction, Sign-in, and Navigation
 	* OCI Data Science Concepts
 	* Sign-in to OCI Cloud Environment
-* Lab 2 - Create a Notebook Session
-	* Create a notebook session
+* Lab 2 - (REMOVED)
 * Lab 3 - Build a Model Using Provided Notebook
 	* Open a notebook session
 	* Install a conda environment
@@ -52,7 +51,6 @@ In this first lab, you will:
 ### Prerequisites
 
 * An Oracle Cloud Infrastructure tenancy and login, configured for using OCI Data Science
-* A compartment in the tenancy called **DataScienceHOL**
 
 ## **STEP 1:** OCI Data Science Concepts
 
@@ -83,22 +81,13 @@ Review the following concepts and terms to help you get started with the Data Sc
 1. You should now be viewing the Data Science projects page. In this step you will familiarize yourself with the page. This lists projects that have been created in the selected compartment. Compartments allow resources to be grouped and isolated for access control and management. The list of projects can also be filtered by state and/or by tags.
   ![](images/projects_nocompartment.png)
 
-1. For this lab, you will use a compartment that you previously created called *DataScienceHOL*. Select that compartment - it is listed under the root compartment.
+1. For this lab, you will use the default root compartment.
   ![](images/projects_lab_compartment.png)
 
-1. Click **Create Project** to start creating a project.
-  ![](images/create-project.png)
+1. Notice you already have a project called **employee-attrition-project**. Click the project name.
 
-1. In the Create Project dialog, enter the following fields:
-  - Compartment: *DataScienceHOL*
-  - Name: *employee-attrition-project*
-  - Description: *Employee attrition workshop*
-  - Check **View detail page on clicking create**
-  ![](images/ds-create-project.png)
-  - Click **Create**.
-
-1. The project page lists project information along with resources contained in the project such as **notebook sessions**, **models**, **jobs**, and **model deployments**. Your project dosn't contain any of these yet but we'll be adding them throughout this workshop.
+1. The project page lists project information along with resources contained in the project such as **notebook sessions**, **models**, **jobs**, and **model deployments**. Your project should already contain a notebook session.
   ![](images/employee-attrition-project.png)
 
 
-You are now ready to **[proceed to the next lab](odsc-2-notebook-setup.md)**.
+**You may proceed to the next lab.**
