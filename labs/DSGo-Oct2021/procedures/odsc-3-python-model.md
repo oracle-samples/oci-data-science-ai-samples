@@ -4,7 +4,7 @@
 
 This lab will guide you through a practical example of how to train, evaluate, and catalog a machine learning model. The notebook you will use describes the details of the use case.
 
-Since our notebook session was automatically created by the stack template, we didn't to manually create it. Data Science notebook sessions are interactive coding environments for building and training models. Notebook sessions provide access to a JupyterLab environment that is managed by the Data Science service.
+Since our notebook session was automatically created by the stack template, we didn't manually create it. Data Science notebook sessions are interactive coding environments for building and training models. Notebook sessions provide access to a JupyterLab environment that is managed by the Data Science service.
 
 A notebook session is associated with a compute instance, VCN, subnet, and block storage. To provide users control over how compute and storage are consumed, the compute shape and the amount of storage are selectable and a notebook session can be deactivated to stop compute usage and reactivated later. A notebook session can be terminated when it is no longer needed.
 
@@ -53,24 +53,20 @@ In this lab you will:
 A Conda environment is a collection of libraries, programs, components and metadata. It defines a reproducible set of libraries that are used with notebook session, model deployments, and jobs. The Data Science Conda environments included with the service also include many sample notebooks. The following instructions will guide you through installing a Conda that works with the prepared notebook.
 
   1. In the *Launcher* tab, click **Environment Explorer**
-
     ![](images/notebook_launcher.png)
 
   1. There is an icon next to the search bar to change the user interface from a list to cards. Switch to **Cards**.
     ![](images/list-cards.png)
 
   1. In the *Environment Explorer* tab, select the **Data Science Conda Environment** filter button, select **CPU** architecture filter, then scroll down until you find the **Tensor Flow 2.6 for CPU Python 3.7** conda. (If you see no results, use the refresh button on the right side of the filter bar of the Environment Explorer.)
-
     ![](images/notebook_ee_condaTF26.png)
 
   1. Select the **Install** tab and then click the **copy** button to copy the installation command.
-
     ![](images/notebook_ee_condaTF26-install.png)
 
   1. Go back to the *Launcher* tab and select **Terminal** to open a terminal window.
 
   1. Paste the command into the terminal window and hit **Return** to execute it. (The command that you previously copied is `odsc conda install -s tensorflow26_p37_cpu_v1 `)
-
     ![](images/notebook-terminal-condaTF26-install.png)
 
   1. You will receive a prompt related to what version number you want. Press `Enter` to select the default.
@@ -85,15 +81,12 @@ Notebooks have been prepared containing all the necessary Python code to explore
   1. Unzip the repository and find `oci-data-science-ai-samples-dsgo.zip\oci-data-science-ai-samples-master\labs\DSGo-Oct2021\notebooks\`
 
   1. Drag and drop the downloaded `1-model-training.ipynb` and `2-model-deployment.ipynb` from your computer's file explorer into your notebook session's root folder. You might need to unzip the repository to your local machine first.
-
   ![](images/notebook-employee-attrition.png)
 
   1. Before proceeding, confirm that your conda installation (from the previous step) is complete. Switch back to the terminal tab in the notebook session and confirm that your conda is now installed.
-
   ![](images/notebook-terminal-condaTF26-install-finish.png)
 
   1. You can also confirm it is installed by opening a Launcher tab. Go to menu bar and select File > New Launcher. On the Launcher tab you should now see a button for `Python [conda env:tensorflow26_p37_cpu_v1]`
-
   ![](images/conda-installed.png)
 
 ## **STEP 4:** Open the Notebook
@@ -101,10 +94,9 @@ You will open a notebook and step through it.
 
   1. In the notebook session's file browser, open notebook **1-model-training.ipynb**
 
-  Select the file browser on the left side of the user interface if it is not already visible. Double-click on **1-model-training.ipynb**. A new tab opens in the workspace on the right.
+     Select the file browser on the left side of the user interface if it is not already visible. Double-click on **1-model-training.ipynb**. A new tab opens in the workspace on the right.
 
   1. Notice in the upper right corner of the notebook tab, it displays the name of the conda environment being used by this notebook. Ensure it lists the `Python [conda env:tensorflow26_p37_cpu_v1]` conda you installed. If not, you can click on the name of the conda to switch it to the right one.
-
     ![](images/notebook-conda.png)
 
   1. Now you will work in the notebook. Scroll through each cell and read the explanations. When you encounter a `code` cell, execute it (using **shift + enter**) and view the results. For executable cells, the "\[ ]" changes to a "[\*]" while executing, then a number "[1]" when complete. Wait for execution to be completed before moving on to the next one. Continue to the end of the notebook.
