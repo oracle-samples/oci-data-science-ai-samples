@@ -75,7 +75,9 @@ Notebooks have been prepared containing all the necessary Python code to explore
 
   1. The files needed for this workshop are located in the **oci-data-science-ai-samples** public repository on Github. Open this [Github link](https://github.com/oracle/oci-data-science-ai-samples/archive/refs/heads/master.zip) to download a zip of the repository and save it to your local machine.
 
-  1. Unzip the repository and find `oci-data-science-ai-samples-dsgo.zip\oci-data-science-ai-samples-master\labs\DSGo-Oct2021\notebooks\`
+  1. Unzip the repository. How you do this will depend on your operating system and system configuration.
+
+  1. Find `oci-data-science-ai-samples-dsgo\oci-data-science-ai-samples-master\labs\DSGo-Oct2021\notebooks\`.
 
   1. Drag and drop the downloaded `1-model-training.ipynb` and `2-model-deployment.ipynb` from your computer's file explorer into your notebook session's root folder. You might need to unzip the repository to your local machine first.
   ![](images/notebook-employee-attrition.png)
