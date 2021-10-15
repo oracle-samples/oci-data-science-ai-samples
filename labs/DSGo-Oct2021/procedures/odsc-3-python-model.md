@@ -96,7 +96,7 @@ You will open a notebook and step through it.
 
   1. Select the file browser on the left side of the user interface if it is not already visible. Double-click on **1-model-training.ipynb**. A new tab opens in the workspace on the right.
 
-  1. Notice in the upper right corner of the notebook tab, it displays the name of the conda environment being used by this notebook. Ensure it lists the `Python [conda env:tensorflow26_p37_cpu_v1]` conda you installed. If not, you can click on the name of the conda to switch it to the right one. ![](images/notebook-conda.png)
+  1. Notice in the upper right corner of the notebook tab, it displays the name of the conda environment being used by this notebook. Ensure it lists the `Python [conda env:tensorflow26_p37_cpu_v1]` conda you installed. If not, you can click on the name of the conda to switch it to the right one. <br/> ![](images/notebook-conda.png)
 
   1. Now you will work in the notebook. Scroll through each cell and read the explanations. When you encounter a `code` cell, execute it (using **shift + enter**) and view the results. For executable cells, the "\[ ]" changes to a "[\*]" while executing, then a number "[1]" when complete. Wait for execution to be completed before moving on to the next one. Continue to the end of the notebook.
 
