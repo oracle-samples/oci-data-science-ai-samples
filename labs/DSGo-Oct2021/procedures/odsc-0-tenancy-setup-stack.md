@@ -35,6 +35,7 @@ If you already have a cloud account with unused cloud credits, skip to **Task 2*
 1. Once you have entered a valid email address, select the **Verify my email** button.
 
 1. As a participant in this DSGo event, you are being offered an Oracle Cloud Trial with $500 in free cloud credits for 30 days. You will see a popup for this offer. Click the **Select Offer** button.
+
     ![](images/special-offer.png)
 
 1. The Account information form appears. Enter the following information to create your Oracle Cloud Free Tier account.
@@ -43,12 +44,15 @@ If you already have a cloud account with unused cloud credits, skip to **Task 2*
     - Your **Cloud Account Name** will be generated automatically based on your inputs, but you can change that name by entering a new value. Remember what you entered. You'll need this name later to sign in.
     - Choose a **Home Region**. Your Home Region cannot be changed once you sign-up. **Important** - Select ***US East (Ashburn)***
     - Click **Continue**
+
     ![](images/account-info.png " ")
 
 1.  Enter your Address information.  Click **Continue**.
+
   ![](images/free-tier-address.png " ")
 
 1. **Check the box** under Agreement then click **Start my free trial**.
+
   ![](images/free-tier-agreement.png " ")
 
   > **Note** - if you selected the offer for the free Cloud Trial above, you will not be asked for a payment verification method.
@@ -96,20 +100,25 @@ When you sign up for an Oracle Cloud account, a user is created for you in Oracl
 A stack is a blueprint for a collection of cloud resources that can be automatically provisioned using Terraform in the OCI console. OCI contains a stack template for Data Science that we will use to quickly configure the environment.
 
 1. In the OCI console, use the three-bar icon in the upper left corner of the page to open the menu. Go to **Developer Services** and under *Resource Manager* select **Stacks**.
+
   ![](images/console-stacks.png)
 
 1. Select compartment **cloud account (root)**, then click **Create Stack**.
+
   ![](images/create-stack-compartment.png)
 
 1. In the *Create Stack* dialog, select the **Template** radio button.
+
   ![](images/create-stack-info.png)
 
 1. Click **Select Template**
 
 1. In the *Browse Templates* dialog, on the *Service* tab, check **Data Science**, the click **Select Template**.
+
   ![](images/browse-templates.png)
 
 1. Back in the *Create Stack* dialog, change the **Description** to *Provision Data Science*.
+
   ![](images/create-stack-info.png)
 
 1. Ensure **Compartment** is set to **root**
@@ -124,12 +133,15 @@ A stack is a blueprint for a collection of cloud resources that can be automatic
   - Change *Notebook Storage Size* to **100**
   - Leave *How many notebooks would you like to create?* at **1**
   - leave the other defaults, and click **Next**
+
     ![](images/stack-project-notebook-config.png)
 
 1. On the Review page, check **Run Apply**, then click **Create**.
+
   ![](images/create-stack-review.png)
 
 1. This starts a Resource Manager job that takes less than a minute to run. When the job is complete, the status will change from *Accepted* to *In Progress* to **Succeeded**.
+
   ![](images/resource-manager-succeeded.png)
 
 This stack template configured the following resources in the **DataScienceHOL** compartment:
