@@ -61,14 +61,13 @@ Now that the model is deployed, we will go back to the notebook and invoke its H
   - Click on the notebook session named **LabNotebookSession** to open it.
   - Click on **Open**. It will open in a separate browser tab. If prompted to sign-in, provide your Oracle Cloud credentials. <br/>
   ![](images/ns-open.png)
-
 1. Ensure you are viewing the browser tab/window displaying *LabNotebookSession*.  <br/>
   ![](images/notebook-session.png)
 
 1. Open notebook **2-model-deployment.ipynb**, but don't start stepping through it yet.
 
 1. In the next-to-the-last code block, find the statement:
-   > # Replace with the uri of your model deployment: <br/>uri = ''
+   > &#35; Replace with the uri of your model deployment: <br/>uri = ''
 
 1. **Paste** your deployed model endpoint URI into the statement between the single quote marks.
 
