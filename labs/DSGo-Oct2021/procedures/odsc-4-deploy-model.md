@@ -57,13 +57,11 @@ Now that the model is deployed, we will go back to the notebook and invoke its H
 
 1. If your **notebook session tab** in your browser is still open from the previous lab, then view it. Otherwise, follow these steps to return to it.
   - Under Resources, click **Notebook Sessions**.
-
   - Click on the notebook session named **LabNotebookSession** to open it.
-
-  - Click on **Open**. It will open in a separate browser tab. If prompted to sign-in, provide your Oracle Cloud credentials.
+  - Click on **Open**. It will open in a separate browser tab. If prompted to sign-in, provide your Oracle Cloud credentials. <br/>
   ![](images/ns-open.png)
 
-1. Ensure you are viewing the browser tab/window displaying *LabNotebookSession*.  
+1. Ensure you are viewing the browser tab/window displaying *LabNotebookSession*.  <br/>
 ![](images/notebook-session.png)
 
 1. Open notebook **2-model-deployment.ipynb**, but don't start stepping through it yet.
