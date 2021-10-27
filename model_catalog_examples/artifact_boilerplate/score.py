@@ -10,16 +10,16 @@ from cloudpickle import cloudpickle
     If no model is specified then predict() by default will return 'Hello World!'
 """
 
-"""
-    model_name = 'model.pkl'
-"""
+
+model_name = f"<replace-with-your-model-name>"
+
 
 """
    Inference script. This script is used for prediction by scoring server when schema is known.
 """
 
 
-def load_model(model_file_name=None):
+def load_model(model_file_name=model_name):
     """
     Loads model from the serialized format
     WARNING: Please use the same library to load the model which was used to serialise it.
@@ -29,7 +29,12 @@ def load_model(model_file_name=None):
     model:  a model instance on which predict API can be invoked
     """
     if not model_file_name:
-        return None
+        raise ValueError('model_file_name cannot be None')
+
+    # This is the default implementation of the load_model() specific to this score.py template only.
+    if model_file_name == "<replace-with-your-model-name>":
+        return "default_model"
+
     model_dir = os.path.dirname(os.path.realpath(__file__))
     contents = os.listdir(model_dir)
     # --------------------------WARNING-------------------------
@@ -55,8 +60,11 @@ def predict(data, model=load_model()):
     predictions: Output from scoring server
         Format: {'prediction':output from model.predict method}
     """
-    if model is None or len(data) == 0:
+
+    # This is the default implementation of the predict() function specific to this score.py template only.
+    if model == "default_model" or len(data) == 0:
         return {'prediction':'Hello world!'}
+
     from pandas import read_json, DataFrame
     from io import StringIO
     data = read_json(StringIO(data)) if isinstance(data, str) else DataFrame.from_dict(data)
