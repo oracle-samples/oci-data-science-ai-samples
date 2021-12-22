@@ -10,6 +10,9 @@ import tempfile
 import zipfile
 from typing import Tuple
 import re
+from urllib.parse import urlparse
+import oci
+import os
 
 import requests
 import yaml
@@ -64,6 +67,16 @@ def model_deployment_find_fields(cfg) -> None:
         else:
             model_deployment_find_fields(value)
 
+def get_object_storage_client(client_kwargs=None):
+    rp_version = os.environ.get(
+                "OCI_RESOURCE_PRINCIPAL_VERSION", "UNDEFINED")
+    config = None
+    if rp_version == "UNDEFINED":
+        config = oci.config.from_file()
+    else:
+        config = oci.auth.signers.get_resource_principals_signer()
+    return oci.object_storage.ObjectStorageClient(config)
+
 def check_runtime_yml(file_path) -> Tuple[bool, str]:
     '''
     Check runtime yaml mandatory fields
@@ -108,8 +121,33 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
                 TESTS['runtime_path_exist']['success'] = True
                 return True, True
             else:
-                TESTS['runtime_path_exist']['success'] = False
-                return False, TESTS['runtime_path_exist']['error_msg']
+                    url_parse = urlparse(env_path)
+                    bucket_name = url_parse.username
+                    namespace = url_parse.hostname
+                    object_name = url_parse.path.strip("/")
+                    if bucket_name != None and namespace != None and object_name != None:
+                        try:
+                            object_storage_client = get_object_storage_client()
+                            head_object_response = object_storage_client.head_object(
+                                namespace_name=namespace,
+                                bucket_name=bucket_name,
+                                object_name=object_name,
+                                version_id=None,
+                                if_match=None,
+                                if_none_match=None,
+                                opc_client_request_id=None,
+                                opc_sse_customer_algorithm=None,
+                                opc_sse_customer_key=None,
+                                opc_sse_customer_key_sha256=None)
+                            TESTS['runtime_path_exist']['success'] = True
+                            return True, True
+                        except:
+                            TESTS['runtime_path_exist']['success'] = None
+                            TESTS['runtime_path_exist']['error_msg'] = 'WARNING: Unable to validate if INFERENCE_ENV_PATH exists. Please check whether provided path is correct or user is authorized to access the file'
+                            return False, TESTS['runtime_path_exist']['error_msg']
+                    else:
+                        TESTS['runtime_path_exist']['success'] = False
+                        return False, TESTS['runtime_path_exist']['error_msg']
         else:
             logger.error(f'Mismatch in python version')
             TESTS['runtime_env_python']['success']  = False
@@ -257,8 +295,7 @@ def write_html(output_path) -> None:
     for key, value in TESTS.items():
         result = get_test_result(key)
         html_response += f'<tr class="{css_classes[result]}"><th class="{count_classes[count%2]}">{count}</th><td>{key}</td><td>{TESTS[key]["description"]}</td><td>{out_classes[result]}</td>'
-
-        if get_test_result(key) == 1:
+        if get_test_result(key) == 1 or (key == 'runtime_path_exist' and "WARNING" in TESTS[key]['error_msg']):
             html_response += f'<td>{TESTS[key]["error_msg"]}</td></tr></body>'
         else:
             html_response += f'<td> </td></tr></body>'
