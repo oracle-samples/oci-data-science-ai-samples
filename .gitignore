@@ -3,3 +3,5 @@
 ################################################################################
 
 *.suo
+/ai_services/language/dotnet/LanguageBasicDemo/bin/Debug/net5.0
+/ai_services/language/dotnet/LanguageBasicDemo/obj
