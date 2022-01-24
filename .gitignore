@@ -5,3 +5,6 @@
 *.suo
 /ai_services/language/dotnet/LanguageBasicDemo/bin/Debug/net5.0
 /ai_services/language/dotnet/LanguageBasicDemo/obj
+ai_services/language/dotnet/.vs/Language/DesignTimeBuild/.dtbcache.v2
+ai_services/language/dotnet/.vs/Language/project-colors.json
+ai_services/language/dotnet/.vs/Language/v17/.futdcache.v1
