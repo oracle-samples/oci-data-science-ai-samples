@@ -39,7 +39,7 @@ In this lab, you will:
 
 A notebook has been prepared containing all the necessary Python code to train and save the same machine learning model as in lab 3 but this time we will run the training script as a Data Science Job. 
 
-  1. In the file browser, navigate to the directory **~/oci-data-science-ai-samples-master/labs/MLSummit21/Notebooks/**. This directory was created in Lab 1 when you unzip this repository in your notebook session. 
+  1. In the file browser, navigate to the directory **/home/datascience/lab/labs/MLSummit21/Notebooks/**. This directory was created in Lab 1 when you unzip this repository in your notebook session. 
 
   1. Open the notebook **1.5-(optional)-model-training-job.ipynb** (double-click on it). A new tab opens in the workspace on the right.
 

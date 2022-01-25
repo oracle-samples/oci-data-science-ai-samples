@@ -31,7 +31,7 @@ In this lab you will:
 
 A notebook has been prepared containing all the necessary Python code to explore the data, train the model, evaluate the model, and store it in the model catalog. This notebook has already been configured with a conda environment.
 
-  1. In the file browser, navigate to the directory **~/oci-data-science-ai-samples-master/labs/MLSummit21/Notebooks/**. This directory was created in Lab 1 when you unzip this repository in your notebook session. 
+  1. In the file browser, navigate to the directory **/home/datascience/lab/labs/MLSummit21/Notebooks/**. This directory was created in Lab 1 when you unzip this repository in your notebook session. 
 
   1. Open the notebook **1-model-training.ipynb** (double-click on it). A new tab opens in the workspace on the right.
 
