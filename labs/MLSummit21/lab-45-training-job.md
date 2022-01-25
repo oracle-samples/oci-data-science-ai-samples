@@ -17,7 +17,7 @@ After the steps are completed, you can automate the process of data exploration,
 Jobs are two parts, a job and a job run:
 
 ### Job
-A job is template that describes the task. It contains elements like the job artifact that is immutable and can't be modified after it's uploaded to a job. Also, the job contains information about the Compute shapes the job runs on, logging options, block storage, and other options. You can add environment variables or CLI arguments to jobs to be unique or similar for all your future job runs. You can override these variables and arguments in job runs.
+A job is a template that describes the task. It contains elements like the job artifact that is immutable and can't be modified after it's uploaded to a job. Also, the job contains information about the Compute shapes the job runs on, logging options, block storage, and other options. You can add environment variables or CLI arguments to jobs to be unique or similar for all your future job runs. You can override these variables and arguments in job runs.
 
 You can edit the Compute shape in the job and between job runs. For example, if you notice that you want to execute a job run on more powerful shape, you can edit the job Compute shape, and then start a new job run.
 
