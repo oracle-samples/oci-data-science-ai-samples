@@ -35,7 +35,7 @@ In this lab, you will:
 
 * Successful completion of Labs 0, 1, 2, and 3. 
 
-## **STEP 1: Execute the notebook `1.5-(optional)-model-training-job.ipynb` ** 
+## STEP 1: Execute the notebook `1.5-(optional)-model-training-job.ipynb`
 
 A notebook has been prepared containing all the necessary Python code to train and save the same machine learning model as in lab 3 but this time we will run the training script as a Data Science Job. 
 
