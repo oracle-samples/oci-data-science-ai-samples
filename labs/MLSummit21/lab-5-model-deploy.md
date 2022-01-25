@@ -13,7 +13,7 @@ In this lab you will:
 
 ## **STEP 1:** Open and Run the Notebook `2-model-deployment.ipynb`
 
-1. In the **~/oci-data-science-ai-samples-master/labs/MLSummit21/notebooks** directory of your notebook session, open the notebook `2-model-deployment.ipynb`
+1. In the **/home/datascience/lab/labs/MLSummit21/notebooks** directory of your notebook session, open the notebook `2-model-deployment.ipynb`
 
 1. Follow the instructions in the notebook
 
