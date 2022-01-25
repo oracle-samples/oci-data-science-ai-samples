@@ -19,7 +19,7 @@ Sign up [here](https://www.oracle.com/cloud/free/).
 
 ## **STEP 2:** Run the Data Science Stack Template 
 
-We have created a Terraform script that can be executed throught the Resource Manager Stack resource. This Terraform script creates the basic user groups, policies, dynamic groups, networking (VCN and subnets) required to create projects and notebook sessions. The Stack also allows you to optionally launch a notebook session after teh setup is completed. We recommend that you create the notebook session. 
+We have created a Terraform script that can be executed through the Resource Manager Stack resource. This Terraform script creates the basic user groups, policies, dynamic groups, networking (VCN and subnets) required to create projects and notebook sessions. The Stack also allows you to optionally launch a notebook session after the setup is completed. We recommend that you create the notebook session. 
 
 ### **STEP 2.1:** Go to Console > Developer Services > Resource Manager > Stacks 
 
