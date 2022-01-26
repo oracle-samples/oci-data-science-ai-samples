@@ -29,45 +29,46 @@
         <maven-resources-plugin.version>3.0.0</maven-resources-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
-        <log4j.version>2.14.0</log4j.version>
+        <slf4j.version>1.7.29</slf4j.version>
+        <oci-sdk.version>2.14.0</oci-sdk.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.29</version>
+            <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.oracle.oci.sdk</groupId>
             <artifactId>oci-java-sdk-core</artifactId>
-            <version>2.6.0</version>
+            <version>${oci-sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.oci.sdk</groupId>
             <artifactId>oci-java-sdk-identity</artifactId>
-            <version>2.6.0</version>
+            <version>${oci-sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.oci.sdk</groupId>
             <artifactId>oci-java-sdk-common</artifactId>
-            <version>2.6.0</version>
+            <version>${oci-sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.oci.sdk</groupId>
             <artifactId>oci-java-sdk-logging</artifactId>
-            <version>2.6.0</version>
+            <version>${oci-sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.oci.sdk</groupId>
             <artifactId>oci-java-sdk-loggingingestion</artifactId>
-            <version>2.6.0</version>
+            <version>${oci-sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.oci.sdk</groupId>
             <artifactId>oci-java-sdk-datascience</artifactId>
-            <version>2.6.0</version>
+            <version>${oci-sdk.version}</version>
         </dependency>
     </dependencies>
 </project>
