@@ -10,3 +10,7 @@ ai_services/language/dotnet/.vs/Language/project-colors.json
 ai_services/language/dotnet/.vs/Language/v17/.futdcache.v1
 jobs/ts+js/node_modules
 package-lock.json
+jobs/java/.idea
+jobs/java/.settings
+jobs/java/target
+.project
