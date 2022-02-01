@@ -4,16 +4,16 @@ The OCI SDK supports the JavaScript langauge. This code shows how to use it.
 
 ## Install
 
-To be able to run these sample you have to have NodeJS installed on your environment. We recommend using NVM, in case you want maintain several versions at the same time.
+To be able to run the sample you have to have NodeJS installed on your environment. We recommend using NVM (Linux and MacOS), in case you want maintain several versions at the same time.
 
 - [NVM](https://github.com/nvm-sh/nvm)
 
 ### Node Versions
 
-The Node and NPM versions used to this code:
+The Node and NPM versions used to test the code:
 
-- Node - v14.16.0
-- NPM - 7.11.2
+- Node - v14.18.1
+- NPM - 8.1.1
 
 ### Oracle Cloud Infrastructure SDK for TypeScript and JavaScript
 
