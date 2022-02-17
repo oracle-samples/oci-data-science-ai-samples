@@ -1,16 +1,24 @@
-## Table of Examples 
+# Pi Day 2022 AI Workshop
 
-* [DSGo Workshop Oct2021](./DSGo-Oct2021)
-  This is a workshop for Data Science Go conference attendees built around the employee attrition notebook in OCI Data Science. The user signs-up for, and configures, a new OCI Trial account tenancy and then completes an end-to-end workflow to build, train, deploy, and invoke a machine learning model used to predict employee attrition.
+This lab is built for use as a workshop at the Oracle Pi Day event in March 2022. It uses Oracle Cloud Infrastructure (OCI) Vision service to show how AI services can be used with applications. The workshop guides the user to run a safety application that that looks for persons not wearing hardhats in images of industrial scenes.
 
-* [Employee Attrition](./employee-attrition/) 
-  This example is a modified version of the employee attrition notebook that is available in the OCI Data Science Notebook Session environment. The notebook provides an end-to-end workflow to build, ttrain, deploy, and invoke a machine learning model used to predict employee attrition. 
+### Prerequisites
+  - None
 
-* [Model Deployment](./model-deploy/) 
-  This example highlights the deployment of a sklearn random forest model trained on synthetic data. The model is deployed programmatically with the OCI Python SDK and invoked with the same SDK.
+This workshop is designed for users that will register for a new OCI trial account with free cloud credits.  The workshop provides instructions to sign up for a free trial account and then configure the tenancy for OCI Vision. The remainder of the workshop guides the user through activities to analyze images in the OCI console, exercise the REST API, and run a Python application.
 
-* [Speech Commands](./speech-commands)
-  In this example you use a convolutional neural network (CNN) to classify speech commands. The notebooks show how you can train a model with Keras and deploy the model using OCI Data Science Model Deployment. 
+**Pi Day participants need to sign-up for their OCI account with the same email that was provided to Oracle when registering for the event.** By doing so, participants receive additional free cloud credits and no payment method verification.
 
-* [X-ray Diagnostics](./xray-diagnostics)
-  The purpose of this example is to train a model that detects the presence of pneumonia in x-ray images of the chest area. The example showcases and end-to-end workflow for model building, training, and deployment. 
+Other users of this workshop may sign-up for a standard OCI trial account that provides free cloud credits but requires a payment method verification as an identity check. (The user is not charged during the free trial and the user has the option to continue with free tier services or explicitly convert to a paid account at the end of the trial. Note that OCI Vision is not included in the OCI free tier but does provide free transactions [i.e. service calls] every month.)
+
+If you choose to use an existing OCI trial account, your 30-day trial must still be active and you must have credits remaining on your account to cover the services used in this workshop. (Your trial status is displayed in the OCI console.)
+
+You may of course also use a paid OCI account, however the instructions are designed for a new trial account, and your account will be charged for the services used during this workshop.
+
+### Workshop Modules
+  - [Lab 0 - Introduction](Lab-0-.md)
+  - [Lab 1 - Setup Trial Account](Lab-1-.md)
+  - [Lab 2 - Configure and use OCI Vision in console](Lab-2-.md)
+  - [Lab 3 - Explore Vision REST API](Lab-3-.md)
+  - [Lab 4 - Run Python Application](Lab-4-.md)
+  - [Lab 5 - Retrain OCI Vision](Lab-5-.md)
