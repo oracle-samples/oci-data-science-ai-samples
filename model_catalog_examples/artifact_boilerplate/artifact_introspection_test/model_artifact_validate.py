@@ -10,6 +10,9 @@ import tempfile
 import zipfile
 from typing import Tuple
 import re
+from urllib.parse import urlparse
+import oci
+import os
 
 import requests
 import yaml
@@ -34,11 +37,8 @@ TESTS = {
     'score_predict_arg': {'category': 'score.py', 'description': 'Check that all other arguments in predict() are optional and have default values', 'error_msg': 'All formal arguments in the predict function must have default values, except that \'data\' argument.'},
     'runtime_version': {'category': 'runtime.yaml', 'description': 'Check that field MODEL_ARTIFACT_VERSION is set to 3.0', 'error_msg': 'In runtime.yaml, the key MODEL_ARTIFACT_VERSION must be set to 3.0.'},
     'runtime_env_python': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION is set to a value of 3.6 or higher', 'error_msg': 'In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION must be set to a value of 3.6 or higher.'},
-    'runtime_env_type': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is set to a value in (published, data_science)', 'error_msg': 'In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE must be set to published or data_science.'},
-    'runtime_env_slug': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set', 'error_msg': 'In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG must have a value.'},
     'runtime_env_path': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set', 'error_msg': 'In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH must have a value.'},
-    'runtime_path_exist': {'category': 'conda_env', 'description': 'If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science and MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set, check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct.', 'error_msg': "In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH does not exist."},
-    'runtime_slug_exist': {'category': 'conda_env', 'description': 'If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science, check that the slug listed in MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG exists.', 'error_msg': "In runtime.yaml, the value of the key INFERENCE_ENV_SLUG is `slug_value` and it doesn't exist in the bucket `bucket_url`. Ensure that the value INFERENCE_ENV_SLUG and the bucket url are correct."}
+    'runtime_path_exist': {'category': 'conda_env', 'description': 'check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct.', 'error_msg': "In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH does not exist."},
     }
 
 def combine_msgs(test_list) -> str:
@@ -56,14 +56,7 @@ def model_deployment_find_fields(cfg) -> None:
     if not isinstance(cfg, dict):
         return
     for key, value in cfg.items():
-        if key == 'INFERENCE_ENV_SLUG':
-            TESTS['runtime_env_slug']['success'] = True
-            TESTS['runtime_env_slug']['value'] = value
-        elif key == 'INFERENCE_ENV_TYPE':
-            if value in ['published', 'data_science']:
-                TESTS['runtime_env_type']['success'] = True
-                TESTS['runtime_env_type']['value'] = value
-        elif key == 'INFERENCE_ENV_PATH':
+        if key == 'INFERENCE_ENV_PATH':
             TESTS['runtime_env_path']['success'] = True
             TESTS['runtime_env_path']['value'] = value
         elif key == 'INFERENCE_PYTHON_VERSION':
@@ -73,6 +66,16 @@ def model_deployment_find_fields(cfg) -> None:
                 TESTS['runtime_env_python']['value'] = value
         else:
             model_deployment_find_fields(value)
+
+def get_object_storage_client(client_kwargs=None):
+    rp_version = os.environ.get(
+                "OCI_RESOURCE_PRINCIPAL_VERSION", "UNDEFINED")
+    config = None
+    if rp_version == "UNDEFINED":
+        config = oci.config.from_file()
+    else:
+        config = oci.auth.signers.get_resource_principals_signer()
+    return oci.object_storage.ObjectStorageClient(config)
 
 def check_runtime_yml(file_path) -> Tuple[bool, str]:
     '''
@@ -95,7 +98,7 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
 
     model_deployment = cfg.get('MODEL_DEPLOYMENT')
     model_deployment_find_fields(model_deployment)
-    test_list = ['runtime_env_python','runtime_env_type', 'runtime_env_path', 'runtime_env_slug']
+    test_list = ['runtime_env_python', 'runtime_env_path']
     for test in test_list:
         if 'success' not in TESTS[test]:
             TESTS[test]['success'] = False
@@ -115,25 +118,36 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
             env_path = TESTS['runtime_env_path']['value']
             service_pack = next(filter(lambda d: env_path in d['pack_path'], service_pack_list), None)
             if service_pack:
-                if TESTS['runtime_env_type']['value'] == 'data_science':
-                    TESTS['runtime_path_exist']['success'] = True
-                    slug = service_pack.get('slug')
-                    if slug == TESTS['runtime_env_slug'].get('value'):
-                        TESTS['runtime_slug_exist']['success'] = True
-                        return True, 'slug is valid'
-                    else:
-                        slug = TESTS['runtime_env_slug'].get('value')
-                        logger.error(f'Mismatch in slug {slug}.')
-                        TESTS['runtime_slug_exist']['success'] = False
-                        TESTS['runtime_slug_exist']['error_msg'] = f'In runtime.yaml, the value of the key INFERENCE_ENV_SLUG is \'{slug}\' and it doesn\'t exist. Ensure that the value INFERENCE_ENV_SLUG is correct.'
-                        return False, TESTS['runtime_slug_exist']['error_msg']
-                else:
-                    return True, True
-            else:
-                if TESTS['runtime_env_type']['value'] == 'data_science':
-                    TESTS['runtime_path_exist']['success'] = False
-                    return False, TESTS['runtime_path_exist']['error_msg']
+                TESTS['runtime_path_exist']['success'] = True
                 return True, True
+            else:
+                    url_parse = urlparse(env_path)
+                    bucket_name = url_parse.username
+                    namespace = url_parse.hostname
+                    object_name = url_parse.path.strip("/")
+                    if bucket_name != None and namespace != None and object_name != None:
+                        try:
+                            object_storage_client = get_object_storage_client()
+                            head_object_response = object_storage_client.head_object(
+                                namespace_name=namespace,
+                                bucket_name=bucket_name,
+                                object_name=object_name,
+                                version_id=None,
+                                if_match=None,
+                                if_none_match=None,
+                                opc_client_request_id=None,
+                                opc_sse_customer_algorithm=None,
+                                opc_sse_customer_key=None,
+                                opc_sse_customer_key_sha256=None)
+                            TESTS['runtime_path_exist']['success'] = True
+                            return True, True
+                        except:
+                            TESTS['runtime_path_exist']['success'] = None
+                            TESTS['runtime_path_exist']['error_msg'] = 'WARNING: Unable to validate if INFERENCE_ENV_PATH exists. Please check whether provided path is correct or user is authorized to access the file'
+                            return False, TESTS['runtime_path_exist']['error_msg']
+                    else:
+                        TESTS['runtime_path_exist']['success'] = False
+                        return False, TESTS['runtime_path_exist']['error_msg']
         else:
             logger.error(f'Mismatch in python version')
             TESTS['runtime_env_python']['success']  = False
@@ -281,8 +295,7 @@ def write_html(output_path) -> None:
     for key, value in TESTS.items():
         result = get_test_result(key)
         html_response += f'<tr class="{css_classes[result]}"><th class="{count_classes[count%2]}">{count}</th><td>{key}</td><td>{TESTS[key]["description"]}</td><td>{out_classes[result]}</td>'
-
-        if get_test_result(key) == 1:
+        if get_test_result(key) == 1 or (key == 'runtime_path_exist' and "WARNING" in TESTS[key]['error_msg']):
             html_response += f'<td>{TESTS[key]["error_msg"]}</td></tr></body>'
         else:
             html_response += f'<td> </td></tr></body>'

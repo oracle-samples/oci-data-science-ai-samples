@@ -69,8 +69,6 @@ Minimally `runtime.yaml` should contain the following fields:
 MODEL_ARTIFACT_VERSION: '3.0'
 MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
-    INFERENCE_ENV_SLUG: <insert-the-environment-slug> # for example mlcpuv1 see: https://docs.oracle.com/en-us/iaas/data-science/using/conda-gml-fam.htm
-    INFERENCE_ENV_TYPE: <env-type> # can either be "published" or "data_science"
     INFERENCE_ENV_PATH: <conda-environment-path-on-object-storage> # For example: "oci://service_conda_packs@ociodscdev/service_pack/cpu/General Machine Learning for CPUs/1.0/mlcpuv1"
     INFERENCE_PYTHON_VERSION: '3.7' #
 ```
@@ -86,8 +84,6 @@ MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
     INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/General
       Machine Learning for CPUs/1.0/mlcpuv1
-    INFERENCE_ENV_SLUG: mlcpuv1
-    INFERENCE_ENV_TYPE: data_science
     INFERENCE_PYTHON_VERSION: 3.6.11
 ```
 
@@ -383,10 +379,6 @@ Once a model is created you can view it in the console
 7   score_predict_arg   Check that all other arguments in predict() are optional and have default values
 8   runtime_version     Check that field MODEL_ARTIFACT_VERSION is set to 3.0
 9   runtime_env_python  Check that field MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION is set to a value of 3.6 or higher
-10  runtime_env_type    Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is set to a value in (published, data_science)
-11  runtime_env_slug    Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set
-12  runtime_env_path    Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set
-13  runtime_path_exist  If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science and MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG is set, check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct
-14  runtime_slug_exist  If MODEL_DEPLOYMENT.INFERENCE_ENV_TYPE is data_science, check that the slug listed in MODEL_DEPLOYMENT.INFERENCE_ENV_SLUG exists
-
+10  runtime_env_path    Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set
+11  runtime_path_exist  Check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct
 ```

@@ -1,0 +1,16 @@
+################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.suo
+/ai_services/language/dotnet/LanguageBasicDemo/bin/Debug/net5.0
+/ai_services/language/dotnet/LanguageBasicDemo/obj
+ai_services/language/dotnet/.vs/Language/DesignTimeBuild/.dtbcache.v2
+ai_services/language/dotnet/.vs/Language/project-colors.json
+ai_services/language/dotnet/.vs/Language/v17/.futdcache.v1
+jobs/ts+js/node_modules
+package-lock.json
+jobs/java/.idea
+jobs/java/.settings
+jobs/java/target
+.project

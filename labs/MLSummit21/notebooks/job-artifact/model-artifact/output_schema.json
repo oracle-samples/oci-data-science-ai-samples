@@ -1,0 +1,1 @@
+{"schema": [{"dtype": "bool", "feature_type": "Boolean", "name": "Attrition", "domain": {"values": "Boolean", "stats": {"count": 1328, "unique": 2}, "constraints": [{"expression": "$x in [True, False]", "language": "python"}]}, "required": true, "description": "Attrition"}]}

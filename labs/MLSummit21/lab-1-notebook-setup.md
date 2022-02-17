@@ -61,19 +61,11 @@ In this lab you are creating a notebook session. **This step is optional if the 
 1. You will notice that the notebook session emits four metrics (CPU Utilization, Memory Utilization, Network Receive and Transmit Bytes) and is integrated with OCI Monitoring. In a separate lab you will learn how to trigger alarms when those metrics reach certain pre-defined thresholds.
     ![](./images/notebook-monitoring.png)    
     
-## **STEP 2**: Copy The Content of this Repository to Your Notebook Session 
-
-1. Download a zip archive of this repository to your laptop/local machine. Make sure that you select the **master** branch
-
-![](./images/github-zip-repo.png) 
+## **STEP 2**: Clone this Repository to Your Notebook Session 
 
 1. Open your notebook session. Click on "Open".
 
 ![](./images/ns-open.png)
-
-1. Drag and drop the zip archive in the JupyterLab file browser. 
-
-![](./images/drag-and-drop-zip-file.png)
 
 1. Open a Terminal window. 
 
@@ -82,12 +74,12 @@ In this lab you are creating a notebook session. **This step is optional if the 
 1. Execute the following command in the terminal window: 
 
   ```
-  unzip oci-data-science*.zip
+  git clone https://github.com/oracle/oci-data-science-ai-samples.git lab
   ```
-  This command will unzip the file. 
-  
-1. Open the newly created folder and navigate to this lab folder. 
-
-Alternatively for Step 2, you can use `git clone` command in the terminal window of JupyterLab to clone the content of this repo. Make sure you create private/public ssh key pairs for this and register the public key in your github user settings. 
+ 
+1. You should see the `lab` folder in the JupyterLab file browser window on the left. The content of this lab is under: 
+  ```
+  /home/datascience/lab/labs/MLSummit21/
+  ```
 
 **Congratulations! You are now ready to proceed to the next lab.**
