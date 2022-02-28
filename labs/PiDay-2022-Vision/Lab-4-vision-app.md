@@ -203,8 +203,8 @@ final_prefix= output_prefix+"/"+res.data.id+"/"+namespace_name+"_"+bucket_name+"
 # 3. Also, list the names of images where the person count and hardhat count don’t match
 
 # Sleep for 90 Seconds
-print("Please wait 45 seconds for images to be analyzed.")
-time.sleep(45)
+print("Please wait 90 seconds for images to be analyzed.")
+time.sleep(90)
 
 person_count=0
 hat_count=0
