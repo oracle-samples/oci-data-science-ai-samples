@@ -102,10 +102,21 @@ Windows:
 pip install oci
 ```
 
+## **TASK 3:** Add Sample Images to Object Storage
 
+1. Download the [sample images](./Sample-Images).
 
+2. Login to the OCI Console and navigate to your Object Storage Buckets
 
-## **TASK 3:** OCI Vision Service SDK Code Sample
+  ![](./images/ObjectStorageLink.png " ")
+  
+3. Create a new bucket called "pidaydemo".
+
+4. Create a new folder in the "pidaydemo" bucket called "sample-images".
+
+5. Upload the sample images to the "sample-images" folder.
+
+## **TASK 4:** OCI Vision Service SDK Code Sample
 
 #### Python Code
 ```Python
@@ -235,16 +246,34 @@ for i in no_match_list:
 ```
 Follow below steps to run Python SDK:
 
-### 1. Download Python Code.
+1. Download python code
 
 Download [code](./python-script/pythonscript.py) file and save it your directory.
 
-### 2. Execute the Code.
+2. Update variables
+
+Open the python script and update all of the below variables. 
+
+Hint:
+The "namespace_name" can be found by navigating to the OCI console, selecting your Profile, selecting your tenancy, and finding "Object Storage Namespace".
+The "bucket_name" should be set to "pidaydemo".
+The "input_prefix" should be set to "sample-images". 
+
+```Python
+namespace_name = "<namespace name>"
+bucket_name = "<bucket name>"
+compartment_id = "<compartment id>"
+input_prefix = "<folder name for images>"
+output_prefix = "<output folder name for results>"
+```
+
+3. Execute the code
 Navigate to the directory where you saved the above file (by default, it should be in the 'Downloads' folder) using your terminal and execute the file by running:
 ```
 python pythonscript.py
 ```
-### 3. Result
+
+4. Result
 You will see the following results:
 
 ``Number of persons found in images: XX``
