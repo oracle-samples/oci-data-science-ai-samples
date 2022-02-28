@@ -15,11 +15,11 @@ from oci.ai_vision.models.output_location import OutputLocation
 from oci.object_storage import ObjectStorageClient
 
 ### Define Variables
-namespace_name = "ax0wcs1cpqqn"
-bucket_name = "construction_site"
-compartment_id = "ocid1.tenancy.oc1..aaaaaaaaawwdmqjwhr6ovaudg4za5e67mcfszo7lqeccnhkz4uaobgyd7zda"
-input_prefix = "Sample-Images"
-output_prefix = "Final-Results"
+namespace_name = "<namespace name>"
+bucket_name = "<bucket name>"
+compartment_id = "<compartment id>"
+input_prefix = "<folder name>"
+output_prefix = "<output folder name>"
 
 # Auth Config Definition
 config = oci.config.from_file('~/.oci/config')
@@ -81,8 +81,8 @@ final_prefix= output_prefix+"/"+res.data.id+"/"+namespace_name+"_"+bucket_name+"
 # 3. Also, list the names of images where the person count and hardhat count don’t match
 
 # Sleep for 90 Seconds
-print("Please wait 45 seconds for images to be analyzed.")
-time.sleep(45)
+print("Please wait 90 seconds for images to be analyzed.")
+time.sleep(90)
 
 person_count=0
 hat_count=0
