@@ -108,7 +108,7 @@ pip install oci
 
 2. Login to the OCI Console and navigate to your Object Storage Buckets
 
-  ![](./images/ObjectStorageLink.png " ")
+  ![](./images/object-storage-link.png " ")
   
 3. Create a new bucket called "pidaydemo".
 
