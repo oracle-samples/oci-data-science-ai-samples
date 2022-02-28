@@ -20,5 +20,5 @@ You may of course also use a paid OCI account, however the instructions are desi
   - [Lab 1 - Setup Trial Account](Lab-1-.md)
   - [Lab 2 - Configure and use OCI Vision in console](Lab-2-.md)
   - [Lab 3 - Explore Vision REST API](Lab-3-.md)
-  - [Lab 4 - Run Python Application](Lab-4-.md)
+  - [Lab 4 - Run Python Application](Lab-4-vision-app.md)
   - [Lab 5 - Retrain OCI Vision](Lab-5-.md)
