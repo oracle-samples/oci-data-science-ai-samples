@@ -12,26 +12,23 @@ You can invoke OCI Vision capabilities through the OCI SDKs.  In this lab sessio
 
 ### Objectives:
 
-* Learn how to use Vision SDKs to communicate with our Vision service endpoints.
+* Learn how to use Vision Python SDK to communicate with our Vision service endpoints.
 
 <!-- ### Prerequisites:
 * Familiar with Python programming is required
-* Have a Python environment ready in local
-* Familiar with local editing tools, vi and nano
-* Installed with Python libraries: `oci` and `requests` -->
+* Familiar with local editing tools, vi and nano -->
 
 
 ## **TASK 1:** Setup API Signing Key and Config File
-**Prerequisite: Before you generate a key pair, create the .oci directory in your home directory to store the credentials.**
 
 Mac OS / Linux:
 
 ```
-<copy>mkdir ~/.oci</copy>
+mkdir ~/.oci
 ```
 Windows:
 ```
-<copy>mkdir %HOMEDRIVE%%HOMEPATH%\.oci</copy>
+mkdir %HOMEDRIVE%%HOMEPATH%\.oci
 ```
 
 Generate an API signing key pair
@@ -41,43 +38,41 @@ Generate an API signing key pair
   Open the Profile menu (User menu icon) and click User Settings.
     ![](./images/userProfileIcon.png " ")
 
-1. Open API Key
+2. Open API Key
 
   Navigate to API Key and then Click Add API Key.
     ![](./images/addAPIButton.png " ")
 
-1. Generate API Key
+3. Generate API Key
 
   In the dialog, select Generate API Key Pair. Click Download Private Key and save the key to your .oci directory and then click Add.
     ![](./images/genAPI.png " ")
-
-
 
 4. Generate Config File
 
   Copy the values shown on the console.
     ![](./images/conf.png " ")
 
-    Create a config file in the .oci folder and paste the values copied.
-    Replace the key_file value with the path of your generated API Key.
+ Create a config file in the .oci folder and paste the values copied.
+ Replace the key_file value with the path of your generated API Key.
     ![](./images/config2.png " ")
 
 
 
 To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) and [SDK and CLI Configuration File](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm#SDK_and_CLI_Configuration_File)
 
-## **TASK 2:** Prerequisites and Setup for Python
+## **TASK 2:** Setup for Python
 
 Please follow the steps in the order described.
 Before you go any further, make sure you have Python 3.x version and that it’s available from your command line. You can check this by simply running:
 ```
-<copy>python --version</copy>
+python --version
 ```
 If you do not have Python, please install the latest 3.x version from [python.org ](https://www.python.org)
 
 Additionally, you’ll need to make sure you have pip available. You can check this by running:
 ```
-<copy>pip --version</copy>
+pip --version
 ```
 If you installed Python from source, with an installer from python.org, or via Homebrew you should already have pip. If you’re on Linux and installed using your OS package manager, you may have to install pip separately.
 
@@ -86,7 +81,7 @@ If you installed Python from source, with an installer from python.org, or via H
 
   To create a virtual environment, run the venv module as a script as shown below
 ```
-<copy>python3 -m venv <name of virtual environment></copy>
+python -m venv <name of virtual environment>
 ```
 2. Activate virtualenv
 
@@ -94,17 +89,17 @@ If you installed Python from source, with an installer from python.org, or via H
 
 Mac OS / Linux:
 ```
-<copy>source <name of virtual environment>/bin/activate</copy>
+source <name of virtual environment>/bin/activate
 ```
 Windows:
 ```
-<copy><name of virtual environment>\Scripts\activate</copy>
+<name of virtual environment>\Scripts\activate
 ```
 3. Install OCI
 
   Now Install oci by running:
 ```
-<copy>pip install oci</copy>
+pip install oci
 ```
 
 
@@ -114,13 +109,7 @@ Windows:
 
 #### Python Code
 ```Python
-<copy>
 ### Import Packages
-# When using the conda environment ```generalml_p37_cpu_v1```, you will need to upgrade the ```oci``` package with the command ```pip install oci --upgrade``` in the conda environment.
-# You can enter the conda environment with the command ```conda activate /home/datascience/conda/generalml_p37_cpu_v1```.
-# You can install the conda environment with the command ```odsc conda install -s generalml_p37_cpu_v1```.
-# Doing will create you some dependency issues but for the purposes of this exercise, these dependency issues will not matter.
-
 import time
 import oci
 import json
@@ -128,9 +117,7 @@ import re
 
 from oci.ai_vision import AIServiceVisionClient
 from oci.ai_vision.models.create_image_job_details import CreateImageJobDetails
-from oci.ai_vision.models.image_classification_feature import ImageClassificationFeature
 from oci.ai_vision.models.image_object_detection_feature import ImageObjectDetectionFeature
-from oci.ai_vision.models.image_text_detection_feature import ImageTextDetectionFeature
 from oci.ai_vision.models.input_location import InputLocation
 from oci.ai_vision.models.object_list_inline_input_location import ObjectListInlineInputLocation
 from oci.ai_vision.models.object_location import ObjectLocation
@@ -139,11 +126,11 @@ from oci.ai_vision.models.output_location import OutputLocation
 from oci.object_storage import ObjectStorageClient
 
 ### Define Variables
-namespace_name = "orasenatdpltintegration03"
-bucket_name = "PiDayBucket"
-compartment_id = "ocid1.compartment.oc1..aaaaaaaai35zencvv26qto22rmzjp4feabv3p7zpycp7ltlktn4bonnrhkra"
-input_prefix = "Sample-Images"
-output_prefix = "Final-Results"
+namespace_name = "<namespace name>"
+bucket_name = "<bucket name>"
+compartment_id = "<compartment id>"
+input_prefix = "<folder name for images>"
+output_prefix = "<output folder name for results>"
 
 # Auth Config Definition
 config = oci.config.from_file('~/.oci/config')
@@ -172,10 +159,8 @@ for i in object_list.data.objects:
 
 ### Vision AI
 # Send the Request to Service with Multiple Features
-image_classification_feature = ImageClassificationFeature()
 image_object_detection_feature = ImageObjectDetectionFeature()
-image_text_detection_feature = ImageTextDetectionFeature()
-features = [image_classification_feature, image_object_detection_feature, image_text_detection_feature]
+features = [image_object_detection_feature]
 
 # Setup Input Location
 object_locations1 = image_list
@@ -207,8 +192,8 @@ final_prefix= output_prefix+"/"+res.data.id+"/"+namespace_name+"_"+bucket_name+"
 # 3. Also, list the names of images where the person count and hardhat count don’t match
 
 # Sleep for 90 Seconds
-print("Please wait 90 seconds for images to be analyzed.")
-time.sleep(90)
+print("Please wait 45 seconds for images to be analyzed.")
+time.sleep(45)
 
 person_count=0
 hat_count=0
@@ -239,30 +224,36 @@ for i in object_list.data.objects:
         
 
 print ("Number of persons found in images:", person_count,"\n")
-print ("Number of hats found in images:", hat_count, "\n")
+print ("Number of hardhats found in images:", hat_count, "\n")
 print ("Number of images processed:", image_counter, "\n")     
-print ("Name of images where hat count is not equal to total number of persons:\n")
+print ("Names of images where hat count is not equal to total number of persons:\n")
 
 for i in no_match_list:
     i=re.sub(final_prefix,'',i)
     i=re.sub('.json','',i)
     print(i)
-</copy>
 ```
 Follow below steps to run Python SDK:
 
 ### 1. Download Python Code.
 
-Download [code](./files/language.py) file and save it your directory.
+Download [code](./python-script/pythonscript.py) file and save it your directory.
 
 ### 2. Execute the Code.
 Navigate to the directory where you saved the above file (by default, it should be in the 'Downloads' folder) using your terminal and execute the file by running:
 ```
-<copy>python language.py</copy>
+python pythonscript.py
 ```
 ### 3. Result
-You will see the result as below
-    ![](./images/result.png " ")
+You will see the following results:
+
+``Number of persons found in images: XX``
+
+``Number of hardhats found in images: XX``
+
+``Number of images processed: XX``
+
+``Number of images where hat count is not equal to total number of persons:``
 
 
 
