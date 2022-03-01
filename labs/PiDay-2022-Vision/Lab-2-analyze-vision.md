@@ -32,16 +32,16 @@ Before you start using OCI Vision, your tenancy administrator should set up the 
 
 1. Create a new policy with the following statements:
 
-  If you want to allow all the users in your tenancy to use vision service, create a new policy with the below statement:
+  If you want to allow all the users in your tenancy to use vision service, create a new policy with the below statement: <br/>
     ```
-    <copy>allow any-user to use ai-service-vision-family in tenancy</copy>
+    allow any-user to use ai-service-vision-family in tenancy
     ```
     ![](./images/policy3.png " ")
 
 
-  If you want to limit access to a user group, create a new policy with the below statement:
+  If you want to limit access to a user group, create a new policy with the below statement: <br/>
     ```
-    <copy>allow group <group-name> to use ai-service-vision-family in tenancy</copy>
+    allow group <group-name> to use ai-service-vision-family in tenancy
     ```
     ![](./images/policy4.png " ")
 
@@ -71,9 +71,9 @@ This is an optional set of steps if you want to test OCI Vision with your own sa
   c. Next click Create Bucket.
     ![](./images/create-bucket-button.png " ")
 
-  d. Next, fill out the dialog box:
+  d. Next, fill out the dialog box: <br/>
     * Bucket Name: Provide a name <br/>
-    * Storage Tier: STANDARD
+    * Storage Tier: STANDARD <br/>
 
   e. Then click Create
     ![](./images/press-bucket-button.png " ")
