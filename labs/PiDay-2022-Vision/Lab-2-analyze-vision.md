@@ -72,8 +72,8 @@ This is an optional set of steps if you want to test OCI Vision with your own sa
     ![](./images/create-bucket-button.png " ")
 
   d. Next, fill out the dialog box:
-    * Bucket Name: Provide a name <br/>
-    * Storage Tier: STANDARD
+  * Bucket Name: Provide a name <br/>
+  * Storage Tier: STANDARD
 
   e. Then click Create
     ![](./images/press-bucket-button.png " ")
@@ -93,38 +93,38 @@ This is an optional set of steps if you want to test OCI Vision with your own sa
 
 ## **Task 3:** Demo Vision Service using the OCI Console
 
-1. Navigate to the Vision Page of OCI Console
+### 1. Navigate to the Vision Page of OCI Console
 
   ![](./images/navigate-to-ai-vision-menu.png " ")
 
-1. Use Document AI features
+### 2. Use Document AI features
 
   a. On the Vision page, select “Document AI” on the left navigation menu and provide a document or image from local storage or OCI object storage. This invokes analyzeDocument API after the image is provided. Raw text extracted by our pre-trained multi-tenant model is displayed on the right.
 
-    ![](./images/document-ai-features.png " ")
+  ![](./images/document-ai-features.png " ")
 
   b. Features you can test out:
 
-    | Feature | Description | Details on Console |
-    | --- | --- | --- |
-    | OCR (Optical Character Recognition) | Locates and digitizes text information from images | Text will appear under the "raw text" header of the results pane of the console [\[Reference\]](./images/ocr.png) |
-    | Document Image Classification | Classifies documents into different types based on their visual appearance, high-level features, and extracted keywords | Classification along with confidence score appears directly under "Results" pane [\[Reference\]](./images/dic.png) |
-    | Language Classification | Classifies the language of document based on visual features | Classification along with confidence score appears under document classification in Results pane [\[Reference\]](./images/language-classification.png) |
-    | Table extraction | Extracts content in tabular format, maintaining row/column relationships of cells | Toggle to the Table tab to get table information [\[Reference\]](./images/table-extraction.png) |
-    | Searchable PDF output | Embeds a transparent layer on top of document image in PDF format to make it searchable by keywords | You need to test on a PDF document to use this feature. When you've selected a PDF, the searchable PDF button will be clickable. Clicking on it will download an OCR PDF to your computer. [\[Reference\]](./images/searchable-pdf-output.png) |
+  | Feature | Description | Details on Console |
+  | --- | --- | --- |
+  | OCR (Optical Character Recognition) | Locates and digitizes text information from images | Text will appear under the "raw text" header of the results pane of the console [\[Reference\]](./images/ocr.png) |
+  | Document Image Classification | Classifies documents into different types based on their visual appearance, high-level features, and extracted keywords | Classification along with confidence score appears directly under "Results" pane [\[Reference\]](./images/dic.png) |
+  | Language Classification | Classifies the language of document based on visual features | Classification along with confidence score appears under document classification in Results pane [\[Reference\]](./images/language-classification.png) |
+  | Table extraction | Extracts content in tabular format, maintaining row/column relationships of cells | Toggle to the Table tab to get table information [\[Reference\]](./images/table-extraction.png) |
+  | Searchable PDF output | Embeds a transparent layer on top of document image in PDF format to make it searchable by keywords | You need to test on a PDF document to use this feature. When you've selected a PDF, the searchable PDF button will be clickable. Clicking on it will download an OCR PDF to your computer. [\[Reference\]](./images/searchable-pdf-output.png) |
 
-1. Use Image Analysis Features
+### 3. Use Image Analysis Features
 
   a. On the Vision page, select “Image Classification” or "Object Detection" on the left navigation menu and provide an image from local storage or OCI object storage. This invokes analyzeImage API after the image is provided.
 
-    ![](./images/image-features.png " ")
+  ![](./images/image-features.png " ")
 
   b. Features you can test out:
 
-    | Feature | Description | Details on Console |
-    | --- | --- | --- |
-    | Image classification | Categorizes object(s) within an image | Select "Image Classification." Labels and confidence scores will appear under the Results pane. [\[Reference\]](./images/image-classification.png) |
-    | Object detection | Locates and identifies objects within an image | Select "Object Detection." Objects, confidence score, and highlighted bounding box will all appear under the Results pane. Clicking on one of the labels on the results pane will also highlight where on the image that object was detected. [\[Reference\]](./images/object-detection.png) |
+  | Feature | Description | Details on Console |
+  | --- | --- | --- |
+  | Image classification | Categorizes object(s) within an image | Select "Image Classification." Labels and confidence scores will appear under the Results pane. [\[Reference\]](./images/image-classification.png) |
+  | Object detection | Locates and identifies objects within an image | Select "Object Detection." Objects, confidence score, and highlighted bounding box will all appear under the Results pane. Clicking on one of the labels on the results pane will also highlight where on the image that object was detected. [\[Reference\]](./images/object-detection.png) |
 
 Congratulations on completing this lab!
 
