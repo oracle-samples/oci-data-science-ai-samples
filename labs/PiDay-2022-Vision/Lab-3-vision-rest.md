@@ -1,9 +1,9 @@
-# Lab 4: Access OCI Language with REST APIs
+# Lab 3: Access OCI Vision with REST APIs
 
 ## Introduction
 
 
-In this lab session, we will show you how to access OCI Language using POSTMAN.
+In this lab session, we will show you how to access OCI Vision using POSTMAN.
 
 Postman is a GUI-based REST API invocation tool that is very popular among developers.
 
@@ -16,7 +16,52 @@ Postman is a GUI-based REST API invocation tool that is very popular among devel
 * Basic knowledge of REST API calls.
 * Postman GUI in your local setup. If you don't have POSTMAN, please download it from [POSTMAN](https://www.postman.com/downloads/)
 
-## **TASK 1:** Setting Up Postman for OCI REST APIs
+## **TASK 1:** Setup API Signing Key and Config File
+**Prerequisite: Before you generate a key pair, create the .oci directory in your home directory to store the credentials.**
+
+Mac OS / Linux:
+
+```
+<copy>mkdir ~/.oci</copy>
+```
+Windows:
+```
+<copy>mkdir %HOMEDRIVE%%HOMEPATH%\.oci</copy>
+```
+
+Generate an API signing key pair
+
+1. Open User Settings
+
+  Open the Profile menu (User menu icon) and click User Settings.
+    ![](./images/userProfileIcon.png " ")
+
+1. Open API Key
+
+  Navigate to API Key and then Click Add API Key.
+    ![](./images/addAPIButton.png " ")
+
+1. Generate API Key
+
+  In the dialog, select Generate API Key Pair. Click Download Private Key and save the key to your .oci directory and then click Add.
+    ![](./images/genAPI.png " ")
+
+
+
+4. Generate Config File
+
+  Copy the values shown on the console.
+    ![](./images/conf.png " ")
+
+    Create a config file in the .oci folder and paste the values copied.
+    Replace the key_file value with the path of your generated API Key.
+    ![](./images/config2.png " ")
+
+
+
+To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) and [SDK and CLI Configuration File](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm#SDK_and_CLI_Configuration_File)
+
+## **TASK 2:** Setting Up Postman for OCI REST APIs
 We have provided some scripts and steps below that can be used to allow invoking OCI REST APIs through Postman. Please follow the steps in the order described.
 
 1. Import the environment into Postman
@@ -28,19 +73,12 @@ Make sure to set OCI_Environment as the active environment.
     ![](./images/setActive.png " ")
 
 1. Set the Variables  
-Open and edit the newly imported environment (OCI_Environment), and set the variables tenancyId, authUserId, keyFingerprint and private Key. These are same that are found in the .oci file you created in the Lab 3 (Task 3->Step4).
+Open and edit the newly imported environment (OCI_Environment), and set the variables tenancyId, authUserId, keyFingerprint and private Key. These are same that are found in the .oci file you created above in Task 1->Step4).
 
 Make sure to set both Initial Value and Current Value of the variables(set both as the same value).
 
 Click the Save button to commit your changes to the environment.
     ![](./images/setVar.png " ")
-
-1. Import the Collections
-Download and import [OCI REST INITIALIZATION](./files/OCI_REST_INITIALIZATION.postman_collection.json) and [OCI REST COLLECTION](./files/OCI_REST_COLLECTION.postman_collection.json) into Postman using the 'Import' button at the top.
-
-1. Execute OCI REST Initializer
-From the OCI REST INITIALIZATION collection, invoke the Initializer GET for 'jsrsasign-all-min.js' , which imports and initializes a required library jsrsasign for encryption and digital signatures. This is a one-time setup task.
-    ![](./images/initializeREST.png " ")
 
 <!-- ### 5. Add Request in OCI REST COLLECTION
 
@@ -52,7 +90,8 @@ Enter Name and click 'Save to OCI REST COLLECTION'
 
 Just make sure that the OCI REST calls are executed as part of the OCI REST COLLECTION, as that collection contains the necessary javascript code to generate OCI's authentication header -->
 
-## **TASK 2:** Invoke Language OCI REST APIs
+## **TASK 3:** Invoke Language OCI REST APIs
+** @Wes / @Mark - will need you guys to take this part over since I am not familiar with doing this in postman myself.  **
 
 Invoke Language OCI REST APIs by clicking any one of the requests in the OCI REST COLLECTION. Enter the text you want to analyze in the body as shown below:
     ```
