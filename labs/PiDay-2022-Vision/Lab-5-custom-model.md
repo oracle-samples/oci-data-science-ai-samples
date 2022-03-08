@@ -13,7 +13,6 @@ In this lab, you will:
 - Learn how to train an image classification or object detection model through the OCI console.
 
 ### Prerequisites
-- A Free tier or paid tenancy account in OCI (Oracle Cloud Infrastructure)
 - Familiar with OCI object storage to upload data.
 
 ## **Policy Setup**
@@ -36,13 +35,13 @@ Before you start using OCI Vision, your tenancy administrator should set up the 
 
     If you want to allow all the users in your tenancy to use vision service, create a new policy with the below statement:
     ```
-    <copy>allow any-user to use ai-service-vision-family in tenancy</copy>
+    allow any-user to use ai-service-vision-family in tenancy
     ```
     ![](./images/policy3.png " ")
 
     If you want to limit access to a user group, create a new policy with the below statement:
     ```
-    <copy>allow group <group-name> to use ai-service-vision-family in tenancy</copy>
+    allow group <group-name> to use ai-service-vision-family in tenancy
     ```
     ![](./images/policy4.png " ")
 

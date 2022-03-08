@@ -15,8 +15,24 @@ Postman is a GUI-based REST API invocation tool that is very popular among devel
 * Basic knowledge of REST API calls.
 * Postman GUI in your local setup. If you don't have POSTMAN, please download it from [POSTMAN](https://www.postman.com/downloads/)
 
-## **TASK 1:** Setting Up Postman for OCI REST APIs
-We have put together a Postman Collection and Environment to help you quickly get started with calling the Vision REST APIs.
+## **TASK 1:** Add Sample Images to Object Storage
+
+1. Download the [Lab-3 sample images](./Sample-Images/Lab-3).
+
+2. Login to the OCI Console and navigate to your Object Storage Buckets
+
+  ![](./images/object-storage-link.png " ")
+  
+3. Create a new bucket called "pidaydemo".
+
+4. Create a new folder in the "pidaydemo" bucket called "lab-3".
+
+5. Upload the sample images to the "lab-3" folder.
+
+## **TASK 2:** Setting Up Postman for OCI REST APIs
+We have put together a Postman Collection and Environment to help you get started with calling the Vision REST APIs.
+
+1. Install [POSTMAN](https://www.postman.com/downloads/).
 
 1. Import the Vision Collection into Postman
 
@@ -29,14 +45,116 @@ Download the [OCI Credentials Environment](https://www.postman.com/oracledevs/wo
 Make sure to set OCI Credentials as the active environment.
 
 1. Set the Variables
-Open and edit the newly imported environment (OCI Credentials), and set the variables tenancy_ocid, user_ocid, fingerprint, private_key, region, and compartment_ocid.
 
-Make sure to set both Initial Value and Current Value of the variables (set both as the same value).
+Open and edit the newly imported environment (OCI Credentials). Set the following variables:
 
-Click the Save button to commit your changes to the environment.
+   * tenancy_ocid
+      1. To get the tenancy_ocid, open the OCI Console, select **Profile**, select **Tenancy: /<name of tenancy/>**
+         ![](./images/selecttenancy.png " ")
+      1. Copy the **OCID** on this page and add it to your Postman OCI Crednetials.
+   * user_ocid
+      1. To get the user_ocid, open the OCI Console, select **Profile**, select **My Profile**
+         ![](./images/selectmyprofile.png " ")
+      1. Copy the **OCID** on this page and add it to your Postman OCI Crednetials.
+   * fingerprint
+      1. To get the fingerprint, open the OCI Console, select **Profile**, select **My Profile**
+         ![](./images/selectmyprofile.png " ")
+      1. Select **API Keys**
+         ![](./images/selectapikeys.png " ")
+      1. Select **Add API Key**
+      1. Select **Generate API key pair**
+      1. Select **Download private key**. Remember the location where you save the private key. 
+      1. Select **Add**
+      1. Select **Close**
+      1. Copy the fingerprint for the API Key that you just created and add it to the Postman Environment. 
+   * private_key
+      1. Navigate to the private key that you downloaded when getting the fingerprint. Copy it's contents to the Postman Environment.
+   * region
+      1. Add a region to the Postman Environment. Ex: us-phoenix-1
+   * compartment_ocid
+      1. Choose a compartment where you have access to the OCI Vision service.
 
-## **TASK 3:** Invoke Vision OCI REST APIs
+**Make sure to set both Initial Value and Current Value of the variables (set both as the same value).**
 
-##TODO
+1. Click the Save button to commit your changes to the environment.
+
+## **TASK 3:** Invoke the Image Analysis REST API
+
+In this section you'll call the Image Analysis sync REST API.
+
+1. Open the Postman Collection and open the **perform image analysis** request, then view the **Body**.
+
+  ![](./images/performimageanalysisapirequest.png " ")
+
+1. Update the contents of the **Body** to the following.
+
+```http
+{
+  "features": [
+    {
+      "featureType": "OBJECT_DETECTION"
+    }
+  ],
+  "image": {
+    "source": "OBJECT_STORAGE",
+    "namespaceName": "<namespace name>",
+    "bucketName": "pidaydemo",
+    "objectName": "sample-images/skiing.jpg"
+  },
+  "compartmentId": "{{compartment_ocid}}"
+}
+```
+
+* namespaceName
+  1. To get the namespace name, open the OCI Console, select **Profile**, select **Tenancy: /<name of tenancy/>**
+    ![](./images/selecttenancy.png " ")
+  1. Copy the **Object Storage Namespace**
+* bucketName
+  1. The bucket name should be "pidaydemo".
+* objectName
+  1. The object name should be "lab-3/skiing.jpg".
+
+1. Select **Send**. The request should return in a few seconds with the result of the image analysis.
+
+## **TASK 4:** Invoke the Document AI REST API
+
+In this section you'll call the Document AI sync REST API.
+
+1. Open the Postman Collection and open the **perform document analysis** request, then view the **Body**.
+
+  ![](./images/performdocumentaiapirequest.png.png " ")
+
+1. Update the contents of the **Body** to the following.
+
+```http
+{
+  "document": {
+    "source": "OBJECT_STORAGE",
+    "namespaceName": "<namespace_name>",
+    "bucketName": "<bucket_name>",
+    "objectName": "<object_name>"
+  },
+  "features": [
+    {
+      "featureType": "TEXT_DETECTION"
+    },
+    {
+      "featureType": "KEY_VALUE_DETECTION"
+    }
+  ],
+  "compartmentId": "{{compartment_ocid}}"
+}
+```
+
+* namespaceName
+  1. To get the namespace name, open the OCI Console, select **Profile**, select **Tenancy: /<name of tenancy/>**
+    ![](./images/selecttenancy.png " ")
+  1. Copy the **Object Storage Namespace**
+* bucketName
+  1. The bucket name should be "pidaydemo".
+* objectName
+  1. The object name should be "lab-3/receipt.jpg".
+
+1. Select **Send**. The request should return in a few seconds with the result of the image analysis.
 
 [Proceed to the next lab](#next).
