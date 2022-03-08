@@ -25,9 +25,9 @@ Postman is a GUI-based REST API invocation tool that is very popular among devel
   
 3. Create a new bucket called "pidaydemo".
 
-4. Create a new folder in the "pidaydemo" bucket called "sample-images".
+4. Create a new folder in the "pidaydemo" bucket called "lab-3".
 
-5. Upload the sample images to the "sample-images" folder.
+5. Upload the sample images to the "lab-3" folder.
 
 ## **TASK 2:** Setting Up Postman for OCI REST APIs
 We have put together a Postman Collection and Environment to help you get started with calling the Vision REST APIs.
@@ -78,7 +78,7 @@ Open and edit the newly imported environment (OCI Credentials). Set the followin
 
 1. Click the Save button to commit your changes to the environment.
 
-## **TASK 3:** Invoke Vision OCI Image Analysis REST API
+## **TASK 3:** Invoke the Image Analysis REST API
 
 In this section you'll call the Image Analysis sync REST API.
 
@@ -86,15 +86,23 @@ In this section you'll call the Image Analysis sync REST API.
 
   ![](./images/performimageanalysisapirequest.png " ")
 
-1. Update the contents of **image** to the following.
+1. Update the contents of the **Body** to the following.
 
 ```http
-"image": {
-        "source": "OBJECT_STORAGE",
-        "namespaceName": "<namespace name>",
-        "bucketName": "pidaydemo",
-        "objectName": "sample-images/constructionsite1.png"
+{
+  "features": [
+    {
+      "featureType": "OBJECT_DETECTION"
     }
+  ],
+  "image": {
+    "source": "OBJECT_STORAGE",
+    "namespaceName": "<namespace name>",
+    "bucketName": "pidaydemo",
+    "objectName": "sample-images/skiing.jpg"
+  },
+  "compartmentId": "{{compartment_ocid}}"
+}
 ```
 
 * namespaceName
@@ -104,7 +112,48 @@ In this section you'll call the Image Analysis sync REST API.
 * bucketName
   1. The bucket name should be "pidaydemo".
 * objectName
-  1. The object name should be "sample-images/constructionsite1.png".
+  1. The object name should be "lab-3/skiing.jpg".
+
+1. Select **Send**. The request should return in a few seconds with the result of the image analysis.
+
+## **TASK 4:** Invoke the Document AI REST API
+
+In this section you'll call the Document AI sync REST API.
+
+1. Open the Postman Collection and open the **perform document analysis** request, then view the **Body**.
+
+  ![](./images/performdocumentaiapirequest.png.png " ")
+
+1. Update the contents of the **Body** to the following.
+
+```http
+{
+  "document": {
+    "source": "OBJECT_STORAGE",
+    "namespaceName": "<namespace_name>",
+    "bucketName": "<bucket_name>",
+    "objectName": "<object_name>"
+  },
+  "features": [
+    {
+      "featureType": "TEXT_DETECTION"
+    },
+    {
+      "featureType": "KEY_VALUE_DETECTION"
+    }
+  ],
+  "compartmentId": "{{compartment_ocid}}"
+}
+```
+
+* namespaceName
+  1. To get the namespace name, open the OCI Console, select **Profile**, select **Tenancy: /<name of tenancy/>**
+    ![](./images/selecttenancy.png " ")
+  1. Copy the **Object Storage Namespace**
+* bucketName
+  1. The bucket name should be "pidaydemo".
+* objectName
+  1. The object name should be "lab-3/receipt.jpg".
 
 1. Select **Send**. The request should return in a few seconds with the result of the image analysis.
 
