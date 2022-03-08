@@ -104,7 +104,7 @@ pip install oci
 
 ## **TASK 3:** Add Sample Images to Object Storage
 
-1. Download the [sample images](./Sample-Images).
+1. Download the [Lab-4 sample images](./Sample-Images/Lab-4).
 
 2. Login to the OCI Console and navigate to your Object Storage Buckets
 
