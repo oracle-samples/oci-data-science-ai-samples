@@ -17,7 +17,7 @@ Postman is a GUI-based REST API invocation tool that is very popular among devel
 
 ## **TASK 1:** Add Sample Images to Object Storage
 
-1. Download the [sample images](./Sample-Images).
+1. Download the [Lab-3 sample images](./Lab-3/Sample-Images).
 
 2. Login to the OCI Console and navigate to your Object Storage Buckets
 
