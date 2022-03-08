@@ -16,9 +16,9 @@ If you choose to use an existing OCI trial account, your 30-day trial must still
 You may of course also use a paid OCI account, however the instructions are designed for a new trial account, and your account will be charged for the services used during this workshop.
 
 ### Workshop Modules
-  - [Lab 0 - Introduction](Lab-0-.md)
-  - [Lab 1 - Setup Trial Account](Lab-1-.md)
-  - [Lab 2 - Configure and use OCI Vision in console](Lab-2-.md)
-  - [Lab 3 - Explore Vision REST API](Lab-3-.md)
+  - [Lab 0 - Introduction](Lab-0-intro.md)
+  - [Lab 1 - Setup Trial Account](Lab-1-tenancy-access.md)
+  - [Lab 2 - Configure and use OCI Vision in console](Lab-2-analyze-vision.md)
+  - [Lab 3 - Explore Vision REST API](Lab-3-vision-rest.md)
   - [Lab 4 - Run Python Application](Lab-4-vision-app.md)
-  - [Lab 5 - Retrain OCI Vision](Lab-5-.md)
+  - [Lab 5 - Retrain OCI Vision](Lab-5-custom-model.md)
