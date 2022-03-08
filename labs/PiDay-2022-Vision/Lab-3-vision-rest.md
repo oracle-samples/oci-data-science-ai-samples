@@ -49,7 +49,7 @@ Make sure to set OCI Credentials as the active environment.
 Open and edit the newly imported environment (OCI Credentials). Set the following variables:
 
    * tenancy_ocid
-      1. To get the tenancy_ocid, open the OCI Console, select **Profile**, select **tenancy**
+      1. To get the tenancy_ocid, open the OCI Console, select **Profile**, select **Tenancy: /<name of tenancy/>**
          ![](./images/selecttenancy.png " ")
       1. Copy the **OCID** on this page and add it to your Postman OCI Crednetials.
    * user_ocid
@@ -78,8 +78,34 @@ Open and edit the newly imported environment (OCI Credentials). Set the followin
 
 1. Click the Save button to commit your changes to the environment.
 
-## **TASK 3:** Invoke Vision OCI REST APIs
+## **TASK 3:** Invoke Vision OCI Image Analysis REST API
 
-##TODO
+In this section you'll call the Image Analysis sync REST API.
+
+1. Open the Postman Collection and open the **perform image analysis** request, then view the **Body**.
+
+  ![](./images/performimageanalysisapirequest.png " ")
+
+1. Update the contents of **image** to the following.
+
+```http
+"image": {
+        "source": "OBJECT_STORAGE",
+        "namespaceName": "<namespace name>",
+        "bucketName": "pidaydemo",
+        "objectName": "sample-images/constructionsite1.png"
+    }
+```
+
+* namespaceName
+  1. To get the namespace name, open the OCI Console, select **Profile**, select **Tenancy: /<name of tenancy/>**
+    ![](./images/selecttenancy.png " ")
+  1. Copy the **Object Storage Namespace**
+* bucketName
+  1. The bucket name should be "pidaydemo".
+* objectName
+  1. The object name should be "sample-images/constructionsite1.png".
+
+1. Select **Send**. The request should return in a few seconds with the result of the image analysis.
 
 [Proceed to the next lab](#next).
