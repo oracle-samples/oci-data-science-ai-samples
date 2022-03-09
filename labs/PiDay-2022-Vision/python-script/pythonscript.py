@@ -80,9 +80,21 @@ final_prefix= output_prefix+"/"+res.data.id+"/"+namespace_name+"_"+bucket_name+"
 # 2. Report the person and hardhat counts, and the number of images processed
 # 3. Also, list the names of images where the person count and hardhat count don’t match
 
-# Sleep for 90 Seconds
-print("Please wait 90 seconds for images to be analyzed.")
-time.sleep(90)
+# Wait for images to be processed
+print("Wait for images to be analyzed. Timeout after 90 seconds")
+job_status = res.data.lifecycle_state
+print("Job status: ", res.data.lifecycle_state)
+i = 1
+while i <= 18:
+    res = ai_vision_client.get_image_job(image_job_id=res.data.id)
+    if job_status != res.data.lifecycle_state:
+        print("Job status: ", res.data.lifecycle_state)
+        job_status = res.data.lifecycle_state
+    if res.data.lifecycle_state == 'SUCCEEDED' or res.data.lifecycle_state == 'CANCELING' or res.data.lifecycle_state == 'FAILED' or res.data.lifecycle_state == 'CANCELED':
+        break
+    else:
+        time.sleep(5)
+        i+= 1
 
 person_count=0
 hat_count=0
