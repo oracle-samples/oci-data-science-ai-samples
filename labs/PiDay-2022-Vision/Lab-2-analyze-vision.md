@@ -26,24 +26,24 @@ Before you start using OCI Vision, your tenancy administrator should set up the 
 
 1. Create Policy
 
-  Click Create Policy
-    ![](./images/policy2.png " ")
+  Click Create Policy </br>
+  ![](./images/policy2.png " ")
 
 
 1. Create a new policy with the following statements:
 
   If you want to allow all the users in your tenancy to use vision service, create a new policy with the below statement:
-    ```
-    <copy>allow any-user to use ai-service-vision-family in tenancy</copy>
-    ```
-    ![](./images/policy3.png " ")
+  ```
+    allow any-user to use ai-service-vision-family in tenancy
+  ```
+  ![](./images/policy3.png " ")
 
 
-  If you want to limit access to a user group, create a new policy with the below statement:
-    ```
-    <copy>allow group <group-name> to use ai-service-vision-family in tenancy</copy>
-    ```
-    ![](./images/policy4.png " ")
+  If you want to limit access to a user group, create a new policy with the below statement: </br>
+  ```
+      allow group <group-name> to use ai-service-vision-family in tenancy
+  ```
+  ![](./images/policy4.png " ")
 
 ## **Task 1:** Understand Data Requirements
 
@@ -58,7 +58,7 @@ The service offers sync and async APIs to analyze images, with data requirements
 
 ## **Task 2:** Upload Data to Object Storage
 
-This is an optional set of steps if you want to test OCI Vision with your own sample images.
+This is the set of steps to follow to test OCI Vision with your own sample images.
 
 1. Create an Object Storage Bucket (This step is optional in case the bucket is already created)
 
@@ -72,22 +72,25 @@ This is an optional set of steps if you want to test OCI Vision with your own sa
     ![](./images/create-bucket-button.png " ")
 
   d. Next, fill out the dialog box:
-  * Bucket Name: Provide a name <br/>
+  * Bucket Name: Provide a name called **_pidaydemo_** for convenience.  If you do not name it _pidaydemo_, please make a note of your name and remember to refer to it wherever the subsequent labs refer to the _pidaydemo_ bucket <br/>
   * Storage Tier: STANDARD
 
   e. Then click Create
     ![](./images/press-bucket-button.png " ")
 
-1. Upload image files into Storage Bucket
+1. Upload image files into Storage Bucket. **Note:** It is important to follow these steps correctly to prevent problems with Lab 3 and Lab 4 demos.  
 
-  a. Switch to OCI window and click the Bucket Name.
+  a. Download the set of images that you will use from the following two folders, and store it on your local computer in separate folders called **lab-3** and **lab-4** for convenience: [Lab 3](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-3) and [Lab 4](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-4)
+  
+  b. Switch to OCI window and click the Bucket Name for the Bucket that you just created, whether it was **pidaydemo** or any custom name you gave it.
 
-  b. Bucket detail window should be visible. Click Upload
+  c. Bucket detail window should now be visible. Click the dropdown called **More Actions** then **Create New Folder**.  Create a folder called **lab-3** and another one called **lab-4**
     ![](./images/bucket-detail.png " ")
 
-  c. Click on Upload and then browse to file which you desire to upload.
+  d. Click the **lab-3** folder name and then click Upload.  Browse to the folder in your computer in which you downloaded the files for **lab-3**.  Drag and drop all files into the bucket.  Click on Upload to complete the upload process.  
     ![](./images/upload-sample-file.png " ")
 
+  e. Repeat the process for all the files for the **lab-4** folder too.  
 
   More details on Object storage can be found on this page. [Object Storage Upload Page](https://oracle.github.io/learning-library/oci-library/oci-hol/object-storage/workshops/freetier/index.html?lab=object-storage) to see how to upload.
 
