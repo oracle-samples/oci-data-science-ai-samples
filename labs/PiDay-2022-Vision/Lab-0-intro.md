@@ -39,4 +39,4 @@ In this workshop, you will:
   - None
   - Familiar with Python programming is recommended.
 
-[Proceed to the next lab](#next).
+[Proceed to the next lab](./Lab-1-tenancy-access.md).
