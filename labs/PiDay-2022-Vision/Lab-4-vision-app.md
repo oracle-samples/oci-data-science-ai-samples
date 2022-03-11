@@ -74,51 +74,99 @@ In this lab you will use the Python SDK to identify if any workers in an image a
      Replace the **key_file value** with the path of your generated private key.
      
       ![](./images/config2.png " ")
+      
+      ![](./images/ocifolder.png " ")
 
 To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) and [SDK and CLI Configuration File](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm#SDK_and_CLI_Configuration_File)
 
-## **TASK 2:** Setup for Python
+## **TASK 2:** Install Python
 
-Please follow the steps in the order described.
-Before you go any further, make sure you have Python 3.x version and that it’s available from your command line. You can check this by simply running:
-```
-python --version
-```
-If you do not have Python, please install the latest 3.x version from [python.org ](https://www.python.org)
+**Note: If you already have Python 3.x, pip, and Python is available from your command line, skip this task.**
 
-Additionally, you’ll need to make sure you have pip available. You can check this by running:
-```
-pip --version
-```
-If you installed Python from source, with an installer from python.org, or via Homebrew you should already have pip. If you’re on Linux and installed using your OS package manager, you may have to install pip separately.
+1. Confirm you have Python 3.x
 
+    1.a. If you're using Windows, open an admin command prompt. If you're on a Mac, open the Terminal.
+    
+    1.b. Run the following:
+    
+        ```
+        python --version
+        ```
+        
+        If you have Python 3.x continue to step 2. If you receive an error or have a Python version less than 3.x, continue to step 1.c. 
+        
+    1.c. Install Python
+    
+        Install the latest version of Python from [python.org](https://www.python.org).
+        
+        After installion run the following to confirm you have access to Python from the command line.
+        
+        ```
+        python --version
+        ```
+
+2. Confirm you have pip
+
+    2.a. Check for pip by running the following:
+
+        ```
+        pip --version
+        ```
+        
+        If pip is available, continue to task 3. If not, continue to step 2.b.
+        
+    2.b. Download [get-pip.py](https://pip.pypa.io/en/stable/installation/).
+    
+    2.c. Copy to Python installation folder
+    
+        Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python
+        
+    2.d. Add pip
+        
+        Cd to folder containing get-pip.py
+        
+        Run the following:
+        
+        ```
+        py get-pip.py
+        ```
+        
+    2.e. Confirm pip by running the following
+    
+        ```
+        pip --version
+        ```
+
+## **TASK 3:** Setup for Python
 
 1. Create virtualenv
 
-  To create a virtual environment, run the venv module as a script as shown below
-```
-python -m venv <name of virtual environment>
-```
+    To create a virtual environment, run the venv module as a script as shown below
+    ```
+    python -m venv <name of virtual environment>
+    ```
+    
 2. Activate virtualenv
 
-  Once you’ve created a virtual environment, you may activate it.
+    Once you’ve created a virtual environment, you may activate it.
 
-Mac OS / Linux:
-```
-source <name of virtual environment>/bin/activate
-```
-Windows:
-```
-<name of virtual environment>\Scripts\activate
-```
+    Mac OS / Linux:
+    ```
+    source <name of virtual environment>/bin/activate
+    ```
+    Windows:
+    ```
+    <name of virtual environment>\Scripts\activate
+    ```
+    
 3. Install OCI
 
-  Now Install oci by running:
-```
-pip install oci
-```
+    Now Install oci by running:
+    ```
+    pip install oci
+    ```
 
-## **TASK 3:** Add Sample Images to Object Storage
+## **TASK 4:** Add Sample Images to Object Storage
 
 1. Download the [Lab-4 sample images](./Sample-Images/Lab-4).
 
@@ -126,193 +174,208 @@ pip install oci
 
   ![](./images/object-storage-link.png " ")
   
-3. Create a new bucket called "pidaydemo".
+3. Navigate to the "oracle_bucket" you created in Lab 2.
 
-4. Create a new folder in the "pidaydemo" bucket called "sample-images".
+4. Create a new folder called "lab-4".
 
-5. Upload the sample images to the "sample-images" folder.
+5. Upload the sample images to the "lab-4" folder.
 
-## **TASK 4:** OCI Vision Service SDK Code Sample
+## **TASK 5:** OCI Vision Service SDK Code Sample
+
+1. Create a new file called "helmetdetection.py" and add it to C:\Users\<user>\AppData\Local\Programs\Python\<Python version>\Scripts folder.
+
+2. Copy the python code from below into "helmetdetection.py".
 
 #### Python Code
-```Python
-### Import Packages
-import time
-import oci
-import json
-import re
 
-from oci.ai_vision import AIServiceVisionClient
-from oci.ai_vision.models.create_image_job_details import CreateImageJobDetails
-from oci.ai_vision.models.image_object_detection_feature import ImageObjectDetectionFeature
-from oci.ai_vision.models.input_location import InputLocation
-from oci.ai_vision.models.object_list_inline_input_location import ObjectListInlineInputLocation
-from oci.ai_vision.models.object_location import ObjectLocation
-from oci.ai_vision.models.object_storage_document_details import ObjectStorageDocumentDetails
-from oci.ai_vision.models.output_location import OutputLocation
-from oci.object_storage import ObjectStorageClient
+    ```Python
+    ### Import Packages
+    import time
+    import oci
+    import json
+    import re
 
-### Define Variables
-namespace_name = "<namespace name>"
-bucket_name = "<bucket name>"
-compartment_id = "<compartment id>"
-input_prefix = "<folder name for images>"
-output_prefix = "<output folder name for results>"
+    from oci.ai_vision import AIServiceVisionClient
+    from oci.ai_vision.models.create_image_job_details import CreateImageJobDetails
+    from oci.ai_vision.models.image_object_detection_feature import ImageObjectDetectionFeature
+    from oci.ai_vision.models.input_location import InputLocation
+    from oci.ai_vision.models.object_list_inline_input_location import ObjectListInlineInputLocation
+    from oci.ai_vision.models.object_location import ObjectLocation
+    from oci.ai_vision.models.object_storage_document_details import ObjectStorageDocumentDetails
+    from oci.ai_vision.models.output_location import OutputLocation
+    from oci.object_storage import ObjectStorageClient
 
-# Auth Config Definition
-config = oci.config.from_file('~/.oci/config')
+    ### Define Variables
+    namespace_name = "<namespace name>"
+    bucket_name = "<bucket name>"
+    compartment_id = "<compartment id>"
+    input_prefix = "<folder name for images>"
+    output_prefix = "<output folder name for results>"
 
-# AI Vision Client Definition
-ai_vision_client = oci.ai_vision.AIServiceVisionClient(config)
+    # Auth Config Definition
+    config = oci.config.from_file('~/.oci/config')
 
-### Get Images from Object Storage Using Object Storage Client
-# List Objects in Bucket
-object_storage_client = ObjectStorageClient(config)
-object_list = object_storage_client.list_objects(
-    namespace_name = namespace_name,
-    bucket_name = bucket_name,
-    prefix = input_prefix
-)
+    # AI Vision Client Definition
+    ai_vision_client = oci.ai_vision.AIServiceVisionClient(config)
 
-# Create List of All Testing Images
-image_list = []
-for i in object_list.data.objects:
-    if i.name.endswith('.jpg'):
-        object_location = ObjectLocation()
-        object_location.bucket_name = bucket_name
-        object_location.namespace_name = namespace_name
-        object_location.object_name= i.name
-        image_list.append(object_location)
+    ### Get Images from Object Storage Using Object Storage Client
+    # List Objects in Bucket
+    object_storage_client = ObjectStorageClient(config)
+    object_list = object_storage_client.list_objects(
+        namespace_name = namespace_name,
+        bucket_name = bucket_name,
+        prefix = input_prefix
+    )
 
-### Vision AI
-# Send the Request to Service with Multiple Features
-image_object_detection_feature = ImageObjectDetectionFeature()
-features = [image_object_detection_feature]
+    # Create List of All Testing Images
+    image_list = []
+    for i in object_list.data.objects:
+        if i.name.endswith('.jpg'):
+            object_location = ObjectLocation()
+            object_location.bucket_name = bucket_name
+            object_location.namespace_name = namespace_name
+            object_location.object_name= i.name
+            image_list.append(object_location)
 
-# Setup Input Location
-object_locations1 = image_list
-input_location = ObjectListInlineInputLocation()
-input_location.object_locations = object_locations1
+    ### Vision AI
+    # Send the Request to Service with Multiple Features
+    image_object_detection_feature = ImageObjectDetectionFeature()
+    features = [image_object_detection_feature]
 
-# Setup Output Location
-output_location = OutputLocation()
-output_location.namespace_name = namespace_name
-output_location.bucket_name = bucket_name
-output_location.prefix = output_prefix
+    # Setup Input Location
+    object_locations1 = image_list
+    input_location = ObjectListInlineInputLocation()
+    input_location.object_locations = object_locations1
 
-# Details Setup
-create_image_job_details = CreateImageJobDetails()
-create_image_job_details.features = features
-create_image_job_details.compartment_id = compartment_id
-create_image_job_details.output_location = output_location
-create_image_job_details.input_location = input_location
+    # Setup Output Location
+    output_location = OutputLocation()
+    output_location.namespace_name = namespace_name
+    output_location.bucket_name = bucket_name
+    output_location.prefix = output_prefix
 
-# Send the testing images to Vision service by calling creat_image_job API to get analyze images and it returns json responses
-res = ai_vision_client.create_image_job(create_image_job_details=create_image_job_details)
+    # Details Setup
+    create_image_job_details = CreateImageJobDetails()
+    create_image_job_details.features = features
+    create_image_job_details.compartment_id = compartment_id
+    create_image_job_details.output_location = output_location
+    create_image_job_details.input_location = input_location
 
-# Final Prefix Variable
-final_prefix= output_prefix+"/"+res.data.id+"/"+namespace_name+"_"+bucket_name+"_"+input_prefix+"/"
+    # Send the testing images to Vision service by calling creat_image_job API to get analyze images and it returns json responses
+    res = ai_vision_client.create_image_job(create_image_job_details=create_image_job_details)
 
-# Logic to perform the following statistics:
-# 1. Count the number of persons and hardhats in each image, and total up the counts
-# 2. Report the person and hardhat counts, and the number of images processed
-# 3. Also, list the names of images where the person count and hardhat count don’t match
+    # Final Prefix Variable
+    final_prefix= output_prefix+"/"+res.data.id+"/"+namespace_name+"_"+bucket_name+"_"+input_prefix+"/"
 
-# Wait for images to be processed
-print("Wait for images to be analyzed. Timeout after 90 seconds")
-job_status = res.data.lifecycle_state
-print("Job status: ", res.data.lifecycle_state)
-i = 1
-while i <= 18:
-    res = ai_vision_client.get_image_job(image_job_id=res.data.id)
-    if job_status != res.data.lifecycle_state:
-        print("Job status: ", res.data.lifecycle_state)
-        job_status = res.data.lifecycle_state
-    if res.data.lifecycle_state == 'SUCCEEDED' or res.data.lifecycle_state == 'CANCELING' or res.data.lifecycle_state == 'FAILED' or res.data.lifecycle_state == 'CANCELED':
-        break
-    else:
-        time.sleep(5)
-        i+= 1
+    # Logic to perform the following statistics:
+    # 1. Count the number of persons and hardhats in each image, and total up the counts
+    # 2. Report the person and hardhat counts, and the number of images processed
+    # 3. Also, list the names of images where the person count and hardhat count don’t match
 
-person_count=0
-hat_count=0
-image_counter=0
-no_match_list=[]
+    # Wait for images to be processed
+    print("Wait for images to be analyzed. Timeout after 90 seconds")
+    job_status = res.data.lifecycle_state
+    print("Job status: ", res.data.lifecycle_state)
+    i = 1
+    while i <= 18:
+        res = ai_vision_client.get_image_job(image_job_id=res.data.id)
+        if job_status != res.data.lifecycle_state:
+            print("Job status: ", res.data.lifecycle_state)
+            job_status = res.data.lifecycle_state
+        if res.data.lifecycle_state == 'SUCCEEDED' or res.data.lifecycle_state == 'CANCELING' or res.data.lifecycle_state == 'FAILED' or res.data.lifecycle_state == 'CANCELED':
+            break
+        else:
+            time.sleep(5)
+            i+= 1
 
-# List all JSON responses received by Vision AI
-object_storage_client = ObjectStorageClient(config)
-object_list = object_storage_client.list_objects(
-    namespace_name = namespace_name,
-    bucket_name = bucket_name,
-    prefix = final_prefix
-) 
+    person_count=0
+    hat_count=0
+    image_counter=0
+    no_match_list=[]
 
-# Count number of persons and number of hats 
-for i in object_list.data.objects:
-    image_counter=image_counter+1
-    body=object_storage_client.get_object(namespace_name, bucket_name, object_name=i.name)
-    dict_test= json.loads(body.data.content.decode('utf-8'))
-    for j in dict_test['imageObjects']:
-        if (j['name'] =='Person' or j['name']=='Man' or j['name']=='Woman' or j['name']=='Human'):
-            person_count =person_count +1
-        if (j['name'] =='Helmet'):
-            hat_count=hat_count+1
-            
-    if (person_count!=hat_count):
-        no_match_list.append(i.name)
-        
+    # List all JSON responses received by Vision AI
+    object_storage_client = ObjectStorageClient(config)
+    object_list = object_storage_client.list_objects(
+        namespace_name = namespace_name,
+        bucket_name = bucket_name,
+        prefix = final_prefix
+    ) 
 
-print ("Number of persons found in images:", person_count,"\n")
-print ("Number of hardhats found in images:", hat_count, "\n")
-print ("Number of images processed:", image_counter, "\n")     
-print ("Names of images where hat count is not equal to total number of persons:\n")
+    # Count number of persons and number of hats 
+    for i in object_list.data.objects:
+        image_counter=image_counter+1
+        body=object_storage_client.get_object(namespace_name, bucket_name, object_name=i.name)
+        dict_test= json.loads(body.data.content.decode('utf-8'))
+        for j in dict_test['imageObjects']:
+            if (j['name'] =='Person' or j['name']=='Man' or j['name']=='Woman' or j['name']=='Human'):
+                person_count =person_count +1
+            if (j['name'] =='Helmet'):
+                hat_count=hat_count+1
 
-for i in no_match_list:
-    i=re.sub(final_prefix,'',i)
-    i=re.sub('.json','',i)
-    print(i)
-```
-Follow below steps to run Python SDK:
-
-1. Download python code
-
-Download [code](./python-script/pythonscript.py) file and save it your directory.
-
-2. Update variables
-
-Open the python script and update all of the below variables. 
-
-Hint:
-The "namespace_name" can be found by navigating to the OCI console, selecting your Profile, selecting your tenancy, and finding "Object Storage Namespace".
-The "bucket_name" should be set to "pidaydemo".
-The "input_prefix" should be set to "sample-images". 
-
-```Python
-namespace_name = "<namespace name>"
-bucket_name = "<bucket name>"
-compartment_id = "<compartment id>"
-input_prefix = "<folder name for images>"
-output_prefix = "<output folder name for results>"
-```
-
-3. Execute the code
-Navigate to the directory where you saved the above file (by default, it should be in the 'Downloads' folder) using your terminal and execute the file by running:
-```
-python pythonscript.py
-```
-
-4. Result
-You will see the following results:
-
-``Number of persons found in images: XX``
-
-``Number of hardhats found in images: XX``
-
-``Number of images processed: XX``
-
-``Number of images where hat count is not equal to total number of persons:``
+        if (person_count!=hat_count):
+            no_match_list.append(i.name)
 
 
+    print ("Number of persons found in images:", person_count,"\n")
+    print ("Number of hardhats found in images:", hat_count, "\n")
+    print ("Number of images processed:", image_counter, "\n")     
+    print ("Names of images where hat count is not equal to total number of persons:\n")
+
+    for i in no_match_list:
+        i=re.sub(final_prefix,'',i)
+        i=re.sub('.json','',i)
+        print(i)
+    ```
+
+3. Update variables
+
+    Open the python script and update all of the below variables. 
+
+    Hint:
+    The "namespace_name" can be found by navigating to the OCI console, selecting your Profile, selecting your tenancy, and finding "Object Storage Namespace".
+    The "compartment_id" can be found by selecting your region in the OCI Console, then selecting **Manage Regions**. Use the **Region Identifier** for the region of your Oracle Storage bucket.
+    The "bucket_name" should be set to "oracle_bucket".
+    The "input_prefix" should be set to "lab-4". 
+
+    ```Python
+    namespace_name = "<namespace name>"
+    bucket_name = "<bucket name>"
+    compartment_id = "<compartment id>"
+    input_prefix = "<folder name for images>"
+    output_prefix = "<output folder name for results>"
+    ```
+
+4. Execute the code
+
+    Navigate to the directory where you saved the above file using your terminal or the command line and execute the file by running:
+    ```
+    python helmetdetection.py
+    ```
+
+5. Result
+
+    You will see the following results:
+
+    ```
+    Wait for images to be analyzed. Timeout after 90 seconds
+    Job status:  ACCEPTED
+    Job status:  IN_PROGRESS
+    Job status:  SUCCEEDED
+    Number of persons found in images: 14
+
+    Number of helmets found in images: 6
+
+    Number of images processed: 7
+
+    Names of images where helmet count is not equal to total number of persons:
+
+    constructionsite5.jpg
+    constructionsite6.jpg
+    constructionsite7.jpg
+    ```
+    
+    Confirm the results by looking at each image.
+    
+    Take a look at the JSON output in your Oracle Object Storage bucket.
 
 ## Learn More
 To know more about the Python SDK visit [Python OCI-Vision](https://docs.oracle.com/en-us/iaas/tools/python/2.58.0/api/ai_vision/client/oci.ai_vision.AIServiceVisionClient.html)
