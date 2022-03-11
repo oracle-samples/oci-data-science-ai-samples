@@ -94,7 +94,9 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 #### region ####
 
 1. In the OCI Console, note the **home region** displayed near the upper right corner of the page (e.g. US East (Ashburn)). Find the corresponding **Region Identifier** displayed in the table below (e.g. us-ashburn-1) and copy and paste it into the **region CURRENT VALUE** field of the Postman Environment.
+
   ![](./images/region.png " ")
+  
 | Region Name |	Region Identifier |	Region Location |
 |-------------|-------------------|-----------------|
 |Australia East (Sydney) |	ap-sydney-1 |	Sydney, Australia |
