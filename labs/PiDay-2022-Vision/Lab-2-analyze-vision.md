@@ -6,6 +6,7 @@ In this session, we will walk through the OCI Console to familiarize ourselves w
 ### Objectives
 
 In this lab, you will:
+- Setup the OCI environment either through **Stacks** (preferred) or through Manual Policy setup 
 - Understand the data requirements and data formats for analyzing images.
 - Be able to download prepared sample datasets and upload the downloaded dataset into OCI (Oracle Cloud Infrastructure) object storage.
 - Get familiar with the OCI console and be able to demo key vision features with it.
@@ -14,7 +15,46 @@ In this lab, you will:
 
 * A trial or paid Oracle cloud account
 
-## **Manual Policy Setup** (not needed if stack template works)
+## **Stack Setup** (preferred method)
+A stack is a blueprint for a collection of cloud resources that can be automatically provisioned using Terraform in the OCI console. OCI contains a stack template for Data Science that we will use to quickly configure the environment.
+
+1. In the OCI console, use the three-bar icon in the upper left corner of the page to open the menu. Go to **Developer Services** and under *Resource Manager* select **Stacks**.
+
+  ![](images/Stacks-1.jpg)
+
+2. Select compartment **cloud account (root)**, then click **Create Stack**.
+
+  ![](images/Stacks-2.jpg)
+
+3. In the *Create Stack* dialog, select the **Template** radio button.
+
+  ![](images/create-stack-info.png)
+
+4. Click **Select Template**
+
+5. In the *Browse Templates* dialog, on the *Service* tab, check **Vision**, then click **Select Template**.
+
+  ![](images/Stacks-Select-Template-3.jpg)
+
+6. Back in the *Create Stack* dialog, change the **Description** to *Provision Vision and its Prerequesites* or something descriptive for you.
+
+  ![](images/create-stack-info.png)
+
+7. Ensure **Compartment** is set to the name of your **root** compartment 
+
+8. Click **Next**.
+
+9. On the next _Configure Variables_ page, check **Use custom models** and **Use batch analysis** checkboxes and click Next
+
+ 
+
+    ![](images/Stacks-Options-5.jpg)
+
+10. On the Review page, check **Run Apply**, then click **Create**.  The stack creation will run for a few minutes and then complete on its own.  You can skip the **Manual Policy Setup** below and start **Task 1**
+
+  ![](images/create-stack-review.png)
+
+## **Manual Policy Setup** (not needed if stack setup steps are completed.  Skip ahead to Task 1)
 
 Before you start using OCI Vision, your tenancy administrator should set up the following policies by following below steps:
 
