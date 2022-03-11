@@ -174,7 +174,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
   ![](./images/object-storage-link.png " ")
   
-3. Navigate to the "oracle_bucket" you created in Lab 2.
+3. Navigate to the "pidaydemo" you created in Lab 2.
 
 4. Create a new folder called "lab-4".
 
@@ -333,7 +333,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
     Hint:
     The "namespace_name" can be found by navigating to the OCI console, selecting your Profile, selecting your tenancy, and finding "Object Storage Namespace".
     The "compartment_id" can be found by selecting your region in the OCI Console, then selecting **Manage Regions**. Use the **Region Identifier** for the region of your Oracle Storage bucket.
-    The "bucket_name" should be set to "oracle_bucket".
+    The "bucket_name" should be set to "pidaydemo".
     The "input_prefix" should be set to "lab-4". 
 
     ```Python
