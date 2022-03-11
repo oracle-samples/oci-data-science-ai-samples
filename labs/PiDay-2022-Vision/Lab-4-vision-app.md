@@ -2,9 +2,7 @@
 
 ## Introduction
 
-Oracle Cloud Infrastructure provides a number of Software Development Kits (SDKs) to facilitate development of custom solutions. SDKs allow you to build and deploy apps that integrate with Oracle Cloud Infrastructure services. Each SDK also includes tools and artifacts you need to develop an app, such as code samples and documentation. In addition, if you want to contribute to the development of the SDKs, they are all open source and available on GitHub.
-
-You can invoke OCI Vision capabilities through the OCI SDKs.  In this lab session, we will show how to use the Python SDK to call the Vision service.
+In this lab you will use the Python SDK to identify if any workers in an image are not wearing their helmet. The python script will analyze 7 images, count the number of people in the image, count the number of helmets in the image, and compare the results to determine which images include workers who are not wearing their helmet.
 
 [SDK for Python](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm#SDK_for_Python)
 
@@ -21,43 +19,61 @@ You can invoke OCI Vision capabilities through the OCI SDKs.  In this lab sessio
 
 ## **TASK 1:** Setup API Signing Key and Config File
 
-Mac OS / Linux:
+1. Create the .oci folder.
 
-```
-mkdir ~/.oci
-```
-Windows:
-```
-mkdir %HOMEDRIVE%%HOMEPATH%\.oci
-```
+    Mac OS / Linux:
+    ```
+    mkdir ~/.oci
+    ```
 
-Generate an API signing key pair
+    Windows:
+    ```
+    mkdir %HOMEDRIVE%%HOMEPATH%\.oci
+    ```
 
-1. Open User Settings
+1. Generate an API signing key pair
 
-  Open the Profile menu (User menu icon) and click User Settings.
-    ![](./images/userProfileIcon.png " ")
+    **Note: If you completed lab 3, you already created an API Key. If that's the case, skip to 2.d. below.**
 
-2. Open API Key
+    2.a. Open My Profile
+    
+    Open the **Profile** menu (User menu icon) and click **My Profile**.
+    
+      ![](./images/selectmyprofile.png " ")
 
-  Navigate to API Key and then Click Add API Key.
-    ![](./images/addAPIButton.png " ")
+    2.b. Open API Keys
 
-3. Generate API Key
+    Navigate to **API keys** and then Click **Add API Key**.
+    
+      ![](./images/addAPIButton.png " ")
 
-  In the dialog, select Generate API Key Pair. Click Download Private Key and save the key to your .oci directory and then click Add.
-    ![](./images/genAPI.png " ")
+    2.c. Generate API Key
 
-4. Generate Config File
+    In the dialog, select **Generate API key pair**. Click **Download Private Key**.
+    
+      ![](./images/downloadprivatekey.png " ")
+        
+    2.d. Save Private Key
+    
+    Save the private key that downloaded to your **.oci** directory.
+       
+    2.e. Add the API Key
 
-  Copy the values shown on the console.
-    ![](./images/conf.png " ")
+    Click **Add**.
+    
+      ![](./images/addapikey.png " ")
 
- Create a config file in the .oci folder and paste the values copied.
- Replace the key_file value with the path of your generated API Key.
-    ![](./images/config2.png " ")
+    2.f. Generate Config File
 
+    Copy the values shown on the console.
+    
+      ![](./images/conf.png " ")      
 
+3. Create a config file in the .oci folder and paste the values copied.
+
+     Replace the **key_file value** with the path of your generated private key.
+     
+      ![](./images/config2.png " ")
 
 To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) and [SDK and CLI Configuration File](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm#SDK_and_CLI_Configuration_File)
 
