@@ -48,7 +48,6 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 #### tenancy_ocid ####
 
 1. To get the **tenancy_ocid**, open the OCI Console, click the **Profile** icon in the upper right corner, then select **Tenancy: *name***
-
   ![](./images/selecttenancy.png " ")
 
 1. Copy the **OCID** on this page and add it to your Postman OCI Credentials in the **tenancy_ocid CURRENT VALUE** field.
@@ -58,7 +57,7 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 
 #### user_ocid ####
 1. To get the **user_ocid**, go back to the OCI Console, click the **Profile** icon, then select **your user name**
-  ![](./images/selectmyprofile.png " ") TODO - change image?
+  ![](./images/selectmyprofile.png " ")
 
 1. The *User Details* page opens. Copy the **OCID** on this page and add it to your Postman OCI Credentials in the **user_ocid CURRENT VALUE** field.
   ![](./images/user-ocid.png " ")
@@ -66,29 +65,35 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
   ![](./images/postman-user-ocid.png " ")
 
 #### fingerprint & private_key####
-1. Open the OCI Console, click the **Profile** icon, then select **your user name**.
-  ![](./images/selectmyprofile.png " ") TODO - change image?
 
-1. The User Details page opens. Under Resources, on the lower left side of the page, select **API Keys**
+1. Open the OCI Console, click the **Profile** icon, then select **your user name**.
+  
+  ![](./images/selectmyprofile.png " ")
+
+2. The User Details page opens. Under Resources, on the lower left side of the page, select **API Keys**
+  
   ![](./images/selectapikeys.png " ")
 
-1. Click the **Add API Key** button
+3. Click the **Add API Key** button
+  
   ![](./images/add-api-key.png " ")
 
-1. The Add API Key dialog box opens. Select option: **Generate API Key Pair**
+4. The Add API Key dialog box opens. Select option: **Generate API Key Pair**
+  
   ![](./images/add-api-key-dialog1.png " ")
 
-1. Click the **Download Private Key** button and save the file to you local computer. Remember the location where you saved the private key file (*username-date*.pem).
+5. Click the **Download Private Key** button and save the file to you local computer. Remember the location where you saved the private key file (*username-date*.pem).
+  
   ![](./images/add-api-key-dialog2.png " ")
 
-1. Click the **Add** button in the *Add API Key* dialog. The dialog closes.
+6. Click the **Add** button in the *Add API Key* dialog. The dialog closes.
 
-1. Copy the **fingerprint** for the API Key that you just created and add it to the **fingerprint CURRENT VALUE** field of the Postman Environment.
+7. Copy the **fingerprint** for the API Key that you just created and add it to the **fingerprint CURRENT VALUE** field of the Postman Environment.
   ![](./images/add-api-key-fingerprint.png " ")
 
   ![](./images/postman-fingerprint.png " ")
 
-1. On your local computer, navigate to the **private key file (*username-date*.pem)** that you downloaded when getting the fingerprint. Open it in a text editor, copy it's contents, and paste them into the **private_key CURRENT VALUE** field of the Postman Environment.
+8. On your local computer, navigate to the **private key file (*username-date*.pem)** that you downloaded when getting the fingerprint. Open it in a text editor, copy it's contents, and paste them into the **private_key CURRENT VALUE** field of the Postman Environment.
   ![](./images/postman-privatekey.png " ")
 
 #### region ####
@@ -201,27 +206,27 @@ In this task, you'll call the Document AI synchronous REST API using POSTMAN.
   ![](./images/performdocumentaiapirequest.png)
 
 1. Update the contents of the **Body** to the following:
-```http
-{
-  "document": {
-    "source": "OBJECT_STORAGE",
-    "namespaceName": "<namespace_name>",
-    "bucketName": "pidaydemo",
-    "objectName": "lab-3/receipt.jpg"
-  },
-  "features": [
-    {
-      "featureType": "TEXT_DETECTION"
+  ```http
+  {
+    "document": {
+      "source": "OBJECT_STORAGE",
+      "namespaceName": "<namespace_name>",
+      "bucketName": "pidaydemo",
+      "objectName": "lab-3/receipt.jpg"
     },
-    {
-      "featureType": "KEY_VALUE_DETECTION"
-    }
-  ],
-  "compartmentId": "{{compartment_ocid}}"
-}
-```
+    "features": [
+      {
+        "featureType": "TEXT_DETECTION"
+      },
+      {
+        "featureType": "KEY_VALUE_DETECTION"
+      }
+    ],
+    "compartmentId": "{{compartment_ocid}}"
+  }
+  ```
 
-1. Set **namespaceName** to the same value you used in the previous document analysis task
+3. Set **namespaceName** to the same value you used in the previous document analysis task
 
 1. *bucketName* should be **"pidaydemo"** or whatever name you used for the object storage bucket in Lab 2.
 
