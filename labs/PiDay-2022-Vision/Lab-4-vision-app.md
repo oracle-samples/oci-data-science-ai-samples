@@ -45,9 +45,9 @@ Example of workers not wearing their helmets:
 
     a. Open My Profile
 
-    Open the **Profile** menu (User menu icon) and click **My Profile**.
+    Open the **Profile** menu (User menu icon) and click **your user name**.
 
-      ![](./images/selectmyprofile.png " ")
+      ![](./images/new-profilename.png " ")
 
     b. Open API Keys
 
@@ -95,7 +95,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
     a. If you're using Windows, open an admin command prompt. If you're on a Mac, open the Terminal.
 
-    b. Run the following from the python installation folder (Example Python installation folder on Windows: C:\Users\<user>\AppData\Local\Programs\Python)
+    b. Run the following from the python installation folder (Example Python installation folder on Windows: C:\Users\<user>\AppData\Local\Programs\Python\<Python version>)
 
       Windows:
       ```
@@ -146,7 +146,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
     c. Copy to Python installation folder
 
-      Example Python installation folder on Windows: C:\Users\<user>\AppData\Local\Programs\Python
+      Example Python installation folder on Windows: C:\Users\<user>\AppData\Local\Programs\Python\<Python version>
 
     d. Add pip
 
