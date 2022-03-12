@@ -1,7 +1,7 @@
 # Pi Day Hands-On Lab
 # Be an AI Wizard: No ML magic required
 
-## Introduction
+## Lab 0: Introduction
 
 This lab is built for use as a workshop at the Oracle Pi Day event in March 2022. It uses Oracle Cloud Infrastructure (OCI) Vision service to show how AI services can be used with applications. The workshop guides the user to run a safety application that that looks for persons not wearing hardhats in images of industrial scenes.
 
