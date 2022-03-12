@@ -37,9 +37,9 @@ In this lab you will use the Python SDK to identify if any workers in an image a
 
     2.a. Open My Profile
 
-    Open the **Profile** menu (User menu icon) and click **My Profile**.
+    Open the **Profile** menu (User menu icon) and click **your user name**.
 
-      ![](./images/selectmyprofile.png " ")
+      ![](./images/new-profilename.png " ")
 
     2.b. Open API Keys
 
@@ -88,7 +88,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
     1.a. If you're using Windows, open an admin command prompt. If you're on a Mac, open the Terminal.
 
     1.b. Run the following from the python installation folder:
-    Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python
+    Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python\<Python version>
 
       ```
       python --version
@@ -121,7 +121,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
     2.c. Copy to Python installation folder
 
-      Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python
+      Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python\<Python version>
 
     2.d. Add pip
 
