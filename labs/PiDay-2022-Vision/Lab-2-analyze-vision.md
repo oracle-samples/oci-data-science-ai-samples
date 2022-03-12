@@ -102,7 +102,7 @@ This is the set of steps to follow to test OCI Vision with your own sample image
 
 1. Create an Object Storage Bucket (This step is optional in case the bucket is already created)
 
-  a. First, From the OCI Services menu, click Object Storage.
+  a. First, From the OCI Services hamburger menu on the left, click **Storage** and then **Buckets**.
     ![](./images/cloud-storage-bucket.png " ")
 
   b. Then, Select Compartment from the left dropdown menu. Choose the compartment matching your name or company name.
@@ -142,7 +142,7 @@ This is the set of steps to follow to test OCI Vision with your own sample image
 
 ### 2. Use Document AI features
 
-  a. On the Vision page, select “Document AI” on the left navigation menu and provide a document or image from local storage or OCI object storage. This invokes analyzeDocument API after the image is provided. Raw text extracted by our pre-trained multi-tenant model is displayed on the right.
+  a. On the Vision page, select **Document AI** on the left navigation menu.  Document AI has a pre-built example receipt image that extracts both Key Values and Raw Text that are displayed on the right.  Alternatively, you can also provide a document or image from local storage or OCI object storage. This invokes analyzeDocument API after the image is provided. 
 
   ![](./images/document-ai-features.png " ")
 
@@ -162,7 +162,7 @@ This is the set of steps to follow to test OCI Vision with your own sample image
 
   ![](./images/image-features.png " ")
 
-  b. Features you can test out:
+  b. Features you can test out.  We recommend completing **Object Detection** below as part of **Lab 4** that follows, and then doing _Image Classification_ on your own.  
 
   | Feature | Description | Details on Console |
   | --- | --- | --- |
