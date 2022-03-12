@@ -109,16 +109,16 @@ This is the set of steps to follow to test OCI Vision with your own sample image
     ![](./images/create-compartment.png " ")
 
   c. Next click Create Bucket.
-    ![](./images/create-bucket-button.png " ")
-
+    
   d. Next, fill out the dialog box:
   * Bucket Name: Provide a name called **_pidaydemo_** for convenience.  If you do not name it _pidaydemo_, please make a note of your name and remember to refer to it wherever the subsequent labs refer to the _pidaydemo_ bucket <br/>
   * Storage Tier: STANDARD
 
   e. Then click Create
-    ![](./images/press-bucket-button.png " ")
+    ![](./images/bucket-pidaydemo.jpg " ")
 
-1. Upload image files into Storage Bucket. **Note:** It is important to follow these steps correctly to prevent problems with Lab 3 and Lab 4 demos.  
+</br>2. Upload image files into Storage Bucket. </br>
+**Note:** It is important to follow these steps correctly to prevent problems with Lab 3 and Lab 4 demos.  
 
   a. Download the set of images that you will use from the following two folders, and store it on your local computer in separate folders called **lab-3** and **lab-4** for convenience: [Lab 3](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-3) and [Lab 4](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-4)
   
