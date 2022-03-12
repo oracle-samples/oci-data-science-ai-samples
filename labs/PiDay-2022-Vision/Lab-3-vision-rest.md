@@ -57,7 +57,7 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 
 #### user_ocid ####
 1. To get the **user_ocid**, go back to the OCI Console, click the **Profile** icon, then select **your user name**
-  ![](./images/selectmyprofile.png " ")
+  ![](./images/new-profilename.png " ")
 
 1. The *User Details* page opens. Copy the **OCID** on this page and add it to your Postman OCI Credentials in the **user_ocid CURRENT VALUE** field.
   ![](./images/user-ocid.png " ")
@@ -67,26 +67,30 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 #### fingerprint & private_key####
 
 1. Open the OCI Console, click the **Profile** icon, then select **your user name**.
-  
-  ![](./images/selectmyprofile.png " ")
+
+  ![](./images/new-profilename.png " ")
 
 2. The User Details page opens. Under Resources, on the lower left side of the page, select **API Keys**
-  
+
   ![](./images/selectapikeys.png " ")
 
 3. Click the **Add API Key** button
-  
+
   ![](./images/add-api-key.png " ")
 
 4. The Add API Key dialog box opens. Select option: **Generate API Key Pair**
-  
+
   ![](./images/add-api-key-dialog1.png " ")
 
 5. Click the **Download Private Key** button and save the file to you local computer. Remember the location where you saved the private key file (*username-date*.pem).
-  
+
   ![](./images/add-api-key-dialog2.png " ")
 
-6. Click the **Add** button in the *Add API Key* dialog. The dialog closes.
+6. Click the **Add** button in the *Add API Key* dialog. The *Configuration File Preview* dialog opens.
+
+7. Click **Close** on the *Configuration File Preview* dialog
+
+  ![](./images/api-configfilepreview.png " ")
 
 7. Copy the **fingerprint** for the API Key that you just created and add it to the **fingerprint CURRENT VALUE** field of the Postman Environment.
   ![](./images/add-api-key-fingerprint.png " ")
@@ -98,10 +102,10 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 
 #### region ####
 
-1. In the OCI Console, note the **home region** displayed near the upper right corner of the page (e.g. US East (Ashburn)). Find the corresponding **Region Identifier** displayed in the table below (e.g. us-ashburn-1) and copy and paste it into the **region CURRENT VALUE** field of the Postman Environment.
+1. In the OCI Console, note the **home region** displayed near the upper right corner of the page (e.g. US East (Ashburn)). Find the corresponding **Region Identifier** displayed in the table below (e.g. us-ashburn-1) and copy and paste it into the **region CURRENT VALUE** field of the Postman Environment. Overwrite the default value if your region is different.
 
   ![](./images/region.png " ")
-  
+
 | Region Name |	Region Identifier |	Region Location |
 |-------------|-------------------|-----------------|
 |Australia East (Sydney) |	ap-sydney-1 |	Sydney, Australia |
@@ -143,7 +147,7 @@ The information in the table is found here: https://docs.oracle.com/en-us/iaas/C
 1. Go to the OCI Console and use the hamburger menu to select **Identity & Security**, then, under *Identity*, select **Compartments**.
   ![](./images/i-s-compartments.png " ")
 
-1. The *Compartments* page is displayed and lists all of the compartments. If you are using a new trial tenancy, you probably only have one compartment, which is the root compartment. **Click the name of the compartment** you configured in Lab 2 to access the OCI Vision service.
+1. The *Compartments* page is displayed and lists all of the compartments. If you are using a new trial tenancy, you will have a root compartment and *ManagedCompartmentForPaaS*. **Click the name of the compartment** **(root)** you configured in Lab 2 to access the OCI Vision service.
 
 1. On the *Compartment details* page, click **Copy** next to the compartment OCID.
   ![](./images/compartment-copy.png " ")
@@ -157,7 +161,7 @@ The information in the table is found here: https://docs.oracle.com/en-us/iaas/C
 
 1. In POSTMAN, click the **Save** button to save all of the OCI Credentials that you just entered.
   ![](./images/postman-save.png " ")
-  
+
 ## **TASK 2:** Invoke the Image Analysis REST API
 
 In this task you'll call the Image Analysis synchronous REST API.
@@ -238,4 +242,4 @@ In this task, you'll call the Document AI synchronous REST API using POSTMAN.
 
 You have completed this lab!
 
-[Proceed to the next lab](#next).
+[Proceed to the next lab](./Lab-4-vision-app.md).
