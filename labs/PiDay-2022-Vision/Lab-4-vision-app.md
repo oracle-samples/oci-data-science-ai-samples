@@ -88,7 +88,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
     1.a. If you're using Windows, open an admin command prompt. If you're on a Mac, open the Terminal.
 
     1.b. Run the following from the python installation folder:
-    Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python\<Python version>
+    Example Python installation folder: C:\Users\ *user*\AppData\Local\Programs\Python\ *Pythonversion*
 
       ```
       python --version
@@ -109,7 +109,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 2. Confirm you have pip
 
     2.a. Check for pip by running the following:
-    You may need to change directory to the \Scripts folder. e.g. C:\Users\<user>\AppData\Local\Programs\Python\Scripts
+    You may need to change directory to the \Scripts folder. e.g. C:\Users\ *user*\AppData\Local\Programs\Python\Scripts
 
       ```
       pip --version
@@ -121,7 +121,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
     2.c. Copy to Python installation folder
 
-      Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python\<Python version>
+      Example Python installation folder: C:\Users\ *user*\AppData\Local\Programs\Python\ *Pythonversion*
 
     2.d. Add pip
 
