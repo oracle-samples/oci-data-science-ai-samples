@@ -120,7 +120,7 @@ This is the set of steps to follow to test OCI Vision with your own sample image
 </br>2. Upload image files into Storage Bucket. </br>
 > **Note:** It is important to follow these steps correctly to prevent problems with Lab 3 and Lab 4.  
 
-  a. Download the set of images that you will use from the following two folders, and store it on your local computer in separate folders called **lab-3** and **lab-4** for convenience: [Lab 3](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-3) and [Lab 4](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-4)
+  a. Download the set of images that you will use from the following two folders, and store it on your local computer in separate folders called **lab-3** and **lab-4** for convenience: [Lab 3](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-3) and [Lab 4](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-4). The images are in zip files so you will need to unzip to view the images.
 
   b. Switch to OCI window and click the Bucket Name for the Bucket that you just created, whether it was **pidaydemo** or any custom name you gave it.
 
@@ -128,7 +128,7 @@ This is the set of steps to follow to test OCI Vision with your own sample image
     ![](./images/create-newfolder.png " ")
 
   d. Click the **lab-3** folder name and then click Upload.  Browse to the folder in your computer in which you downloaded the files for **lab-3**.  Drag and drop all files into the bucket.  Click on Upload to complete the upload process.  
-    ![](./images/upload-sample-file.png " ")
+    ![](./images/lab-3objectstoragefolder.png " ")
 
   e. Repeat the process for all the files for the **lab-4** folder too.  
 
@@ -155,7 +155,8 @@ This is the set of steps to follow to test OCI Vision with your own sample image
   | OCR (Optical Character Recognition) | Locates and digitizes text information from images | Text will appear under the "raw text" header of the results pane of the console [\[Reference\]](./images/ocr.png) |
   | Document Image Classification | Classifies documents into different types based on their visual appearance, high-level features, and extracted keywords | Classification along with confidence score appears directly under "Results" pane [\[Reference\]](./images/dic.png) |
   | Language Classification | Classifies the language of document based on visual features | Classification along with confidence score appears under document classification in Results pane [\[Reference\]](./images/language-classification.png) |
-  | Table extraction | Extracts content in tabular format, maintaining row/column relationships of cells | Toggle to the Table tab to get table information [\[Reference\]](./images/table-extraction.png) |
+  | Table Extraction | Extracts content in tabular format, maintaining row/column relationships of cells | Toggle to the Table tab to get table information [\[Reference\]](./images/table-extraction.png) |
+  | Key Value Extraction (Receipts) | Extracts values for predefined fields in a receipt | Analyze a receipt and select key value [\[Reference\]](./images/key-value-receipt.png) |
   | Searchable PDF output | Embeds a transparent layer on top of document image in PDF format to make it searchable by keywords | You need to test on a PDF document to use this feature. When you've selected a PDF, the searchable PDF button will be clickable. Clicking on it will download an OCR PDF to your computer. [\[Reference\]](./images/searchable-pdf-output.png) |
 
 ### 3. Use Image Analysis Features
@@ -172,6 +173,7 @@ This is the set of steps to follow to test OCI Vision with your own sample image
   | --- | --- | --- |
   | Image classification | Categorizes object(s) within an image | Select "Image Classification." Labels and confidence scores will appear under the Results pane. [\[Reference\]](./images/image-classification.png) |
   | Object detection | Locates and identifies objects within an image | Select "Object Detection." Objects, confidence score, and highlighted bounding box will all appear under the Results pane. Clicking on one of the labels on the results pane will also highlight where on the image that object was detected. [\[Reference\]](./images/object-detection.png) |
+  | OCR (Optical Character Recognition) | Locates and digitizes text information from images | Text will appear under the "raw text" header of the results pane of the console [\[Reference\]](./images/ocr.png) |
 
 Congratulations on completing this lab!
 
