@@ -8,11 +8,11 @@ In this lab you will use the Python SDK to identify if any workers in an image a
 
 Example of worker wearing their helmet:
 
-![](./images/constructionsite1.jpg " ")
+![](./images/constructionsite1_resized.jpg " ")
 
 Example of workers not wearing their helmets:
 
-![](./images/constructionsite5.jpg " ")
+![](./images/constructionsite5_resized.jpg " ")
 
 *Estimated Lab Time*: 10 minutes
 
@@ -29,14 +29,14 @@ Example of workers not wearing their helmets:
 
 1. Create the .oci folder. Open an admin command prompt or Terminal and run the following command.
 
-    Mac OS / Linux:
-    ```
-    mkdir ~/.oci
-    ```
-
     Windows:
     ```
     mkdir %HOMEDRIVE%%HOMEPATH%\.oci
+    ```
+
+    Mac OS / Linux:
+    ```
+    mkdir ~/.oci
     ```
 
 1. Generate an API signing key pair
@@ -89,17 +89,22 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
 ## **TASK 2:** Install Python
 
-> **Note**: If you already have Python 3.x and pip, and Python is available from your command line, skip this task.
+> **Note**: If you already have Python 3.x and pip, and Python is available from your command line, skip to Task 3.
 
 1. Confirm you have Python 3.x
 
     a. If you're using Windows, open an admin command prompt. If you're on a Mac, open the Terminal.
 
-    b. Run the following from the python installation folder:
-    Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python
+    b. Run the following from the python installation folder (Example Python installation folder on Windows: C:\Users\<user>\AppData\Local\Programs\Python)
 
+      Windows:
       ```
       python --version
+      ```
+      
+      Mac OS / Linux:
+      ```
+      python3 --version
       ```
 
       If you have Python 3.x continue to step 2. If you receive an error or have a Python version less than 3.x, continue to step 1.c.
@@ -110,8 +115,14 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
       After installation, run the following to confirm you have access to Python from the command line.
 
+      Windows:
       ```
       python --version
+      ```
+      
+      Mac OS / Linux:
+      ```
+      python3 --version
       ```
 
 2. Confirm you have pip
@@ -119,8 +130,14 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
     a. Check for pip by running the following:
     You may need to change directory to the \Scripts folder. e.g. C:\Users\<user>\AppData\Local\Programs\Python\Scripts
 
+      Windows:
       ```
       pip --version
+      ```
+      
+      Mac OS / Linux:
+      ```
+      pip3 --version
       ```
 
       If pip is available, continue to task 3. If not, continue to step 2.b.
@@ -129,7 +146,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
     c. Copy to Python installation folder
 
-      Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python
+      Example Python installation folder on Windows: C:\Users\<user>\AppData\Local\Programs\Python
 
     d. Add pip
 
@@ -143,8 +160,14 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
     e. Confirm pip by running the following
 
+      Windows:
       ```
       pip --version
+      ```
+      
+      Mac OS / Linux:
+      ```
+      pip3 --version
       ```
 
 ## **TASK 3:** Setup for Python
@@ -152,28 +175,43 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 1. Create virtualenv
 
     To create a virtual environment, run the venv module as a script as shown below
+    
+    Windows:
     ```
     python -m venv <name of virtual environment>
+    ```
+    
+    Mac OS / Linux:
+    ```
+    python3 -m venv <name of virtual environment>
     ```
 
 2. Activate virtualenv
 
     Once you’ve created a virtual environment, you may activate it.
 
-    Mac OS / Linux:
-    ```
-    source <name of virtual environment>/bin/activate
-    ```
     Windows:
     ```
     <name of virtual environment>\Scripts\activate
     ```
 
+    Mac OS / Linux:
+    ```
+    source <name of virtual environment>/bin/activate
+    ```
+
 3. Install OCI
 
     Now Install oci by running:
+    
+    Windows:
     ```
     pip install oci
+    ```
+    
+    Mac OS / Linux:
+    ```
+    pip3 install oci
     ```
 
 ## **TASK 4:** Add Sample Images to Object Storage
@@ -361,8 +399,15 @@ for i in no_match_list:
 4. Execute the code
 
     Navigate to the directory where you saved the above file using your terminal or the command line and execute the file by running the following command (from the /Scripts folder):
+    
+    Windows:
     ```
     python helmetdetection.py
+    ```
+    
+    Mac OS / Linux:
+    ```
+    python3 helmetdetection.py
     ```
 
 5. Result
