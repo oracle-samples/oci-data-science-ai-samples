@@ -64,7 +64,7 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 
   ![](./images/postman-user-ocid.png " ")
 
-#### fingerprint & private_key####
+#### fingerprint & private_key ####
 
 1. Open the OCI Console, click the **Profile** icon, then select **your user name**.
 
@@ -87,17 +87,17 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
   ![](./images/add-api-key-dialog2.png " ")
 
 6. Click the **Add** button in the *Add API Key* dialog. The *Configuration File Preview* dialog opens.
+  ![](./images/api-configfilepreview.png " ")
 
 7. Click **Close** on the *Configuration File Preview* dialog
 
-  ![](./images/api-configfilepreview.png " ")
 
-7. Copy the **fingerprint** for the API Key that you just created and add it to the **fingerprint CURRENT VALUE** field of the Postman Environment.
+8. Copy the **fingerprint** for the API Key that you just created and add it to the **fingerprint CURRENT VALUE** field of the Postman Environment.
   ![](./images/add-api-key-fingerprint.png " ")
 
   ![](./images/postman-fingerprint.png " ")
 
-8. On your local computer, navigate to the **private key file (*username-date*.pem)** that you downloaded when getting the fingerprint. Open it in a text editor, copy it's contents, and paste them into the **private_key CURRENT VALUE** field of the Postman Environment.
+9. On your local computer, navigate to the **private key file (*username-date*.pem)** that you downloaded when getting the fingerprint. Open it in a text editor, copy it's contents, and paste them into the **private_key CURRENT VALUE** field of the Postman Environment.
   ![](./images/postman-privatekey.png " ")
 
 #### region ####
@@ -192,7 +192,8 @@ In the next steps, you will insert your namespace name.
 1. To get the namespace name, open the OCI Console, click the **Profile** icon and select **Tenancy: *name***
   ![](./images/selecttenancy.png " ")
 
-1. Copy the **Object Storage Namespace** value and paste it into the Body in POSTMAN as the value for *namespageName*
+1. Copy the **Object Storage Namespace** value and paste it into the Body in POSTMAN as the value for *namespaceName*
+  ![](./images/objstor-namespace.png " ")
 
 1. *bucketName* should be **"pidaydemo"**, which is what was set in Lab 2
 
