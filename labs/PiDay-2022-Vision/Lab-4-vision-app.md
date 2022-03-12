@@ -33,7 +33,7 @@ In this lab you will use the Python SDK to identify if any workers in an image a
 
 1. Generate an API signing key pair
 
-    **Note: If you completed lab 3, you already created an API Key. If that's the case, navigate to the key and skip to 2.f. below.**
+    > **Note**: If you completed lab 3, you already created an API Key. If that's the case, navigate to the key and skip to 2.f. below.**
 
     2.a. Open My Profile
 
@@ -81,7 +81,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
 ## **TASK 2:** Install Python
 
-**Note: If you already have Python 3.x and pip, and Python is available from your command line, skip this task.**
+> **Note**: If you already have Python 3.x and pip, and Python is available from your command line, skip this task.**
 
 1. Confirm you have Python 3.x
 
