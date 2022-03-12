@@ -1,4 +1,4 @@
-# Setup a tenancy for OCI Vision
+# Lab 1: Setup a tenancy for OCI Vision
 ## Introduction
 To do the lab, you will need an Oracle Cloud account. This procedure will guide you through the steps of getting an Oracle Cloud Free Tier account and signing in. Then you will prepare the new OCI tenancy to use OCI Vision.
 
