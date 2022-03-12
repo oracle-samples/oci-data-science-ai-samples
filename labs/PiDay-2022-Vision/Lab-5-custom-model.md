@@ -1,4 +1,4 @@
-# Create a custom model through the console
+# Lab 5: Create a custom model through the console
 
 ## Introduction
 In this session, we will show you how to create a vision project, select your training data, and train a custom model.
