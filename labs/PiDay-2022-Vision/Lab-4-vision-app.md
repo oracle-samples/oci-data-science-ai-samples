@@ -6,6 +6,14 @@ In this lab you will use the Python SDK to identify if any workers in an image a
 
 [SDK for Python](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm#SDK_for_Python)
 
+Example of worker wearing their helmet:
+
+![](./images/constructionsite1_resized.jpg " ")
+
+Example of workers not wearing their helmets:
+
+![](./images/constructionsite5_resized.jpg " ")
+
 *Estimated Lab Time*: 10 minutes
 
 ### Objectives:
@@ -19,51 +27,51 @@ In this lab you will use the Python SDK to identify if any workers in an image a
 
 ## **TASK 1:** Setup API Signing Key and Config File
 
-1. Create the .oci folder.
-
-    Mac OS / Linux:
-    ```
-    mkdir ~/.oci
-    ```
+1. Create the .oci folder. Open an admin command prompt or Terminal and run the following command.
 
     Windows:
     ```
     mkdir %HOMEDRIVE%%HOMEPATH%\.oci
     ```
 
+    Mac OS / Linux:
+    ```
+    mkdir ~/.oci
+    ```
+
 1. Generate an API signing key pair
 
-    > **Note**: If you completed lab 3, you already created an API Key. If that's the case, navigate to the key and skip to 2.f. below.**
+    > **Note**: If you completed lab 3, you already created an API Key. If that's the case, navigate to the key and skip to step f. below.
 
-    2.a. Open My Profile
+    a. Open My Profile
 
     Open the **Profile** menu (User menu icon) and click **your user name**.
 
       ![](./images/new-profilename.png " ")
 
-    2.b. Open API Keys
+    b. Open API Keys
 
     Navigate to **API keys** and then Click **Add API Key**.
 
       ![](./images/addAPIButton.png " ")
 
-    2.c. Generate API Key
+    c. Generate API Key
 
     In the dialog, select **Generate API key pair**. Click **Download Private Key**.
 
       ![](./images/downloadprivatekey.png " ")
 
-    2.d. Save Private Key
+    d. Save Private Key
 
     Save the private key that downloaded to your **.oci** directory.
 
-    2.e. Add the API Key
+    e. Add the API Key
 
     Click **Add**.
 
       ![](./images/addapikey.png " ")
 
-    2.f. Generate Config File
+    f. Generate Config File
 
     Use the 3 dots on the row where the key is listed and select **View Configuration file**. Copy the values shown on the *Configuration File Preview*. You will paste them into a file in the next step.
 
@@ -81,49 +89,66 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
 ## **TASK 2:** Install Python
 
-> **Note**: If you already have Python 3.x and pip, and Python is available from your command line, skip this task.**
+> **Note**: If you already have Python 3.x and pip, and Python is available from your command line, skip to Task 3.
 
 1. Confirm you have Python 3.x
 
-    1.a. If you're using Windows, open an admin command prompt. If you're on a Mac, open the Terminal.
+    a. If you're using Windows, open an admin command prompt. If you're on a Mac, open the Terminal.
 
-    1.b. Run the following from the python installation folder:
-    Example Python installation folder: C:\Users\ *user*\AppData\Local\Programs\Python\ *Pythonversion*
+    b. Run the following from the python installation folder (Example Python installation folder on Windows: C:\Users\<user>\AppData\Local\Programs\Python\<Python version>)
 
+      Windows:
       ```
       python --version
+      ```
+      
+      Mac OS / Linux:
+      ```
+      python3 --version
       ```
 
       If you have Python 3.x continue to step 2. If you receive an error or have a Python version less than 3.x, continue to step 1.c.
 
-    1.c. Install Python
+    c. Install Python
 
       Install the latest version of Python from [python.org](https://www.python.org).
 
       After installation, run the following to confirm you have access to Python from the command line.
 
+      Windows:
       ```
       python --version
+      ```
+      
+      Mac OS / Linux:
+      ```
+      python3 --version
       ```
 
 2. Confirm you have pip
 
-    2.a. Check for pip by running the following:
-    You may need to change directory to the \Scripts folder. e.g. C:\Users\ *user*\AppData\Local\Programs\Python\Scripts
+    a. Check for pip by running the following:
+    You may need to change directory to the \Scripts folder. e.g. C:\Users\<user>\AppData\Local\Programs\Python\Scripts
 
+      Windows:
       ```
       pip --version
+      ```
+      
+      Mac OS / Linux:
+      ```
+      pip3 --version
       ```
 
       If pip is available, continue to task 3. If not, continue to step 2.b.
 
-    2.b. Download [get-pip.py](https://pip.pypa.io/en/stable/installation/).
+    b. Download [get-pip.py](https://pip.pypa.io/en/stable/installation/).
 
-    2.c. Copy to Python installation folder
+    c. Copy to Python installation folder
 
-      Example Python installation folder: C:\Users\ *user*\AppData\Local\Programs\Python\ *Pythonversion*
+      Example Python installation folder on Windows: C:\Users\<user>\AppData\Local\Programs\Python\<Python version>
 
-    2.d. Add pip
+    d. Add pip
 
       Cd to folder containing get-pip.py
 
@@ -133,10 +158,16 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
       py get-pip.py
       ```
 
-    2.e. Confirm pip by running the following
+    e. Confirm pip by running the following
 
+      Windows:
       ```
       pip --version
+      ```
+      
+      Mac OS / Linux:
+      ```
+      pip3 --version
       ```
 
 ## **TASK 3:** Setup for Python
@@ -144,33 +175,48 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 1. Create virtualenv
 
     To create a virtual environment, run the venv module as a script as shown below
+    
+    Windows:
     ```
     python -m venv <name of virtual environment>
+    ```
+    
+    Mac OS / Linux:
+    ```
+    python3 -m venv <name of virtual environment>
     ```
 
 2. Activate virtualenv
 
     Once you’ve created a virtual environment, you may activate it.
 
-    Mac OS / Linux:
-    ```
-    source <name of virtual environment>/bin/activate
-    ```
     Windows:
     ```
     <name of virtual environment>\Scripts\activate
     ```
 
+    Mac OS / Linux:
+    ```
+    source <name of virtual environment>/bin/activate
+    ```
+
 3. Install OCI
 
     Now Install oci by running:
+    
+    Windows:
     ```
     pip install oci
+    ```
+    
+    Mac OS / Linux:
+    ```
+    pip3 install oci
     ```
 
 ## **TASK 4:** Add Sample Images to Object Storage
 
-**If you previously completed Lab 2, you uploaded the Lab 4 images into an object storage folder called *lab-4* and you also created another folder called *output*. If so, skip to Task 5.**
+> **Note:** If you previously completed Lab 2, you uploaded the Lab 4 images into an object storage folder called *lab-4* and you also created another folder called *output*. If so, skip to Task 5.
 
 1. Download the [Lab-4 sample images](./Sample-Images/Lab-4).
 
@@ -178,7 +224,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
   ![](./images/object-storage-link.png " ")
 
-3. Navigate to the "pidaydemo" you created in Lab 2.
+3. Create a new bucket called "pidaydemo".
 
 4. Create a new folder called "lab-4".
 
@@ -186,7 +232,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
 ## **TASK 5:** OCI Vision Service SDK Code Sample
 
-1. Create a new file called "helmetdetection.py" and add it to C:\Users\<user>\AppData\Local\Programs\Python\<Python version>\Scripts folder.
+1. Create a new file on your local machine called "helmetdetection.py" and add it to C:\Users\<user>\AppData\Local\Programs\Python\<Python version>\Scripts folder or add it to your Desktop if you are using a Mac.
 
 2. Copy the python code from below into "helmetdetection.py".
 
@@ -347,14 +393,21 @@ for i in no_match_list:
     * The "compartment_id" can be found by using the hamburger menu and navigating to **Identity & Security** then **Compartments**. Click on the name of the *root* compartment (or whichever compartment you have been using for this lab). Copy the **OCID** for the compartment.
     * The "bucket_name" should be set to "pidaydemo".
     * The "input_prefix" should be set to "lab-4".
-    * The "output_prefix" shoudl be set to "output"
+    * The "output_prefix" should be set to "output"
 
 
 4. Execute the code
 
     Navigate to the directory where you saved the above file using your terminal or the command line and execute the file by running the following command (from the /Scripts folder):
+    
+    Windows:
     ```
     python helmetdetection.py
+    ```
+    
+    Mac OS / Linux:
+    ```
+    python3 helmetdetection.py
     ```
 
 5. Result

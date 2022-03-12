@@ -1,9 +1,9 @@
 # Lab 5: Create a custom model through the console
 
 ## Introduction
-In this session, we will show you how to create a vision project, select your training data, and train a custom model.
+In this session, we will show you how to create a vision project, select your training data, label the data, and train a custom model all without the need for any machine learning experience. The custom model will identify missing bolts on a railroad. 
 
-*Estimated Time*: 15 minutes
+*Estimated Time*: 1 hour+ depending on how long you train your model
 
 ### Objectives
 
@@ -13,84 +13,110 @@ In this lab, you will:
 - Learn how to train an image classification or object detection model through the OCI console.
 
 ### Prerequisites
-- Familiar with OCI object storage to upload data.
+- Familiar with OCI Object Storage to upload data.
 
 ## **Policy Setup**
 
-Before you start using OCI Vision, your tenancy administrator should set up the following policies by following below steps:
+Before you can start using OCI Vision you need to have permission to access the Vision service. If you don't have permission to access the service, follow the Stack Setup instructions in [Lab 2](./Lab-2-analyze-vision.md).
 
-1. Navigate to Policies
+For simplicity, this lab makes the Object Stoage bucket visible to the public so no additional policies need to be added. In a production scenario, you instead would want to add a policy to access training datasets in Object Storage. More information can be found in the [Vision policy documentation](https://docs.oracle.com/en-us/iaas/vision/vision/using/about_vision_policies.htm#about_vision_policies). 
 
-    Log into OCI Cloud Console. Using the Burger Menu on the top left corner, navigate to Identity & Security and click it, and then select Policies item under Identity.
-    ![](./images/policy1.png " ")
+## **Task 1:** Add Images to Object Storage
 
+1. Download the Lab-5 training and test images from [Lab-5](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-5). The images are divided into TrainingSet1, TrainingSet2, and TestImages.
 
-2. Create Policy
+1. Unzip each folder and combine the TrainingSet1 images and the TrainingSet2 images on your local machine. Those two folders are only seperated in Github since there is a 25mb file size limit. Make sure and keep the test images seperate.
 
-    Click Create Policy
-    ![](./images/policy2.png " ")
+1. Open the OCI Console, select the burger menu, select **Storage**, and select **Buckets**.
 
+1. Select **Create Bucket**, name the bucket "lab-5", and select **Create**. "Standard" default storage tier and "Encrypt using Oracle manage keys" should be selected. 
 
-3. Create a new policy with the following statements:
+1. Select the "lab-5" bucket, select **Upload**, and add all the training images, then select **Upload**. There are 27 training images.
 
-    If you want to allow all the users in your tenancy to use vision service, create a new policy with the below statement:
-    ```
-    allow any-user to use ai-service-vision-family in tenancy
-    ```
-    ![](./images/policy3.png " ")
+    > **Note:** Do not add the test images.
 
-    If you want to limit access to a user group, create a new policy with the below statement:
-    ```
-    allow group <group-name> to use ai-service-vision-family in tenancy
-    ```
-    ![](./images/policy4.png " ")
+    ![](./images/uploadtrainingimages.png " ")
+    
+1. Wait for the images to upload, then select **Close**.
 
-## **Task 1:** Create a Project
+1. Finally, select **Edit Visibility**, select **Public**, and select **Save Changes**. For simplicity, this lab makes the Object Stoage bucket visible to the public so no additional policies need to be added. In a production scenario, you instead would want to add a policy to access training datasets in Object Storage. More information can be found in the [Vision policy documentation](https://docs.oracle.com/en-us/iaas/vision/vision/using/about_vision_policies.htm#about_vision_policies).
 
-A Project is a way to organize multiple models in the same workspace. It is the first step to start.
+    ![](./images/makebucketpublic.png " ")
 
-1. Log into OCI Cloud Console. Using the Burger Menu on the top left corner, navigate to Analytics and AI menu and click it, and then select Vision Service item under AI services. Clicking the Vision Service Option will navigate one to the Vision Service Console. Once here, select Projects under "Custom Models" header on the left hand side of the console.
+## **Task 2:** Create Dataset
+
+1. Open the OCI Console, select the burger menu, select **Analytics & AI**, select **Data Labeling**.
+
+    ![](./images/selectdatalabeling.png " ")
+
+1. Select **Datasets** and select **Create Dataset**.
+
+    ![](./images/createdataset.png " ")
+    
+1. Name the dataset "MyDataset", select **Images** as the dataset format, select **Object Detection** for the Annotation class, then select **Next**.
+
+    ![](./images/adddatasetdetails.png " ")
+
+1. Select **Select from Object Storage**, then select the "lab-5" bucket. You should see the images appear below.
+
+    ![](./images/dataset-addfilesandlabels.png " ")
+
+1. Next, add the label "missing bolt", then select **Next**.
+
+    ![](./images/addmissingboltlabel.png " ")
+    
+1. Review the details and select **Create**.
+
+1. After selecting Create, you'll see the records being generated. It will take a couple minutes for all the records to be generated. There is a progress in the top right.
+
+    ![](./images/generatingrecordsstatus.png " ")
+    
+## **Task 3:** Label the Data
+
+1. Once the data records have been generated, select an image.
+
+1. Label the missing bolts by drawing a bounding box around each missing bolt. Make sure the make the bounding boxes as accurate as possible. Then select **Save & next**. Do this until all the images have been labeled.
+
+    ![](./images/labelmissingbolts.png " ")
+
+## **Task 4:** Create a Project
+
+A Project is a way to organize multiple models in the same workspace.
+
+1. Log into OCI Console. Using the burger menu on the top left corner, navigate to **Analytics and AI** in the menu and select it, and then select **Vision** under AI Services. Clicking the Vision service will navigate you to the Vision service Console page. Once here, select **Projects** under the "Custom Models" header on the left side of the OCI Console.
 
     ![](./images/create-project1.png " ")
 
-1. The Create Project button navigates User to a form where they can specify the compartment in which to create a Vision Project. The project we create here is named "vision_demo".
+1. Select **Create Project** and name the project "Lab 5".
 
     ![](./images/create-project2.png " ")
 
-1. Once the details are entered click the Create Button. If the project is successfully created it will show up in projects pane.  
+1. Once the details are entered, select **Create**. If the project is successfully created it will show up in projects pane and the Status will be "ACTIVE".
 
-## **Task 2:** Select Model Type
+## **Task 5:** Create the Model
 
-AI Vision Service supports training of an on-demand custom model for Object Detection, Image Classification, and Document Image Classification features. You can select one of these three options in the drop down.
+1. Select the "Lab 5" project.
 
-## **Task 3:** Select Training Data
+1. Select **Create Model**.
 
-1. To train a custom model, you will need training data. There are two main options depending on if you already have an annotated dataset, or only have raw (unlabeled) images.
+1. Select **Object detection** as the model type, select **Choose existing dataset**, select **Data Labeling Service** as the Data Source, select the **MyDataset**, then select **Next**.
 
-    ![](./images/select-training-data1.png " ")
+    ![](./images/dataset-selectdata.png " ")
+    
+1. Name the model "Railroad Defect Detection", select **Quick Training**, then select **Next**. In a production scenario you will want to use "Recommended training" but since you are testing the service, "Quick Training" is sufficient. 
 
-1. **Create a New dataset**: If you do not have any annotated images (you only have raw images you'd like to train your model on), select "Create a New Dataset".
+    ![](./images/dataset-selecttrainingduration.png " ")
+    
+1. Review the model configuration and select **Create and train**. The model may take up to about an hour to train. 
 
-    ![](./images/select-training-data2.png " ")
+## **Task 6:** Test the Custom Model
 
-    This will drive you to OCI Data Labeling service, where you can easily add labels or draw bounding boxes over your image content. To learn more about how to annotate images using OCI Data Labeling service, you can review documentation here [Adding and Editing Labels (oracle.com)](https://docs.oracle.com/en-us/iaas/data-labeling/data-labeling/using/labels.htm).
+1. Open the "Railroad Defect Detection" model in the OCI Console and select **Analyze**.
 
-    ![](./images/select-training-data3.png " ")
+    ![](./images/custommodelanalyze.png " ")
+    
+1. Select **select one...** and naviage to where you saved the TestImages from Task 1 on your local machine. Try analyzing each of the test images. One image has all bolts so it should return no results since no bolts are missing. The other image is missing a bolt so the custom model should identify the missing bolt.
 
-1. **Choose existing dataset**: If you have an existing annotated dataset, you can select it by clicking "Choose Existing Dataset." If you've previously annotated images using OCI Data Labeling service, select that button and select the dataset file of your choice. If you have annotated your images using some 3rd party tool, you can upload that dataset file to object storage and select via the "object storage" button.
-
-    ![](./images/select-training-data4.png " ")
-
-## **Task 4:** Train your Custom Model
-
-In the "train model" step, you will name your model, add a description of it, and optionally, specify a training duration.
-
-![](./images/train-model1.png " ")
-
-## **Task 5:** Review and Submit
-
-In the "review" step, you can verify that all of your information is correct and go back if you want to make adjustments (on training time, for example). When you want to start training, click "submit" and this will kick of the process. You can then check on the status of your model in the project where you created it.
-
-![](./images/train-model2.png " ")
+    ![](./images/custommodel-analyzemissingbolt.png " ")
 
 ### Congratulations on completing this lab and workshop!
