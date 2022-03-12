@@ -1,4 +1,4 @@
-# Use Vision Service through the OCI Console
+# Lab 2: Use Vision Service through the OCI Console
 
 ## Introduction
 In this session, we will walk through the OCI Console to familiarize ourselves with the Vision Service. We'll discuss the data requirements and formats, and provide some sample datasets as examples. We will also show you how to upload to Oracle object storage for later to train a custom model.
