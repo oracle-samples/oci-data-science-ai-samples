@@ -1,9 +1,9 @@
 # Lab 5: Create a custom model through the console
 
 ## Introduction
-In this session, we will show you how to create a vision project, select your training data, and train a custom model.
+In this session, we will show you how to create a vision project, select your training data, and train a custom model all without the need for any machine learning experience.
 
-*Estimated Time*: 15 minutes
+*Estimated Time*: 15+ minutes depending on how long you train your model
 
 ### Objectives
 
@@ -13,57 +13,41 @@ In this lab, you will:
 - Learn how to train an image classification or object detection model through the OCI console.
 
 ### Prerequisites
-- Familiar with OCI object storage to upload data.
+- Familiar with OCI Object Storage to upload data.
 
 ## **Policy Setup**
 
-Before you start using OCI Vision, your tenancy administrator should set up the following policies by following below steps:
+Before you can start using OCI Vision you need to have permission to access the service. If you don't have permission to access the service, follow the Stack Setup instructions in [Lab 2](./Lab-2-analyze-vision.md).
 
-1. Navigate to Policies
+## **Task 1:** Create Dataset
 
-    Log into OCI Cloud Console. Using the Burger Menu on the top left corner, navigate to Identity & Security and click it, and then select Policies item under Identity.
-    ![](./images/policy1.png " ")
+1. Open the OCI Console, select the burger menu, select **Analytics & AI**, select **Data Labeling**.
 
+    ![](./images/selectdatalabeling.png " ")
 
-2. Create Policy
+1. Select **Datasets** and select **Create Dataset**.
 
-    Click Create Policy
-    ![](./images/policy2.png " ")
+    ![](./images/createdataset.png " ")
 
+## **Task 2:** Create a Project
 
-3. Create a new policy with the following statements:
+A Project is a way to organize multiple models in the same workspace.
 
-    If you want to allow all the users in your tenancy to use vision service, create a new policy with the below statement:
-    ```
-    allow any-user to use ai-service-vision-family in tenancy
-    ```
-    ![](./images/policy3.png " ")
-
-    If you want to limit access to a user group, create a new policy with the below statement:
-    ```
-    allow group <group-name> to use ai-service-vision-family in tenancy
-    ```
-    ![](./images/policy4.png " ")
-
-## **Task 1:** Create a Project
-
-A Project is a way to organize multiple models in the same workspace. It is the first step to start.
-
-1. Log into OCI Cloud Console. Using the Burger Menu on the top left corner, navigate to Analytics and AI menu and click it, and then select Vision Service item under AI services. Clicking the Vision Service Option will navigate one to the Vision Service Console. Once here, select Projects under "Custom Models" header on the left hand side of the console.
+1. Log into OCI Console. Using the burger menu on the top left corner, navigate to **Analytics and AI** in the menu and select it, and then select **Vision** under AI Services. Clicking the Vision service will navigate you to the Vision service Console page. Once here, select **Projects** under the "Custom Models" header on the left side of the OCI Console.
 
     ![](./images/create-project1.png " ")
 
-1. The Create Project button navigates User to a form where they can specify the compartment in which to create a Vision Project. The project we create here is named "vision_demo".
+1. Select **Create Project** and name the project "vision_demo".
 
     ![](./images/create-project2.png " ")
 
-1. Once the details are entered click the Create Button. If the project is successfully created it will show up in projects pane.  
+1. Once the details are entered, select **Create**. If the project is successfully created it will show up in projects pane.
 
-## **Task 2:** Select Model Type
+## **Task 3:** Select Model Type
 
 AI Vision Service supports training of an on-demand custom model for Object Detection, Image Classification, and Document Image Classification features. You can select one of these three options in the drop down.
 
-## **Task 3:** Select Training Data
+## **Task 4:** Select Training Data
 
 1. To train a custom model, you will need training data. There are two main options depending on if you already have an annotated dataset, or only have raw (unlabeled) images.
 
@@ -81,13 +65,13 @@ AI Vision Service supports training of an on-demand custom model for Object Dete
 
     ![](./images/select-training-data4.png " ")
 
-## **Task 4:** Train your Custom Model
+## **Task 5:** Train your Custom Model
 
 In the "train model" step, you will name your model, add a description of it, and optionally, specify a training duration.
 
 ![](./images/train-model1.png " ")
 
-## **Task 5:** Review and Submit
+## **Task 6:** Review and Submit
 
 In the "review" step, you can verify that all of your information is correct and go back if you want to make adjustments (on training time, for example). When you want to start training, click "submit" and this will kick of the process. You can then check on the status of your model in the project where you created it.
 
