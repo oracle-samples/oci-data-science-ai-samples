@@ -388,4 +388,4 @@ To know more about the Python SDK visit [Python OCI-Vision](https://docs.oracle.
 
 Congratulations on completing this lab!
 
-[Proceed to the next lab](./Lab-5-customer-model.md).
+[Proceed to the next lab](./Lab-5-custom-model.md).
