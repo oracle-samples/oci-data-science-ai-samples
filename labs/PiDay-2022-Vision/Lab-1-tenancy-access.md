@@ -91,4 +91,4 @@ When you sign up for an Oracle Cloud account, a user is created for you in Oracl
 
     ![](images/oci-console-home-page.png " ")
 
-[Proceed to the next lab](#next).
+[Proceed to the next lab](./Lab-2-analyze-vision.md).

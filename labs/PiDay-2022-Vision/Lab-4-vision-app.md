@@ -33,74 +33,75 @@ In this lab you will use the Python SDK to identify if any workers in an image a
 
 1. Generate an API signing key pair
 
-    **Note: If you completed lab 3, you already created an API Key. If that's the case, skip to 2.d. below.**
+    **Note: If you completed lab 3, you already created an API Key. If that's the case, navigate to the key and skip to 2.f. below.**
 
     2.a. Open My Profile
-    
+
     Open the **Profile** menu (User menu icon) and click **My Profile**.
-    
+
       ![](./images/selectmyprofile.png " ")
 
     2.b. Open API Keys
 
     Navigate to **API keys** and then Click **Add API Key**.
-    
+
       ![](./images/addAPIButton.png " ")
 
     2.c. Generate API Key
 
     In the dialog, select **Generate API key pair**. Click **Download Private Key**.
-    
+
       ![](./images/downloadprivatekey.png " ")
-        
+
     2.d. Save Private Key
-    
+
     Save the private key that downloaded to your **.oci** directory.
-       
+
     2.e. Add the API Key
 
     Click **Add**.
-    
+
       ![](./images/addapikey.png " ")
 
     2.f. Generate Config File
 
-    Copy the values shown on the console.
-    
+    Use the 3 dots on the row where the key is listed and select **View Configuration file**. Copy the values shown on the *Configuration File Preview*. You will paste them into a file in the next step.
+
       ![](./images/conf.png " ")      
 
-3. Create a config file in the .oci folder and paste the values copied.
+3. Create a file with the name *config* (with no extension) in the .oci folder and paste the values previously copied.
 
      Replace the **key_file value** with the path of your generated private key.
-     
+
       ![](./images/config2.png " ")
-      
+
       ![](./images/ocifolder.png " ")
 
 To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) and [SDK and CLI Configuration File](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm#SDK_and_CLI_Configuration_File)
 
 ## **TASK 2:** Install Python
 
-**Note: If you already have Python 3.x, pip, and Python is available from your command line, skip this task.**
+**Note: If you already have Python 3.x and pip, and Python is available from your command line, skip this task.**
 
 1. Confirm you have Python 3.x
 
     1.a. If you're using Windows, open an admin command prompt. If you're on a Mac, open the Terminal.
-    
-    1.b. Run the following:
-    
+
+    1.b. Run the following from the python installation folder:
+    Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python
+
       ```
       python --version
       ```
-        
-      If you have Python 3.x continue to step 2. If you receive an error or have a Python version less than 3.x, continue to step 1.c. 
-        
+
+      If you have Python 3.x continue to step 2. If you receive an error or have a Python version less than 3.x, continue to step 1.c.
+
     1.c. Install Python
-    
+
       Install the latest version of Python from [python.org](https://www.python.org).
-        
-      After installion run the following to confirm you have access to Python from the command line.
-        
+
+      After installation, run the following to confirm you have access to Python from the command line.
+
       ```
       python --version
       ```
@@ -108,31 +109,32 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 2. Confirm you have pip
 
     2.a. Check for pip by running the following:
+    You may need to change directory to the \Scripts folder. e.g. C:\Users\<user>\AppData\Local\Programs\Python\Scripts
 
       ```
       pip --version
       ```
-        
+
       If pip is available, continue to task 3. If not, continue to step 2.b.
-        
+
     2.b. Download [get-pip.py](https://pip.pypa.io/en/stable/installation/).
-    
+
     2.c. Copy to Python installation folder
-    
+
       Example Python installation folder: C:\Users\<user>\AppData\Local\Programs\Python
-        
+
     2.d. Add pip
-        
+
       Cd to folder containing get-pip.py
-        
+
       Run the following:
-        
+
       ```
       py get-pip.py
       ```
-        
+
     2.e. Confirm pip by running the following
-    
+
       ```
       pip --version
       ```
@@ -145,7 +147,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
     ```
     python -m venv <name of virtual environment>
     ```
-    
+
 2. Activate virtualenv
 
     Once you’ve created a virtual environment, you may activate it.
@@ -158,7 +160,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
     ```
     <name of virtual environment>\Scripts\activate
     ```
-    
+
 3. Install OCI
 
     Now Install oci by running:
@@ -168,12 +170,14 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
 ## **TASK 4:** Add Sample Images to Object Storage
 
+**If you previously completed Lab 2, you uploaded the Lab 4 images into an object storage folder called *lab-4* and you also created another folder called *output*. If so, skip to Task 5.**
+
 1. Download the [Lab-4 sample images](./Sample-Images/Lab-4).
 
 2. Login to the OCI Console and navigate to your Object Storage Buckets
 
   ![](./images/object-storage-link.png " ")
-  
+
 3. Navigate to the "pidaydemo" you created in Lab 2.
 
 4. Create a new folder called "lab-4".
@@ -298,9 +302,9 @@ object_list = object_storage_client.list_objects(
     namespace_name = namespace_name,
     bucket_name = bucket_name,
     prefix = final_prefix
-) 
+)
 
-# Count number of persons and number of hats 
+# Count number of persons and number of hats
 for i in object_list.data.objects:
     image_counter=image_counter+1
     body=object_storage_client.get_object(namespace_name, bucket_name, object_name=i.name)
@@ -328,7 +332,7 @@ for i in no_match_list:
 
 3. Update variables
 
-    Open the python script and update all of the below variables. 
+    Open the python script and update all of the below variables.
 
       ```Python
       namespace_name = "<namespace name>"
@@ -340,13 +344,15 @@ for i in no_match_list:
 
     Hints:
     * The "namespace_name" can be found by navigating to the OCI console, selecting your Profile, selecting your tenancy, and finding "Object Storage Namespace".
-    * The "compartment_id" can be found by selecting your region in the OCI Console, then selecting **Manage Regions**. Use the **Region Identifier** for the region of your Oracle Storage bucket.
+    * The "compartment_id" can be found by using the hamburger menu and navigating to **Identity & Security** then **Compartments**. Click on the name of the *root* compartment (or whichever compartment you have been using for this lab). Copy the **OCID** for the compartment.
     * The "bucket_name" should be set to "pidaydemo".
-    * The "input_prefix" should be set to "lab-4". 
+    * The "input_prefix" should be set to "lab-4".
+    * The "output_prefix" shoudl be set to "output"
+
 
 4. Execute the code
 
-    Navigate to the directory where you saved the above file using your terminal or the command line and execute the file by running:
+    Navigate to the directory where you saved the above file using your terminal or the command line and execute the file by running the following command (from the /Scripts folder):
     ```
     python helmetdetection.py
     ```
@@ -372,9 +378,9 @@ for i in no_match_list:
     constructionsite6.jpg
     constructionsite7.jpg
     ```
-    
+
     Confirm the results by looking at each image.
-    
+
     Take a look at the JSON output in your Oracle Object Storage bucket.
 
 ## Learn More
@@ -382,4 +388,4 @@ To know more about the Python SDK visit [Python OCI-Vision](https://docs.oracle.
 
 Congratulations on completing this lab!
 
-[Proceed to the next lab](#next).
+[Proceed to the next lab](./Lab-5-customer-model.md).
