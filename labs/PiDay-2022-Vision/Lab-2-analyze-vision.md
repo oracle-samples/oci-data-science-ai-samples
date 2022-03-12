@@ -1,7 +1,7 @@
 # Lab 2: Use Vision Service through the OCI Console
 
 ## Introduction
-In this session, we will walk through the OCI Console to familiarize ourselves with the Vision Service. We'll discuss the data requirements and formats, and provide some sample datasets as examples. We will also show you how to upload to Oracle object storage for later to train a custom model.
+In this session, we will walk through the OCI Console to familiarize ourselves with the Vision Service. We'll discuss the data requirements and formats, and provide some sample datasets as examples. We will also show you how to upload to Oracle Object Storage for later to train a custom model.
 
 ### Objectives
 
@@ -16,19 +16,19 @@ In this lab, you will:
 * A trial or paid Oracle cloud account
 
 ## **Stack Setup** (preferred method)
-A stack is a blueprint for a collection of cloud resources that can be automatically provisioned using Terraform in the OCI console. OCI contains a stack template for Data Science that we will use to quickly configure the environment.
+A stack is a blueprint for a collection of cloud resources that can be automatically provisioned using Terraform in the OCI Console. OCI contains a stack template for OCI Vision that we will use to quickly configure the environment.
 
-1. In the OCI console, use the three-bar icon in the upper left corner of the page to open the menu. Go to **Developer Services** and under *Resource Manager* select **Stacks**.
+1. In the OCI Console, use the three-bar icon in the upper left corner of the page to open the menu. Go to **Developer Services** and under *Resource Manager* select **Stacks**.
 
   ![](images/Stacks-1.jpg)
 
-2. Select compartment **cloud account (root)**, then click **Create Stack**.
+2. Select compartment **\<cloud account> (root)**, then click **Create Stack**.
 
   ![](images/Stacks-2.jpg)
 
 3. In the *Create Stack* dialog, select the **Template** radio button.
 
-  ![](images/create-stack-info.png)
+  ![](images/stackselecttemplate.png)
 
 4. Click **Select Template**
 
@@ -36,15 +36,15 @@ A stack is a blueprint for a collection of cloud resources that can be automatic
 
   ![](images/Stacks-Select-Template-3.jpg)
 
-6. Back in the *Create Stack* dialog, change the **Description** to *Provision Vision and its Prerequesites* or something descriptive for you.
+6. Back in the *Create Stack* dialog, change the **Description** to *Provision Vision and its Prerequisites* or something descriptive for you.
 
-  ![](images/create-stack-info.png)
+  ![](images/stackdescription.png)
 
 7. Ensure **Compartment** is set to the name of your **root** compartment
 
 8. Click **Next**.
 
-9. On the next _Configure Variables_ page, check **Use custom models** and **Use batch analysis** checkboxes and click Next
+9. On the next _Configure Variables_ page, check **Use custom models** and **Use batch analysis** checkboxes and click **Next**
 
 
 
@@ -93,7 +93,7 @@ The service offers sync and async APIs to analyze images, with data requirements
 
 | API | Description | Supported Input Format |
 | --- | --- | --- |
-| sync API (analyzeImage, analyzeDocument) | Analyzes individual images | * JPG, PNG, (PDF and Tiff for analyzeDocument)<br>* Up to 8 MB<br>* Single image input |
+| sync API (analyzeImage, analyzeDocument) | Analyzes individual images | * JPG, PNG, (PDF and Tiff for analyzeDocument)<br>* Up to 5 MB<br>* Single image input |
 | async API  <br>/jobs/startImageAnalysisjob  <br>/jobs/start | Analyze multiple images or multi-page PDFs | * JPG, PNG (PDF and Tiff for analyzeDocument)<br>* Up to 2000 images input<br>* Supports multi-page PDF |
 
 ## **Task 2:** Upload Data to Object Storage
@@ -102,23 +102,23 @@ This is the set of steps to follow to test OCI Vision with your own sample image
 
 1. Create an Object Storage Bucket (This step is optional in case the bucket is already created)
 
-  a. First, From the OCI Services hamburger menu on the left, click **Storage** and then **Buckets**.
+  a. First, from the OCI Services hamburger menu on the left, click **Storage** and then **Buckets**.
     ![](./images/cloud-storage-bucket.png " ")
 
   b. Then, Select Compartment from the left dropdown menu. Choose the compartment matching your name or company name.
     ![](./images/create-compartment.png " ")
 
-  c. Next click Create Bucket.
+  c. Next click **Create Bucket**.
 
   d. Next, fill out the dialog box:
-  * Bucket Name: Provide a name called **_pidaydemo_** for convenience.  If you do not name it _pidaydemo_, please make a note of your name and remember to refer to it wherever the subsequent labs refer to the _pidaydemo_ bucket <br/>
+  * Bucket Name: Provide a name called **pidaydemo** for convenience.  If you do not name it _pidaydemo_, please make a note of your name and remember to refer to it wherever the subsequent labs refer to the _pidaydemo_ bucket <br/>
   * Storage Tier: STANDARD
 
   e. Then click Create
     ![](./images/bucket-pidaydemo.jpg " ")
 
 </br>2. Upload image files into Storage Bucket. </br>
-**Note:** It is important to follow these steps correctly to prevent problems with Lab 3 and Lab 4 demos.  
+> **Note:** It is important to follow these steps correctly to prevent problems with Lab 3 and Lab 4.  
 
   a. Download the set of images that you will use from the following two folders, and store it on your local computer in separate folders called **lab-3** and **lab-4** for convenience: [Lab 3](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-3) and [Lab 4](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-4)
 
