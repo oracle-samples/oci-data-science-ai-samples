@@ -120,7 +120,7 @@ This is the set of steps to follow to test OCI Vision with your own sample image
 </br>2. Upload image files into Storage Bucket. </br>
 > **Note:** It is important to follow these steps correctly to prevent problems with Lab 3 and Lab 4.  
 
-  a. Download the set of images that you will use from the following two folders, and store it on your local computer in separate folders called **lab-3** and **lab-4** for convenience: [Lab 3](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-3) and [Lab 4](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-4). The images are in zip files so you will need to unzip to view the images.
+  a. Download the set of images that you will use from the following two folders, and store it on your local computer in separate folders called **lab-3** and **lab-4** for convenience: [Lab 3](./Sample-Images/Lab-3) and [Lab 4](./Sample-Images/Lab-4). The images are in zip files so you will need to unzip to view the images.
 
   b. Switch to OCI window and click the Bucket Name for the Bucket that you just created, whether it was **pidaydemo** or any custom name you gave it.
 
