@@ -18,7 +18,7 @@ You may of course also use a paid OCI account, however the instructions are desi
 ### Workshop Modules
   - [Lab 0 - Introduction](Lab-0-intro.md)
   - [Lab 1 - Setup Trial Account](Lab-1-tenancy-access.md)
-  - [Lab 2 - Configure and use OCI Vision in console](Lab-2-analyze-vision.md)
+  - [Lab 2 - Configure and use OCI Vision in the Console](Lab-2-analyze-vision.md)
   - [Lab 3 - Explore Vision REST API](Lab-3-vision-rest.md)
   - [Lab 4 - Run Python Application](Lab-4-vision-app.md)
-  - [Lab 5 - Retrain OCI Vision](Lab-5-custom-model.md)
+  - [Lab 5 - Create Custom Model](Lab-5-custom-model.md)
