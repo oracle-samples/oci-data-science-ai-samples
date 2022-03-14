@@ -23,7 +23,7 @@ For simplicity, this lab makes the Object Stoage bucket visible to the public so
 
 ## **Task 1:** Add Images to Object Storage
 
-1. Download the Lab-5 training and test images from [Lab-5](https://github.com/oracle/oci-data-science-ai-samples/tree/piday/labs/PiDay-2022-Vision/Sample-Images/Lab-5). The images are divided into TrainingSet1, TrainingSet2, and TestImages.
+1. Download the Lab-5 training and test images from [Lab-5](https://github.com/oracle/oci-data-science-ai-samples/tree/master/labs/PiDay-2022-Vision/Sample-Images/lab-5). The images are divided into TrainingSet1, TrainingSet2, and TestImages.
 
 1. Unzip each folder and combine the TrainingSet1 images and the TrainingSet2 images on your local machine. Those two folders are only seperated in Github since there is a 25mb file size limit. Make sure and keep the test images seperate.
 
