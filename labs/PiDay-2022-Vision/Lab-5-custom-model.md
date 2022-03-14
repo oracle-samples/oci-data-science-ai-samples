@@ -1,4 +1,4 @@
-# Lab 5: Create a custom model through the console
+# Lab 5: Create a Custom Model through the OCI Console
 
 ## Introduction
 In this session, we will show you how to create a vision project, select your training data, label the data, and train a custom model all without the need for any machine learning experience. The custom model will identify missing bolts on a railroad. 
