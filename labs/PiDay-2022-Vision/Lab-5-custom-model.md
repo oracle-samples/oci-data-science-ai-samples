@@ -67,7 +67,7 @@ For simplicity, this lab makes the Object Stoage bucket visible to the public so
     
 1. Review the details and select **Create**.
 
-1. After selecting Create, you'll see the records being generated. It will take a couple minutes for all the records to be generated. There is a progress in the top right.
+1. After selecting Create, you'll see the records being generated. It will take a couple minutes for all the records to be generated. There is a progress indicator shown in the top right.
 
     ![](./images/generatingrecordsstatus.png " ")
     
@@ -103,9 +103,9 @@ A Project is a way to organize multiple models in the same workspace.
 
     ![](./images/dataset-selectdata.png " ")
     
-1. Name the model "Railroad Defect Detection", select **Quick Training**, then select **Next**. In a production scenario you will want to use "Recommended training" but since you are testing the service, "Quick Training" is sufficient. 
+1. Name the model "Railroad Defect Detection", select **Recommended Training**, then select **Next**. This process may take up to 24 hours but in our case it should complete within the hour. 
 
-    ![](./images/dataset-selecttrainingduration.png " ")
+    ![image](https://user-images.githubusercontent.com/10375622/160490106-da75fe5b-e482-4285-874c-4e29199805cb.png)
     
 1. Review the model configuration and select **Create and train**. The model may take up to about an hour to train. 
 
