@@ -130,6 +130,7 @@ public enum Config {
 		assert datasetId != null : "Dataset Id cannot be empty";
 		assert region != null : "Region Cannot be empty";
 		assert labelingAlgorithm != null : "Labeling Strategy cannot be empty";
+		assert threadCount >= 1 : "Invalid Thread Count Passed";
 	}
 
 }
