@@ -8,7 +8,8 @@ Bulk-Labeling Tool provides following two scripts to facilitate bulk labeling re
 
     
     - FIRST_LETTER_MATCH: The first letter of the DLS Dataset record's name must be equal to the first letter of the label that the record will be annotated with. The matching is not case-sensitive.
-     
+    
+    ```
     Consider a dataset having following records: cat1.jpeg, cat2.jpeg, dog1.png, dog2.png
     Label Set: cat , dog 
     Result of FIRST_LETTER_MATCH labeling algorithm: 
@@ -16,10 +17,12 @@ Bulk-Labeling Tool provides following two scripts to facilitate bulk labeling re
     cat2.jpeg will be labeled with cat label
     dog1.png will be labeled with dog label
     dog2.png will be labeled with dog label
+    ```
     
     
     - FIRST_REGEX_MATCH: The regular expression (regex) pattern assigned to _FIRST_MATCH_REGEX_PATTERN_ will be applied to the DLS Dataset record's name, and the first capture group extracted must be equal to the label that the record will be annotated with.
     
+    ```
     Consider a dataset having following records: PetCat1.jpeg, PetCat2.jpeg, PetDog1.png, PetDog2.png
     Label Set: cat , dog 
     FIRST_MATCH_REGEX_PATTERN : ^([^\/]*)\/.*$
@@ -28,6 +31,7 @@ Bulk-Labeling Tool provides following two scripts to facilitate bulk labeling re
     PetCat2.jpeg will be labeled with cat label
     PetDog1.png will be labeled with dog label
     PetDog2.png will be labeled with dog label
+    ```
     
 2. **CustomBulkLabelingScript**: This script takes object storage path as input along with the label that needs to be applied to records under that path. Only root level path is supported. Multiple labels can also be assigned to a given path. The labeling algorithm for this case is CUSTOM_LABELS_MATCH.
 
@@ -44,10 +48,11 @@ Result of CUSTOM_LABELS_MATCH algorithm:
 ```
 
 ### Requirements
-1. An Oracle Cloud Infrastructure account.
-2. A user created in that account, in a group with a policy that grants the desired permissions. This can be a user for yourself, or another person/system that needs to call the API. 3. A key pair used for signing API requests, with the public key uploaded to Oracle. Only the user calling the API should be in possession of the private key. For more information, see [Configuring the SDK](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkgettingstarted.htm#Configur).
-4. Java 8 or Java 11.
-5. A TTL value of 60. For more information, see [Configuring the SDK](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkgettingstarted.htm#Configur).
+1. An Oracle Cloud Infrastructure account. <br/>
+2. A user created in that account, in a group with a policy that grants the desired permissions. This can be a user for yourself, or another person/system that needs to call the API. <br/>
+3. A key pair used for signing API requests, with the public key uploaded to Oracle. Only the user calling the API should be in possession of the private key. For more information, see [Configuring the SDK](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkgettingstarted.htm#Configur). <br/> 
+4. Java 8 or Java 11. <br/>
+5. A TTL value of 60. For more information, see [Configuring the SDK](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkgettingstarted.htm#Configur). <br/>
 
 For more information [SDK for Java](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdk.htm)
 
