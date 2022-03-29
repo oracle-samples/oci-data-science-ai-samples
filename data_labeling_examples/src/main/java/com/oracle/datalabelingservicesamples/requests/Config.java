@@ -62,7 +62,7 @@ public enum Config {
 			initializeLabelingStrategy();
 			validateAndInitializeLabels(config);
 			dpEndpoint = dpEndpoint.replace("${REGION}", region);
-			dlsDpClient = getDlsDpClinet();
+			dlsDpClient = initializeDpClient();
 		} catch (IOException ex) {
 			ExceptionUtils.wrapAndThrow(ex);
 		}
@@ -107,7 +107,7 @@ public enum Config {
 		}
 	}
 
-	private DataLabelingClient getDlsDpClinet() {
+	private DataLabelingClient initializeDpClient() {
 		ConfigFileReader.ConfigFile configFile = null;
 		try {
 			configFile = ConfigFileReader.parse(configFilePath, configProfile);

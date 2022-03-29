@@ -28,6 +28,7 @@ import com.oracle.bmc.datalabelingservicedataplane.requests.GetDatasetRequest;
 import com.oracle.bmc.datalabelingservicedataplane.requests.ListRecordsRequest;
 import com.oracle.bmc.datalabelingservicedataplane.responses.GetDatasetResponse;
 import com.oracle.bmc.datalabelingservicedataplane.responses.ListRecordsResponse;
+import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +75,7 @@ public class CustomBulkLabelingScript {
 		while (isUnlabeledRecordAvailable) {
 			ListRecordsRequest listRecordsRequest = ListRecordsRequest.builder().datasetId(datasetId)
 					.compartmentId(dataset.getCompartmentId()).lifecycleState(LifecycleState.Active).page(page)
-					.limit(1000).build();
+					.limit(DataLabelingConstants.MAX_LIST_RECORDS_LIMITS).build();
 			ListRecordsResponse response = Config.INSTANCE.getDlsDpClient().listRecords(listRecordsRequest);
 			assert response.get__httpStatusCode__() == 200 : "List Record Response Error";
 
@@ -108,7 +109,7 @@ public class CustomBulkLabelingScript {
 		log.info("Successfully Annotated {} record Ids", successRecordIds.size());
 		log.info("Failed record Ids {}", failedRecordIds);
 		long elapsedTime = System.nanoTime() - startTime;
-		log.info("Time Taken for datasetId {} is {} seconds", datasetId, elapsedTime/ 1_000_000_000);
+		log.info("Time Taken for datasetId {} is {} seconds", datasetId, elapsedTime / 1_000_000_000);
 	}
 
 	private static void processAnnotationForRecord(RecordSummary record, List<String> labels) {
@@ -145,8 +146,8 @@ public class CustomBulkLabelingScript {
 		 * Validate Request
 		 */
 		if (bulkLabelingRequest.size() > 3) {
-			log.error("Atmost 3 paths are allowed");
-			throw new InvalidParameterException("Atmost 3 paths are allowed");
+			log.error("More than allowed limit of 3 paths were provided");
+			throw new InvalidParameterException("More than allowed limit of 3 paths were provided");
 		}
 
 		/*

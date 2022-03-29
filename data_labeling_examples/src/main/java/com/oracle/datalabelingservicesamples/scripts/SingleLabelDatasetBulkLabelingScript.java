@@ -24,6 +24,7 @@ import com.oracle.bmc.datalabelingservicedataplane.requests.GetDatasetRequest;
 import com.oracle.bmc.datalabelingservicedataplane.requests.ListRecordsRequest;
 import com.oracle.bmc.datalabelingservicedataplane.responses.GetDatasetResponse;
 import com.oracle.bmc.datalabelingservicedataplane.responses.ListRecordsResponse;
+import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,7 @@ public class SingleLabelDatasetBulkLabelingScript {
 		while (isUnlabeledRecordAvailable) {
 			ListRecordsRequest listRecordsRequest = ListRecordsRequest.builder().datasetId(datasetId)
 					.compartmentId(dataset.getCompartmentId()).lifecycleState(LifecycleState.Active).isLabeled(false)
-					.limit(1000).build();
+					.limit(DataLabelingConstants.MAX_LIST_RECORDS_LIMITS).build();
 			ListRecordsResponse response = Config.INSTANCE.getDlsDpClient().listRecords(listRecordsRequest);
 			assert response.get__httpStatusCode__() == 200 : "List Record Response Error";
 			recordCount += response.getRecordCollection().getItems().size();
