@@ -58,27 +58,32 @@ For more information [SDK for Java](https://docs.oracle.com/en-us/iaas/Content/A
 
 ### Running the Utility
 1. Open Terminal on your system.
-2. Clone the repository.
-
-```
-git clone https://github.com/oracle-samples/oci-data-science-ai-samples.git
-```
-3. Verify that Java 8 or higher is installed in the system.
+2. Verify that Java 8 or higher is installed in the system. In case you do not have java installed on your system, download it from https://www.oracle.com/java/technologies/downloads/
 
 ```
 java -version
 ```
-4. Run the below command to bulk label by "FIRST_LETTER_MATCH" labeling algorithm.
+3. Clone the repository.
+
+```
+git clone https://github.com/oracle-samples/oci-data-science-ai-samples.git
+```
+4. Go to data_labeling_examples directory
+
+```
+cd data_labeling_examples
+```
+5. Run the below command to bulk label by "FIRST_LETTER_MATCH" labeling algorithm.
 
 ```
 java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_LETTER_MATCH -DLABELS=cat,dog -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
 ```
-5. Run the below command to bulk label by "FIRST_REGEX_MATCH" labeling algorithm.
+6. Run the below command to bulk label by "FIRST_REGEX_MATCH" labeling algorithm.
 
 ```
 java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_REGEX_MATCH -DFIRST_MATCH_REGEX_PATTERN=^abc* -DLABELS=cat,dog -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
 ```
-6. Run the below command to bulk label by "CUSTOM_LABELS_MATCH" labeling algorithm.
+7. Run the below command to bulk label by "CUSTOM_LABELS_MATCH" labeling algorithm.
 
 ```
 java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript

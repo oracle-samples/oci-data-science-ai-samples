@@ -102,7 +102,7 @@ public enum Config {
 			String inputlLabels = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.LABELS))
 					? config.getProperty(DataLabelingConstants.LABELS)
 					: System.getProperty(DataLabelingConstants.LABELS);
-			List<String> labels = Arrays.asList(inputlLabels.split(","));
+			labels = Arrays.asList(inputlLabels.split(","));
 			assert null != labels && labels.isEmpty() == false : "Labels Cannot be empty";
 			break;
 
