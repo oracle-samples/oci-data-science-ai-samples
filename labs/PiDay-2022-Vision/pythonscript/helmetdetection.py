@@ -98,6 +98,8 @@ while i <= 18:
 
 person_count=0
 hat_count=0
+total_person_count=0
+total_hat_count=0
 image_counter=0
 no_match_list=[]
 
@@ -116,13 +118,17 @@ for i in object_list.data.objects:
     dict_test= json.loads(body.data.content.decode('utf-8'))
     for j in dict_test['imageObjects']:
         if (j['name'] =='Person' or j['name']=='Man' or j['name']=='Woman' or j['name']=='Human'):
-            person_count =person_count +1
-        if (j['name'] =='Helmet'):
-            hat_count=hat_count+1
+            person_count = person_count+1
+        if (j['name'] == 'Helmet'):
+            hat_count = hat_count+1
 
-    if (person_count!=hat_count):
+    if (person_count != hat_count):
         no_match_list.append(i.name)
-
+       
+    total_person_count = total_person_count + person_count
+    total_hat_count = total_hat_count + hat_count  
+    person_count=0
+    hat_count=0
 
 print ("Number of persons found in images:", person_count,"\n")
 print ("Number of hardhats found in images:", hat_count, "\n")
