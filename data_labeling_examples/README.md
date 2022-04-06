@@ -86,7 +86,7 @@ java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=ht
 7. Run the below command to bulk label by "CUSTOM_LABELS_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.CustomBulkLabelingScript
 ```
 
 Note: You can override any config using -D followed by the configuration name. The list of all configurations are mentioned in following section. 
