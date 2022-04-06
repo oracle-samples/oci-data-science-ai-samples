@@ -78,6 +78,7 @@ public class SingleLabelDatasetBulkLabelingScript {
 								.runAsync(() -> processAnnotationForRecord(record, label), executorService);
 						completableFutures.add(future);
 					} else {
+						log.error("Label is null for record {}",record);
 						failedRecordIds.add(record.getId());
 					}
 				}

@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +16,7 @@ import com.oracle.bmc.ConfigFileReader;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.bmc.datalabelingservicedataplane.DataLabelingClient;
+import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.labelingstrategies.CustomLabelMatch;
 import com.oracle.datalabelingservicesamples.labelingstrategies.FirstLetterMatch;
 import com.oracle.datalabelingservicesamples.labelingstrategies.FirstRegexMatch;
@@ -33,61 +36,45 @@ public enum Config {
 	private String configProfile;
 	private String dpEndpoint;
 	private String datasetId;
-	private String region;
 
 	private List<String> labels;
 	private Map<String, List<String>> customLabels;
 	private String labelingAlgorithm;
 	private LabelingStrategy labelingStrategy;
 	private String regexPattern;
+	private Pattern pattern;
 	private int threadCount;
 
 	private Config() {
 		try {
 			Properties config = new Properties();
 			config.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
-			configFilePath = config.getProperty("CONFIG_FILE_PATH");
-			configProfile = config.getProperty("CONFIG_PROFILE");
-			dpEndpoint = config.getProperty("DLS_DP_URL");
-			datasetId = config.getProperty("DATASET_ID");
-			region = config.getProperty("REGION");
-			labelingAlgorithm = config.getProperty("LABELING_ALGORITHM");
-			String threadConfig = config.getProperty("THREAD_COUNT");
-			if (!threadConfig.isEmpty()) {
-				threadCount = Integer.parseInt(threadConfig);
-			} else {
-				threadCount = 20;
-			}
+			configFilePath = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIG_FILE_PATH))
+					? config.getProperty(DataLabelingConstants.CONFIG_FILE_PATH)
+					: System.getProperty(DataLabelingConstants.CONFIG_FILE_PATH);
+			configProfile = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIG_PROFILE))
+					? config.getProperty(DataLabelingConstants.CONFIG_PROFILE)
+					: System.getProperty(DataLabelingConstants.CONFIG_PROFILE);
+			dpEndpoint = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DLS_DP_URL))
+					? config.getProperty(DataLabelingConstants.DLS_DP_URL)
+					: System.getProperty(DataLabelingConstants.DLS_DP_URL);
+			datasetId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DATASET_ID))
+					? config.getProperty(DataLabelingConstants.DATASET_ID)
+					: System.getProperty(DataLabelingConstants.DATASET_ID);
+			labelingAlgorithm = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.LABELING_ALGORITHM))
+					? config.getProperty(DataLabelingConstants.LABELING_ALGORITHM)
+					: System.getProperty(DataLabelingConstants.LABELING_ALGORITHM);
+			String threadConfig = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.THREAD_COUNT))
+					? config.getProperty(DataLabelingConstants.THREAD_COUNT)
+					: System.getProperty(DataLabelingConstants.THREAD_COUNT);
+			threadCount = (!threadConfig.isEmpty()) ? Integer.parseInt(threadConfig)
+					: DataLabelingConstants.DEFAULT_THREAD_COUNT;
 			performAssertionOninput();
 			initializeLabelingStrategy();
 			validateAndInitializeLabels(config);
-			dpEndpoint = dpEndpoint.replace("${REGION}", region);
 			dlsDpClient = initializeDpClient();
 		} catch (IOException ex) {
 			ExceptionUtils.wrapAndThrow(ex);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private void validateAndInitializeLabels(Properties config) {
-		switch (labelingAlgorithm) {
-		case "FIRST_LETTER_MATCH":
-		case "FIRST_REGEX_MATCH":
-			labels = Arrays.asList(config.getProperty("LABELS").split(","));
-			assert null != labels && labels.isEmpty() == false : "Labels Cannot be empty";
-			break;
-		case "CUSTOM_LABELS_MATCH":
-			try {
-				ObjectMapper mapper = new ObjectMapper();
-				customLabels = mapper.readValue(config.getProperty("CUSTOM_LABELS"), Map.class);
-			} catch (JsonProcessingException e) {
-				log.error("Invalid Custom Labels Provided as Input");
-				ExceptionUtils.wrapAndThrow(e);
-			}
-
-		}
-		if (labelingAlgorithm.equals("FIRST_REGEX_MATCH")) {
-			regexPattern = config.getProperty("FIRST_MATCH_REGEX_PATTERN");
 		}
 	}
 
@@ -100,10 +87,44 @@ public enum Config {
 		case "FIRST_REGEX_MATCH":
 			labelingStrategy = new FirstRegexMatch();
 			break;
-			
+
 		case "CUSTOM_LABELS_MATCH":
 			labelingStrategy = new CustomLabelMatch();
 			break;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void validateAndInitializeLabels(Properties config) {
+		switch (labelingAlgorithm) {
+		case "FIRST_LETTER_MATCH":
+		case "FIRST_REGEX_MATCH":
+			String inputlLabels = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.LABELS))
+					? config.getProperty(DataLabelingConstants.LABELS)
+					: System.getProperty(DataLabelingConstants.LABELS);
+			List<String> labels = Arrays.asList(inputlLabels.split(","));
+			assert null != labels && labels.isEmpty() == false : "Labels Cannot be empty";
+			break;
+
+		case "CUSTOM_LABELS_MATCH":
+			try {
+				String customLabel = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CUSTOM_LABELS))
+						? config.getProperty(DataLabelingConstants.CUSTOM_LABELS)
+						: System.getProperty(DataLabelingConstants.CUSTOM_LABELS);
+				ObjectMapper mapper = new ObjectMapper();
+				customLabels = mapper.readValue(customLabel, Map.class);
+			} catch (JsonProcessingException e) {
+				log.error("Invalid Custom Labels Provided as Input");
+				ExceptionUtils.wrapAndThrow(e);
+			}
+			break;
+		}
+
+		if (labelingAlgorithm.equals("FIRST_REGEX_MATCH")) {
+			regexPattern = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.FIRST_MATCH_REGEX_PATTERN))
+					? config.getProperty(DataLabelingConstants.FIRST_MATCH_REGEX_PATTERN)
+					: System.getProperty(DataLabelingConstants.FIRST_MATCH_REGEX_PATTERN);
+			pattern = Pattern.compile(regexPattern);
 		}
 	}
 
@@ -118,7 +139,6 @@ public enum Config {
 		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
 				configFile);
 		dlsDpClient = new DataLabelingClient(configFileProvider);
-		dlsDpClient.setRegion(region);
 		dlsDpClient.setEndpoint(dpEndpoint);
 		return dlsDpClient;
 	}
@@ -128,7 +148,6 @@ public enum Config {
 		assert configProfile != null : "Config Profile cannot be empty";
 		assert dpEndpoint != null : "DLS DP URL cannot be empty";
 		assert datasetId != null : "Dataset Id cannot be empty";
-		assert region != null : "Region Cannot be empty";
 		assert labelingAlgorithm != null : "Labeling Strategy cannot be empty";
 		assert threadCount >= 1 : "Invalid Thread Count Passed";
 	}

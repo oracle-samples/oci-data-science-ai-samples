@@ -56,9 +56,39 @@ Result of CUSTOM_LABELS_MATCH algorithm:
 
 For more information [SDK for Java](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdk.htm)
 
+### Running the Utility
+1. Open Terminal on your system.
+2. Clone the repository.
+
+```
+git clone https://github.com/oracle-samples/oci-data-science-ai-samples.git
+```
+3. Verify that Java 8 or higher is installed in the system.
+
+```
+java -version
+```
+4. Run the below command to bulk label by "FIRST_LETTER_MATCH" labeling algorithm.
+
+```
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_LETTER_MATCH -DLABELS=cat,dog -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+```
+5. Run the below command to bulk label by "FIRST_REGEX_MATCH" labeling algorithm.
+
+```
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_REGEX_MATCH -DFIRST_MATCH_REGEX_PATTERN=^abc* -DLABELS=cat,dog -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+```
+6. Run the below command to bulk label by "CUSTOM_LABELS_MATCH" labeling algorithm.
+
+```
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+```
+
+Note: You can override any config using -D followed by the configuration name. The list of all configurations are mentioned in following section. 
+
 ### Configurations
 
-Add the following configurations in config.properties file in the project to run the scripts:
+Following is the list of all configurations (src/main/resources/config.properties file) supported by the bulk labeling script:
 
 ```
 #Path of Config File
@@ -68,10 +98,7 @@ CONFIG_FILE_PATH=~/.oci/config
 CONFIG_PROFILE=DEFAULT
 
 #DLS DP URL
-DLS_DP_URL=https://dlstest-dp.${REGION}.oci.oraclecloud.com
-
-#Region where dataset is created
-REGION=uk-london-1
+DLS_DP_URL=https://dlsprod-dp.uk-london-1.oci.oraclecloud.com
 
 #Dataset Id whose record you want to bulk label
 DATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a
