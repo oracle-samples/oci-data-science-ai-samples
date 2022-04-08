@@ -1,13 +1,18 @@
 import json
 import oci
 from config import *
+from bounding_box_config import *
+from classification_config import *
 from oci.data_labeling_service_dataplane.data_labeling_client import DataLabelingClient
-from oci.data_labeling_service_dataplane.models import GenericEntity, Label, CreateAnnotationDetails
+from oci.data_labeling_service_dataplane.models import GenericEntity, Label, CreateAnnotationDetails, NormalizedVertex, \
+    BoundingPolygon, ImageObjectSelectionEntity
 import datetime
 import sys
 import re
 import time
 from itertools import repeat
+import pandas as pd
+import ast
 
 sys.path.append("..")
 
@@ -177,6 +182,52 @@ def label_record(name, id, labeling_algorithm, compartment_id):
         custom_label_match(name=name, record_id=id, compartment_id=compartment_id)
 
 
+def bounding_box_annotation(row, compartment_id):
+    """ This Function is used to annotate records of type object detection
+
+    :param row: row of the input csv grouped by record_id
+    :param compartment_id: the ocid of compartment in which dataset is present
+    return: the annotated record
+    """
+
+    record_id = row[0][0]
+
+    entity_type = "IMAGEOBJECTSELECTION"
+    entity_obj = []
+
+    for row_ent in row:
+        label = row_ent[9]
+        label_lst = []
+        if isinstance(label, str):
+            label_lst.append(label)
+        elif isinstance(label, list):
+            label_lst = label
+
+        # payload
+        labels_obj = []
+        for l in label_lst:
+            labels_obj.append(Label(label=l))
+
+        normalized_vector_obj_lst = []
+        for i in range(4):
+            normalized_vector_obj = NormalizedVertex(x=row_ent[i + 1], y=row_ent[i + 1])
+            normalized_vector_obj_lst.append(normalized_vector_obj)
+
+        bounding_polygon_obj = BoundingPolygon(normalized_vertices=normalized_vector_obj_lst)
+
+        entity_obj.append(ImageObjectSelectionEntity(entity_type=entity_type, labels=labels_obj,
+                                                     bounding_polygon=bounding_polygon_obj))
+
+    create_annotation_details_obj = CreateAnnotationDetails(record_id=record_id, compartment_id=compartment_id,
+                                                            entities=entity_obj)
+    print(create_annotation_details_obj)
+    try:
+        anno_response = dls_dp_client.create_annotation(create_annotation_details=create_annotation_details_obj)
+    except Exception as error:
+        anno_response = error
+    return anno_response
+
+
 def main():
     try:
         response = dls_dp_client.get_dataset(dataset_id=DATASET_ID)
@@ -187,12 +238,23 @@ def main():
         start = time.perf_counter()
         num_records = LIST_RECORDS_LIMIT
         pool = mp.Pool(NO_OF_PROCESSORS)
-        while num_records == LIST_RECORDS_LIMIT:
-            names, ids, num_records = dls_list_records(compartment_id=compartment_id)
-            pool.starmap(label_record, zip(names, ids, repeat(LABELING_ALGORITHM), repeat(compartment_id)))
-        pool.close()
-        end = time.perf_counter()
-        print(f'Finished in {round(end - start, 2)} second(s)')
+        if ANNOTATION_TYPE == "BOUNDING_BOX":
+            df = pd.read_csv(PATH)
+            df['label'] = df['label'].apply(lambda x: ast.literal_eval(x))
+            rows = df.groupby('record_id').apply(lambda x: x.values.tolist()).tolist()[:]
+            pool.starmap(bounding_box_annotation, zip(rows, repeat(compartment_id)))
+            pool.close()
+            end = time.perf_counter()
+            print(f'Finished in {round(end - start, 2)} second(s)')
+        elif ANNOTATION_TYPE == "CLASSIFICATION":
+            while num_records == LIST_RECORDS_LIMIT:
+                names, ids, num_records = dls_list_records(compartment_id=compartment_id)
+                pool.starmap(label_record, zip(names, ids, repeat(LABELING_ALGORITHM), repeat(compartment_id)))
+            pool.close()
+            end = time.perf_counter()
+            print(f'Finished in {round(end - start, 2)} second(s)')
+        else:
+            print("Please provide the correct value for ANNOTATION_TYPE")
     else:
         print(response)
 
