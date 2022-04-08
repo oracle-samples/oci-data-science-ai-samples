@@ -54,7 +54,7 @@ Before you can use a conda environment in your notebook session, you need to ins
   1. In the *Launcher* tab, click **Environment Explorer**
     ![](./images/notebook_launcher.png)
 
-  1. In the Environment Explorer tab, select the **Data Science Conda Environment** filter button, select **CPU** architecture filter, then scroll down until you find the **TensorFlow 2.6 for CPU Python 3.7** conda. (If you see no results, use the refresh button on the right side of the filter bar of the Environment Explorer.)
+  1. In the Environment Explorer tab, select the **Data Science Conda Environment** filter button, select **CPU** architecture filter, then scroll down until you find the **TensorFlow 2.7 for CPU on Python 3.7** conda. (If you see no results, use the refresh button on the right side of the filter bar of the Environment Explorer.)
     ![](./images/select-tf-env.png)
 
   1. Click on the caret on the right side, copy the install command 
@@ -65,7 +65,7 @@ Before you can use a conda environment in your notebook session, you need to ins
   1. **Paste the command** into the terminal window and hit **Return** to execute it. 
      The command that you previously copied is:  
       ```
-      odsc conda install -s tensorflow26_p37_cpu_v1 
+      odsc conda install -s tensorflow27_p37_cpu_v1 
       ```
 
   1. You will receive a prompt related to what version number you want. Press `Enter` to select the default.

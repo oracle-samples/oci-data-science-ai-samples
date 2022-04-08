@@ -3,6 +3,9 @@
 * [DSGo Workshop Oct2021](./DSGo-Oct2021)
   This is a workshop for Data Science Go conference attendees built around the employee attrition notebook in OCI Data Science. The user signs-up for, and configures, a new OCI Trial account tenancy and then completes an end-to-end workflow to build, train, deploy, and invoke a machine learning model used to predict employee attrition.
 
+* [PiDay-2022-Vision](./PiDay-2022-Vision)
+  This lab was built for use as a workshop at the Oracle Pi Day event in March 2022 but can be used by anyone. It uses Oracle Cloud Infrastructure (OCI) Vision service to show how AI services can be used with applications. The workshop guides the user to run a safety application that that looks for persons not wearing hardhats in images of industrial scenes. This workshop is designed for users that will register for a new OCI trial account with free cloud credits. The workshop provides instructions to sign up for a free trial account and then configure the tenancy for OCI Vision. The remainder of the workshop guides the user through activities to analyze images in the OCI console, exercise the REST API, and run a Python application.
+
 * [Employee Attrition](./employee-attrition/) 
   This example is a modified version of the employee attrition notebook that is available in the OCI Data Science Notebook Session environment. The notebook provides an end-to-end workflow to build, ttrain, deploy, and invoke a machine learning model used to predict employee attrition. 
 

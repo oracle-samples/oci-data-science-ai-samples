@@ -38,6 +38,10 @@ In [Lab 3](./lab-3-python-model.md) you build, train, and evaluate a simple scik
 
 In [Lab 4](./lab-4-model-catalog.md) we walk you through the metadata that is available in the model catalog as well as some of the key functionalities. 
 
+## (Optional) Lab 4.5: Executing a Training Job
+
+IN [Lab 4.5](./lab-45-training-job.md) we walk you through the process of executing a [Data Science Job](https://docs.oracle.com/en-us/iaas/data-science/using/jobs-about.htm) from a notebook session. It is the same training script as in Lab 3. 
+
 ## Lab 5: Deploying Your Model 
 
 In [Lab 5](./lab-5-model-deploy.md) you deploy your model as an HTTP endpoint using the Model Deployment feature of OCI Data Science. Two different approaches are shown: through the ADS library and directly in the OCI console. 
@@ -53,3 +57,4 @@ In [Lab 7](./lab-7-wrap.md) we wrap up the workshop.
 
 
 Enjoy the workshop :) ! 
+
