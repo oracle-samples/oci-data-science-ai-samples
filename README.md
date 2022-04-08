@@ -11,6 +11,7 @@ The Oracle Cloud Infrastructure (OCI) Data Science service has created this repo
 * [labs](./labs/): Looking to walk through an end-to-end problem? Check out this section. It has examples of how to train machine learning models and then deploy them on the OCI Data Science service. Have you built an end-to-end machine learning model and want to share it with others. Please consider [contributing](./CONTRIBUTING.md) it.
 * [model_catalog_examples](model_catalog_examples/): The [model catalog](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/user_guide/modelcatalog/modelcatalog.html) provides a managed and centralized storage space for models. ADS helps you create the artifacts that you need to use this service. However, you need to provide a [`score.py`](https://docs.oracle.com/en-us/iaas/data-science/using/model_score_py.htm) file that will load the model and a function that will make predictions. The [`runtime.yaml`](https://docs.oracle.com/en-us/iaas/data-science/using/model_runtime_yaml.htm) provides information about the runtime conda environment if you want to deploy the model. It also allows you to document a comprehensive set of metadata about the provenance of the model. The section of the repo provides examples of how to create your `score.py` and `runtime.yaml` files for various common machine learning models. There are many different models and configurations. If you have developed a machine learning model that is not in this section, please consider [contributing](./CONTRIBUTING.md) it.
 * [jobs](jobs/): Jobs enables you to define and run a repeatable machine learning task on a fully managed infrastructure. Jobs enable custom tasks, so you can apply any use case you may have such as data preparation, model training, hyperparameter optimization, batch inference, and so on. If you have developed a Job sample, that you would like to share, please consider [contributing](./CONTRIBUTING.md) it.
+* [data_labeling_examples](data_labeling_examples/): The [data labeling service](https://docs.oracle.com/en-us/iaas/data-labeling/data-labeling/using/home.htm) helps in the process of identifying properties (labels) of documents, text, and images (records), and annotating (labeling) them with those properties. This sections contains Python and Java scripts to annotate bulk number of records in OCI Data Labeling Service (DLS). If you have developed some functionality over/for dls, that you would like to share, please consider [contributing](./CONTRIBUTING.md) it.
 
 # Resources
 
@@ -22,6 +23,9 @@ Check out the following resources for more information about the OCI Data Scienc
 * [OCI Data Science service guide](https://docs.oracle.com/en-us/iaas/data-science/using/data-science.htm)
 * [OCI Data Science service release notes](https://docs.cloud.oracle.com/en-us/iaas/releasenotes/services/data-science/)
 * [YouTube playlist](https://www.youtube.com/playlist?list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L)
+* [OCI Data Labeling Service guide](https://docs.oracle.com/en-us/iaas/data-labeling/data-labeling/using/home.htm)
+* [OCI DLS DP API](https://docs.oracle.com/en-us/iaas/api/#/en/datalabeling-dp/20211001/)
+* [OCI DLS CP API](https://docs.oracle.com/en-us/iaas/api/#/en/datalabeling/20211001/)
 
 # Need Help?
 
