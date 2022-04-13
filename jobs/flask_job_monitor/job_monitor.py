@@ -1,26 +1,12 @@
-import inspect
 import os
 import oci
-import sys
 
 from flask import Flask, render_template, jsonify
 from ads.common.oci_resource import OCIResource
 from ads.jobs import Job
 from ads.jobs.builders.infrastructure.dsc_job import DataScienceJobRun
 
-import logging
-import json
-import time
 
-
-cwd = os.path.dirname(__file__)
-if cwd not in sys.path:
-    sys.path.append(cwd)
-from job_monitor_mocked import save_mocked_context
-
-
-# When RECORDING is set to true, the endpoint context will be saved as pickle for future mocking
-RECORDING = os.environ.get("RECORDING")
 app = Flask(__name__, template_folder=os.path.dirname(__file__))
 config = oci.config.from_file()
 
@@ -57,8 +43,6 @@ def job_monitor(compartment_id=None, project_id=None):
         project_id=project_id,
         compartments=compartments,
     )
-    if RECORDING:
-        save_mocked_context(context, inspect.currentframe().f_code.co_name, compartment_id, project_id)
     return render_template(
         'job_monitor.html',
         **context
@@ -73,8 +57,6 @@ def list_projects(compartment_id):
         "compartment_id": compartment_id,
         "projects": [{"display_name": project.display_name, "ocid": project.id} for project in projects]
     }
-    if RECORDING:
-        save_mocked_context(context, inspect.currentframe().f_code.co_name, compartment_id)
     return jsonify(context)
 
 
@@ -107,8 +89,6 @@ def get_logs(job_run_ocid):
         "statusDetails": run.lifecycle_details,
         "stopped": True if run.lifecycle_state in DataScienceJobRun.TERMINAL_STATES else False
     }
-    if RECORDING:
-        save_mocked_context(context, inspect.currentframe().f_code.co_name, job_run_ocid)
     return jsonify(context)
 
 
