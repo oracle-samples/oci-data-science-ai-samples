@@ -38,8 +38,6 @@ public class Test {
         CreateJobResponse jobManagedEgress = client.createJobWithManagedEgress("Java Job - Managed Egress", COMPARTMENT_OCID, PROJECT_OCID);
         System.out.println(jobManagedEgress.getJob().getId());
 
-        System.exit(0);
-
         // Create Job
         System.out.println("* CREATE JOB");
         CreateJobResponse job = client.createJob("Java Job", COMPARTMENT_OCID, PROJECT_OCID, SUBNET_OCID);
