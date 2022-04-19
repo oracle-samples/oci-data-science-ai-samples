@@ -1,5 +1,7 @@
 import os
+import ads
 import oci
+import requests
 
 from flask import Flask, render_template, jsonify
 from ads.common.oci_resource import OCIResource
@@ -8,7 +10,39 @@ from ads.jobs.builders.infrastructure.dsc_job import DataScienceJobRun
 
 
 app = Flask(__name__, template_folder=os.path.dirname(__file__))
-config = oci.config.from_file()
+
+
+def instance_principal_available():
+    try:
+        requests.get(
+            oci.auth.signers.InstancePrincipalsSecurityTokenSigner.GET_REGION_URL,
+            headers=oci.auth.signers.InstancePrincipalsDelegationTokenSigner.METADATA_AUTH_HEADERS,
+            timeout=1
+        )
+        return True
+    except:
+        return False
+
+
+def get_authentication():
+    if os.path.exists(os.path.expanduser(oci.config.DEFAULT_LOCATION)):
+        auth = dict(config=oci.config.from_file())
+    elif oci.auth.signers.resource_principals_signer.OCI_RESOURCE_PRINCIPAL_VERSION in os.environ:
+        config = {}
+        signer = oci.auth.signers.get_resource_principals_signer()
+        auth = dict(config=config, signer=signer)
+    elif instance_principal_available():
+        config = {}
+        signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
+        auth = dict(config=config, signer=signer)
+    else:
+        raise Exception("Cannot determine authentication method.")
+    return auth
+
+
+if not os.path.exists(os.path.expanduser(oci.config.DEFAULT_LOCATION)):
+    ads.set_auth('resource_principal')
+# config = oci.config.from_file()
 
 
 @app.route("/")
@@ -17,7 +51,12 @@ config = oci.config.from_file()
 def job_monitor(compartment_id=None, project_id=None):
     if project_id == "favicon.ico":
         return jsonify()
-    tenancy_id = config["tenancy"]
+
+    auth = get_authentication()
+    if auth["config"]:
+        tenancy_id = auth["config"]["tenancy"]
+    else:
+        tenancy_id = auth["signer"].tenancy_id
 
     if project_id:
         if not compartment_id:
@@ -36,7 +75,7 @@ def job_monitor(compartment_id=None, project_id=None):
         jobs = []
         compartment_id = None
 
-    compartments = oci.identity.IdentityClient(config=config).list_compartments(compartment_id=tenancy_id).data
+    compartments = oci.identity.IdentityClient(**auth).list_compartments(compartment_id=tenancy_id).data
     context = dict(
         jobs=jobs,
         compartment_id=compartment_id,
@@ -51,7 +90,7 @@ def job_monitor(compartment_id=None, project_id=None):
 
 @app.route("/projects/<compartment_id>")
 def list_projects(compartment_id):
-    projects = oci.data_science.DataScienceClient(config=config).list_projects(compartment_id=compartment_id).data
+    projects = oci.data_science.DataScienceClient(**get_authentication()).list_projects(compartment_id=compartment_id).data
     projects = sorted(projects, key=lambda x: x.display_name)
     context = {
         "compartment_id": compartment_id,
