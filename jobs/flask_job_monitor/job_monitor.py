@@ -1,9 +1,10 @@
 import os
+import re
 import ads
 import oci
 import requests
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, abort
 from ads.common.oci_resource import OCIResource
 from ads.jobs import Job
 from ads.jobs.builders.infrastructure.dsc_job import DataScienceJobRun
@@ -50,15 +51,11 @@ if not os.path.exists(os.path.expanduser(oci.config.DEFAULT_LOCATION)):
 @app.route("/<compartment_id>/<project_id>")
 def job_monitor(compartment_id=None, project_id=None):
     if project_id == "favicon.ico":
-        return jsonify()
-
-    auth = get_authentication()
-    if auth["config"]:
-        tenancy_id = auth["config"]["tenancy"]
-    else:
-        tenancy_id = auth["signer"].tenancy_id
+        abort(404)
 
     if project_id:
+        if not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
+            abort(404)
         if not compartment_id:
             compartment_id = OCIResource.get_compartment_id(project_id)
 
@@ -74,6 +71,12 @@ def job_monitor(compartment_id=None, project_id=None):
     else:
         jobs = []
         compartment_id = None
+
+    auth = get_authentication()
+    if auth["config"]:
+        tenancy_id = auth["config"]["tenancy"]
+    else:
+        tenancy_id = auth["signer"].tenancy_id
 
     compartments = oci.identity.IdentityClient(**auth).list_compartments(compartment_id=tenancy_id).data
     context = dict(
