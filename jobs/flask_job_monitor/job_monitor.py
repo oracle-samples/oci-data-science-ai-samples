@@ -54,14 +54,15 @@ def job_monitor(compartment_id=None, project_id=None):
         abort(404)
 
     if project_id:
-        if not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
-            abort(404)
-        if not compartment_id:
-            compartment_id = OCIResource.get_compartment_id(project_id)
-
         if project_id == "all":
             project_id = None
+        elif not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
+            return jsonify(error="Invalid Project ID"), 400
+        elif not compartment_id:
+            compartment_id = OCIResource.get_compartment_id(project_id)
 
+        if not re.match(r'ocid[0-9].compartment.oc[0-9]..[a-z0-9]+', compartment_id):
+            return jsonify(error="Invalid Compartment ID"), 400
         jobs = Job.datascience_job(
             compartment_id=compartment_id,
             project_id=project_id,
