@@ -4,7 +4,7 @@ import ads
 import oci
 import requests
 
-from flask import Flask, render_template, jsonify, abort
+from flask import Flask, render_template, jsonify, abort, request
 from ads.common.oci_resource import OCIResource
 from ads.jobs import Job
 from ads.jobs.builders.infrastructure.dsc_job import DataScienceJobRun
@@ -53,6 +53,8 @@ def job_monitor(compartment_id=None, project_id=None):
     if project_id == "favicon.ico":
         abort(404)
 
+    limit = request.args.get("limit", 20)
+
     if project_id:
         if project_id == "all":
             project_id = None
@@ -67,7 +69,7 @@ def job_monitor(compartment_id=None, project_id=None):
             compartment_id=compartment_id,
             project_id=project_id,
             lifecycle_state="ACTIVE",
-            limit=20
+            limit=limit
         )
     else:
         jobs = []
@@ -85,6 +87,7 @@ def job_monitor(compartment_id=None, project_id=None):
         compartment_id=compartment_id,
         project_id=project_id,
         compartments=compartments,
+        limit=limit
     )
     return render_template(
         'job_monitor.html',
