@@ -43,7 +43,32 @@ def get_authentication():
 
 if not os.path.exists(os.path.expanduser(oci.config.DEFAULT_LOCATION)):
     ads.set_auth('resource_principal')
-# config = oci.config.from_file()
+
+
+def check_ocid(ocid):
+    if not re.match(r'ocid[0-9].[a-z]+.oc[0-9].[a-z]{3}.[a-z0-9]+', ocid):
+        abort(404, f"Invalid OCID: {ocid}")
+
+def check_project_id(project_id):
+    if not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
+        abort(404, f"Invalid Project OCID: {project_id}")
+
+
+def check_compartment_id(compartment_id):
+    if not re.match(r'ocid[0-9].compartment.oc[0-9]..[a-z0-9]+', compartment_id):
+        abort(404, f"Invalid Compartment OCID: {compartment_id}")
+
+
+def check_compartment_project(compartment_id, project_id):
+    if str(project_id).lower() == "all":
+        project_id = None
+    else:
+        check_project_id(project_id)
+        # Lookup compartment when project ID is valid but no compartment is given.
+        if not compartment_id:
+            compartment_id = OCIResource.get_compartment_id(project_id)
+    check_compartment_id(compartment_id)
+    return compartment_id, project_id
 
 
 @app.route("/")
