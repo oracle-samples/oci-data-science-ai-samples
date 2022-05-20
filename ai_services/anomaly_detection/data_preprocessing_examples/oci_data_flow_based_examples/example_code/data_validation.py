@@ -121,7 +121,7 @@ def validate_data(df):
     if not valid_header(df):
         raise ValueError("Invalid header")
     if not valid_num_of_datapoints(df):
-        raise ValueError(f"Number of sample_datasets points exceed {MAX_DATAPOINTS}")
+        raise ValueError(f"Number of data points exceed {MAX_DATAPOINTS}")
     if not valid_num_of_columns(df):
         raise ValueError(f"Number of signals exceed {MAX_NUM_COL}")
     if all_columns_null(df):

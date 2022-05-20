@@ -2,7 +2,6 @@ from pyspark.sql import SparkSession
 import argparse
 import math
 
-
 class parse_kwargs(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         values = values[0].split(" ") if len(values) == 1 else values
@@ -16,6 +15,18 @@ class parse_kwargs(argparse.Action):
 
 
 def sharding(df, partition_size, output, coalesce, idcols):
+    """
+    Vertical data sharding
+    Args:
+        df : input dataframe
+        partition_size : max number of columns in the partitioned data
+        output :  destination to store output
+        coalesce : whether to combine partitions into a single CSV file 
+        idcols: identifiers of each record - in addition to timestamp
+
+    Return:
+        partitions of the original dataframe in CSV format
+    """
     column_names = df.columns
     idcols = ["timestamp"] + idcols if idcols else ["timestamp"]
     for col in idcols:
@@ -35,6 +46,7 @@ def sharding(df, partition_size, output, coalesce, idcols):
         ]
         for col in reversed(idcols):
             partition_columns.insert(0, col)
+
         df_partition = df.select(*partition_columns)
         output_name = output + "_part_" + str(i + 1)
         if coalesce:
@@ -63,6 +75,7 @@ def main():
         coalesce=args.coalesce,
         idcols=args.idColumns,
     )
+
 
 
 if __name__ == "__main__":
