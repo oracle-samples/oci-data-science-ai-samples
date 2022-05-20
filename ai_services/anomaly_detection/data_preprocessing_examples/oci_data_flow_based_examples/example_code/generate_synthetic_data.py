@@ -24,7 +24,7 @@ def gen_synthetic_pivot(spark, args):
     Args:
         spark: Spark session
         args: contains
-            args.output: destination directory to store generated data as a CSV file
+            args.output: destination directory to store generated sample_datasets as a CSV file
             args.num_signals: number of signals
             args.num_observations: number of observations
             args.freq: sampling interval for time series
@@ -58,7 +58,7 @@ def gen_synthetic_catvar(spark, args, max_cat=4):
     Args:
         spark: Spark session
         args: contains
-            args.output: destination directory to store generated data as a CSV file
+            args.output: destination directory to store generated sample_datasets as a CSV file
             args.num_signals: number of signals
             args.num_observations: number of observations
             args.freq: sampling interval for time series
@@ -92,7 +92,7 @@ def gen_synthetic_uniform(spark, args):
     Args:
         spark: Spark session
         args: contains
-            args.output: destination directory to store generated data as a CSV file
+            args.output: destination directory to store generated sample_datasets as a CSV file
             args.num_signals: number of signals
             args.num_observations: number of observations
             args.frac_nan: percentage of nan observations in each signal/ column
@@ -128,7 +128,7 @@ def gen_synthetic_string(spark, args):
     Args:
         spark: Spark session
         args: contains
-            args.output: destination directory to store generated data as a CSV file
+            args.output: destination directory to store generated sample_datasets as a CSV file
             args.num_signals: number of signals
             args.num_observations: number of observations
             args.freq: sampling interval for time series

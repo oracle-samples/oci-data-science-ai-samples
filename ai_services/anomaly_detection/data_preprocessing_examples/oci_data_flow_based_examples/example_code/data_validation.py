@@ -29,10 +29,10 @@ def is_duplicate(df, columns):
 
 def valid_dtype(df, column, target_dtype):
     """
-    Validate data type for a given column
+    Validate sample_datasets type for a given column
     Args:
         df: input dataframe
-        column: column to validate its data type
+        column: column to validate its sample_datasets type
         target_dtype: desired dtype
 
     Return:
@@ -127,7 +127,7 @@ def validate_data(df):
     if all_columns_null(df):
         raise ValueError("At least one none Null column required")
     if not is_sufficient_datapoints(df):
-        raise ValueError("Insufficient data")
+        raise ValueError("Insufficient sample_datasets")
     for col in df.columns:
         if col == "timestamp":
             continue

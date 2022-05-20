@@ -5,47 +5,55 @@ import numpy as np
 from pyspark.sql import functions as F
 
 
-def spark_pivoting(spark, filepath, groupby_col, pivot_col, agg_col):
+class parse_kwargs(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        values = values[0].split(" ") if len(values) == 1 else values
+        if ":" not in values[0]:
+            setattr(namespace, self.dest, values)
+        else:
+            setattr(namespace, self.dest, dict())
+            for value in values:
+                key, value = value.split(":")
+                getattr(namespace, self.dest)[key] = value
+
+
+def spark_pivoting(spark, filepath, groupby, pivot, agg):
     """
     Pivot Operation
     Args:
         spark: Spark session
         filepath: path to input CSV file
-        groupby_col: dimensions to groupby into summary rows
-        pivot_col: pivot column - rows of which to be converted into columns
-        agg_col: aggregation column
+        groupby: dimensions to groupby into summary rows
+        pivot: pivot column - rows of which to be converted into columns
+        agg:  a dictionary where key = <column name> and value = <aggregation function>
     """
-    max_pivot = len(groupby_col)
     data = spark.read.load(
         filepath, format="csv", sep=",", inferSchema="true", header="true"
     )
     if not "timestamp" in data.columns:
         raise ValueError("timestamp column not found!")
-
-    return data.groupBy(groupby_col).pivot(pivot_col).avg(agg_col)
+    return data.groupBy(groupby).pivot(pivot).agg(agg)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
-    parser.add_argument("--output", required=False)
+    parser.add_argument("--output", required=True)
     parser.add_argument("--pivot", required=True)
-    parser.add_argument("--groupby", nargs="+", required=True)
-    parser.add_argument("--agg", required=True)
+    parser.add_argument("--groupby", nargs="*", required=True, action=parse_kwargs)
+    parser.add_argument("--agg", nargs="*", required=True, action=parse_kwargs)
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
 
     spark = SparkSession.builder.appName("PySpark_pivoting").getOrCreate()
     spark.conf.set("spark.sql.pivotMaxValues", "1000000")
 
-    groupby = args.groupby[0].split(" ") if len(args.groupby) == 1 else args.groupby
-
     df_pivot = spark_pivoting(
         spark,
         filepath=args.input,
-        groupby_col=groupby,
-        pivot_col=args.pivot,
-        agg_col=args.agg,
+        groupby=args.groupby,
+        pivot=args.pivot,
+        agg=args.agg,
     )
     if args.coalesce:
         df_pivot.coalesce(1).write.csv(args.output, header=True)
