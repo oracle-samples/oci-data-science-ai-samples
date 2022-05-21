@@ -52,7 +52,7 @@ After designing the data flow, click <b>Validate</b>. on the data flow page. If 
 
 ### Detailed documentation on
 
-1. [Creating Integration Tasks](https://confluence.oci.oraclecorp.com/display/OCAS/DIS%3A+Common+Preprocessing+Workflow#:~:text=Creating%20Integration%20Tasks) 
+1. [Creating Integration Tasks](https://docs.oracle.com/en-us/iaas/data-integration/using/integration-tasks.htm) 
 2. [Publishing Design Tasks](https://docs.oracle.com/en-us/iaas/data-integration/using/publish-design-tasks.htm) 
 3. [Using Applications to Run Tasks](https://docs.oracle.com/en-us/iaas/data-integration/using/run.htm) 
 
