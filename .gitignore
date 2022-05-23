@@ -14,3 +14,4 @@ jobs/java/.idea
 jobs/java/.settings
 jobs/java/target
 .project
+*.class
