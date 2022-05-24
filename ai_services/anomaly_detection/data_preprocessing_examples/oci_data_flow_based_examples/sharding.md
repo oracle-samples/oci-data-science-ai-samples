@@ -3,7 +3,8 @@
 ## Use case
 
 
-The user wants the system to automatically perform "Columnar Data Sharding" on input data.
+You want the system to automatically perform "Columnar Data Sharding" on input data.
+For example, you have a large number of signals and you want to group 300 at a time to detect anomalies using OCI Anomaly Detection
 
 
 ## Steps
