@@ -32,5 +32,8 @@ templates to build end-to-end solution.
 
 ### When should I use DF vs DIS?
 
-While both DF and DIS are sophisticated platforms that can be used to address you pre-processing needs,
- you may find DF performing faster for large datasets(more than 100k observations or so). Also, DF is able to handle more columns, and certain tasks like batching.
+While both DF and DIS are sophisticated platforms that can be used to address your pre-processing needs,
+you may find DF performing faster for large datasets(more than 100k rows or so) when a sufficient number of parallel Executors are configured.
+Also, DF is able to handle more columns, and certain specialized data preprocessing tasks such as batching, sharding and pivoting on multiple columns.
+DIS provides an easy-to-understand drag and drop interface which does not require any programming expertise, and provides ability to preview and validate transformations.
+If you do not have any of the specialized data preprocessing needs mentioned above, DIS is a good option.

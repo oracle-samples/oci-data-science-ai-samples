@@ -20,8 +20,6 @@ Allow group dataflow-users to read buckets in compartment compartment_name
 Allow group dataflow-users to use dataflow-family in compartment compartment_name
 ```
 ### Service Policies
-Refer to [this](https://docs.oracle.com/en-us/iaas/data-integration/using/preparing-for-connectivity.htm) documentation to
-
 The Data Flow service needs permission to perform actions on behalf of the user or group on objects within the tenancy. Create a policy called *dataflow-service* and add the following statement:
 ```
 Allow service dataflow to read objects in compartment compartment_name where target.bucket.name='dataflow-logs'
