@@ -3,8 +3,14 @@
 ## Use case
 
 
-The user wants to scale numeric features and normalize them into (0, 1) range for training ML/DL models.
+The user wants to scale numeric features and normalize them into (0, 1) range for training ML/DL models. Two normalization methods are supported:
 
+### Minmax scaling
+
+! <img src="./utils/minmax.png#" width="50%" height="70%">
+### Standard scaling
+
+! <img src="./utils/standard.png#" width="50%" height="70%">
 ## Steps
 
 
@@ -45,7 +51,6 @@ Add the following to the arguments:
 <b>input</b> points to the input data source. The resulting dataframe will have selected numeric <b>columns</b>/ features scaled based on user's choice of "minmax"
 or "standard" normalizations given in <b>norm</b> argument.
 
-
 Specify path in Object Storage to store logs. These may be useful later for troubleshooting.
 
 ![image info](./utils/FN4.png)
@@ -54,5 +59,3 @@ Specify path in Object Storage to store logs. These may be useful later for trou
 ```
 Click "Save changes" to save the Application
 ```
-
-
