@@ -27,11 +27,12 @@ Click "Create Application"
 ![image info](./utils/FBW2.png)
 
 
-```
 Select the number of Executors, logging location and path to the Spark application that we just created. 
-```
-If you are entering the path manually, it needs to be specified in the following format:<br>?oci://dataflow-warehouse@<compartmentID>/fixed_window_batching.py where "?<compartmentID>" is the compartment
-name. Otherwise you can use the browser to choose an object.
+
+If you are entering the path manually, it needs to be specified in the following format:
+**oci://dataflow-warehouse@<namespace>/fixed_window_batching.py** where "namespace" is the Object Storage
+namespace(this can be found from the object URL or from the Object Details window by right clicking on the object).
+Otherwise you can use the browser to choose an object.
 
 ![image info](./utils/FBW3.png)
 
@@ -41,14 +42,11 @@ Add the following to arguments:
 ```
 Here batch size needs to be calculated based on the number of signals. For example, if each row in the data has 499 signals, AD can support a total of
 300k/500 = 600 rows per call. Set <b>batch_size</b> to 600 and run the data flow.
-```
+
 Specify path in Object Storage to store logs. These may be useful later for troubleshooting.
-```
+
 ![image info](./utils/FBW4.png)
 
-```
-```
 Click "Save changes" to save the Application
-```
-```
+
 

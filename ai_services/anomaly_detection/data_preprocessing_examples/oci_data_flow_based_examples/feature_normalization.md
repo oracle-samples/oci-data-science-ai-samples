@@ -14,7 +14,7 @@ The user wants to scale numeric features and normalize them into (0, 1) range fo
 ## Steps
 
 
-Download the example Spark application: [normalization.py](./normalization.py)
+Download the example Spark application: [normalization.py](./example_code/normalization.py)
 
 ```
 Upload the code to OCI Object Storage(in case of Scala or Java, upload the compiled JAR file). Note the path to the code eg. bucket dataflow-

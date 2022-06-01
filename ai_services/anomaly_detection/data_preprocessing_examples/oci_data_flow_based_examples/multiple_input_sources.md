@@ -9,7 +9,7 @@ The user wants to get and combine data from multiple input sources and merge the
 ## Steps
 
 
-Download the example [Spark application](./)
+Download the example [Spark application](./example_code/different_input_integration.py)
 
 ```
 Upload the code to OCI Object Storage(in case of Scala or Java, upload the compiled JAR file). Note the path to the code eg. bucket dataflow-

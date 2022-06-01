@@ -2,7 +2,8 @@ from pyspark.sql import SparkSession
 import argparse
 import math
 
-class parse_kwargs(argparse.Action):
+
+class ParseKwargs(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         values = values[0].split(" ") if len(values) == 1 else values
         if ":" not in values[0]:
@@ -59,7 +60,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
-    parser.add_argument("--idColumns", nargs="*", required=False, action=parse_kwargs)
+    parser.add_argument("--idColumns", nargs="*", required=False, action=ParseKwargs)
     parser.add_argument("--columnNum", required=False, default="300")
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
@@ -75,7 +76,6 @@ def main():
         coalesce=args.coalesce,
         idcols=args.idColumns,
     )
-
 
 
 if __name__ == "__main__":

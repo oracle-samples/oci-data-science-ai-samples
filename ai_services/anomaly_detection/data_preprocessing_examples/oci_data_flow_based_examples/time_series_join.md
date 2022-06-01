@@ -16,7 +16,7 @@ If 2 columns have the same name but different values, follow the instructions in
 
 ## Steps
 
-Download the example Spark application
+Download the example [Spark application](./example_code/time_series_join.py)
 
 Upload the code to OCI Object Storage(in case of Scala or Java, upload the compiled JAR file). Note the path to the code eg. bucket dataflow-
 warehouse, folder join, file name time_series_join.py.

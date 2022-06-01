@@ -5,7 +5,7 @@ import numpy as np
 from pyspark.sql import functions as F
 
 
-class parse_kwargs(argparse.Action):
+class ParseKwargs(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         values = values[0].split(" ") if len(values) == 1 else values
         if ":" not in values[0]:
@@ -40,8 +40,8 @@ def main():
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--pivot", required=True)
-    parser.add_argument("--groupby", nargs="*", required=True, action=parse_kwargs)
-    parser.add_argument("--agg", nargs="*", required=True, action=parse_kwargs)
+    parser.add_argument("--groupby", nargs="*", required=True, action=ParseKwargs)
+    parser.add_argument("--agg", nargs="*", required=True, action=ParseKwargs)
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
 

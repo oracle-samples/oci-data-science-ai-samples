@@ -10,7 +10,7 @@ totals before using OCI Anomaly Detection service
 
 ## Steps
 
-Download the example Spark application: [sliding_window_aggregation.py](./sliding_window_aggregation.py)
+Download the example Spark application: [sliding_window_aggregation.py](./example_code/sliding_window_aggregation.py)
 
 Upload the code to OCI Object Storage(in case of Scala or Java, upload the compiled JAR file). Note the path to the code eg. bucket dataflow-
 warehouse, root folder, file name sliding_window_aggregation.py.
