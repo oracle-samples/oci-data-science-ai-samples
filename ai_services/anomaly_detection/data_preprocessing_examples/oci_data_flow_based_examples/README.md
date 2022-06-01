@@ -33,18 +33,18 @@ Download the PySpark code sample for the preprocessing task you need, and upload
 
 
 1. [DF: Feature Normalization](feature_normalization.md)
-2. [DF: Fixed Window Batching](fixed_window_batching.md)
-3. [DF: Multiple Input Sources](Multiple_input_sources.md)
+2. [DF: Fixed Window Batching](Fixed_window_batching.md)
+3. [DF: Multiple Input Sources](multiple_input_sources.md)
 4. [DF: Pivoting](pivoting.md)
 5. [DF: Sharding](sharding.md)
 6. [DF: Sliding Window Aggregation](sliding_window_aggregation.md)
 7. [DF: Time Series Join](time_series_join.md)
 8. [DF: Time series merge](time_series_merge.md)
 9. [DF: Date-time conversion](date_time_conversion.md)
-10. [DF: Remove Unnecessary Columns](Remove_unnecessary_columns.md)
-11. [DF: String Replacement](string_replacement.md)
-12. [DF: Temporal Differencing](Temporal_differencing.md)
-13. [DF: One-hot encoding](one_hot_encoding.md)
+10.[DF: Remove Unnecessary Columns](remove_unnecessary_columns.md)
+11.[DF: String Replacement](string_replacement.md)
+12.[DF: Temporal Differencing](temporal_differencing.md)
+13.[DF: One-hot encoding](one_hot_encoding.md)
 
 
 Upload your data files to Object Storage using the same process, and keep track of the path to the data.

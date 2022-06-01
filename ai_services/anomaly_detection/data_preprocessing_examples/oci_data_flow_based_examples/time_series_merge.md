@@ -14,7 +14,7 @@ series. You might find some of the other transformations useful here, like Remov
 ## Steps
 
 
-Download the example Spark application [time_series_merge.py](./time_series_merge.py)
+Download the example Spark application [time_series_merge.py](./example_code/time_series_merge.py)
 
 
 Upload the code to OCI Object Storage(in case of Scala or Java, upload the compiled JAR file). Note the path to the code eg. bucket dataflow-
