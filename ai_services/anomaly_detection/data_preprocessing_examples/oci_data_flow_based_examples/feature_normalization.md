@@ -11,6 +11,14 @@ The user wants to scale numeric features and normalize them into (0, 1) range fo
 ### Standard scaling
 
 ! <img src="./utils/standard.png#" width="50%" height="70%">
+
+## Preparation
+
+All columns that need to be normalized should contain only numeric data.
+You may find [Rename Column](column_rename.md), [Type Casting](./example_code/dtype_casting.py)
+or [One Hot Encoding](one_hot_encoding.md) useful here.
+See the sample datasets [scaling](../sample_datasets/scaling-example.csvgt) or [univariate_time_series](../sample_datasets/univariate_time_series.csv)
+
 ## Steps
 
 

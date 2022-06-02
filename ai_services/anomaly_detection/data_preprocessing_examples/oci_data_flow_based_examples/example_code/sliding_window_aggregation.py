@@ -5,26 +5,34 @@ import os
 
 from pyspark import SparkConf
 from pyspark.sql import SparkSession, Window
-import pyspark.sql.functions as F
+import pyspark.sql.functions
 
 
-def main(args):
-    spark = get_dataflow_spark_session()
-    df = spark.read.csv(args.input, header=True)
-    w = Window.orderBy('timestamp').rowsBetween(0, int(args.window_size))
-    signals = df.columns.copy()
-    signals.remove('timestamp')
-    df = df.select('timestamp', *(F.avg(column).over(w) for column in signals), F.monotonically_increasing_id().alias("idx"))
-    df = df.filter(df.idx % int(args.step_size) == 0)
-    df = df.drop("idx")
-    if args.coalesce:
-        df.coalesce(1).write.csv(args.output, header=True)
+def aggregation(dataframe, arguments):
+    grouping_functions = ["avg", "sum", "min", "max"]
+    if args.aggregation_function in grouping_functions:
+        if "timestamp" not in df.columns:
+            raise ValueError("timestamp column not found!")
+        w = Window.orderBy('timestamp').rowsBetween(0, int(arguments.window_size))
+        signals = dataframe.columns.copy()
+        signals.remove('timestamp')
+        method = getattr(pyspark.sql.functions, args.aggregation_function)
+        dataframe = dataframe.select('timestamp', *(method(column).over(w) for column in signals),
+                                     pyspark.sql.functions.monotonically_increasing_id().alias("idx"))
+    elif args.aggregation_function == "first":
+        dataframe = dataframe.withColumn("idx", pyspark.sql.functions.monotonically_increasing_id())
     else:
-        df.write.csv(args.output, header=True)
+        raise ValueError("aggregation_function should be one of avg, sum. min, max or first")
+    dataframe = dataframe.filter(dataframe.idx % int(arguments.step_size) == 0)
+    dataframe = dataframe.drop("idx")
+    if arguments.coalesce:
+        dataframe.coalesce(1).write.csv(arguments.output, header=True)
+    else:
+        dataframe.write.csv(arguments.output, header=True)
 
 
 def get_dataflow_spark_session(
-    app_name="DataFlow", file_location=None, profile_name=None, spark_config={}
+        app_name="DataFlow", file_location=None, profile_name=None, spark_config={}
 ):
     """
     Get a Spark session in a way that supports running locally or in Data Flow.
@@ -90,6 +98,9 @@ if __name__ == "__main__":
     parser.add_argument("--output", required=True)
     parser.add_argument("--window_size", required=True)
     parser.add_argument("--step_size", required=True)
+    parser.add_argument("--aggregation_function", required=False, default="avg")
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
-    main(args)
+    spark = get_dataflow_spark_session()
+    df = spark.read.csv(args.input, header=True)
+    aggregation(df, args)
