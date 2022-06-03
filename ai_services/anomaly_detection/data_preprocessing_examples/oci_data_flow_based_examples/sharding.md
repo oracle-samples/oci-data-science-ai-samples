@@ -6,9 +6,14 @@
 You want the system to automatically perform "Columnar Data Sharding" on input data.
 For example, you have a large number of signals and you want to group 300 columns at a time to detect anomalies using OCI Anomaly Detection
 
+## Preparation
+
+If a timestamp column is present, it should be named 'timestamp'(all in lower case). 
+This will ensure that the columns is present in all the shards.
+You may find [Rename Column](column_rename.md) or [Remove Unnecessary Columns](../oci_data_integration_based_examples/Remove_unnecessary_columns.md) useful here.
+See the sample dataset [univariate_time_series](../sample_datasets/univariate_time_series.csv) for a working example.
 
 ## Steps
-
 
 Download the example Spark application: [sharding.py](./example_code/sharding.py)
 

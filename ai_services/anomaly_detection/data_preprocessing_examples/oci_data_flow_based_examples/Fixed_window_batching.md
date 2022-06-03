@@ -40,8 +40,8 @@ Add the following to arguments:
 ```
 --input ${input} --output ${output} --batch_size ${batch_size}
 ```
-Here batch size needs to be calculated based on the number of signals. For example, if each row in the data has 499 signals, AD can support a total of
-300k/500 = 600 rows per call. Set <b>batch_size</b> to 600 and run the data flow.
+Here batch size needs to be calculated based on the number of signals. For example, if each row in the data has 299 signals, AD can support a total of
+300k/300 = 1000 rows per call. Set <b>batch_size</b> to 1000 and run the data flow.
 
 Specify path in Object Storage to store logs. These may be useful later for troubleshooting.
 

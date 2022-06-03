@@ -4,6 +4,13 @@
 
 The user wants to temporally differentiate the data on a desired predefined rate.
 
+## Preparation
+
+the input needs to contain a column named 'timestamp'(all in lower case).
+All other columns needs to be numeric. You may find [Rename Column](column_rename.md), [Type Casting](./example_code/dtype_casting.py)
+or [Remove Unnecessary Columns](../oci_data_integration_based_examples/Remove_unnecessary_columns.md) useful here.
+See the dataset [univariate_time_series](../sample_datasets/univariate_time_series.csv) for an example of an input that works with the provided application.
+
 ## Steps
 
 Download the example Spark application: [temporal_differencing.py](./example_code/temporal_differencing.py)
