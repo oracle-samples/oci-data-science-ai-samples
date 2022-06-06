@@ -2,10 +2,12 @@
 
 ## Use case
 
-You can use it to remove specified column(s).
+You can use it to remove specified column(s) in your csv.
 
 ## Prerequisites
 Follow the [guide](../README) and setup your policies correctly.
+
+Also, for csv, you can use [utility-meter-readings](../sample_datasets/utility-meter-readings.csv) as an example.
 
 ## Steps
 
@@ -13,7 +15,7 @@ Download the example Spark application: [remove_unnecessary_columns.py](./exampl
 
 Upload the code to OCI Object Storage(in case of Scala or Java, upload the compiled JAR file). 
 
-Also, upload the csv file waiting to be processed to the OCI Object Storage. It can be either the same Object Storage as the code or a different one.
+Also, upload the csv file waiting to be processed to the OCI Object Storage. It can be either the same Object Storage as the code or a different one. 
 
 ![image info](./utils/upload_sjc_object.png)
 ## Start DataFlow
