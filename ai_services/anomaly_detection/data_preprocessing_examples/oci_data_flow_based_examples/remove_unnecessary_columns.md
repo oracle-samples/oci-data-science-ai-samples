@@ -2,7 +2,7 @@
 
 ## Use case
 
-The user wants to remove specified column(s).
+You can use it to remove specified column(s).
 
 ## Prerequisites
 Follow the [guide](../README) and setup your policies correctly.

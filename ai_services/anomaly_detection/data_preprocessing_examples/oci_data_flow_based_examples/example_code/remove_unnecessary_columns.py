@@ -1,19 +1,21 @@
 import argparse
 from pyspark.sql import SparkSession
 
-def main(args):
+
+def remove_unnecessary_columns(input, columns_to_remove, output, coalesce):
     spark = SparkSession.builder.appName("DataFlow").getOrCreate()
-    df = spark.read.csv(args.input, header=True)
-    columns_to_remove = args.columns_to_remove.split(',')
+    df = spark.read.csv(input, header=True)
+    columns_to_remove_arr = columns_to_remove.split(',')
     cols = ()
-    for col in columns_to_remove:
+    for col in columns_to_remove_arr:
         cols += (col,)
     df = df.drop(*cols)
 
-    if args.coalesce:
-        df.coalesce(1).write.csv(args.output, header=True)
+    if coalesce:
+        df.coalesce(1).write.csv(output, header=True)
     else:
         df.write.csv(args.output, header=True)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -23,4 +25,5 @@ if __name__ == "__main__":
     parser.add_argument("--coalesce", required=False, action="store_true")
 
     args = parser.parse_args()
-    main(args)
+    remove_unnecessary_columns(args.input, args.columns_to_remove,
+                               args.output, args.coalesce)
