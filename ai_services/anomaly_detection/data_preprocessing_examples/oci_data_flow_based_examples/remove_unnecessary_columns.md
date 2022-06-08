@@ -31,12 +31,12 @@ Select the language and code file accordingly. Here we are using Python.
 Add the following to the arguments:
 
 ```
---input ${input} --columns_to_remove ${--columns_to_remove} --output ${output}
+--input ${input} --columns_to_remove ${columns_to_remove} --output ${output}
 ```
 
 (unlikely) or, if you want to [coalesce](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.coalesce.html) your data frame, all a `--coalesce` flag to your argument list:
 ```
---input ${input} --columns_to_remove ${--columns_to_remove} --output ${output} --coalesce
+--input ${input} --columns_to_remove ${columns_to_remove} --output ${output} --coalesce
 ```
 
 - <b>input</b> points to the input data source. Notice you will need to specify the full oci file path by following the format `oci://<bucket-name>@<namespace>/<path-to-file>`. `bucket-name` and `namespace` can be found at your bucket details under **Object Storage**.
