@@ -22,15 +22,14 @@ To load data and store data, follow [DIS data I/O](https://confluence.oci.oracle
 
 Follow the sub-pages to create DIS data flow for your preprocessing task.
 
-1. [DIS: Date-time conversion](./)  // Will be added in future PRs
-2. [DIS: Down-Sampling](./)
-3. [DIS: Fixed Window Aggregation](./) 
+1. [DIS: Date-time conversion](./date_time_conversion.md)
+2. [DIS: Down-Sampling](downsampling.md)
+3. [DIS: Time Series Merge](./time_series_merge.md) 
 4. [DIS: Multiple Input sources](./Multiple_input_sources.md) 
-5. [DIS: Remove Unnecessary Columns](./)
-6. [DIS: String Replacement](./)
-7. [DIS: Temporal Differencing](./) 
-8. [DIS: Time Series Join](./)
-9. [DIS: Time Series Merge](./) 
+5. [DIS: Remove Unnecessary Columns](./Remove_unnecessary_columns.md)
+6. [DIS: String Replacement](string_replacement.md)
+7. [DIS: Temporal Differencing](./Temporal_differencing.md) 
+8. [DIS: Time Series Join](./time_series_join.md)
 
 
 After designing the data flow, click <b>Validate</b>. on the data flow page. If there is no error, click <b>Save and close</b>. <br>
@@ -53,8 +52,7 @@ After designing the data flow, click <b>Validate</b>. on the data flow page. If 
 
 ### Detailed documentation on
 
-1. [Creating Integration Tasks](https://confluence.oci.oraclecorp.com/display/OCAS/DIS%3A+Common+Preprocessing+Workflow#:~:text=Creating%20Integration%20Tasks) 
+1. [Creating Integration Tasks](https://docs.oracle.com/en-us/iaas/data-integration/using/integration-tasks.htm) 
 2. [Publishing Design Tasks](https://docs.oracle.com/en-us/iaas/data-integration/using/publish-design-tasks.htm) 
 3. [Using Applications to Run Tasks](https://docs.oracle.com/en-us/iaas/data-integration/using/run.htm) 
-```
 
