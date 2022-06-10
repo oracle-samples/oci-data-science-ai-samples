@@ -82,12 +82,10 @@
 
     // Refresh the page to see jobs when project is changed.
     $("#projects").change(function() {
-      var project_ocid = $("#projects").val();
-      var compartment_ocid = $("#compartments").val();
-      window.location.href = "/" + compartment_ocid + "/" + project_ocid;
+      var projectId = $("#projects").val();
+      var compartmentId = $("#compartments").val();
+      window.location.href = "/" + compartmentId + "/" + projectId;
     })
-
-    
   })
 
   function updateLogs(ocid, outputDiv) {
@@ -162,9 +160,10 @@
         }
       });
     });
+    // Reload the list of jobs every 20 seconds.
     setTimeout(function() {
       loadJobs(compartmentId, projectId);
-    }, 10000);
+    }, 20000);
   }
 
   function loadJobRuns(job_ocid) {
