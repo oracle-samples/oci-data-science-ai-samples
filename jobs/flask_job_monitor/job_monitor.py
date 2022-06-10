@@ -115,16 +115,14 @@ def job_monitor(compartment_id=None, project_id=None):
 def list_jobs(compartment_id, project_id):
     compartment_id, project_id = check_compartment_project(compartment_id, project_id)
     limit = request.args.get("limit", 10)
-    jobs = Job.datascience_job(
-        compartment_id=compartment_id,
-        project_id=project_id,
-        lifecycle_state="ACTIVE",
-        limit=limit
-    )
+    # Calling OCI API here instead of ADS API is faster :)
+    jobs = oci.data_science.DataScienceClient(
+        **get_authentication()
+    ).list_jobs(compartment_id=compartment_id, project_id=project_id, limit=limit).data
 
     job_list = []
     for job in jobs:
-        job_data = job.to_dict()
+        job_data = dict(name=job.display_name, id=job.id)
         job_data.update(
             ocid=job.id,
             html=render_template("job_accordion.html", job=job)
@@ -133,6 +131,22 @@ def list_jobs(compartment_id, project_id):
     return jsonify({
         "limit": limit,
         "jobs": job_list
+    })
+
+@app.route("/job_runs/<job_id>")
+def list_job_runs(job_id):
+    job = Job.from_datascience_job(job_id)
+    runs = job.run_list()
+    run_list = []
+    for run in runs:
+        run_data = {
+            "ocid": run.id,
+            "html": render_template("job_run_template.html", run=run, job=job)
+        }
+        run_list.append(run_data)
+    return jsonify({
+        "job": job.to_dict(),
+        "runs": run_list
     })
 
 @app.route("/projects/<compartment_id>")
