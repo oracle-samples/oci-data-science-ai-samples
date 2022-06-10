@@ -78,7 +78,7 @@ def job_monitor(compartment_id=None, project_id=None):
     if project_id == "favicon.ico":
         abort(404)
 
-    limit = request.args.get("limit", 20)
+    limit = request.args.get("limit", 10)
 
     if project_id:
         if project_id == "all":
@@ -90,14 +90,7 @@ def job_monitor(compartment_id=None, project_id=None):
 
         if not re.match(r'ocid[0-9].compartment.oc[0-9]..[a-z0-9]+', compartment_id):
             return jsonify(error="Invalid Compartment ID"), 400
-        jobs = Job.datascience_job(
-            compartment_id=compartment_id,
-            project_id=project_id,
-            lifecycle_state="ACTIVE",
-            limit=limit
-        )
     else:
-        jobs = []
         compartment_id = None
 
     auth = get_authentication()
@@ -108,7 +101,6 @@ def job_monitor(compartment_id=None, project_id=None):
 
     compartments = oci.identity.IdentityClient(**auth).list_compartments(compartment_id=tenancy_id).data
     context = dict(
-        jobs=jobs,
         compartment_id=compartment_id,
         project_id=project_id,
         compartments=compartments,
@@ -119,14 +111,41 @@ def job_monitor(compartment_id=None, project_id=None):
         **context
     )
 
+@app.route("/jobs/<compartment_id>/<project_id>")
+def list_jobs(compartment_id, project_id):
+    compartment_id, project_id = check_compartment_project(compartment_id, project_id)
+    limit = request.args.get("limit", 10)
+    jobs = Job.datascience_job(
+        compartment_id=compartment_id,
+        project_id=project_id,
+        lifecycle_state="ACTIVE",
+        limit=limit
+    )
+
+    job_list = []
+    for job in jobs:
+        job_data = job.to_dict()
+        job_data.update(
+            ocid=job.id,
+            html=render_template("job_accordion.html", job=job)
+        )
+        job_list.append(job_data)
+    return jsonify({
+        "limit": limit,
+        "jobs": job_list
+    })
 
 @app.route("/projects/<compartment_id>")
 def list_projects(compartment_id):
-    projects = oci.data_science.DataScienceClient(**get_authentication()).list_projects(compartment_id=compartment_id).data
+    projects = oci.data_science.DataScienceClient(
+        **get_authentication()
+    ).list_projects(compartment_id=compartment_id).data
     projects = sorted(projects, key=lambda x: x.display_name)
     context = {
         "compartment_id": compartment_id,
-        "projects": [{"display_name": project.display_name, "ocid": project.id} for project in projects]
+        "projects": [
+            {"display_name": project.display_name, "ocid": project.id} for project in projects
+        ]
     }
     return jsonify(context)
 
