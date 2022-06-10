@@ -80,13 +80,6 @@
     // Load jobs
     loadJobs(compartment_ocid, project_ocid);
 
-    // }
-    // Load logs.
-    $(".run-monitor").each(function() {
-      var ocid = this.id;
-      var outputDiv = $(this).find(".card-body");
-      updateLogs(ocid, outputDiv);
-    })
     // Refresh the page to see jobs when project is changed.
     $("#projects").change(function() {
       var project_ocid = $("#projects").val();
@@ -172,15 +165,21 @@
   }
 
   function loadJobRuns(job_ocid) {
-    var selector = "#" + job_ocid.replaceAll(".", "") + "-body";
-    var job_row = $(selector).find(".row").append("");
+    var jobSelector = "#" + job_ocid.replaceAll(".", "") + "-body";
+    var jobRow = $(jobSelector).find(".row").append("");
     console.log("Loading job runs for job OCID: " + job_ocid);
     $.getJSON("/job_runs/" + job_ocid, function(data) {
       data.runs.forEach(run => {
-        job_row.append(run.html);
+        jobRow.append(run.html);
+        // Load logs.
+        var jobRunSelector = "#" + run.ocid.replaceAll(".", "")
+        $(jobRunSelector + " .run-monitor").each(function() {
+          var ocid = this.id;
+          var outputDiv = $(this).find(".card-body");
+          updateLogs(ocid, outputDiv);
+        });
       });
     });
-
   }
 </script>
 
