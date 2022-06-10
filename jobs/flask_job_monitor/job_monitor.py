@@ -118,7 +118,12 @@ def list_jobs(compartment_id, project_id):
     # Calling OCI API here instead of ADS API is faster :)
     jobs = oci.data_science.DataScienceClient(
         **get_authentication()
-    ).list_jobs(compartment_id=compartment_id, project_id=project_id, limit=limit).data
+    ).list_jobs(
+        compartment_id=compartment_id,
+        project_id=project_id,
+        lifecycle_state="ACTIVE",
+        limit=limit
+    ).data
 
     job_list = []
     for job in jobs:
