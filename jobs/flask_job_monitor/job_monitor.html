@@ -14,7 +14,7 @@
 <body style="padding: 30px;">
   <div class="container-fluid">
     <h1>Jobs Monitor</h1>
-    <p>Select compartment and project to show the most recent {{ limit }} jobs.</p>
+    <p>Select compartment and project to show the most recent <span id="job-number-limit">{{ limit }}</span> jobs.</p>
     <div class="row">
       <div class="col-md-6">
         <div class="form-group">
@@ -34,139 +34,39 @@
         </div>
       </div>
       <div class="col-md-6">
+        <div class="d-none" id="project_ocid">{{ project_id }}</div>
         <div class="form-group">
           <label for="projects">Project</label>
           <select class="form-control" name="projects" id="projects">
-            {% if compartment_id and not project_id %}
-            <option value="" selected="selected">Select Project</option>
-            {% endif %}
-            {% for project in projects %}
-            {% if project_id == project.id %}
-            <option value="{{ project.id }}" selected="selected">{{ project.display_name }}</option>
-            {% else %}
-            <option value="{{ project.id }}">{{ project.display_name }}</option>
-            {% endif %}
-            {% endfor %}
           </select>
         </div>
       </div>
     </div>
 
     <hr />
+    <div class="accordion" id="dashboard-jobs">
 
-    <div class="row">
-      {% for job in jobs %}
-      {% for run in job.run_list() %}
-      <div class="col-xl-4 {{ job.id|replace('.', '') }}">
-        <div class="card run-monitor" id="{{ run.id }}" style="margin-bottom: 25px;">
-          <div class="card-header">
-            <div>
-              <div class="float-end" style="font-size: larger">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#modal-details-{{ run.id|replace('.', '') }}"><i class="bi-info-circle"></i></a>
-                <a class="text-danger" href="#" data-bs-toggle="modal" data-bs-target="#modal-delete-{{ run.id|replace('.', '') }}"><i class="bi-x-lg"></i></a>
-              </div>
-              <h4>
-                <a style="color: inherit;" target="_blank" href="https://console.us-ashburn-1.oraclecloud.com/data-science/jobs/{{ job.id }}">
-                  {{ job.name }}
-                </a>
-              </h4>
-            </div>
-            <div class="clearfix"></div>
-            <div>
-              <div class="float-end">
-                <p><strong class="run-status">{{ run.lifecycle_state}}</strong></p>
-              </div>
-              <h5>{{ run.name }}</h5>
-            </div>
-          </div>
-          <div class="card-body" style="font-family: 'Courier New', Courier, monospace; height: 500px; overflow: scroll;">
-            Loading...
-          </div>
-          <div class="card-footer text-muted">
-            {% if run.log_id %}
-            <div><a target="_blank" href="https://console.us-ashburn-1.oraclecloud.com/logging/search?searchQuery=search%20%22{{ run.compartment_id }}%22%20%7C%20source%3D%27%2A{{ run.id }}%27%20%7C%20sort%20by%20datetime%20desc">View logs in OCI
-                console</a></div>
-            {% endif %}
-            {{ run.id }} <br>
-            <span class=".run-status-details">
-              {{ run.lifecycle_state }}
-              {% if run.lifecycle_details %}
-              - {{ run.lifecycle_details }}
-              {% endif %}
-            </span>
-          </div>
-        </div>
-
-          <!-- Modal YAML -->
-          <div id="modal-details-{{ run.id|replace('.', '') }}" class="modal fade" tabindex="-1">
-            <div class="modal-dialog modal-xl">
-              <!-- Modal content-->
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title">{{ job.name}}</h4>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <pre style="overflow-x: scroll;">{{ job|safe }}</pre>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Modal Delete Confirmation -->
-          <div id="modal-delete-{{ run.id|replace('.', '') }}" class="modal fade" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-              <!-- Modal content-->
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title">{{ job.name}}</h4>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  Delete Job and Job Runs? <br />
-                  {{ run.id }}
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-danger" onclick="deleteJob('{{ job.id }}')" data-bs-dismiss="modal">Delete Job and Runs</button>
-                  <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-      </div>
-      {% endfor %}
-      {% endfor %}
     </div>
-  </div>
-
 
 </body>
 <script>
   $(document).ready(function() {
-    // Load logs.
-    $(".run-monitor").each(function() {
-      var ocid = this.id;
-      var outputDiv = $(this).find(".card-body");
-      updateLogs(ocid, outputDiv);
-    })
-    // Refresh the page to see jobs when project is changed.
-    $("#projects").change(function() {
-      var project_ocid = $("#projects").val();
-      var compartment_ocid = $("#compartments").val();
-      window.location.href = "/" + compartment_ocid + "/" + project_ocid;
-    })
+    var compartment_ocid = $("#compartments").val();
+    var project_ocid = $("#project_ocid").text();
+    console.log("COMPARTMENT ID: " + compartment_ocid);
+    console.log("PROJECT ID: " + project_ocid);
+
     // Load the list of project in the compartment.
     $("#compartments").change(function() {
       var ocid = $("#compartments").val();
       $.getJSON("/projects/" + ocid, function(data) {
         var project_selector = $("#projects");
         project_selector.empty();
-        project_selector.append('<option value="" selected="selected">Select Project</option>');
+        if (!project_ocid) {
+          project_selector.append('<option value="" selected="selected">Select Project</option>');
+        }
         data.projects.forEach(element => {
-          if (element.ocid === "{{ project_id }}") {
+          if (element.ocid === project_ocid) {
             project_selector.append('<option value="' + element.ocid + '" selected>' + element.display_name + '</option>');
           } else {
             project_selector.append('<option value="' + element.ocid + '">' + element.display_name + '</option>');
@@ -235,6 +135,21 @@
       }
 
     });
+  }
+
+  function loadJobs(compartment_ocid, project_ocid) {
+    var limit = $("#job-number-limit").text();
+    var existing_jobs = $("#dashboard-jobs .accordion-item .job-ocid").map(function() {
+      return $(this).text();
+    }).get();
+    $.getJSON("/jobs/" + compartment_ocid + "/" + project_ocid + "?limit=" + limit, function(data){
+      data.jobs.reverse().forEach(job => {
+        if (existing_jobs.indexOf(job.ocid) < 0) {
+          console.log("Loading new job: " + job.ocid);
+          $("#dashboard-jobs").prepend(job.html);
+        }
+      });
+    })
   }
 </script>
 
