@@ -70,14 +70,7 @@ def check_compartment_project(compartment_id, project_id):
     check_compartment_id(compartment_id)
     return compartment_id, project_id
 
-
-@app.route("/")
-@app.route("/<project_id>")
-@app.route("/<compartment_id>/<project_id>")
-def job_monitor(compartment_id=None, project_id=None):
-    if project_id == "favicon.ico":
-        abort(404)
-
+def init_components(compartment_id, project_id):
     limit = request.args.get("limit", 10)
 
     if project_id:
@@ -106,6 +99,17 @@ def job_monitor(compartment_id=None, project_id=None):
         compartments=compartments,
         limit=limit
     )
+    return context
+
+
+@app.route("/")
+@app.route("/<project_id>")
+@app.route("/<compartment_id>/<project_id>")
+def job_monitor(compartment_id=None, project_id=None):
+    if project_id == "favicon.ico":
+        abort(404)
+
+    context = init_components(compartment_id, project_id)
     return render_template(
         'job_monitor.html',
         **context
