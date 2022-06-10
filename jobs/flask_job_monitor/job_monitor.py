@@ -115,6 +115,11 @@ def job_monitor(compartment_id=None, project_id=None):
 def list_jobs(compartment_id, project_id):
     compartment_id, project_id = check_compartment_project(compartment_id, project_id)
     limit = request.args.get("limit", 10)
+    if not limit.isdigit():
+        return jsonify({
+            "error": "limit must be an integer.",
+        })
+
     # Calling OCI API here instead of ADS API is faster :)
     jobs = oci.data_science.DataScienceClient(
         **get_authentication()
@@ -122,8 +127,10 @@ def list_jobs(compartment_id, project_id):
         compartment_id=compartment_id,
         project_id=project_id,
         lifecycle_state="ACTIVE",
-        limit=limit
-    ).data
+        sort_by="timeCreated",
+        sort_order="DESC",
+        limit=int(limit) + 5
+    ).data[:int(limit)]
 
     job_list = []
     for job in jobs:

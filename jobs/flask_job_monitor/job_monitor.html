@@ -148,12 +148,12 @@
     });
   }
 
-  function loadJobs(compartment_ocid, project_ocid) {
+  function loadJobs(compartmentId, projectId) {
     var limit = $("#job-number-limit").text();
     var existing_jobs = $("#dashboard-jobs .accordion-item .job-ocid").map(function() {
       return $(this).text();
     }).get();
-    $.getJSON("/jobs/" + compartment_ocid + "/" + project_ocid + "?limit=" + limit, function(data){
+    $.getJSON("/jobs/" + compartmentId + "/" + projectId + "?limit=" + limit, function(data){
       data.jobs.reverse().forEach(job => {
         if (existing_jobs.indexOf(job.ocid) < 0) {
           console.log("Loading new job: " + job.ocid);
@@ -162,6 +162,9 @@
         }
       });
     });
+    setTimeout(function() {
+      loadJobs(compartmentId, projectId);
+    }, 10000);
   }
 
   function loadJobRuns(job_ocid) {

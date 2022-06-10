@@ -1,10 +1,10 @@
 <div class="accordion-item" id="{{ job.id|replace('.', '') }}">
-    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+    <h2 class="accordion-header">
       <button class="accordion-button" type="button" data-bs-toggle="collapse"
         data-bs-target="#{{ job.id|replace('.', '') }}-body">
-        {{ job["name"] }}
+        {{ job.display_name }}
       </button>
-      <div class="d-none job-ocid">{{ job["id"] }}</div>
+      <div class="d-none job-ocid">{{ job.id }}</div>
     </h2>
     <div id="{{ job.id|replace('.', '') }}-body" class="accordion-collapse collapse show">
       <div class="accordion-body">
