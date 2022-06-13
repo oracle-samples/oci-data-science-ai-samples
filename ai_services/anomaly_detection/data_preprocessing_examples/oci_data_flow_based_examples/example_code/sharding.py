@@ -44,7 +44,7 @@ def sharding(df, partition_size, output, idcols):
 
     for i in range(num_partitions):
         partition_columns = column_names[
-            i * partition_size: min(num_columns, (i + 1) * partition_size)
+            i * partition_size:min(num_columns, (i + 1) * partition_size)
         ]
         for col in reversed(idcols):
             partition_columns.insert(0, col)
