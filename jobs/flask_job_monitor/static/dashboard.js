@@ -2,7 +2,8 @@ function initComponents(compartmentId, projectId) {
   // Load the list of project in the compartment.
   $("#compartments").change(function() {
     var ocid = $("#compartments").val();
-    $.getJSON("/projects/" + ocid, function(data) {
+    var serviceEndpoint = $("#service-endpoint").text();
+    $.getJSON("/projects/" + ocid + "?endpoint=" + serviceEndpoint, function(data) {
       var projectSelector = $("#projects");
       projectSelector.empty();
       console.log(projectId);
@@ -75,7 +76,8 @@ function setCardStyle(card, newClass) {
 }
 
 function deleteJob(ocid) {
-  $.getJSON("/delete/" + ocid, function (data) {
+  var serviceEndpoint = $("#service-endpoint").text();
+  $.getJSON("/delete/" + ocid + "?endpoint=" + serviceEndpoint, function (data) {
     console.log("Deleting " + ocid);
     if (data.error === null) {
       $("." + ocid.replace(/\./g, "")).remove();
@@ -91,7 +93,10 @@ function loadJobs(compartmentId, projectId) {
   var existing_jobs = $("#dashboard-jobs .accordion-item .job-ocid").map(function () {
     return $(this).text();
   }).get();
-  $.getJSON("/jobs/" + compartmentId + "/" + projectId + "?limit=" + limit, function (data) {
+  var serviceEndpoint = $("#service-endpoint").text();
+  var apiEndpoint = "/jobs/" + compartmentId + "/" + projectId + "?limit=" + limit + "&endpoint=" + serviceEndpoint;
+
+  $.getJSON(apiEndpoint, function (data) {
     data.jobs.reverse().forEach(job => {
       if (existing_jobs.indexOf(job.ocid) < 0) {
         console.log("Loading new job: " + job.ocid);
@@ -109,8 +114,10 @@ function loadJobs(compartmentId, projectId) {
 function loadJobRuns(job_ocid) {
   var jobSelector = "#" + job_ocid.replaceAll(".", "") + "-body";
   var jobRow = $(jobSelector).find(".row").append("");
+  var serviceEndpoint = $("#service-endpoint").text();
   console.log("Loading job runs for job OCID: " + job_ocid);
-  $.getJSON("/job_runs/" + job_ocid, function (data) {
+  $.getJSON("/job_runs/" + job_ocid + "?endpoint=" + serviceEndpoint, function (data) {
+    if (jobRow.find(".col-xxl-4").length === 0) jobRow.empty();
     data.runs.forEach(run => {
       jobRow.append(run.html);
       // Load logs.
