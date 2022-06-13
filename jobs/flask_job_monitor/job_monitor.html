@@ -58,7 +58,9 @@
     console.log("PROJECT ID: " + projectId);
     initComponents(compartmentId, projectId)
     // Load jobs
-    loadJobs(compartmentId, projectId);
+    if (compartmentId && projectId != "None") {
+      loadJobs(compartmentId, projectId);
+    }
   });
 </script>
 

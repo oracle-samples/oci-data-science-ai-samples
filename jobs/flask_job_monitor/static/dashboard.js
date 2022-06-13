@@ -5,7 +5,8 @@ function initComponents(compartmentId, projectId) {
     $.getJSON("/projects/" + ocid, function(data) {
       var projectSelector = $("#projects");
       projectSelector.empty();
-      if (!projectId) {
+      console.log(projectId);
+      if (projectId == "None" || projectId == "all") {
         projectSelector.append('<option value="" selected="selected">Select Project</option>');
       }
       data.projects.forEach(element => {
@@ -18,12 +19,12 @@ function initComponents(compartmentId, projectId) {
     })
   })
   // Trigger the compartment change callback to load the list of projects.
-  $("#compartments").change();
+  if (compartmentId) $("#compartments").change();
   // Refresh the page to see jobs when project is changed.
   $("#projects").change(function() {
     projectId = $("#projects").val();
     compartmentId = $("#compartments").val();
-    window.location.href = "/" + compartmentId + "/" + projectId;
+    window.location.href = "/" + compartmentId + "/" + projectId + window.location.search;
   });
 }
 
