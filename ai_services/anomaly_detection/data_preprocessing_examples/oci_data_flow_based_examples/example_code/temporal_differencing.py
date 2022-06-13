@@ -10,11 +10,10 @@ def temporal_differencing(df, diff_factor):
         if col != "timestamp":
             df = df.withColumn(col,
                                df[col] - F.first(df[col]).over(lagWindow))
-
     return df
 
 
-def main():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
     parser.add_argument("--diff_factor", required=True)
@@ -27,13 +26,9 @@ def main():
     df = spark.read.load(
         args.input, format="csv", sep=",", inferSchema="true", header="true"
     )
-    temporal_differencing(df, args.diff_factor)
+    df = temporal_differencing(df, int(args.diff_factor))
 
     if args.coalesce:
         df.coalesce(1).write.csv(args.output, header=True)
     else:
         df.write.csv(args.output, header=True)
-
-
-if __name__ == "__main__":
-    main()

@@ -8,32 +8,43 @@ from pyspark.sql import SparkSession, Window
 import pyspark.sql.functions
 
 
-def aggregation(df, aggregation_function, window_size, step_size):
+def aggregation(dataframe, aggregation_function, window_size, step_size):
     grouping_functions = ["avg", "sum", "min", "max"]
     if aggregation_function in grouping_functions:
-        if "timestamp" not in df.columns:
+        if "timestamp" not in dataframe.columns:
             raise ValueError("timestamp column not found!")
         w = Window.orderBy('timestamp').rowsBetween(0, int(window_size))
-        signals = df.columns.copy()
+        signals = dataframe.columns.copy()
         signals.remove('timestamp')
         method = getattr(pyspark.sql.functions, aggregation_function)
-        df = df.select('timestamp', *(method(column).over(w) for column in signals),
-                                     pyspark.sql.functions.monotonically_increasing_id().alias("idx"))
+        dataframe = dataframe.select(
+            'timestamp', *(method(column).over(w) for column in signals),
+            pyspark.sql.functions.monotonically_increasing_id().alias("idx"))
     elif aggregation_function == "first":
-        df = df.withColumn("idx", pyspark.sql.functions.monotonically_increasing_id())
+        dataframe = dataframe.withColumn(
+            "idx",
+            pyspark.sql.functions.monotonically_increasing_id()
+        )
     else:
-        raise ValueError("aggregation_function should be one of avg, sum. min, max or first")
-    df = df.filter(df.idx % int(step_size) == 0)
-    return df.drop("idx")
+        raise ValueError(
+            "aggregation_function should be one of avg, sum. min, max or first"
+        )
+    dataframe = dataframe.filter(dataframe.idx % int(step_size) == 0)
 
-def get_dataflow_spark_session(
-        app_name="DataFlow", file_location=None, profile_name=None, spark_config={}
+    return dataframe.drop("idx")
+
+
+def __get_dataflow_spark_session(
+        app_name="DataFlow",
+        file_location=None,
+        profile_name=None,
+        spark_config={}
 ):
     """
     Get a Spark session in a way that supports running locally or in Data Flow.
     """
     if in_dataflow():
-        spark_builder = SparkSession.builder.appName(app_name)
+        spark = SparkSession.builder.appName(app_name)
     else:
         # Import OCI.
         try:
@@ -67,14 +78,14 @@ def get_dataflow_spark_session(
             "fs.oci.client.hostname",
             f'https://objectstorage.{oci_config["region"]}.oraclecloud.com',
         )
-        spark_builder = SparkSession.builder.appName(app_name).config(conf=conf)
+        spark = SparkSession.builder.appName(app_name).config(conf=conf)
 
     # Add in extra configuration.
     for key, val in spark_config.items():
-        spark_builder.config(key, val)
+        spark.config(key, val)
 
     # Create the Spark session.
-    session = spark_builder.getOrCreate()
+    session = spark.getOrCreate()
     return session
 
 
@@ -93,13 +104,20 @@ if __name__ == "__main__":
     parser.add_argument("--output", required=True)
     parser.add_argument("--window_size", required=True)
     parser.add_argument("--step_size", required=True)
-    parser.add_argument("--aggregation_function", required=False, default="avg")
+    parser.add_argument(
+        "--aggregation_function",
+        required=False,
+        default="avg")
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
-    spark = get_dataflow_spark_session()
+    spark = __get_dataflow_spark_session()
     df = spark.read.csv(args.input, header=True)
-    df = aggregation(df, args.aggregation_function, args.window_size, args.step_size)
-    
+    df = aggregation(
+        df,
+        args.aggregation_function,
+        args.window_size,
+        args.step_size)
+
     if args.coalesce:
         df.coalesce(1).write.csv(args.output, header=True)
     else:

@@ -9,8 +9,8 @@ def remove_unnecessary_columns(df, columns_to_remove):
     cols = ()
     for col in columns_to_remove_arr:
         cols += (col,)
-        
     return df.drop(*cols)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -22,8 +22,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     spark = SparkSession.builder.appName("DataFlow").getOrCreate()
     df = spark.read.csv(args.input, header=True)
-
-    remove_unnecessary_columns(df, args.columns_to_remove)
+    df = remove_unnecessary_columns(df, args.columns_to_remove)
 
     if args.coalesce:
         df.coalesce(1).write.csv(args.output, header=True)

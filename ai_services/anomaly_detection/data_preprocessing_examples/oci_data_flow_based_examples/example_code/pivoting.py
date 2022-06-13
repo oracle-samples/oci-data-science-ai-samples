@@ -24,18 +24,22 @@ def spark_pivoting(df, groupby, pivot, agg):
         df: data framework based on input csv
         groupby: dimensions to groupby into summary rows
         pivot: pivot column - rows of which to be converted into columns
-        agg:  a dictionary where key = <column name> and value = <aggregation function>
+        agg: a dictionary
+            where key = <column name> and value = <aggregation function>
     """
-    
     return df.groupBy(groupby).pivot(pivot).agg(agg)
 
 
-def main():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--pivot", required=True)
-    parser.add_argument("--groupby", nargs="*", required=True, action=ParseKwargs)
+    parser.add_argument(
+        "--groupby",
+        nargs="*",
+        required=True,
+        action=ParseKwargs)
     parser.add_argument("--agg", nargs="*", required=True, action=ParseKwargs)
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
@@ -47,7 +51,7 @@ def main():
         args.input, format="csv", sep=",", inferSchema="true", header="true"
     )
 
-    if not "timestamp" in df.columns:
+    if "timestamp" not in df.columns:
         raise ValueError("timestamp column not found!")
 
     df_pivot = spark_pivoting(
@@ -61,7 +65,3 @@ def main():
         df_pivot.coalesce(1).write.csv(args.output, header=True)
     else:
         df_pivot.write.csv(args.output, header=True)
-
-
-if __name__ == "__main__":
-    main()

@@ -16,10 +16,13 @@ def windowing(df, batch_size):
     window_spec = Window.orderBy("timestamp_1")
     return df.withColumn(
         "batch_id",
-        F.floor((F.row_number().over(window_spec) - F.lit(1)) / int(batch_size)),
+        F.floor(
+            (F.row_number().over(window_spec) - F.lit(1)) / int(batch_size)
+        ),
     )
 
-def main():
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
@@ -29,10 +32,5 @@ def main():
     spark = SparkSession.builder.appName("DataFlow").getOrCreate()
     df = spark.read.csv(args.input, header=True)
     df = windowing(df, args.batch_size)
-    df.repartition("batch_id").write.partitionBy("batch_id").mode("overwrite").format(
-        "csv"
-    ).save(args.output)
-
-
-if __name__ == "__main__":
-    main()
+    df.repartition("batch_id").write.partitionBy(
+        "batch_id").mode("overwrite").format("csv").save(args.output)
