@@ -13,7 +13,6 @@ from ads.jobs import Job, DataScienceJobRun
 OCI_KEY_CONFIG_LOCATION = os.environ.get("OCI_KEY_LOCATION", "~/.oci/config")
 OCI_KEY_PROFILE_NAME = os.environ.get("OCI_KEY_PROFILE", "DEFAULT")
 app = Flask(__name__, template_folder=os.path.dirname(__file__))
-endpoint = None
 
 
 def instance_principal_available():
@@ -100,12 +99,23 @@ def check_compartment_project(compartment_id, project_id):
     check_compartment_id(compartment_id)
     return compartment_id, project_id
 
-def init_components(compartment_id, project_id):
-    limit = request.args.get("limit", 10)
-    global endpoint
+def check_endpoint():
     endpoint = request.args.get("endpoint")
     if endpoint:
         OCIDataScienceMixin.kwargs = {"service_endpoint": endpoint}
+    else:
+        OCIDataScienceMixin.kwargs = None
+    return endpoint
+
+def check_limit():
+    limit = request.args.get("limit", 10)
+    if not limit.isdigit():
+        abort(400, "limit parameter must be an integer.")
+    return limit
+
+def init_components(compartment_id, project_id):
+    limit = request.args.get("limit", 10)
+    endpoint = check_endpoint()
 
     if project_id:
         compartment_id, project_id = check_compartment_project(compartment_id, project_id)
@@ -124,6 +134,7 @@ def init_components(compartment_id, project_id):
         project_id=project_id,
         compartments=compartments,
         limit=limit,
+        service_endpoint=endpoint,
     )
     return context
 
@@ -144,11 +155,8 @@ def job_monitor(compartment_id=None, project_id=None):
 @app.route("/jobs/<compartment_id>/<project_id>")
 def list_jobs(compartment_id, project_id):
     compartment_id, project_id = check_compartment_project(compartment_id, project_id)
-    limit = request.args.get("limit", 10)
-    if not limit.isdigit():
-        return jsonify({
-            "error": "limit must be an integer.",
-        })
+    limit = check_limit()
+    endpoint = check_endpoint()
 
     # Calling OCI API here instead of ADS API is faster :)
     jobs = oci.data_science.DataScienceClient(
@@ -176,24 +184,28 @@ def list_jobs(compartment_id, project_id):
         "jobs": job_list
     })
 
+
 @app.route("/job_runs/<job_id>")
 def list_job_runs(job_id):
+    check_ocid(job_id)
+    check_endpoint()
     job = Job.from_datascience_job(job_id)
     runs = job.run_list()
     run_list = []
     for run in runs:
         run_data = {
             "ocid": run.id,
+            "job_ocid": job.id,
             "html": render_template("job_run_template.html", run=run, job=job)
         }
         run_list.append(run_data)
     return jsonify({
-        "job": job.to_dict(),
         "runs": run_list
     })
 
 @app.route("/projects/<compartment_id>")
 def list_projects(compartment_id):
+    endpoint = check_endpoint()
     projects = oci.data_science.DataScienceClient(
         service_endpoint=endpoint,
         **get_authentication()
@@ -242,9 +254,9 @@ def get_logs(job_run_ocid):
 
 @app.route("/delete/<job_ocid>")
 def delete_job(job_ocid):
+    check_endpoint()
     job = Job.from_datascience_job(job_ocid)
     try:
-
         job.delete()
         error = None
     except oci.exceptions.ServiceError as ex:
