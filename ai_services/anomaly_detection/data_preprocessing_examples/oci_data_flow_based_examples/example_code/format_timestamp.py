@@ -3,7 +3,7 @@ from pyspark.sql import functions as F
 import argparse
 
 
-def create_spark_session(session_name):
+def __create_spark_session(session_name):
     """
     Create a Spark session
     Args:
@@ -24,14 +24,13 @@ def format_timestamp(df):
     Return:
         input dataframe with timestamps formatted as ISO 8601
     """
-
+    
     return df.withColumn(
         "timestamp",
         F.date_format(F.to_timestamp("timestamp"), "yyyy-MM-dd'T'HH:mm:ss'Z'").cast(
             "string"
         ),
     )
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -40,7 +39,7 @@ def main():
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
 
-    spark = create_spark_session("pyspark_timestamp_formatting")
+    spark = __create_spark_session("pyspark_timestamp_formatting")
     input_data = spark.read.csv(args.input, sep=",", inferSchema=False, header=True)
 
     df = format_timestamp(input_data)

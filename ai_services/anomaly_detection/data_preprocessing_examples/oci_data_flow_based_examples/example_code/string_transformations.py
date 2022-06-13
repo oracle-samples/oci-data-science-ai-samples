@@ -18,17 +18,12 @@ class parse_kwargs(argparse.Action):
                 key, value = value.split(":")
                 getattr(namespace, self.dest)[key] = value
 
-
-def string_transformation(df, find_string, replace_string, column, output, coalesce):
+def string_transformation(df, find_string, replace_string, column):
     columns_to_replace = column if column else df.columns
-
     for col in columns_to_replace:
         df = df.withColumn(col, regexp_replace(col, find_string, replace_string))
-
-    if coalesce:
-        df.coalesce(1).write.csv(output, header=True)
-    else:
-        df.write.csv(output, header=True)
+    
+    return df
 
 
 def main():
@@ -51,10 +46,13 @@ def main():
         df,
         find_string=args.find_string,
         replace_string=args.replace_string,
-        column=args.column,
-        output=args.output,
-        coalesce=args.coalesce
+        column=args.column
     )
+
+    if args.coalesce:
+        df.coalesce(1).write.csv(args.output, header=True)
+    else:
+        df.write.csv(args.output, header=True)
 
 
 if __name__ == "__main__":

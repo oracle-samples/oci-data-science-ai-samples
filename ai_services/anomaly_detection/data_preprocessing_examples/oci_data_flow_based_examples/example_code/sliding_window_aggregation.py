@@ -8,28 +8,23 @@ from pyspark.sql import SparkSession, Window
 import pyspark.sql.functions
 
 
-def aggregation(dataframe, arguments):
+def aggregation(df, aggregation_function, window_size, step_size):
     grouping_functions = ["avg", "sum", "min", "max"]
-    if args.aggregation_function in grouping_functions:
+    if aggregation_function in grouping_functions:
         if "timestamp" not in df.columns:
             raise ValueError("timestamp column not found!")
-        w = Window.orderBy('timestamp').rowsBetween(0, int(arguments.window_size))
-        signals = dataframe.columns.copy()
+        w = Window.orderBy('timestamp').rowsBetween(0, int(window_size))
+        signals = df.columns.copy()
         signals.remove('timestamp')
-        method = getattr(pyspark.sql.functions, args.aggregation_function)
-        dataframe = dataframe.select('timestamp', *(method(column).over(w) for column in signals),
+        method = getattr(pyspark.sql.functions, aggregation_function)
+        df = df.select('timestamp', *(method(column).over(w) for column in signals),
                                      pyspark.sql.functions.monotonically_increasing_id().alias("idx"))
-    elif args.aggregation_function == "first":
-        dataframe = dataframe.withColumn("idx", pyspark.sql.functions.monotonically_increasing_id())
+    elif aggregation_function == "first":
+        df = df.withColumn("idx", pyspark.sql.functions.monotonically_increasing_id())
     else:
         raise ValueError("aggregation_function should be one of avg, sum. min, max or first")
-    dataframe = dataframe.filter(dataframe.idx % int(arguments.step_size) == 0)
-    dataframe = dataframe.drop("idx")
-    if arguments.coalesce:
-        dataframe.coalesce(1).write.csv(arguments.output, header=True)
-    else:
-        dataframe.write.csv(arguments.output, header=True)
-
+    df = df.filter(df.idx % int(step_size) == 0)
+    return df.drop("idx")
 
 def get_dataflow_spark_session(
         app_name="DataFlow", file_location=None, profile_name=None, spark_config={}
@@ -103,4 +98,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     spark = get_dataflow_spark_session()
     df = spark.read.csv(args.input, header=True)
-    aggregation(df, args)
+    df = aggregation(df, args.aggregation_function, args.window_size, args.step_size)
+    
+    if args.coalesce:
+        df.coalesce(1).write.csv(args.output, header=True)
+    else:
+        df.write.csv(args.output, header=True)
