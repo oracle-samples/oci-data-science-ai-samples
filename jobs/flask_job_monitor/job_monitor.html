@@ -65,12 +65,14 @@
                 <a href="#" data-toggle="modal" data-target="#modal-details-{{ run.id|replace('.', '') }}">
                   <span class="glyphicon glyphicon-info-sign"></span>
                 </a>
-                <a class="text-danger" href="#" data-toggle="modal" data-target="#modal-delete-{{ run.id|replace('.', '') }}">
+                <a class="text-danger" href="#" data-toggle="modal"
+                  data-target="#modal-delete-{{ run.id|replace('.', '') }}">
                   <span class="glyphicon glyphicon-remove"></span>
                 </a>
               </div>
               <h4>
-                <a style="color: inherit;" target="_blank" href="https://console.us-ashburn-1.oraclecloud.com/data-science/jobs/{{ job.id }}">
+                <a style="color: inherit;" target="_blank"
+                  href="https://console.us-ashburn-1.oraclecloud.com/data-science/jobs/{{ job.id }}">
                   {{ job.name }}
                 </a>
               </h4>
@@ -114,18 +116,22 @@
                   {{ run.id }}
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-danger" onclick="deleteJob('{{ job.id }}')" data-dismiss="modal">Delete Job and Runs</button>
+                  <button type="button" class="btn btn-danger" onclick="deleteJob('{{ job.id }}')"
+                    data-dismiss="modal">Delete Job and Runs</button>
                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
               </div>
             </div>
           </div>
-          <div class="panel-body" style="font-family: 'Courier New', Courier, monospace; height: 500px; overflow: scroll;">
+          <div class="panel-body"
+            style="font-family: 'Courier New', Courier, monospace; height: 500px; overflow: scroll;">
             Loading...
           </div>
           <div class="panel-footer">
             {% if run.log_id %}
-            <div><a target="_blank" href="https://console.us-ashburn-1.oraclecloud.com/logging/search?searchQuery=search%20%22{{ run.compartment_id }}%22%20%7C%20source%3D%27%2A{{ run.id }}%27%20%7C%20sort%20by%20datetime%20desc">View logs in OCI
+            <div><a target="_blank"
+                href="https://console.us-ashburn-1.oraclecloud.com/logging/search?searchQuery=search%20%22{{ run.compartment_id }}%22%20%7C%20source%3D%27%2A{{ run.id }}%27%20%7C%20sort%20by%20datetime%20desc">View
+                logs in OCI
                 console</a></div>
             {% endif %}
             {{ run.id }} <br>
@@ -146,23 +152,23 @@
 
 </body>
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     // Load logs.
-    $(".run-monitor").each(function() {
+    $(".run-monitor").each(function () {
       var ocid = this.id;
       var outputDiv = $(this).find(".panel-body");
       updateLogs(ocid, outputDiv);
     })
     // Refresh the page to see jobs when project is changed.
-    $("#projects").change(function() {
+    $("#projects").change(function () {
       var project_ocid = $("#projects").val();
       var compartment_ocid = $("#compartments").val();
       window.location.href = "/" + compartment_ocid + "/" + project_ocid;
     })
     // Load the list of project in the compartment.
-    $("#compartments").change(function() {
+    $("#compartments").change(function () {
       var ocid = $("#compartments").val();
-      $.getJSON("/projects/" + ocid, function(data) {
+      $.getJSON("/projects/" + ocid, function (data) {
         var project_selector = $("#projects");
         project_selector.empty();
         project_selector.append('<option value="" selected="selected">Select Project</option>');
@@ -177,13 +183,13 @@
     })
     // Trigger the compartment change callback to load the list of projects.
     $("#compartments").change();
-    
+
   })
 
   function updateLogs(ocid, outputDiv) {
     console.log("Getting logs for " + ocid);
     // Get the most recent logs of each job
-    $.getJSON("/logs/" + ocid, function(data) {
+    $.getJSON("/logs/" + ocid, function (data) {
       // console.log($("#" + ocid));
       outputDiv.html(data.logs.join("<br />"));
       // Scroll to the bottom
@@ -200,7 +206,7 @@
 
       if (data.stopped !== true) {
         // Job is running
-        setTimeout(function() {
+        setTimeout(function () {
           updateLogs(ocid, outputDiv)
         }, 20000);
         setPanelClass(parent, "panel-primary");
@@ -224,7 +230,7 @@
   }
 
   function deleteJob(ocid) {
-    $.getJSON("/delete/" + ocid, function(data) {
+    $.getJSON("/delete/" + ocid, function (data) {
       console.log("Deleting " + ocid);
       if (data.error === null) {
         $("." + ocid.replace(/\./g, "")).remove();

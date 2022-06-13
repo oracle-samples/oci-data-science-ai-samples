@@ -22,9 +22,9 @@ class Jobs:
     def __init__(self):
         rp_version = os.environ.get(
             OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
-        if rp_version == "UNDEFINED":
+        if not rp_version or rp_version == "UNDEFINED":
             # RUN LOCAL TEST
-            self.signer = oci.config.from_file("~/.oci/config", "BIGDATA")
+            self.signer = oci.config.from_file("~/.oci/config", "DEFAULT")
             self.secret_client = oci.secrets.SecretsClient(config=self.signer)
         else:
             # RUN AS JOB
