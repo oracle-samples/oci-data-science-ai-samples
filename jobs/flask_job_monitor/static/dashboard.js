@@ -99,7 +99,7 @@ function loadJobs(compartmentId, projectId) {
   $.getJSON(apiEndpoint, function (data) {
     data.jobs.reverse().forEach(job => {
       if (existing_jobs.indexOf(job.ocid) < 0) {
-        console.log("Loading new job: " + job.ocid);
+        console.log("Loading job: " + job.ocid);
         $("#dashboard-jobs").prepend(job.html);
         loadJobRuns(job.ocid);
       }
@@ -113,20 +113,32 @@ function loadJobs(compartmentId, projectId) {
 
 function loadJobRuns(job_ocid) {
   var jobSelector = "#" + job_ocid.replaceAll(".", "") + "-body";
-  var jobRow = $(jobSelector).find(".row").append("");
+  var jobRow = $(jobSelector).find(".row");
+  if (jobRow.length === 0) return;
+  jobRow.append("");
   var serviceEndpoint = $("#service-endpoint").text();
   console.log("Loading job runs for job OCID: " + job_ocid);
   $.getJSON("/job_runs/" + job_ocid + "?endpoint=" + serviceEndpoint, function (data) {
     if (jobRow.find(".col-xxl-4").length === 0) jobRow.empty();
-    data.runs.forEach(run => {
-      jobRow.append(run.html);
-      // Load logs.
-      var jobRunSelector = "#" + run.ocid.replaceAll(".", "")
-      $(jobRunSelector + " .run-monitor").each(function () {
-        var ocid = this.id;
-        var outputDiv = $(this).find(".card-body");
-        updateLogs(ocid, outputDiv);
-      });
+    if (data.runs.length === 0) jobRow.text("No Job Run Found.");
+    data.runs.reverse().forEach(run => {
+      var jobRunSelector = "#" + run.ocid.replaceAll(".", "");
+      runDiv = jobRow.find(jobRunSelector);
+      if (runDiv.length === 0) {
+        console.log("Adding job run: " + run.ocid);
+        jobRow.prepend(run.html);
+        // Load logs.
+        $(jobRunSelector + " .run-monitor").each(function () {
+          var ocid = this.id;
+          var outputDiv = $(this).find(".card-body");
+          updateLogs(ocid, outputDiv);
+        });
+      }
     });
   });
+  setTimeout(function() {
+    loadJobRuns(job_ocid);
+    // Check if there is new job run for the job in about 30 seconds.
+    // Add a random number to the time interval so that not all requests are send at the same time.
+  }, (30 + Math.floor(Math.random() * 5)) * 1000);
 }
