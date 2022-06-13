@@ -6,11 +6,14 @@ import requests
 
 from flask import Flask, render_template, jsonify, abort, request
 from ads.common.oci_resource import OCIResource
-from ads.jobs import Job
-from ads.jobs.builders.infrastructure.dsc_job import DataScienceJobRun
+from ads.common.oci_datascience import OCIDataScienceMixin
+from ads.jobs import Job, DataScienceJobRun
 
 
+OCI_KEY_CONFIG_LOCATION = os.environ.get("OCI_KEY_LOCATION", "~/.oci/config")
+OCI_KEY_PROFILE_NAME = os.environ.get("OCI_KEY_PROFILE", "DEFAULT")
 app = Flask(__name__, template_folder=os.path.dirname(__file__))
+endpoint = None
 
 
 def instance_principal_available():
@@ -26,8 +29,32 @@ def instance_principal_available():
 
 
 def get_authentication():
-    if os.path.exists(os.path.expanduser(oci.config.DEFAULT_LOCATION)):
-        auth = dict(config=oci.config.from_file())
+    """Returns a dictionary containing the authentication needed for initializing OCI client (e.g. DataScienceClient).
+    This function checks if OCI API key config exists, if config exists, it will be loaded and used for authentication.
+    If config does not exist, resource principal or instance principal will be used if available.
+    To use a config at a non-default location, set the OCI_KEY_LOCATION environment variable.
+    To use a non-default config profile, set the OCI_KEY_PROFILE_NAME environment variable.
+
+    Returns
+    -------
+    dict
+        A dictionary containing two keys: config and signer (optional).
+        config is a dictionary containing api key authentication information.
+        signer is an OCI Signer object for resource principal or instance principal authentication.
+        IMPORTANT: signer will be returned only if config is not empty.
+
+    Raises
+    ------
+    Exception
+        When no authentication method is available.
+    """
+    if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
+        auth = dict(
+            config=oci.config.from_file(
+                file_location=OCI_KEY_CONFIG_LOCATION,
+                profile_name=OCI_KEY_PROFILE_NAME
+            )
+        )
     elif oci.auth.signers.resource_principals_signer.OCI_RESOURCE_PRINCIPAL_VERSION in os.environ:
         config = {}
         signer = oci.auth.signers.get_resource_principals_signer()
@@ -41,7 +68,10 @@ def get_authentication():
     return auth
 
 
-if not os.path.exists(os.path.expanduser(oci.config.DEFAULT_LOCATION)):
+auth = get_authentication()
+if auth["config"]:
+    ads.set_auth(oci_config_location=OCI_KEY_CONFIG_LOCATION, profile=OCI_KEY_PROFILE_NAME)
+else:
     ads.set_auth('resource_principal')
 
 
@@ -72,17 +102,13 @@ def check_compartment_project(compartment_id, project_id):
 
 def init_components(compartment_id, project_id):
     limit = request.args.get("limit", 10)
+    global endpoint
+    endpoint = request.args.get("endpoint")
+    if endpoint:
+        OCIDataScienceMixin.kwargs = {"service_endpoint": endpoint}
 
     if project_id:
-        if project_id == "all":
-            project_id = None
-        elif not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
-            return jsonify(error="Invalid Project ID"), 400
-        elif not compartment_id:
-            compartment_id = OCIResource.get_compartment_id(project_id)
-
-        if not re.match(r'ocid[0-9].compartment.oc[0-9]..[a-z0-9]+', compartment_id):
-            return jsonify(error="Invalid Compartment ID"), 400
+        compartment_id, project_id = check_compartment_project(compartment_id, project_id)
     else:
         compartment_id = None
 
@@ -97,7 +123,7 @@ def init_components(compartment_id, project_id):
         compartment_id=compartment_id,
         project_id=project_id,
         compartments=compartments,
-        limit=limit
+        limit=limit,
     )
     return context
 
@@ -126,6 +152,7 @@ def list_jobs(compartment_id, project_id):
 
     # Calling OCI API here instead of ADS API is faster :)
     jobs = oci.data_science.DataScienceClient(
+        service_endpoint=endpoint,
         **get_authentication()
     ).list_jobs(
         compartment_id=compartment_id,
@@ -168,6 +195,7 @@ def list_job_runs(job_id):
 @app.route("/projects/<compartment_id>")
 def list_projects(compartment_id):
     projects = oci.data_science.DataScienceClient(
+        service_endpoint=endpoint,
         **get_authentication()
     ).list_projects(compartment_id=compartment_id).data
     projects = sorted(projects, key=lambda x: x.display_name)
