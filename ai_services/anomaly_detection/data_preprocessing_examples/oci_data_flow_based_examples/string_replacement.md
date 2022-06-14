@@ -31,7 +31,7 @@ you can use the browser to choose an object
 Add the following to the arguments:
 
 ```
---input ${input} --find_string ${find_string} --replace_string ${replace_string} --column ${column} --output ${output} --coalesce ${coalesce}
+--input ${input} --find_string ${find_string} --replace_string ${replace_string} --column ${column} --output ${output} --coalesce
 ```
 <b>input</b> points to the input data source. <b>find_string</b> refers to the string to be searched for(demonstrated below with single quotes) and
 <b>replace_string</b> refers to the replaced string in <b>column</b>(s).

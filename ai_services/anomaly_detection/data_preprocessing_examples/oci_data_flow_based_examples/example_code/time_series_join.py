@@ -18,7 +18,8 @@ def timeseries_join(dfs):
             continue
         raise ValueError("timestamp not found!")
 
-    all_columns = [col for df in dfs for col in df.columns if col != "timestamp"]
+    all_columns = \
+        [col for df in dfs for col in df.columns if col != "timestamp"]
     if len(set(all_columns)) != len(all_columns):
         raise ValueError("Columns are not distinct")
 
@@ -28,11 +29,17 @@ def timeseries_join(dfs):
     return df
 
 
-def main(args):
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--input",
+        nargs="+",
+        required=True,
+        action=parse_kwargs)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--coalesce", required=False, action="store_true")
 
-    if len(args.input) < 2:
-        return
-
+    args = parser.parse_args()
     spark = SparkSession.builder.appName("DataFlow").getOrCreate()
     dfs = [spark.read.csv(fname, header=True) for fname in args.input]
     df = timeseries_join(dfs)
@@ -41,13 +48,3 @@ def main(args):
         df.coalesce(1).write.csv(args.output, header=True)
     else:
         df.write.csv(args.output, header=True)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", nargs="+", required=True, action=parse_kwargs)
-    parser.add_argument("--output", required=True)
-    parser.add_argument("--coalesce", required=False, action="store_true")
-
-    args = parser.parse_args()
-    main(args)

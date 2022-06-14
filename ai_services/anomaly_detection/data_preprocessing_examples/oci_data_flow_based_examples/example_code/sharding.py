@@ -15,19 +15,20 @@ class ParseKwargs(argparse.Action):
                 getattr(namespace, self.dest)[key] = value
 
 
-def sharding(df, partition_size, output, coalesce, idcols):
+def sharding(df, partition_size, output, idcols):
     """
     Vertical data sharding
     Args:
         df : input dataframe
         partition_size : max number of columns in the partitioned data
         output :  destination to store output
-        coalesce : whether to combine partitions into a single CSV file 
+        coalesce : whether to combine partitions into a single CSV file
         idcols: identifiers of each record - in addition to timestamp
 
     Return:
         partitions of the original dataframe in CSV format
     """
+    sharding_dict = dict()
     column_names = df.columns
     idcols = ["timestamp"] + idcols if idcols else ["timestamp"]
     for col in idcols:
@@ -43,24 +44,27 @@ def sharding(df, partition_size, output, coalesce, idcols):
 
     for i in range(num_partitions):
         partition_columns = column_names[
-            i * partition_size : min(num_columns, (i + 1) * partition_size)
+            i * partition_size:min(num_columns, (i + 1) * partition_size)
         ]
         for col in reversed(idcols):
             partition_columns.insert(0, col)
 
         df_partition = df.select(*partition_columns)
         output_name = output + "_part_" + str(i + 1)
-        if coalesce:
-            df_partition.coalesce(1).write.csv(output_name, header=True)
-        else:
-            df_partition.write.csv(output_name, header=True)
+        sharding_dict[output_name] = df_partition
+
+    return sharding_dict
 
 
-def main():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
-    parser.add_argument("--idColumns", nargs="*", required=False, action=ParseKwargs)
+    parser.add_argument(
+        "--idColumns",
+        nargs="*",
+        required=False,
+        action=ParseKwargs)
     parser.add_argument("--columnNum", required=False, default="300")
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
@@ -69,14 +73,15 @@ def main():
     df_input = spark.read.load(
         args.input, format="csv", sep=",", inferSchema="true", header="true"
     )
-    sharding(
+    sharded_dfs = sharding(
         df_input,
         partition_size=int(args.columnNum),
         output=args.output,
-        coalesce=args.coalesce,
-        idcols=args.idColumns,
+        idcols=args.idColumns
     )
 
-
-if __name__ == "__main__":
-    main()
+    for output_name, df_partition in sharded_dfs.items():
+        if args.coalesce:
+            df_partition.coalesce(1).write.csv(output_name, header=True)
+        else:
+            df_partition.write.csv(output_name, header=True)

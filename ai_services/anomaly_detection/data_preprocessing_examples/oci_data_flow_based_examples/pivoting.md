@@ -41,7 +41,7 @@ Add the following to the arguments:
 ```
 <b>input</b> points to the input data source. The resulting dataframe will have rows where each represent a unique combination of values in the columns
 specified as <b>groupby</b>, e.g. "timestamp dim1 dim2". Each column is a unique value in the <b>pivot</b> column of the original dataframe. Finally <b>agg</b> represent
-the column over which values are aggregated (here averaged).
+the column over which values are aggregated. `agg` should follow the pattern `<column>:<function>`. `function` here can be one of `min/max/sum/first/avg`.
 
 
 ## Example input table and generated pivot table :
@@ -51,7 +51,7 @@ the column over which values are aggregated (here averaged).
 ```
 Specify path in Object Storage to store logs. These may be useful later for troubleshooting.
 ```
-![image info](./utils/P6.png)
+![image info](./utils/P7.png)
 
 
 ```
