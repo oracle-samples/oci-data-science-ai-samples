@@ -5,6 +5,7 @@
       {{ job.display_name }}
     </button>
     <div class="d-none job-ocid">{{ job.id }}</div>
+    <div class="d-none job-timestamp">{{ job.time_created.timestamp() }}</div>
   </h2>
   <div id="{{ job.id|replace('.', '') }}-body" class="accordion-collapse collapse show">
     <div class="accordion-body">

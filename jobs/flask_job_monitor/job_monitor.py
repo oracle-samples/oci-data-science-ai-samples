@@ -109,7 +109,7 @@ def check_endpoint():
 
 def check_limit():
     limit = request.args.get("limit", 10)
-    if not limit.isdigit():
+    if isinstance(limit, str) and not limit.isdigit():
         abort(400, "limit parameter must be an integer.")
     return limit
 
@@ -173,9 +173,11 @@ def list_jobs(compartment_id, project_id):
 
     job_list = []
     for job in jobs:
-        job_data = dict(name=job.display_name, id=job.id)
-        job_data.update(
+        job_data = dict(
+            name=job.display_name,
+            id=job.id,
             ocid=job.id,
+            time_created=job.time_created.timestamp(),
             html=render_template("job_accordion.html", job=job)
         )
         job_list.append(job_data)

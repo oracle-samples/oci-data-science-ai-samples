@@ -30,7 +30,7 @@ function initComponents(compartmentId, projectId) {
 }
 
 function updateLogs(ocid, outputDiv) {
-  console.log("Getting logs for " + ocid);
+  // console.log("Getting logs for " + ocid);
   // Get the most recent logs of each job
   $.getJSON("/logs/" + ocid, function (data) {
     // console.log($("#" + ocid));
@@ -82,11 +82,10 @@ function deleteJob(ocid) {
   $.getJSON("/delete/" + ocid + "?endpoint=" + serviceEndpoint, function (data) {
     console.log("Deleting " + ocid);
     if (data.error === null) {
-      $("." + ocid.replace(/\./g, "")).remove();
+      $("#" + ocid.replace(/\./g, "")).remove();
     } else {
       alert(data.error);
     }
-
   });
 }
 
@@ -99,10 +98,21 @@ function loadJobs(compartmentId, projectId) {
   var apiEndpoint = "/jobs/" + compartmentId + "/" + projectId + "?limit=" + limit + "&endpoint=" + serviceEndpoint;
 
   $.getJSON(apiEndpoint, function (data) {
-    data.jobs.reverse().forEach(job => {
-      if (existing_jobs.indexOf(job.ocid) < 0) {
+    var timestampDiv = $("#dashboard-jobs").find(".job-timestamp:first");
+    var timestamp = 0;
+    var jobs = data.jobs;
+    if (timestampDiv.length !== 0) {
+      timestamp = parseFloat(timestampDiv.text())
+      jobs = jobs.reverse();
+    }
+    jobs.forEach(job => {
+      if (existing_jobs.indexOf(job.ocid) < 0 && job.time_created > timestamp) {
         console.log("Loading job: " + job.ocid);
-        $("#dashboard-jobs").prepend(job.html);
+        if (timestamp > 0) {
+          $("#dashboard-jobs").prepend(job.html);
+        } else {
+          $("#dashboard-jobs").append(job.html);
+        }
         loadJobRuns(job.ocid);
       }
     });
