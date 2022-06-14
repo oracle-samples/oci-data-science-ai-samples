@@ -62,19 +62,19 @@ function updateLogs(ocid, outputDiv) {
       if (data.status === "SUCCEEDED") {
         setCardStyle(parent, "border-success");
         statusText.addClass("text-success");
-        parent.find(".card-header").addClass("bg-success bg-opacity-10");
+        parent.find(".card-header").addClass("bg-success text-success bg-opacity-10");
       } else if (data.status === "FAILED") {
         setCardStyle(parent, "border-danger");
         statusText.addClass("text-danger");
-        parent.find(".card-header").addClass("bg-danger bg-opacity-10");
+        parent.find(".card-header").addClass("bg-danger text-danger bg-opacity-10");
       }
     }
   })
 }
 
-function setCardStyle(card, newClass) {
+function setCardStyle(card, borderClass) {
   card.removeClass("border-primary");
-  card.addClass(newClass);
+  card.addClass(borderClass);
 }
 
 function deleteJob(ocid) {
