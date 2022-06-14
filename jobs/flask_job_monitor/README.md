@@ -6,8 +6,7 @@ This job monitor is a Python Flask app build on top of [Oracle ADS](https://docs
 
 ![Job Monitor UI](assets/images/job_monitor.png)
 
-User can also see the job definition in YAML:
-![Job YAML](assets/images/job_yaml.png)
+User can also see the job definition in YAML, delete the job, and more.
 
 ## How to run
 
