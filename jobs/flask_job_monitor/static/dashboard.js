@@ -34,7 +34,9 @@ function updateLogs(ocid, outputDiv) {
   // Get the most recent logs of each job
   $.getJSON("/logs/" + ocid, function (data) {
     // console.log($("#" + ocid));
-    outputDiv.html(data.logs.join("<br />"));
+    var ansiUp = new AnsiUp;
+    var htmlLogs = ansiUp.ansi_to_html(data.logs.join("\n"));
+    outputDiv.html(htmlLogs);
     // Scroll to the bottom
     outputDiv.scrollTop(outputDiv[0].scrollHeight);
     parent = outputDiv.closest(".card");
@@ -135,7 +137,7 @@ function loadJobRuns(job_ocid) {
         // Load logs.
         $(jobRunSelector + " .run-monitor").each(function () {
           var ocid = this.id;
-          var outputDiv = $(this).find(".card-body");
+          var outputDiv = $(this).find(".card-body pre");
           updateLogs(ocid, outputDiv);
         });
       }
