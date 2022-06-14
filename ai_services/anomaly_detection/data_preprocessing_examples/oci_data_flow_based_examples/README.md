@@ -41,17 +41,17 @@ Download the PySpark code sample for the preprocessing task you need, and upload
 7. [DF: Time Series Join](time_series_join.md)
 8. [DF: Time series merge](time_series_merge.md)
 9. [DF: Date-time conversion](date_time_conversion.md)
-10.[DF: Remove Unnecessary Columns](remove_unnecessary_columns.md)
-11.[DF: String Replacement](string_replacement.md)
-12.[DF: Temporal Differencing](temporal_differencing.md)
-13.[DF: One-hot encoding](one_hot_encoding.md)
+10. [DF: Remove Unnecessary Columns](remove_unnecessary_columns.md)
+11. [DF: String Replacement](string_replacement.md)
+12. [DF: Temporal Differencing](temporal_differencing.md)
+13. [DF: One-hot encoding](one_hot_encoding.md)
 
 
 Upload your data files to Object Storage using the same process, and keep track of the path to the data.
 
 ## Run the Preprocessing Task
 
-```
+
 1. In the sandwich menu, choose Analytics and AI > Data Flow.
 
 
@@ -62,4 +62,3 @@ Upload your data files to Object Storage using the same process, and keep track 
 
 
 4. Track the status of the run in "Runs". After it finishes successfully, the output file is written to target location.
-```
