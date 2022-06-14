@@ -127,6 +127,11 @@ function loadJobRuns(job_ocid) {
       if (runDiv.length === 0) {
         console.log("Adding job run: " + run.ocid);
         jobRow.prepend(run.html);
+        runDiv = jobRow.find(jobRunSelector);
+        runDiv.find("code").each(function() {
+          hljs.highlightElement(this);
+        })
+
         // Load logs.
         $(jobRunSelector + " .run-monitor").each(function () {
           var ocid = this.id;
