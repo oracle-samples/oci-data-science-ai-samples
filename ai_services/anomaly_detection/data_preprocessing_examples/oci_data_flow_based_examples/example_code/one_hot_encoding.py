@@ -8,14 +8,17 @@ def one_hot_encoding(df, category):
     distinct_values = df.select(category).distinct().collect()
     for value in distinct_values:
         category_value = value[category]
-        df = df.withColumn('is_' + str(category_value),
-            when(df[category] == category_value, 1)
+        df = df.withColumn(
+            'is_' + str(category_value),
+            when(
+                df[category] == category_value, 1
+            )
             .otherwise(0)
         )
     return df.drop(category)
 
 
-def main():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
@@ -23,7 +26,8 @@ def main():
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
 
-    spark = SparkSession.builder.appName("PySpark_OneHotEncoding").getOrCreate()
+    spark = SparkSession.builder.appName(
+        "PySpark_OneHotEncoding").getOrCreate()
     df_input = spark.read.load(
         args.input, format="csv", sep=",", inferSchema="true", header="true"
     )
@@ -32,7 +36,3 @@ def main():
         df_output.coalesce(1).write.csv(args.output, header=True)
     else:
         df_output.write.csv(args.output, header=True)
-
-
-if __name__ == "__main__":
-    main()

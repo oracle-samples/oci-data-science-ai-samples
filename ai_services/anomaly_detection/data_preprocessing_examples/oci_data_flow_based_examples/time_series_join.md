@@ -40,7 +40,7 @@ name. Otherwise you can use the browser to choose an object
 Add the following to arguments. In the sample CSV file, there are 3 inputs. You may want to add more depending on the use case:
 
 ```
---input {input1} {input2} {input3} --output {output}
+--input ${input1} ${input2} ${input3} --output ${output}
 ```
 
 Add parameters for each of the expressions in curly braces above. You may assign a default value to each of the parameters. For input1/2/3 and

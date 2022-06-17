@@ -38,7 +38,7 @@ you can use the browser to choose an object
 Add the following to the arguments:
 
 ```
---input ${input} --diff_factor ${diff_factor} --output ${output} --coalesce ${coalesce}
+--input ${input} --diff_factor ${diff_factor} --output ${output} --coalesce
 ```
 <b>input</b> points to the input data source. <b>diff_factor</b> refers to the temporal difference taken into account. This should be an integer.
 
