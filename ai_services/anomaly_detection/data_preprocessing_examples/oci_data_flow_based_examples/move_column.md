@@ -51,7 +51,12 @@ Click "Save changes" to save the Application.
 
 ## Execution and result
 Click **Run** on your application. Once the execution succeeds, go to your specified bucket and check result.
+Note : position argument should be between 0 and number of columns
 
-![image info](./utils/move_column-result.png)
+[Data preprocessing workflow](../README.md)
 
+## Troubleshooting
 
+If the run fails 
+1. Output file already exists.; - update the output argument with new file name 
+2. ValueError 'position value should be between 0 and number of columns in the input data' - check the position argument value range.  
