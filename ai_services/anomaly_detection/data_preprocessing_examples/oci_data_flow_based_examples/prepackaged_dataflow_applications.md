@@ -116,8 +116,3 @@ if __name__ == "__main__":
 Let's call it `test_remove_unnecessary_columns.py`. Now you have everything ready, and follow all the steps same to other DF applications. The only thing different is you need to upload the `archive.zip` to one of your object storage bucket and import it under `Archive URI`:
 
 ![](./utils/prepackaged.png)
-
-
-
-
-
