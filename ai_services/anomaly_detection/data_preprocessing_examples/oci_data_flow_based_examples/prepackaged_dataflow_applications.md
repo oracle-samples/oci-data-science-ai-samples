@@ -24,73 +24,12 @@ $ virtualenv venv
 $ . venv/bin/activate
 ```
 
-Install `setuptools` and `wheel` if you haven't already:
+Run the `setup-archive.sh` under the current folder:
 ```
-$ pip install wheel setuptools
-```
-
-Create the following `setup.py`:
-```
-from setuptools import setup
-
-setup(
-    name='prepackaged_df',
-    version='1.0',
-    packages=['example_code']
-)
-```
-Basically this is how your current folder should look like this:
-```
-|- example_code
-|- venv
-|- setup.py
-|- <other files>
+(venv)$ ./setup-archive.sh
 ```
 
-Now, type the following command to build the wheel:
-```
-python setup.py bdist_wheel
-```
-Once it's done, you should see now your folder contains:
-```
-|- example_code
-|- venv
-|- setup.py
-|- prepackaged_df.egg-info
-|- build
-|- dist
-    |- prepackaged_df-1.0-py3-none-any.whl
-|- <other files>
-```
-Yes, your `prepackaged_df-1.0-py3-none-any.whl` is successfully built under `dist`. Go to `dist` and install the packager tool image:
-```
-$ cd dist
-$ docker pull phx.ocir.io/oracle/dataflow/dependency-packager:latest
-```
-Create the following `requirements.txt`:
-```
--i https://pypi.org/simple
-/opt/dataflow/prepackaged_df-1.0-py3-none-any.whl
-```
-Use docker container to create the archive:
-```
-$ docker run --rm -v $(pwd):/opt/dataflow --pull always -it phx.ocir.io/oracle/dataflow/dependency-packager:latest -p 3.6
-```
-After some time, you should see your `archive.zip` is successfully. Now the folder structure will be look like:
-```
-|- example_code
-|- venv
-|- setup.py
-|- prepackaged_df.egg-info
-|- build
-|- dist
-    |- prepackaged_df-1.0-py3-none-any.whl
-    |- archive.zip
-    |- requirements.txt
-    |- <other files>
-|- <other files>
-```
-Cool! Now you are ready to use your package for writing application. The following is an example of utilizing [remove_unnecessary_columns](./example_code/remove_unnecessary_columns.py):
+Cool! Now you should have your package `archive.zip` generated under `dist/` folder. You are ready to use your package for writing application. The following is an example of utilizing [remove_unnecessary_columns](./example_code/remove_unnecessary_columns.py):
 ```
 import argparse
 from pyspark.sql import SparkSession
@@ -116,3 +55,8 @@ if __name__ == "__main__":
 Let's call it `test_remove_unnecessary_columns.py`. Now you have everything ready, and follow all the steps same to other DF applications. The only thing different is you need to upload the `archive.zip` to one of your object storage bucket and import it under `Archive URI`:
 
 ![](./utils/prepackaged.png)
+
+Once you've done everything, deactivate and cleanup the virtual environment:
+```
+(venv)$ deactivate
+```
