@@ -28,6 +28,7 @@ common AD pre-processing steps using DIS and DF, that can be used by users as
 templates to build end-to-end solution.
 
 [DF:  Common Pre-Processing Workflow used in Anomaly Detection](data_preprocessing_examples/oci_data_flow_based_examples)
+
 [DIS: Common Pre-Processing Workflow used in Anomaly Detection](data_preprocessing_examples/oci_data_integration_based_examples)
 
 ### When should I use DF vs DIS?

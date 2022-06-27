@@ -5,7 +5,7 @@
 You can use it to remove specified column(s) in your csv.
 
 ## Prerequisites
-Follow the [guide](../README) and setup your policies correctly.
+Follow the [guide](./README.md) and setup your policies correctly.
 
 Also, for csv, you can use [utility-meter-readings](../sample_datasets/utility-meter-readings.csv) as an example.
 
