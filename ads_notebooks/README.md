@@ -1,7 +1,7 @@
 ADS Notebooks
 =============
 
-The [Accelerated Data Science (ADS) SDK](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html) is a data scientist friendly library that helps you speed up common data science tasks and it also provides an interface to other Oracle Cloud Infrastructure (OCI) services. This section contains JupyterLab notebooks that provide tutorials on how to use ADS. For example, the [vault.ipynb](./ads_notebooks/vault.ipynb) notebook shows how easy it is to store you secrets in the [OCI Vault service](https://docs.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm).
+The [Accelerated Data Science (ADS) SDK](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html) is a data scientist friendly library that helps you speed up common data science tasks and it also provides an interface to other Oracle Cloud Infrastructure (OCI) services. This section contains example JupyterLab notebooks that provide tutorials on how to use ADS. For example, the [vault.ipynb](./ads_notebooks/vault.ipynb) notebook shows how easy it is to store you secrets in the [OCI Vault service](https://docs.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm).
 
 # Notebook Descriptions
 
