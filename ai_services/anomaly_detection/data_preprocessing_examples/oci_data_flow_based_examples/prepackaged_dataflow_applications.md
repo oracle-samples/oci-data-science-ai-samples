@@ -26,6 +26,7 @@ $ . venv/bin/activate
 
 Run the `setup-archive.sh` under the current folder:
 ```
+(venv)$ chmod +x setup-archive.sh
 (venv)$ ./setup-archive.sh
 ```
 
