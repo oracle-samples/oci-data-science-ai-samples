@@ -1,7 +1,7 @@
 # Prepackaged DF: one way to hook up multiple components
 
 ## Use case
-You have already known that OCI Data Flow is a powerful service for running Spark applications, but one problem is that it will allow you to upload only one application (code) file per application. This may force you to white all the logics in one file, which is bad for mid-large scale applications where modularization is desired.
+You have already known that OCI Data Flow is a powerful service for running Spark applications, but one problem is that it will allow you to upload only one application (code) file per application. This may force you to write all the logics in one file, which is bad for mid-large scale applications where modularization is desired.
 
 In consideration of this, Data Flow allows you to upload an archive of multiple code files as a third-party library. We will show how to do it step by step in this guide.
 
