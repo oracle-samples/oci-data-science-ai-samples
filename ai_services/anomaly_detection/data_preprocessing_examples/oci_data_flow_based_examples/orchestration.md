@@ -68,6 +68,7 @@ This doc is to show how to setup OCI Events and Functions to make them work in s
 
 ### Prepare an object storage bucket.
 After you created the bucket, don't foregt to enable `Emit Object Events` under bucket details page. Without this, Events Service won't be able to catch any object related events. 
+
 ![](./utils/enable_emit_os.png)
 
 ### Create and deploy function
