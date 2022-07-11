@@ -11,6 +11,46 @@ The instruction assumes that you are running this within the folder where you ra
 
 All files in the current directory is copied over to `/code` folder inside docker image. 
 
+For example, you can have the following grid search script saved as train.py:
+
+```
+from dask.distributed import Client
+from sklearn.datasets import make_classification
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
+
+import pandas as pd
+import joblib
+import os
+import argparse
+
+default_n_samples = int(os.getenv("DEFAULT_N_SAMPLES", "1000"))
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--n_samples", default=default_n_samples, type=int, help="size of dataset")
+parser.add_argument("--cv", default=3, type=int, help="number of cross validations")
+args, unknownargs = parser.parse_known_args()
+
+# Using environment variable to fetch the SCHEDULER_IP is important.
+client = Client(f"{os.environ['SCHEDULER_IP']}:{os.environ.get('SCHEDULER_PORT','8786')}")
+
+X, y = make_classification(n_samples=args.n_samples, random_state=42)
+
+with joblib.parallel_backend("dask"):
+    GridSearchCV(
+        SVC(gamma="auto", random_state=0, probability=True),
+        param_grid={
+            "C": [0.001, 0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0],
+            "kernel": ["rbf", "poly", "sigmoid"],
+            "shrinking": [True, False],
+        },
+        return_train_score=False,
+        cv=args.cv,
+        n_jobs=-1,
+    ).fit(X, y)
+
+```
+
 **Note**: Whenever you change the code, you have to build, tag and push the image to repo. If you change the tag, it needs to be updated inside the cluster definition yaml.
 
 The required python dependencies are provided inside `oci_dist_training_artifacts/dask/v1/environment.yaml`.  If you code required additional dependency, update the `environment.yaml` file. 
