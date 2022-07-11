@@ -30,8 +30,7 @@ All files in the current directory will be copied over to `/code` folder inside 
 For example, you can have the following training script saved as `train.py`:
 
 ```
-# Copyright (c) 2017 Facebook, Inc. All rights reserved.
-# BSD 3-Clause License
+
 #
 # Script adapted from:
 # https://github.com/Azure/azureml-examples/blob/main/python-sdk/workflows/train/pytorch/cifar-distributed/src/train.py
