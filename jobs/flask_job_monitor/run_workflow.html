@@ -1,0 +1,70 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newJobModal">
+  Run A New Job ...
+</button>
+<!-- Modal YAML -->
+<div id="newJobModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Run A New Job</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <label for="templates" class="col-sm-3 col-form-label">YAML Template</label>
+          <div class="col-sm-10">
+            <select class="form-control" name="templates" id="templates">
+              <!-- <option value="" selected="selected">--- Select a Template ---</option> -->
+              <option value="job_git_runtime">Git Runtime</option>
+              <option value="distributed_pytorch" selected="selected">Distributed Training - PyTorch</option>
+            </select>
+          </div>
+        </div>
+        <hr />
+        <!-- https://stackoverflow.com/questions/63179813/how-to-run-the-monaco-editor-from-a-cdn-like-cdnjs -->
+        <div id="container" style="height:600px; border:1px solid black;"></div>
+        <script>var require = { paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' } }</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js"></script>
+        <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/editor/editor.main.nls.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/editor/editor.main.js"></script>
+      </div>
+      <div class="modal-footer">
+        <button id="run-job" type="button" class="btn btn-danger" data-bs-dismiss="modal">Run</button>
+      </div>
+      <script>
+        var editor;
+        var baseUrl = encodeURI("https://github.com/qiuosier/python_test/raw/main/oracle-ads/yaml/")
+        $.get("/download/" + baseUrl + "distributed_pytorch.yaml", function (data) {
+          editor = monaco.editor.create(document.getElementById('container'), {
+            value: data,
+            language: 'yaml',
+            theme: 'vs-dark',
+            automaticLayout: true
+          });
+        });
+        $("#templates").change(function () {
+          $.get("/download/" + baseUrl + $("#templates").val() + ".yaml", function (data) {
+            const lineCount = editor.getModel().getLineCount();
+            const lastLineLength = editor.getModel().getLineMaxColumn(lineCount);
+            const range = new monaco.Range(1, 1, lineCount, lastLineLength)
+            editor.executeEdits("template", [{
+              range: range,
+              text: data
+            }])
+          });
+        });
+        $("#run-job").click(function () {
+          $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/run",
+            data: { yaml: editor.getValue() },
+          })
+        })
+      </script>
+    </div>
+  </div>
+</div>
