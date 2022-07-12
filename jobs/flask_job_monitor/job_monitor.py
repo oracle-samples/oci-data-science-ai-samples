@@ -1,13 +1,15 @@
 import os
 import re
+import urllib.parse
 import ads
 import oci
 import requests
-
+import yaml
 from flask import Flask, render_template, jsonify, abort, request
 from ads.common.oci_resource import OCIResource
 from ads.common.oci_datascience import OCIDataScienceMixin
 from ads.jobs import Job, DataScienceJobRun
+from ads.opctl.cmds import run as opctl_run
 
 
 OCI_KEY_CONFIG_LOCATION = os.environ.get("OCI_KEY_LOCATION", "~/.oci/config")
@@ -266,4 +268,22 @@ def delete_job(job_ocid):
     return jsonify({
         "ocid": job_ocid,
         "error": error
+    })
+
+@app.route("/download/<path:url>")
+def download_from_url(url):
+    res = requests.get(url)
+    return res.content
+
+@app.route("/run", methods=["POST"])
+def run():
+    try:
+        data = yaml.safe_load(urllib.parse.unquote(request.data[5:].decode()))
+    except Exception as ex:
+        import traceback
+        traceback.print_exc()
+        abort(400, str(ex))
+    opctl_run(data)
+    return jsonify({
+
     })
