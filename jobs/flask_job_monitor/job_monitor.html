@@ -12,12 +12,17 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/styles/default.min.css">
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/languages/yaml.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/editor/editor.main.min.css">
 </head>
 
 <body style="padding: 30px;">
   <div class="container-fluid">
     <h1>Jobs Monitor</h1>
+    <div class="float-end">
+      {% include 'run_workflow.html' %}
+    </div>
     <p>Select compartment and project to show the most recent <span id="job-number-limit">{{ limit }}</span> jobs.</p>
+
     <div class="d-none" id="service-endpoint">{{ service_endpoint if service_endpoint }}</div>
     {% if service_endpoint %}
     <p class="text-danger">Service Endpoint: {{ service_endpoint }}</p>
