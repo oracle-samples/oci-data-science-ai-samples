@@ -4,7 +4,8 @@ from pyspark.sql import Window
 import pyspark.sql.functions as F
 
 
-def temporal_differencing(df, diff_factor):
+def temporal_differencing(df, **kwargs):
+    diff_factor = int(kwargs["diff_factor"])
     lagWindow = Window.rowsBetween(diff_factor, 0)
     for col in df.columns:
         if col != "timestamp":
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     df = spark.read.load(
         args.input, format="csv", sep=",", inferSchema="true", header="true"
     )
-    df = temporal_differencing(df, int(args.diff_factor))
+    df = temporal_differencing(df, **vars(args))
 
     if args.coalesce:
         df.coalesce(1).write.csv(args.output, header=True)

@@ -17,7 +17,7 @@ class ParseKwargs(argparse.Action):
                 getattr(namespace, self.dest)[key] = value
 
 
-def spark_pivoting(df, groupby, pivot, agg):
+def spark_pivoting(df, **kwargs):
     """
     Pivot Operation
     Args:
@@ -27,7 +27,8 @@ def spark_pivoting(df, groupby, pivot, agg):
         agg: a dictionary
             where key = <column name> and value = <aggregation function>
     """
-    return df.groupBy(groupby).pivot(pivot).agg(agg)
+    return df.groupBy(kwargs["groupby"]).pivot(
+        kwargs["pivot"]).agg(kwargs["agg"])
 
 
 if __name__ == "__main__":
@@ -54,12 +55,7 @@ if __name__ == "__main__":
     if "timestamp" not in df.columns:
         raise ValueError("timestamp column not found!")
 
-    df_pivot = spark_pivoting(
-        df,
-        groupby=args.groupby,
-        pivot=args.pivot,
-        agg=args.agg
-    )
+    df_pivot = spark_pivoting(df, **vars(args))
 
     if args.coalesce:
         df_pivot.coalesce(1).write.csv(args.output, header=True)

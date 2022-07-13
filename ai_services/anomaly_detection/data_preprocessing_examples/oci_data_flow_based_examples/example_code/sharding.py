@@ -15,19 +15,22 @@ class ParseKwargs(argparse.Action):
                 getattr(namespace, self.dest)[key] = value
 
 
-def sharding(df, partition_size, output, idcols):
+def sharding(df, **kwargs):
     """
     Vertical data sharding
     Args:
         df : input dataframe
         partition_size : max number of columns in the partitioned data
         output :  destination to store output
-        coalesce : whether to combine partitions into a single CSV file
         idcols: identifiers of each record - in addition to timestamp
 
     Return:
         partitions of the original dataframe in CSV format
     """
+    partition_size = int(kwargs["columnNum"])
+    output = kwargs["output"]
+    idcols = kwargs["idColumns"]
+
     sharding_dict = dict()
     column_names = df.columns
     idcols = ["timestamp"] + idcols if idcols else ["timestamp"]
@@ -73,12 +76,13 @@ if __name__ == "__main__":
     df_input = spark.read.load(
         args.input, format="csv", sep=",", inferSchema="true", header="true"
     )
-    sharded_dfs = sharding(
-        df_input,
-        partition_size=int(args.columnNum),
-        output=args.output,
-        idcols=args.idColumns
-    )
+    # sharded_dfs = sharding(
+    #     df_input,
+    #     partition_size=int(args.columnNum),
+    #     output=args.output,
+    #     idcols=args.idColumns
+    # )
+    sharded_dfs = sharding(df_input, **vars(args))
 
     for output_name, df_partition in sharded_dfs.items():
         if args.coalesce:

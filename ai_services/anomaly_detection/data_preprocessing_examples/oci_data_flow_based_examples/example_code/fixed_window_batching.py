@@ -4,7 +4,7 @@ import pyspark.sql.functions as F
 from pyspark.sql.window import Window
 
 
-def windowing(df, batch_size):
+def windowing(df, **kwargs):
     """
     Args:
         df: dataframe to perform windowing on
@@ -17,7 +17,8 @@ def windowing(df, batch_size):
     return df.withColumn(
         "batch_id",
         F.floor(
-            (F.row_number().over(window_spec) - F.lit(1)) / int(batch_size)
+            (F.row_number().over(window_spec) - F.lit(1))
+            / int(kwargs["batch_size"])
         ),
     )
 
@@ -31,6 +32,7 @@ if __name__ == "__main__":
 
     spark = SparkSession.builder.appName("DataFlow").getOrCreate()
     df = spark.read.csv(args.input, header=True)
-    df = windowing(df, args.batch_size)
+    # df = windowing(df, args.batch_size)
+    df = windowing(df, **vars(args))
     df.repartition("batch_id").write.partitionBy(
         "batch_id").mode("overwrite").format("csv").save(args.output)

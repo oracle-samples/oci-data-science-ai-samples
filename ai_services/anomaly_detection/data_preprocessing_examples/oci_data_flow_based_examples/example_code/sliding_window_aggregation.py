@@ -8,7 +8,10 @@ from pyspark.sql import SparkSession, Window
 import pyspark.sql.functions
 
 
-def aggregation(dataframe, aggregation_function, window_size, step_size):
+def aggregation(dataframe, **kwargs):
+    aggregation_function = kwargs["aggregation_function"]
+    window_size = kwargs["window_size"]
+    step_size = kwargs["step_size"]
     grouping_functions = ["avg", "sum", "min", "max"]
     if aggregation_function in grouping_functions:
         if "timestamp" not in dataframe.columns:
@@ -112,11 +115,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     spark = __get_dataflow_spark_session()
     df = spark.read.csv(args.input, header=True)
-    df = aggregation(
-        df,
-        args.aggregation_function,
-        args.window_size,
-        args.step_size)
+    df = aggregation(df, **vars(args))
 
     if args.coalesce:
         df.coalesce(1).write.csv(args.output, header=True)

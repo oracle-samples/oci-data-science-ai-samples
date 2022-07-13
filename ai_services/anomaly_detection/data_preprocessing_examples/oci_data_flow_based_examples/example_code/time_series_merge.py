@@ -7,17 +7,12 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 
-def main(args):
-    spark = get_dataflow_spark_session()
-    df1 = spark.read.csv(args.input1, header=True)
-    df2 = spark.read.csv(args.input2, header=True)
+def time_series_merge(df1, df2):
     df1 = df1.unionByName(df2)
     df1 = df1.sort("timestamp")
     df1 = df1.dropDuplicates(["timestamp"])
-    if args.coalesce:
-        df1.coalesce(1).write.csv(args.output, header=True)
-    else:
-        df1.write.csv(args.output, header=True)
+
+    return df1
 
 
 def get_dataflow_spark_session(
@@ -61,7 +56,8 @@ def get_dataflow_spark_session(
             "fs.oci.client.hostname",
             f'https://objectstorage.{oci_config["region"]}.oraclecloud.com',
         )
-        spark_builder = SparkSession.builder.appName(app_name).config(conf=conf)
+        spark_builder = SparkSession.builder.appName(
+            app_name).config(conf=conf)
 
     # Add in extra configuration.
     for key, val in spark_config.items():
@@ -89,4 +85,13 @@ if __name__ == "__main__":
     parser.add_argument("--coalesce",  required=False, action="store_true")
 
     args = parser.parse_args()
-    main(args)
+    spark = get_dataflow_spark_session()
+    df1 = spark.read.csv(args.input1, header=True)
+    df2 = spark.read.csv(args.input2, header=True)
+
+    df = time_series_merge(df1, df2)
+
+    if args.coalesce:
+        df.coalesce(1).write.csv(args.output, header=True)
+    else:
+        df.write.csv(args.output, header=True)

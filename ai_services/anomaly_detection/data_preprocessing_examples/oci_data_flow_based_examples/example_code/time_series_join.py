@@ -10,7 +10,7 @@ class parse_kwargs(argparse.Action):
         setattr(namespace, self.dest, values)
 
 
-def timeseries_join(dfs):
+def time_series_join(dfs):
     if len(dfs) < 2:
         return dfs
     for i in range(len(dfs)):
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     spark = SparkSession.builder.appName("DataFlow").getOrCreate()
     dfs = [spark.read.csv(fname, header=True) for fname in args.input]
-    df = timeseries_join(dfs)
+    df = time_series_join(dfs)
 
     if args.coalesce:
         df.coalesce(1).write.csv(args.output, header=True)
