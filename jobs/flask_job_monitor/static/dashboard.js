@@ -1,3 +1,8 @@
+const JOB_CHECKING_INTERVAL = 20000;
+const LOG_CHECKING_INTERVAL = 20000;
+const RUN_CHECKING_INTERVAL = 30000;
+var jobRunChecking = {};
+
 function initComponents(compartmentId, projectId) {
   // Load the list of project in the compartment.
   $("#compartments").change(function() {
@@ -53,7 +58,7 @@ function updateLogs(ocid, outputDiv) {
       // Job is running
       setTimeout(function () {
         updateLogs(ocid, outputDiv)
-      }, 20000);
+      }, LOG_CHECKING_INTERVAL);
       setCardStyle(parent, "border-primary");
       statusText.addClass("text-primary");
       parent.find(".card-header").addClass("bg-primary bg-opacity-10");
@@ -101,31 +106,56 @@ function loadJobs(compartmentId, projectId) {
     var timestampDiv = $("#dashboard-jobs").find(".job-timestamp:first");
     var timestamp = 0;
     var jobs = data.jobs;
+    var prepended = false;
     if (timestampDiv.length !== 0) {
       timestamp = parseFloat(timestampDiv.text())
       jobs = jobs.reverse();
     }
+    // Add jobs based on the time created
     jobs.forEach(job => {
       if (existing_jobs.indexOf(job.ocid) < 0 && job.time_created > timestamp) {
         console.log("Loading job: " + job.ocid);
         if (timestamp > 0) {
           $("#dashboard-jobs").prepend(job.html);
+          prepended = true;
         } else {
           $("#dashboard-jobs").append(job.html);
         }
-        loadJobRuns(job.ocid);
+        // Load job runs only when the accordion is opened.
+        $('#' + job.ocid.replaceAll(".", "")).on('shown.bs.collapse', function () {
+          loadJobRuns(job.ocid);
+        })
+
       }
     });
+    // Open the first accordion in the page
+    // If user is opening loading the jobs for the first time or new job added recently
+    if (existing_jobs.length === 0 || prepended) {
+      new bootstrap.Collapse(
+        document.getElementsByClassName('accordion-collapse collapse')[0],
+        {toggle: true}
+      );
+    }
+
   });
   // Reload the list of jobs every 20 seconds.
   setTimeout(function () {
     loadJobs(compartmentId, projectId);
-  }, 20000);
+  }, JOB_CHECKING_INTERVAL);
 }
 
 function loadJobRuns(job_ocid) {
-  var jobSelector = "#" + job_ocid.replaceAll(".", "") + "-body";
-  var jobRow = $(jobSelector).find(".row");
+  const RUNNING = "running"
+  // Avoid running the same function twice
+  if (typeof(jobRunChecking[job_ocid]) === RUNNING) return;
+  if (typeof(jobRunChecking[job_ocid]) === "number") clearTimeout(jobRunChecking[job_ocid]);
+  jobRunChecking[job_ocid] = RUNNING;
+
+  // Load job runs only if the accordion is opened.
+  var jobAccordion = $("#" + job_ocid.replaceAll(".", "") + "-body");
+  if (!jobAccordion.hasClass("show")) return;
+
+  var jobRow = jobAccordion.find(".row");
   if (jobRow.length === 0) return;
   jobRow.append("");
   var serviceEndpoint = $("#service-endpoint").text();
@@ -153,9 +183,10 @@ function loadJobRuns(job_ocid) {
       }
     });
   });
-  setTimeout(function() {
+
+  jobRunChecking[job_ocid] = setTimeout(function() {
     loadJobRuns(job_ocid);
     // Check if there is new job run for the job in about 30 seconds.
     // Add a random number to the time interval so that not all requests are send at the same time.
-  }, (30 + Math.floor(Math.random() * 5)) * 1000);
+  }, RUN_CHECKING_INTERVAL);
 }
