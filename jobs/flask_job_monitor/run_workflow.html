@@ -14,17 +14,17 @@
       <div class="modal-body">
         <div class="row">
           <label for="templates" class="col-sm-3 col-form-label">YAML Template</label>
-          <div class="col-sm-10">
+          <div class="col-sm-9">
             <select class="form-control" name="templates" id="templates">
               <!-- <option value="" selected="selected">--- Select a Template ---</option> -->
-              <option value="job_git_runtime">Git Runtime</option>
+              <option value="job_git_runtime">Data Science Job - Git Runtime</option>
               <option value="distributed_pytorch" selected="selected">Distributed Training - PyTorch</option>
             </select>
           </div>
         </div>
         <hr />
         <!-- https://stackoverflow.com/questions/63179813/how-to-run-the-monaco-editor-from-a-cdn-like-cdnjs -->
-        <div id="container" style="height:600px; border:1px solid black;"></div>
+        <div id="container" style="height:800px; border:1px solid black;"></div>
         <script>var require = { paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' } }</script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js"></script>
         <script
