@@ -8,7 +8,7 @@ def extract(row):
     return (row.id,) + tuple(row.scaledFeatures.toArray().tolist()[:-1])
 
 
-def normalize_data(df, scaler_type, columns):
+def normalize_data(df, **kwargs):
     """
     Scale numeric features using two methods
         1) minmax normalization or
@@ -21,6 +21,11 @@ def normalize_data(df, scaler_type, columns):
     Return:
         Scaled dataframe
     """
+    scaler_type = kwargs["norm"]
+    columns = kwargs["columns"]
+
+    columns = columns[0].split(
+        " ") if len(columns) == 1 else columns
     columns = (
         [col for col in df.columns if col not in {"id", "timestamp"}]
         if not columns
@@ -62,8 +67,6 @@ if __name__ == "__main__":
     parser.add_argument("--columns", nargs="+", required=True)
     parser.add_argument("--coalesce", required=False, action="store_true")
     args = parser.parse_args()
-    columns = args.columns[0].split(
-        " ") if len(args.columns) == 1 else args.columns
 
     spark = SparkSession.builder.appName("DataFlow").getOrCreate()
     input_data = spark.read.csv(
@@ -71,7 +74,8 @@ if __name__ == "__main__":
         sep=",",
         inferSchema=True,
         header=True)
-    input_data_scaled = normalize_data(input_data, args.norm, columns)
+    # input_data_scaled = normalize_data(input_data, args.norm, columns)
+    input_data_scaled = normalize_data(input_data, **vars(args))
 
     if args.coalesce:
         input_data_scaled.coalesce(1).write.csv(args.output, header=True)

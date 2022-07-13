@@ -20,7 +20,11 @@ class parse_kwargs(argparse.Action):
                 getattr(namespace, self.dest)[key] = value
 
 
-def string_transformation(df, find_string, replace_string, column):
+def string_transformation(df, **kwargs):
+    find_string = kwargs["find_string"]
+    replace_string = kwargs["replace_string"]
+    column = kwargs["column"]
+
     columns_to_replace = column if column else df.columns
     for col in columns_to_replace:
         df = df.withColumn(
@@ -49,12 +53,7 @@ if __name__ == "__main__":
         args.input, format="csv", sep=",", inferSchema="true", header="true"
     )
 
-    df = string_transformation(
-        df,
-        find_string=args.find_string,
-        replace_string=args.replace_string,
-        column=args.column
-    )
+    df = string_transformation(df, **vars(args))
 
     if args.coalesce:
         df.coalesce(1).write.csv(args.output, header=True)

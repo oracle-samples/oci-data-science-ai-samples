@@ -4,7 +4,8 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import when
 
 
-def one_hot_encoding(df, category):
+def one_hot_encoding(df, **kwargs):
+    category = kwargs["category"]
     distinct_values = df.select(category).distinct().collect()
     for value in distinct_values:
         category_value = value[category]
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     df_input = spark.read.load(
         args.input, format="csv", sep=",", inferSchema="true", header="true"
     )
-    df_output = one_hot_encoding(df_input, category=args.category)
+    df_output = one_hot_encoding(df_input, **vars(args))
     if args.coalesce:
         df_output.coalesce(1).write.csv(args.output, header=True)
     else:

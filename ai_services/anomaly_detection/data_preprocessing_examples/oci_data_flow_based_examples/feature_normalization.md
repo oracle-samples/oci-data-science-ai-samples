@@ -57,7 +57,7 @@ Add the following to the arguments:
 ```
 
 <b>input</b> points to the input data source. The resulting dataframe will have selected numeric <b>columns</b>/ features scaled based on user's choice of "minmax"
-or "standard" normalizations given in <b>norm</b> argument.
+or "standard" normalizations given in <b>norm</b> argument. **If you want to input multiple columns, simply put the columns splitted by spaces in between.** For example, `column_1 column_2`
 
 Specify path in Object Storage to store logs. These may be useful later for troubleshooting.
 

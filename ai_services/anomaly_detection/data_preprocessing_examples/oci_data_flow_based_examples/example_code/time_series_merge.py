@@ -7,18 +7,12 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 
-def main(args):
-    spark = get_dataflow_spark_session()
-    df1 = spark.read.csv(args.input1, header=True)
-    df2 = spark.read.csv(args.input2, header=True)
+def time_series_merge(df1, df2):
     df1 = df1.unionByName(df2)
     df1 = df1.sort("timestamp")
     df1 = df1.dropDuplicates(["timestamp"])
-    if args.coalesce:
-        df1.coalesce(1).write.csv(args.output, header=True)
-    else:
-        df1.write.csv(args.output, header=True)
 
+    return df1
 
 def get_dataflow_spark_session(
     app_name="DataFlow", file_location=None, profile_name=None, spark_config={}
@@ -89,4 +83,13 @@ if __name__ == "__main__":
     parser.add_argument("--coalesce",  required=False, action="store_true")
 
     args = parser.parse_args()
-    main(args)
+    spark = get_dataflow_spark_session()
+    df1 = spark.read.csv(args.input1, header=True)
+    df2 = spark.read.csv(args.input2, header=True)
+
+    df = time_series_merge(df1, df2)
+
+    if args.coalesce:
+        df.coalesce(1).write.csv(args.output, header=True)
+    else:
+        df.write.csv(args.output, header=True)

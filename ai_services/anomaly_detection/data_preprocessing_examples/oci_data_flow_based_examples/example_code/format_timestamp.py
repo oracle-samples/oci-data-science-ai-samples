@@ -14,8 +14,8 @@ def __create_spark_session(session_name):
     spark_session = SparkSession.builder.appName(session_name).getOrCreate()
     return spark_session
 
-
-def format_timestamp(df):
+# The empty **kwargs is for generalization of the function interface
+def format_timestamp(df, **kwargs):
     """
     Reformat timestamps to ISO 8601
     Args:
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         inferSchema=False,
         header=True)
 
-    df = format_timestamp(input_data)
+    df = format_timestamp(input_data, None)
 
     if args.coalesce:
         df.coalesce(1).write.csv(args.output, header=True)
