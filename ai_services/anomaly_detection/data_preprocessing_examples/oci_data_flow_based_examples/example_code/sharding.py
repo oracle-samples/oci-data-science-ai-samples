@@ -57,47 +57,6 @@ def sharding(df, **kwargs):
 
     return sharding_dict
 
-def sharding(df, partition_size, output, idcols):
-    """
-    Vertical data sharding
-    Args:
-        df : input dataframe
-        partition_size : max number of columns in the partitioned data
-        output :  destination to store output
-        coalesce : whether to combine partitions into a single CSV file
-        idcols: identifiers of each record - in addition to timestamp
-
-    Return:
-        partitions of the original dataframe in CSV format
-    """
-    sharding_dict = dict()
-    column_names = df.columns
-    idcols = ["timestamp"] + idcols if idcols else ["timestamp"]
-    for col in idcols:
-        if col not in column_names:
-            raise ValueError(f"{col} column not found!")
-    for col in idcols:
-        column_names.remove(col)
-
-    k = len(idcols) - 1
-    num_columns = len(column_names) - k
-    partition_size -= k
-    num_partitions = math.ceil(num_columns / partition_size)
-
-    for i in range(num_partitions):
-        partition_columns = column_names[
-            i * partition_size:min(num_columns, (i + 1) * partition_size)
-        ]
-        for col in reversed(idcols):
-            partition_columns.insert(0, col)
-
-        df_partition = df.select(*partition_columns)
-        output_name = output + "_part_" + str(i + 1)
-        sharding_dict[output_name] = df_partition
-
-    return sharding_dict
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)

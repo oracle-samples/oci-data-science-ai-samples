@@ -47,7 +47,7 @@ if __name__ == "__main__":
         inferSchema=False,
         header=True)
 
-    df = format_timestamp(input_data, None)
+    df = format_timestamp(input_data, **vars(args))
 
     if args.coalesce:
         df.coalesce(1).write.csv(args.output, header=True)
