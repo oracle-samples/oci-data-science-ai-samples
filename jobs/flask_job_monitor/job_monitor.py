@@ -278,12 +278,20 @@ def download_from_url(url):
 @app.route("/run", methods=["POST"])
 def run():
     try:
-        data = yaml.safe_load(urllib.parse.unquote(request.data[5:].decode()))
+        workflow = yaml.safe_load(urllib.parse.unquote(request.data[5:].decode()))
+
+        if workflow.get("kind") == "job":
+            job = Job.from_dict(workflow)
+            job.create()
+            print(f"Created Job: {job.id}")
+            job_run = job.run()
+            print(f"Created Job Run: {job_run.id}")
+        else:
+            opctl_run(workflow)
+        return jsonify({})
     except Exception as ex:
         import traceback
         traceback.print_exc()
         abort(400, str(ex))
-    opctl_run(data)
-    return jsonify({
 
-    })
+
