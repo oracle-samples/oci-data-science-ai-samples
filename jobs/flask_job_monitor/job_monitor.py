@@ -14,7 +14,7 @@ from ads.opctl.cmds import run as opctl_run
 
 OCI_KEY_CONFIG_LOCATION = os.environ.get("OCI_KEY_LOCATION", "~/.oci/config")
 OCI_KEY_PROFILE_NAME = os.environ.get("OCI_KEY_PROFILE", "DEFAULT")
-app = Flask(__name__, template_folder=os.path.dirname(__file__))
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), "templates"))
 
 
 def instance_principal_available():
