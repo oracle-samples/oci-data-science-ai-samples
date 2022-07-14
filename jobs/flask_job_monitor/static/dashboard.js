@@ -106,6 +106,10 @@ function loadJobs(compartmentId, projectId) {
     var timestampDiv = $("#dashboard-jobs").find(".job-timestamp:first");
     var timestamp = 0;
     var jobs = data.jobs;
+    if (jobs.length === 0) {
+      console.log("No job found in compartment: " + compartmentId + ", project: " + projectId);
+      return;
+    }
     var prepended = false;
     if (timestampDiv.length !== 0) {
       timestamp = parseFloat(timestampDiv.text())
