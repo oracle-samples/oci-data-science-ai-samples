@@ -1,15 +1,27 @@
+import logging
 import os
 import re
+import traceback
 import urllib.parse
+
 import ads
 import oci
 import requests
 import yaml
-from flask import Flask, render_template, jsonify, abort, request
-from ads.common.oci_resource import OCIResource
 from ads.common.oci_datascience import OCIDataScienceMixin
-from ads.jobs import Job, DataScienceJobRun
+from ads.common.oci_resource import OCIResource
+from ads.jobs import DataScienceJobRun, Job
 from ads.opctl.cmds import run as opctl_run
+from flask import Flask, abort, jsonify, render_template, request
+
+# Config logging
+LOG_LEVEL = os.environ.get("LOG_LEVEL", logging.DEBUG)
+flask_log = logging.getLogger('werkzeug')
+flask_log.setLevel(LOG_LEVEL)
+logging.lastResort.setLevel(LOG_LEVEL)
+logging.getLogger("telemetry").setLevel(LOG_LEVEL)
+logger = logging.getLogger(__name__)
+logger.setLevel(LOG_LEVEL)
 
 
 OCI_KEY_CONFIG_LOCATION = os.environ.get("OCI_KEY_LOCATION", "~/.oci/config")
@@ -50,6 +62,8 @@ def get_authentication():
         When no authentication method is available.
     """
     if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
+        logger.debug(f"Using OCI API Key config: {OCI_KEY_CONFIG_LOCATION}")
+        logger.debug(f"Using OCI API Key profile: {OCI_KEY_PROFILE_NAME}")
         auth = dict(
             config=oci.config.from_file(
                 file_location=OCI_KEY_CONFIG_LOCATION,
@@ -232,20 +246,21 @@ def format_logs(logs):
         else:
             log["time"] = str(log["time"])
     logs = [log["time"] + " " + log["message"] for log in logs]
-    print(f"{len(logs)} log messages.")
+
     return logs
 
 
 @app.route("/logs/<job_run_ocid>")
 def get_logs(job_run_ocid):
-    print(f"Getting logs for {job_run_ocid}...")
+    logger.debug(f"Getting logs for {job_run_ocid}...")
     run = DataScienceJobRun.from_ocid(job_run_ocid)
-    print(f"Status: {run.lifecycle_state} - {run.lifecycle_details}")
+    logger.debug(f"Job Run Status: {run.lifecycle_state} - {run.lifecycle_details}")
     if not run.log_id:
         logs = []
     else:
         logs = run.logs(limit=300)
         logs = format_logs(logs)
+    logger.debug(f"{job_run_ocid} - {len(logs)} log messages.")
     context = {
         "ocid": job_run_ocid,
         "logs": logs,
@@ -283,14 +298,13 @@ def run():
         if workflow.get("kind") == "job":
             job = Job.from_dict(workflow)
             job.create()
-            print(f"Created Job: {job.id}")
+            logger.info(f"Created Job: {job.id}")
             job_run = job.run()
-            print(f"Created Job Run: {job_run.id}")
+            logger.info(f"Created Job Run: {job_run.id}")
         else:
             opctl_run(workflow)
         return jsonify({})
     except Exception as ex:
-        import traceback
         traceback.print_exc()
         abort(400, str(ex))
 
