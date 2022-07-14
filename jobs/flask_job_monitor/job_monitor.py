@@ -148,7 +148,15 @@ def init_components(compartment_id, project_id):
         tenancy_id = auth["signer"].tenancy_id
     logger.debug(f"Tenancy ID: {tenancy_id}")
     try:
-        compartments = oci.identity.IdentityClient(**auth).list_compartments(compartment_id=tenancy_id).data
+        client = oci.identity.IdentityClient(**auth)
+        compartments = oci.pagination.list_call_get_all_results(
+            client.list_compartments,
+            compartment_id=tenancy_id,
+            compartment_id_in_subtree=True,
+            access_level="ANY"
+        ).data
+        root_compartment = client.get_compartment(tenancy_id).data
+        compartments.insert(0, root_compartment)
     except Exception as ex:
         traceback.print_exc()
         abort(400, str(ex))
@@ -238,10 +246,8 @@ def list_projects(compartment_id):
     )
     projects = oci.pagination.list_call_get_all_results(
         ds_client.list_projects,
-        **dict(
-            compartment_id=compartment_id,
-            sort_by="displayName"
-        )
+        compartment_id=compartment_id,
+        sort_by="displayName"
     ).data
     # projects = sorted(projects, key=lambda x: x.display_name)
     logger.debug(f"{len(projects)} projects")
