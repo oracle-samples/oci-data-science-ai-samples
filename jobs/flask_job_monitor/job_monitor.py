@@ -140,11 +140,18 @@ def init_components(compartment_id, project_id):
 
     auth = get_authentication()
     if auth["config"]:
-        tenancy_id = auth["config"]["tenancy"]
+        if "override_tenancy" in auth["config"]:
+            tenancy_id = auth["config"]["override_tenancy"]
+        else:
+            tenancy_id = auth["config"]["tenancy"]
     else:
         tenancy_id = auth["signer"].tenancy_id
-
-    compartments = oci.identity.IdentityClient(**auth).list_compartments(compartment_id=tenancy_id).data
+    logger.debug(f"Tenancy ID: {tenancy_id}")
+    try:
+        compartments = oci.identity.IdentityClient(**auth).list_compartments(compartment_id=tenancy_id).data
+    except Exception as ex:
+        traceback.print_exc()
+        abort(400, str(ex))
     context = dict(
         compartment_id=compartment_id,
         project_id=project_id,
@@ -224,11 +231,20 @@ def list_job_runs(job_id):
 @app.route("/projects/<compartment_id>")
 def list_projects(compartment_id):
     endpoint = check_endpoint()
-    projects = oci.data_science.DataScienceClient(
+    logger.debug(f"Getting projects in compartment {compartment_id}")
+    ds_client = oci.data_science.DataScienceClient(
         service_endpoint=endpoint,
         **get_authentication()
-    ).list_projects(compartment_id=compartment_id).data
-    projects = sorted(projects, key=lambda x: x.display_name)
+    )
+    projects = oci.pagination.list_call_get_all_results(
+        ds_client.list_projects,
+        **dict(
+            compartment_id=compartment_id,
+            sort_by="displayName"
+        )
+    ).data
+    # projects = sorted(projects, key=lambda x: x.display_name)
+    logger.debug(f"{len(projects)} projects")
     context = {
         "compartment_id": compartment_id,
         "projects": [
@@ -280,6 +296,7 @@ def delete_job(job_ocid):
         error = None
     except oci.exceptions.ServiceError as ex:
         error = ex.message
+    logger.info(f"Deleted Job: {job_ocid}")
     return jsonify({
         "ocid": job_ocid,
         "error": error
