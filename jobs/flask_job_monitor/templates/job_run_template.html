@@ -3,10 +3,11 @@
     <div class="card-header">
       <div>
         <div class="float-end" style="font-size: larger">
-          <a href="#" data-bs-toggle="modal" data-bs-target="#modal-details-{{ run.id|replace('.', '') }}"><i
+          <a href="#" onclick="downloadLogs('{{ run.id }}')"><i title="Download Logs" class="bi-download"></i></a>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#modal-details-{{ run.id|replace('.', '') }}"><i title="Show YAML..."
               class="bi-info-circle"></i></a>
           <a class="text-danger" href="#" data-bs-toggle="modal"
-            data-bs-target="#modal-delete-{{ run.id|replace('.', '') }}"><i class="bi-x-lg"></i></a>
+            data-bs-target="#modal-delete-{{ run.id|replace('.', '') }}"><i title="Delete Job..." class="bi-x-lg"></i></a>
         </div>
         <h4>
           <a style="color: inherit;" target="_blank"
@@ -34,7 +35,7 @@
           console</a></div>
       {% endif %}
       {{ run.id }} <br>
-      <span class=".run-status-details">
+      <span class="run-status-details">
         {{ run.lifecycle_state }}
         {% if run.lifecycle_details %}
         - {{ run.lifecycle_details }}
