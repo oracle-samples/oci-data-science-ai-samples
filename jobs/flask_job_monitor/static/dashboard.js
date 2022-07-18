@@ -107,7 +107,13 @@ function loadJobs(compartmentId, projectId) {
     var timestamp = 0;
     var jobs = data.jobs;
     if (jobs.length === 0) {
-      console.log("No job found in compartment: " + compartmentId + ", project: " + projectId);
+      // Wait for the projects dropdown to be populated so that we can get the project name.
+      setTimeout(() => {
+        var compartmentName = $("#compartments option[value='" + compartmentId + "']").text();
+        var projectName = $("#projects option[value='" + projectId + "']").text();
+        console.log("No job found in compartment: " + compartmentId + ", project: " + projectId);
+        toastMessage("No Job", "There is no job in " + compartmentName + "/" + projectName);
+        }, 2000);
       return;
     }
     var prepended = false;
