@@ -24,8 +24,13 @@ logger = logging.getLogger(__name__)
 logger.setLevel(LOG_LEVEL)
 
 
+# API key config
 OCI_KEY_CONFIG_LOCATION = os.environ.get("OCI_KEY_LOCATION", "~/.oci/config")
 OCI_KEY_PROFILE_NAME = os.environ.get("OCI_KEY_PROFILE", "DEFAULT")
+if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
+    logger.info(f"Using OCI API Key config: {OCI_KEY_CONFIG_LOCATION}")
+    logger.info(f"Using OCI API Key profile: {OCI_KEY_PROFILE_NAME}")
+# Flask templates location
 app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), "templates"))
 
 
@@ -62,8 +67,6 @@ def get_authentication():
         When no authentication method is available.
     """
     if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
-        logger.debug(f"Using OCI API Key config: {OCI_KEY_CONFIG_LOCATION}")
-        logger.debug(f"Using OCI API Key profile: {OCI_KEY_PROFILE_NAME}")
         auth = dict(
             config=oci.config.from_file(
                 file_location=OCI_KEY_CONFIG_LOCATION,
