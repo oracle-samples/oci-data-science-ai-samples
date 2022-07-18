@@ -37,7 +37,7 @@
       <script>
         var editor;
         var baseUrl = encodeURI("https://github.com/qiuosier/python_test/raw/main/oracle-ads/yaml/")
-        $.get("/download/" + baseUrl + "distributed_pytorch.yaml", function (data) {
+        $.get("/download/url/" + baseUrl + "distributed_pytorch.yaml", function (data) {
           editor = monaco.editor.create(document.getElementById('container'), {
             value: data,
             language: 'yaml',

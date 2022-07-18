@@ -311,10 +311,12 @@ def delete_job(job_ocid):
         "error": error
     })
 
-@app.route("/download/<path:url>")
+
+@app.route("/download/url/<path:url>")
 def download_from_url(url):
     res = requests.get(url)
     return res.content
+
 
 @app.route("/run", methods=["POST"])
 def run():
