@@ -57,11 +57,23 @@
           });
         });
         $("#run-job").click(function () {
+          try {
+            var workflow = jsyaml.load(editor.getValue());
+            toastMessage("Creating Workflow ...", workflow.kind + " - " + workflow.spec.infrastructure.type);
+          } catch {}
+
           $.ajax({
             type: "POST",
             contentType: "application/json",
             url: "/run",
             data: { yaml: editor.getValue() },
+          }).fail(function() {
+            toastMessage("Error Occurred", "Your workflow may not be started correctly.");
+          }).done(function(data) {
+            toastMessage(
+              "Job Created",
+              "Job OCID: " + data.job
+            )
           })
         })
       </script>

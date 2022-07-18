@@ -194,3 +194,26 @@ function loadJobRuns(job_ocid) {
     // Add a random number to the time interval so that not all requests are send at the same time.
   }, RUN_CHECKING_INTERVAL);
 }
+
+function toastMessage(title, message, time) {
+  var template = $("#toast-template");
+  var toastDiv = template.clone();
+  toastDiv.find(".q-toast-title").text(title);
+  toastDiv.find(".q-toast-body").text(message);
+  if (time !== undefined) toastDiv.find(".q-toast-time").text(time);
+  toastDiv.appendTo(template.parent());
+  var toast = new bootstrap.Toast(toastDiv);
+  toast.show();
+}
+
+function downloadLogs(jobRunId) {
+  var logs = $("#" + jobRunId.replaceAll(".", "\\.")).find("pre").text();
+  var filename = "logs-" + jobRunId + ".log";
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(logs));
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
