@@ -327,9 +327,14 @@ def run():
             logger.info(f"Created Job: {job.id}")
             job_run = job.run()
             logger.info(f"Created Job Run: {job_run.id}")
+            job_id = job.id
         else:
-            opctl_run(workflow)
-        return jsonify({})
+            info = opctl_run(workflow)
+            job_id = info[0].id
+
+        return jsonify({
+            "job": job_id,
+        })
     except Exception as ex:
         traceback.print_exc()
         abort(400, str(ex))
