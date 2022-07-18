@@ -34,7 +34,7 @@ function initComponents(compartmentId, projectId) {
   });
 }
 
-function updateLogs(ocid, outputDiv) {
+function updateLogs(ocid, outputDiv, stopped) {
   // console.log("Getting logs for " + ocid);
   // Get the most recent logs of each job
   $.getJSON("/logs/" + ocid, function (data) {
@@ -53,11 +53,13 @@ function updateLogs(ocid, outputDiv) {
     } else {
       statusDetailsText.text(data.status);
     }
+    // If stopped is set to true, no further update will be performed.
+    if (stopped === true) return;
 
     if (data.stopped !== true) {
       // Job is running
       setTimeout(function () {
-        updateLogs(ocid, outputDiv)
+        updateLogs(ocid, outputDiv);
       }, LOG_CHECKING_INTERVAL);
       setCardStyle(parent, "border-primary");
       statusText.addClass("text-primary");
@@ -73,6 +75,11 @@ function updateLogs(ocid, outputDiv) {
         statusText.addClass("text-danger");
         parent.find(".card-header").addClass("bg-danger text-danger bg-opacity-10");
       }
+      // When job run is stop, there might be logs still being processed by the OCI logging service
+      // Here we check the logs one last time after some interval hoping we can get all the logs.
+      setTimeout(function () {
+        updateLogs(ocid, outputDiv, true);
+      }, LOG_CHECKING_INTERVAL);
     }
   })
 }

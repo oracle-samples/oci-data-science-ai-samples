@@ -12,7 +12,8 @@ from ads.common.oci_datascience import OCIDataScienceMixin
 from ads.common.oci_resource import OCIResource
 from ads.jobs import DataScienceJobRun, Job
 from ads.opctl.cmds import run as opctl_run
-from flask import Flask, abort, jsonify, render_template, request
+from flask import Flask, request, abort, jsonify, render_template
+
 
 # Config logging
 LOG_LEVEL = os.environ.get("LOG_LEVEL", logging.DEBUG)
@@ -264,14 +265,13 @@ def list_projects(compartment_id):
 
 
 def format_logs(logs):
-    logs = sorted(logs, key=lambda x: x["time"] if x["time"] else "")
     for log in logs:
         if str(log["time"]).endswith("Z"):
             log["time"] = log["time"].split(".")[0].replace("T", " ")
         else:
             log["time"] = str(log["time"])
-    logs = [log["time"] + " " + log["message"] for log in logs]
-
+    logs = sorted(logs, key=lambda x: x["time"] if x["time"] else "")
+    logs = [str(log["time"]) + " " + log["message"] for log in logs]
     return logs
 
 
@@ -283,7 +283,7 @@ def get_logs(job_run_ocid):
     if not run.log_id:
         logs = []
     else:
-        logs = run.logs(limit=300)
+        logs = run.logs()
         logs = format_logs(logs)
     logger.debug(f"{job_run_ocid} - {len(logs)} log messages.")
     context = {
