@@ -5,6 +5,7 @@ import traceback
 import urllib.parse
 
 import ads
+import fsspec
 import oci
 import requests
 import yaml
@@ -316,6 +317,33 @@ def delete_job(job_ocid):
 def download_from_url(url):
     res = requests.get(url)
     return res.content
+
+
+def load_yaml_list(uri):
+    yaml_files = []
+    for filename in os.listdir(uri):
+        if filename.endswith(".yaml") or filename.endswith(".yml"):
+            yaml_files.append({
+                "filename": filename
+            })
+    return {
+        "yaml": yaml_files
+    }
+
+
+@app.route("/yaml")
+@app.route("/yaml/<filename>")
+def load_yaml(filename=None):
+    yaml_dir = os.path.join(os.path.dirname(__file__), "yaml")
+    if not filename:
+        return jsonify(load_yaml_list(yaml_dir))
+    with open(os.path.join(yaml_dir, filename)) as f:
+        content = f.read()
+    return jsonify({
+        "filename": filename,
+        "content": content
+    })
+
 
 
 @app.route("/run", methods=["POST"])
