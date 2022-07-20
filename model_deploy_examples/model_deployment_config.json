@@ -1,0 +1,15 @@
+{
+    "compartment_id": "",
+    "project_id": "",
+    "model_id": "",
+    "deployment_name": "",
+    "model_name": "",
+    "instance_shape_name": "VM.Standard2.1",
+    "instance_count": "1",
+    "bandwidth_mbps": "10",
+    "log_group_id": "",
+    "access_log_id": "",
+    "predict_log_id": "",
+    "model_deployment_id": "",
+    "model_deployment_url": ""
+}
