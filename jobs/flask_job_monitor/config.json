@@ -1,4 +1,4 @@
 {
     "version": 1,
-    "yaml": ["./yaml"]
+    "yaml_dir": "./yaml"
 }

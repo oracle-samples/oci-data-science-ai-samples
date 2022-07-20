@@ -16,7 +16,7 @@
           <label for="templates" class="col-sm-2 col-form-label">YAML</label>
           <div class="col-sm-8">
             <select class="form-control" name="templates" id="yaml-selector">
-              <option value="" selected="selected">--- Select YAML to Load ---</option>
+              <option value="" selected="selected">--- To load YAML files, set yaml_dir in config.json and restart the app ---</option>
             </select>
           </div>
           <div class="col-sm-2">
@@ -41,8 +41,8 @@
         function loadYamlList() {
           $.get("/yaml", function(data){
             var yamlSelector = $("#yaml-selector");
-            yamlSelector.empty('<option value="" selected="selected">--- Select YAML to Load ---</option>');
-            yamlSelector.append()
+            yamlSelector.empty();
+            yamlSelector.append('<option value="" selected="selected">--- Select YAML to Load ---</option>');
             data.yaml.forEach(element => {
               yamlSelector.append('<option value="' + element.filename + '">' + element.filename + '</option>');
             });
