@@ -1,18 +1,39 @@
+import logging
 import os
 import re
+import traceback
+import urllib.parse
+
 import ads
+import fsspec
 import oci
 import requests
-
-from flask import Flask, render_template, jsonify, abort, request
-from ads.common.oci_resource import OCIResource
+import yaml
 from ads.common.oci_datascience import OCIDataScienceMixin
-from ads.jobs import Job, DataScienceJobRun
+from ads.common.oci_resource import OCIResource
+from ads.jobs import DataScienceJobRun, Job
+from ads.opctl.cmds import run as opctl_run
+from flask import Flask, request, abort, jsonify, render_template
 
 
+# Config logging
+LOG_LEVEL = os.environ.get("LOG_LEVEL", logging.DEBUG)
+flask_log = logging.getLogger('werkzeug')
+flask_log.setLevel(LOG_LEVEL)
+logging.lastResort.setLevel(LOG_LEVEL)
+logging.getLogger("telemetry").setLevel(LOG_LEVEL)
+logger = logging.getLogger(__name__)
+logger.setLevel(LOG_LEVEL)
+
+
+# API key config
 OCI_KEY_CONFIG_LOCATION = os.environ.get("OCI_KEY_LOCATION", "~/.oci/config")
 OCI_KEY_PROFILE_NAME = os.environ.get("OCI_KEY_PROFILE", "DEFAULT")
-app = Flask(__name__, template_folder=os.path.dirname(__file__))
+if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
+    logger.info(f"Using OCI API Key config: {OCI_KEY_CONFIG_LOCATION}")
+    logger.info(f"Using OCI API Key profile: {OCI_KEY_PROFILE_NAME}")
+# Flask templates location
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), "templates"))
 
 
 def instance_principal_available():
@@ -124,11 +145,26 @@ def init_components(compartment_id, project_id):
 
     auth = get_authentication()
     if auth["config"]:
-        tenancy_id = auth["config"]["tenancy"]
+        if "override_tenancy" in auth["config"]:
+            tenancy_id = auth["config"]["override_tenancy"]
+        else:
+            tenancy_id = auth["config"]["tenancy"]
     else:
         tenancy_id = auth["signer"].tenancy_id
-
-    compartments = oci.identity.IdentityClient(**auth).list_compartments(compartment_id=tenancy_id).data
+    logger.debug(f"Tenancy ID: {tenancy_id}")
+    try:
+        client = oci.identity.IdentityClient(**auth)
+        compartments = oci.pagination.list_call_get_all_results(
+            client.list_compartments,
+            compartment_id=tenancy_id,
+            compartment_id_in_subtree=True,
+            access_level="ANY"
+        ).data
+        root_compartment = client.get_compartment(tenancy_id).data
+        compartments.insert(0, root_compartment)
+    except Exception as ex:
+        traceback.print_exc()
+        abort(400, str(ex))
     context = dict(
         compartment_id=compartment_id,
         project_id=project_id,
@@ -208,11 +244,18 @@ def list_job_runs(job_id):
 @app.route("/projects/<compartment_id>")
 def list_projects(compartment_id):
     endpoint = check_endpoint()
-    projects = oci.data_science.DataScienceClient(
+    logger.debug(f"Getting projects in compartment {compartment_id}")
+    ds_client = oci.data_science.DataScienceClient(
         service_endpoint=endpoint,
         **get_authentication()
-    ).list_projects(compartment_id=compartment_id).data
-    projects = sorted(projects, key=lambda x: x.display_name)
+    )
+    projects = oci.pagination.list_call_get_all_results(
+        ds_client.list_projects,
+        compartment_id=compartment_id,
+        sort_by="displayName"
+    ).data
+    # projects = sorted(projects, key=lambda x: x.display_name)
+    logger.debug(f"{len(projects)} projects")
     context = {
         "compartment_id": compartment_id,
         "projects": [
@@ -223,27 +266,27 @@ def list_projects(compartment_id):
 
 
 def format_logs(logs):
-    logs = sorted(logs, key=lambda x: x["time"] if x["time"] else "")
     for log in logs:
         if str(log["time"]).endswith("Z"):
             log["time"] = log["time"].split(".")[0].replace("T", " ")
         else:
             log["time"] = str(log["time"])
-    logs = [log["time"] + " " + log["message"] for log in logs]
-    print(f"{len(logs)} log messages.")
+    logs = sorted(logs, key=lambda x: x["time"] if x["time"] else "")
+    logs = [str(log["time"]) + " " + log["message"] for log in logs]
     return logs
 
 
 @app.route("/logs/<job_run_ocid>")
 def get_logs(job_run_ocid):
-    print(f"Getting logs for {job_run_ocid}...")
+    logger.debug(f"Getting logs for {job_run_ocid}...")
     run = DataScienceJobRun.from_ocid(job_run_ocid)
-    print(f"Status: {run.lifecycle_state} - {run.lifecycle_details}")
+    logger.debug(f"Job Run Status: {run.lifecycle_state} - {run.lifecycle_details}")
     if not run.log_id:
         logs = []
     else:
-        logs = run.logs(limit=300)
+        logs = run.logs()
         logs = format_logs(logs)
+    logger.debug(f"{job_run_ocid} - {len(logs)} log messages.")
     context = {
         "ocid": job_run_ocid,
         "logs": logs,
@@ -263,7 +306,67 @@ def delete_job(job_ocid):
         error = None
     except oci.exceptions.ServiceError as ex:
         error = ex.message
+    logger.info(f"Deleted Job: {job_ocid}")
     return jsonify({
         "ocid": job_ocid,
         "error": error
     })
+
+
+@app.route("/download/url/<path:url>")
+def download_from_url(url):
+    res = requests.get(url)
+    return res.content
+
+
+def load_yaml_list(uri):
+    yaml_files = []
+    for filename in os.listdir(uri):
+        if filename.endswith(".yaml") or filename.endswith(".yml"):
+            yaml_files.append({
+                "filename": filename
+            })
+    return {
+        "yaml": yaml_files
+    }
+
+
+@app.route("/yaml")
+@app.route("/yaml/<filename>")
+def load_yaml(filename=None):
+    yaml_dir = os.path.join(os.path.dirname(__file__), "yaml")
+    if not filename:
+        return jsonify(load_yaml_list(yaml_dir))
+    with open(os.path.join(yaml_dir, filename)) as f:
+        content = f.read()
+    return jsonify({
+        "filename": filename,
+        "content": content
+    })
+
+
+
+@app.route("/run", methods=["POST"])
+def run():
+    try:
+        workflow = yaml.safe_load(urllib.parse.unquote(request.data[5:].decode()))
+
+        if workflow.get("kind") == "job":
+            job = Job.from_dict(workflow)
+            job.create()
+            logger.info(f"Created Job: {job.id}")
+            job_run = job.run()
+            logger.info(f"Created Job Run: {job_run.id}")
+            job_id = job.id
+        else:
+            info = opctl_run(workflow)
+            job_id = info[0].id
+
+        return jsonify({
+            "job": job_id,
+        })
+    except Exception as ex:
+        traceback.print_exc()
+        abort(400, str(ex))
+
+
