@@ -6,7 +6,17 @@ This job monitor is a Python Flask app build on top of [Oracle ADS](https://docs
 
 ![Job Monitor UI](assets/images/job_monitor.png)
 
-User can also see the job definition in YAML, delete the job, and more.
+Features:
+* See the status of recent job runs in your project in a single page.
+* See logs of each job run with auto-refresh.
+    * Logs are rendered with ANSI color code.
+    * Support showing 1000+ log messages at the same time.
+    * Logs will be displayed separately even if multiple job runs using same log ID.
+    * See YAML representation of the job.
+* Download the logs of a job run in a text file.
+* Delete job and the corresponding runs.
+* Run a new job, including distributed training job, with YAML.
+
 
 ## How to run
 
