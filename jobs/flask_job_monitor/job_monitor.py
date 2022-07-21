@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import re
@@ -5,7 +6,6 @@ import traceback
 import urllib.parse
 
 import ads
-import fsspec
 import oci
 import requests
 import yaml
@@ -16,8 +16,20 @@ from ads.opctl.cmds import run as opctl_run
 from flask import Flask, request, abort, jsonify, render_template
 
 
+# Load config
+CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.json")
+if os.path.exists(CONFIG_FILE):
+    with open(CONFIG_FILE) as f:
+        config = json.load(f)
+else:
+    config = {}
+YAML_DIR = os.path.join(os.path.dirname(__file__), config.get("yaml_dir", None))
+
 # Config logging
-LOG_LEVEL = os.environ.get("LOG_LEVEL", logging.DEBUG)
+if "LOG_LEVEL" in os.environ and hasattr(logging, os.environ["LOG_LEVEL"]):
+    LOG_LEVEL = getattr(logging, os.environ["LOG_LEVEL"])
+else:
+    LOG_LEVEL = logging.INFO
 flask_log = logging.getLogger('werkzeug')
 flask_log.setLevel(LOG_LEVEL)
 logging.lastResort.setLevel(LOG_LEVEL)
@@ -321,6 +333,8 @@ def download_from_url(url):
 
 def load_yaml_list(uri):
     yaml_files = []
+    if not uri:
+        return {"yaml": yaml_files}
     for filename in os.listdir(uri):
         if filename.endswith(".yaml") or filename.endswith(".yml"):
             yaml_files.append({
@@ -334,10 +348,9 @@ def load_yaml_list(uri):
 @app.route("/yaml")
 @app.route("/yaml/<filename>")
 def load_yaml(filename=None):
-    yaml_dir = os.path.join(os.path.dirname(__file__), "yaml")
     if not filename:
-        return jsonify(load_yaml_list(yaml_dir))
-    with open(os.path.join(yaml_dir, filename)) as f:
+        return jsonify(load_yaml_list(YAML_DIR))
+    with open(os.path.join(YAML_DIR, filename)) as f:
         content = f.read()
     return jsonify({
         "filename": filename,
