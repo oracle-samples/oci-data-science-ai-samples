@@ -15,7 +15,6 @@ All files in the current directory is copied over to `/code` folder inside docke
 
 For example, you can have the following training Tensorflow script saved as `train.py`:
 
-script: link
 ```
 # Script adapted from https://github.com/horovod/horovod/blob/master/examples/elastic/tensorflow2/tensorflow2_keras_mnist_elastic.py
 
@@ -192,6 +191,11 @@ from torchvision import datasets, transforms
 import torch.utils.data.distributed
 import horovod.torch as hvd
 from torch.utils.tensorboard import SummaryWriter
+import warnings
+from ocifs import OCIFileSystem
+import ads
+
+warnings.filterwarnings("ignore")
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
@@ -217,6 +221,9 @@ parser.add_argument('--use-adasum', action='store_true', default=False,
                     help='use adasum algorithm to do reduction')
 parser.add_argument('--data-dir',
                     help='location of the training dataset in the local filesystem (will be downloaded if needed)')
+parser.add_argument('--data-bckt',
+                    help='location of the training dataset in an object storage bucket',
+                    default=None)
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
@@ -238,6 +245,14 @@ torch.set_num_threads(1)
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 data_dir = args.data_dir or './data'
+
+if args.data_bckt is not None:
+    print(f"downloading data from {args.data_bckt}")
+    ads.set_auth(os.environ.get("OCI_IAM_TYPE", "resource_principal"))
+    authinfo = ads.common.auth.default_signer()
+    oci_filesystem = OCIFileSystem(**authinfo)
+    oci_filesystem.download(args.data_bckt, data_dir, recursive=True)
+
 with FileLock(os.path.expanduser("~/.horovod_lock")):
     train_dataset = \
         datasets.MNIST(data_dir, train=True, download=True,
@@ -245,9 +260,8 @@ with FileLock(os.path.expanduser("~/.horovod_lock")):
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ]))
-# Horovod: use DistributedSampler to partition the training data.
-train_sampler = torch.utils.data.distributed.DistributedSampler(
-    train_dataset, num_replicas=hvd.size(), rank=hvd.rank())
+# Horovod: use ElasticSampler to partition the training data.
+train_sampler = hvd.elastic.ElasticSampler(train_dataset, shuffle=False)
 train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=args.batch_size, sampler=train_sampler, **kwargs)
 
@@ -262,6 +276,8 @@ test_sampler = torch.utils.data.distributed.DistributedSampler(
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.test_batch_size,
                                           sampler=test_sampler, **kwargs)
 
+# Sync artifacts?
+save_artifacts = hvd.rank() == 0 and os.environ.get("SYNC_ARTIFACTS") == "1"
 
 class Net(nn.Module):
     def __init__(self):
@@ -279,7 +295,7 @@ class Net(nn.Module):
         x = F.relu(self.fc1(x))
         x = F.dropout(x, training=self.training)
         x = self.fc2(x)
-        return F.log_softmax(x)
+        return F.log_softmax(x, dim=1)
 
 
 model = Net()
@@ -332,12 +348,12 @@ def train(state):
     artifacts_dir = os.environ.get("OCI__SYNC_DIR") + "/artifacts"
     chkpts_dir = os.path.join(artifacts_dir,"ckpts")
     logs_dir = os.path.join(artifacts_dir,"logs")
-    if hvd.rank() == 0:
+    if save_artifacts:
         print("creating dirs for checkpoints and logs")
         create_dir(chkpts_dir)
         create_dir(logs_dir)
 
-    writer = SummaryWriter(logs_dir) if hvd.rank() == 0 else None
+    writer = SummaryWriter(logs_dir) if save_artifacts else None
 
     for state.epoch in range(state.epoch, args.epochs + 1):
         train_loss = Metric('train_loss')
@@ -367,7 +383,7 @@ def train(state):
             state.commit()
         if writer:
            writer.add_scalar("Loss", train_loss.avg, state.epoch)
-        if hvd.rank() == 0:
+        if save_artifacts:
             chkpt_path = os.path.join(chkpts_dir,checkpoint_format.format(epoch=state.epoch + 1))
             chkpt = {
                 'model': state.model.state_dict(),
@@ -386,7 +402,7 @@ def test():
             data, target = data.cuda(), target.cuda()
         output = model(data)
         # sum up batch loss
-        test_loss += F.nll_loss(output, target, size_average=False).item()
+        test_loss += F.nll_loss(output, target, reduction='sum').item()
         # get the index of the max log-probability
         pred = output.data.max(1, keepdim=True)[1]
         test_accuracy += pred.eq(target.data.view_as(pred)).cpu().float().sum()
@@ -471,12 +487,13 @@ Before triggering the job run, you can test the docker image and verify the trai
 For a stand-alone docker run, start a docker container with ```bash``` entrypoint.
 
 ```
-docker run --rm -it --entrypoint bash $IMAGE_NAME:$TAG
+docker run --rm -it --privileged --entrypoint bash $IMAGE_NAME:$TAG
+
 ```
 Optionally, you can choose to mount oci keys and code directory to the docker container.  
 
 ```
-docker run --rm -it -v $HOME/.oci:/root/.oci -v $PWD:/code --entrypoint bash $IMAGE_NAME:$TAG
+docker run --rm -it --privileged -v $HOME/.oci:/root/.oci -v $PWD:/code --entrypoint bash $IMAGE_NAME:$TAG
 ```
 
 You have now a docker container and you are logged into it. Now test your training script with the following command.
@@ -582,9 +599,7 @@ Things to keep in mind:
 5. `OCI__WORK_DIR` can be a location in object storage or a local folder like `OCI__WORK_DIR: /work_dir`.
 6. In case you want to use a config_profile other than DEFAULT, please change it in `OCI_CONFIG_PROFILE` env variable.
 
-### 3. Create yaml file to define your cluster. Here is an example. 
-### Please refer to the [documentation](http://10.209.39.50:8000/user_guide/model_training/distributed_training/horovod/creating.html) for more details.
-
+### 3. Create yaml file to define your cluster. Here is an example.
 
 In this example, we bring up 2 worker nodes and 1 scheduler node. The training code to run is `train.py`. All code is assumed to be present inside `/code` directory within the container. Additionaly 
 you can also put any data files inside the same directory (and pass on the location ex '/code/data/**' as an argument to your training script).
