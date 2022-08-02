@@ -391,10 +391,12 @@ def load_yaml(filename=None):
 @app.route("/run", methods=["POST"])
 def run():
     auth = get_authentication()
-    from ads.opctl.cmds import run as opctl_run
-    # The following line is added for security reason.
+    # The following config check is added for security reason.
+    # When the app is started with resource principal or instance principal,
+    # this will restrict the app to only monitor job runs and status.
+    # Without the following restriction, anyone have access to the website could use it to run large workflow.
     if not auth["config"]:
-        abort(
+        abort_with_json_error(
             403,
             "Starting a workflow is only available when you launch the app locally with OCI API key."
         )
@@ -409,6 +411,8 @@ def run():
             logger.info(f"Created Job Run: {job_run.id}")
             job_id = job.id
         else:
+            # Running an opctl workflow require additional dependencies for ADS
+            from ads.opctl.cmds import run as opctl_run
             info = opctl_run(workflow)
             job_id = info[0].id
 
@@ -417,6 +421,4 @@ def run():
         })
     except Exception as ex:
         traceback.print_exc()
-        abort(400, str(ex))
-
-
+        abort_with_json_error(500, str(ex))
