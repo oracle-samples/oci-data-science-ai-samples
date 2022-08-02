@@ -221,7 +221,7 @@ def init_components(compartment_id, project_id):
 @app.route("/<compartment_id>/<project_id>")
 def job_monitor(compartment_id=None, project_id=None):
     if project_id == "favicon.ico":
-        abort(404)
+        redirect("https://www.oracle.com/favicon.ico")
 
     context = init_components(compartment_id, project_id)
     return render_template(
