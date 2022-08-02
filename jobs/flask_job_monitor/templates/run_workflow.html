@@ -97,7 +97,7 @@
               url: "/run",
               data: { yaml: editor.getValue() },
             }).fail(function(data) {
-              toastMessage("Error", data.error);
+              toastMessage("Error", data.responseJSON.error);
             }).done(function(data) {
               toastMessage(
                 "Job Created",
