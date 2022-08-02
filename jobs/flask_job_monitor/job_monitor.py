@@ -12,7 +12,6 @@ import yaml
 from ads.common.oci_datascience import OCIDataScienceMixin
 from ads.common.oci_resource import OCIResource
 from ads.jobs import DataScienceJobRun, Job
-from ads.opctl.cmds import run as opctl_run
 from flask import Flask, request, abort, jsonify, render_template
 
 
@@ -361,6 +360,14 @@ def load_yaml(filename=None):
 
 @app.route("/run", methods=["POST"])
 def run():
+    auth = get_authentication()
+    from ads.opctl.cmds import run as opctl_run
+    # The following line is added for security reason.
+    if not auth["config"]:
+        abort(
+            403,
+            "Starting a workflow is only available when you launch the app locally with OCI API key."
+        )
     try:
         workflow = yaml.safe_load(urllib.parse.unquote(request.data[5:].decode()))
 
