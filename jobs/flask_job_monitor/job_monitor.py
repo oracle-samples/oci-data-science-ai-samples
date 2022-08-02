@@ -12,7 +12,7 @@ import yaml
 from ads.common.oci_datascience import OCIDataScienceMixin
 from ads.common.oci_resource import OCIResource
 from ads.jobs import DataScienceJobRun, Job
-from flask import Flask, request, abort, jsonify, render_template
+from flask import Flask, request, abort, jsonify, render_template, make_response, redirect
 
 
 # Load config
@@ -45,6 +45,10 @@ if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
     logger.info(f"Using OCI API Key profile: {OCI_KEY_PROFILE_NAME}")
 # Flask templates location
 app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), "templates"))
+
+
+def abort_with_json_error(code, message):
+    abort(make_response(jsonify(error=message), code))
 
 
 def instance_principal_available():
@@ -108,16 +112,16 @@ else:
 
 def check_ocid(ocid):
     if not re.match(r'ocid[0-9].[a-z]+.oc[0-9].[a-z]{3}.[a-z0-9]+', ocid):
-        abort(404, f"Invalid OCID: {ocid}")
+        abort_with_json_error(404, f"Invalid OCID: {ocid}")
 
 def check_project_id(project_id):
     if not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
-        abort(404, f"Invalid Project OCID: {project_id}")
+        abort_with_json_error(404, f"Invalid Project OCID: {project_id}")
 
 
 def check_compartment_id(compartment_id):
     if not re.match(r'ocid[0-9].compartment.oc[0-9]..[a-z0-9]+', compartment_id):
-        abort(404, f"Invalid Compartment OCID: {compartment_id}")
+        abort_with_json_error(404, f"Invalid Compartment OCID: {compartment_id}")
 
 
 def check_compartment_project(compartment_id, project_id):
@@ -142,7 +146,7 @@ def check_endpoint():
 def check_limit():
     limit = request.args.get("limit", 10)
     if isinstance(limit, str) and not limit.isdigit():
-        abort(400, "limit parameter must be an integer.")
+        abort_with_json_error(400, "limit parameter must be an integer.")
     return limit
 
 def list_all_sub_compartments(client: oci.identity.IdentityClient, compartment_id):
