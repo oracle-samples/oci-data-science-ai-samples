@@ -145,6 +145,22 @@ def check_limit():
         abort(400, "limit parameter must be an integer.")
     return limit
 
+def list_all_sub_compartments(client: oci.identity.IdentityClient, compartment_id):
+    compartments = oci.pagination.list_call_get_all_results(
+        client.list_compartments,
+        compartment_id=compartment_id,
+        compartment_id_in_subtree=True,
+        access_level="ANY"
+    ).data
+    return compartments
+
+def list_all_child_compartments(client: oci.identity.IdentityClient, compartment_id):
+    compartments = oci.pagination.list_call_get_all_results(
+        client.list_compartments,
+        compartment_id=compartment_id,
+    ).data
+    return compartments
+
 def init_components(compartment_id, project_id):
     limit = request.args.get("limit", 10)
     endpoint = check_endpoint()
@@ -163,19 +179,29 @@ def init_components(compartment_id, project_id):
     else:
         tenancy_id = auth["signer"].tenancy_id
     logger.debug(f"Tenancy ID: {tenancy_id}")
+    client = oci.identity.IdentityClient(**auth)
+    compartments = []
+    # User may not have permissions to list compartment.
     try:
-        client = oci.identity.IdentityClient(**auth)
-        compartments = oci.pagination.list_call_get_all_results(
-            client.list_compartments,
-            compartment_id=tenancy_id,
-            compartment_id_in_subtree=True,
-            access_level="ANY"
-        ).data
+        compartments.extend(list_all_sub_compartments(client, compartment_id=tenancy_id))
+    except Exception as ex:
+        traceback.print_exc()
+        logger.error("ERROR: Unable to list all sub compartment in tenancy %s.", tenancy_id)
+        try:
+            compartments.append(list_all_child_compartments(client, compartment_id=tenancy_id))
+        except Exception as ex:
+            traceback.print_exc()
+            logger.error("ERROR: Unable to list all child compartment in tenancy %s.", tenancy_id)
+    try:
         root_compartment = client.get_compartment(tenancy_id).data
         compartments.insert(0, root_compartment)
     except Exception as ex:
         traceback.print_exc()
-        abort(400, str(ex))
+        logger.error("ERROR: Unable to get details of the root compartment %s.", tenancy_id)
+        compartments.insert(0, oci.identity.models.Compartment(
+            id=tenancy_id,
+            name=" ** Root - Name N/A **"
+        ))
     context = dict(
         compartment_id=compartment_id,
         project_id=project_id,
