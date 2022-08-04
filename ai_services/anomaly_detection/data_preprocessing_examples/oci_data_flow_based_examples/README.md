@@ -30,7 +30,7 @@ Allow service dataflow to read objects in compartment compartment_name where tar
 ## Create an OCI Data Flow Application for Preprocessing
 
 Download the PySpark code sample for the preprocessing task you need, and upload it to object storage.
-
+Most samples expect CSV files as input. If you have data in ATP/ADW or in Parquet format, use the provided scripts to convert to CSV.
 
 1. [DF: Feature Normalization](feature_normalization.md)
 2. [DF: Fixed Window Batching](Fixed_window_batching.md)
@@ -45,7 +45,7 @@ Download the PySpark code sample for the preprocessing task you need, and upload
 11. [DF: String Replacement](string_replacement.md)
 12. [DF: Temporal Differencing](temporal_differencing.md)
 13. [DF: One-hot encoding](one_hot_encoding.md)
-
+14. [DF: Parquet to CSV](parquet_to_csv.md)
 
 Upload your data files to Object Storage using the same process, and keep track of the path to the data.
 
