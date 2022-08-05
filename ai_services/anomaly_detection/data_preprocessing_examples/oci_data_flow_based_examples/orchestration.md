@@ -63,6 +63,9 @@ This doc is to show how to setup OCI Events and Functions to make them work in s
     ```
 
     e. Data Flow
+    ```
+    Allow service dataflow to read objects in compartment <compartment> where target.bucket.name='<bucket-name>'
+    ```
     
     See [this guide](./README.md).
 

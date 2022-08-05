@@ -27,8 +27,20 @@ def spark_pivoting(df, **kwargs):
         agg: a dictionary
             where key = <column name> and value = <aggregation function>
     """
-    return df.groupBy(kwargs["groupby"]).pivot(
-        kwargs["pivot"]).agg(kwargs["agg"])
+    groupby = kwargs["groupby"]
+    if isinstance(groupby, str):
+        groupby = groupby.split()
+    agg = kwargs["agg"]
+    agg_ops = dict()
+
+    if isinstance(agg, str):
+        agg = agg.split()
+        for kv in agg:
+            key, value = kv.split(":")
+            agg_ops[key] = value
+
+    return df.groupBy(groupby).pivot(
+        kwargs["pivot"]).agg(agg_ops)
 
 
 if __name__ == "__main__":

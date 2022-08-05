@@ -24,8 +24,7 @@ def normalize_data(df, **kwargs):
     scaler_type = kwargs["norm"]
     columns = kwargs["columns"]
 
-    columns = columns[0].split(
-        " ") if len(columns) == 1 else columns
+    columns = columns.split()
     columns = (
         [col for col in df.columns if col not in {"id", "timestamp"}]
         if not columns

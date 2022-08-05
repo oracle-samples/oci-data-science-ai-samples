@@ -1,0 +1,132 @@
+{
+    "inputSources": [
+        {
+            "dataframeName": "S2",
+            "type": "oracle",
+            "adbId": "<OCID of ATP>",
+            "tableName": "DEMO_2ND",
+            "connectionId": "transactionprocessing_high",
+            "user":"admin",
+            "password": "<Password>"
+        },
+        {
+            "dataframeName": "S1",
+            "type": "oracle",
+            "adbId": "<OCID of ADW>",
+            "tableName": "DEMO_1ST",
+            "connectionId": "autonomousdatawarehouse_high",
+            "user":"admin",
+            "password": "<Password>"
+        },
+        {
+            "dataframeName": "S3",
+            "type": "object-storage",
+            "namespace":"<namespace>",
+            "bucket":"<bucket>",
+            "objectName": "demo-3rd.csv"
+        }
+    ],
+    "phaseInfo": {
+        "phase": "train",
+        "connector": {
+            "namespace":"ax3dvjxgkemg",
+            "bucket":"metadata-store",
+            "objectName": "metadata.json"
+        }
+    },
+    "processingSteps": [
+        {
+            "stepType": "singleDataFrameProcessing",
+            "configurations": {
+                "dataframeName": "S1",
+                "steps": [
+                    {
+                        "stepName": "remove_unnecessary_columns",
+                        "args": {
+                            "columns_to_remove":"pressure_100,pressure_101"
+                        }
+                    },
+                    {
+                        "stepName": "column_rename",
+                        "args": {
+                            "original_column": "time_stamp",
+                            "renamed_column": "timestamp"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "stepType": "singleDataFrameProcessing",
+            "configurations": {
+                "dataframeName": "S3",
+                "steps": [
+                    {
+                        "stepName": "string_transformation",
+                        "args": {
+                            "find_string": "ZZ",
+                            "replace_string": "Z",
+                            "column": "timestamp"
+                        }
+                    },
+                    {   "stepName": "one_hot_encoding",
+                        "args": {
+                            "category": "location"
+                        }
+                    },
+                    {
+                        "stepName": "remove_unnecessary_columns",
+                        "args": {
+                            "columns_to_remove":"is_Boston,is_Seattle,is_Sacramento"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "stepType": "combineDataFrames",
+            "configurations": {
+                "dataframeName": "J1",
+                "type":"join",
+                "joinConfiguration":{
+                    "left":"S1",
+                    "right":"S2",
+                    "column":"timestamp"
+                }
+            }
+        },
+        {
+            "stepType": "combineDataFrames",
+            "configurations": {
+                "dataframeName": "M1",
+                "type":"merge",
+                "mergeConfiguration":{
+                    "left":"J1",
+                    "right":"S3"
+                }
+            }
+        },
+        {
+            "stepType": "singleDataFrameProcessing",
+            "configurations": {
+                "dataframeName": "M1",
+                "steps": [
+                    {
+                        "stepName": "column_rename",
+                        "args": {
+                            "original_column": "timestamp",
+                            "renamed_column": "timestamp_in_utc"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputDestination": {
+        "combinedResult":"M1",
+        "type": "object-storage",
+        "namespace":"<namespace>",
+        "bucket": "<bucket>",
+        "folder": "<path_to_file>"
+    }
+}

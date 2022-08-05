@@ -27,13 +27,13 @@ def sharding(df, **kwargs):
     Return:
         partitions of the original dataframe in CSV format
     """
-    partition_size = int(kwargs["columnNum"])
+    partition_size = int(kwargs["columnNum"]) if "columnNum" in kwargs else 300
     output = kwargs["output"]
-    idcols = kwargs["idColumns"]
+    idcols = kwargs["idColumns"] if "idColumns" in kwargs else None
 
     sharding_dict = dict()
     column_names = df.columns
-    idcols = ["timestamp"] + idcols if idcols else ["timestamp"]
+    idcols = ["timestamp"] + idcols.split() if idcols else ["timestamp"]
     for col in idcols:
         if col not in column_names:
             raise ValueError(f"{col} column not found!")

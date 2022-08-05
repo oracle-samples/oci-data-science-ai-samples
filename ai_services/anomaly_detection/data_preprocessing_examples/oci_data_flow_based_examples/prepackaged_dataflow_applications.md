@@ -28,7 +28,9 @@ Run the `setup-archive.sh` under the current folder:
 (venv)$ ./setup-archive.sh
 ```
 
-Cool! Now you should have your package `archive.zip` generated under `dist/` folder. You are ready to use your package for writing application. The following is an example of utilizing [remove_unnecessary_columns](./example_code/remove_unnecessary_columns.py):
+Notice: there is a file called `requirements.txt`, which includes the dependencies we need. Other than self made code package, we also put `oci` and `pandas` in the list, since these are the libraries mostly used according to our experience. Feel free to add or delete libraries based on your own requirement.  
+
+Switch back and great! Now you should have your package `archive.zip` generated under `dist/` folder. You are ready to use your package for writing application. The following is an example of utilizing [remove_unnecessary_columns](./example_code/remove_unnecessary_columns.py):
 ```
 import argparse
 from pyspark.sql import SparkSession
