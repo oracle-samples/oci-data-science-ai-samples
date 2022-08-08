@@ -65,7 +65,7 @@ If you don't have one already, follow [these instructions](https://github.com/or
 
 
 # Creating the scaling function
-We'll use the [func.py](./func.py) file already available here. You can modify it to suit your needs. 
+We'll use the [func.py](./function/func.py) file already available here. You can modify it to suit your needs. 
 <details>
   <summary markdown="span">Expand to take a look at some of the main aspects in the code</summary>
 
@@ -370,7 +370,7 @@ Repeat the same steps for creating the CPU alarm, with these two differences:
 
 # Testing
 Now that the function is deployed and the alarms are in place, we can test them by simulating Alarm messages.
-Use the *test-alarm-scale-cpu-up.json* and *test-alarm-scale-mem-up.json* to simulate an alarm which invokes the function.
+Use the [*test-alarm-scale-cpu-up.json*](./test-alarm-scale-cpu-up.json) and [*test-alarm-scale-mem-up.json*](test-alarm-scale-mem-up.json) to simulate an alarm which invokes the function.
 You need to fill in your own information in the <YOUR_HIGH_CPU_ALARM_OCID> and <YOUR_MODEL_DEPLOYMENT_OCID> placeholders.
 Then, from the Cloud shell, invoke the function with the payload:
 ```
