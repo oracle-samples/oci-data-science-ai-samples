@@ -34,6 +34,14 @@
             "objectName": "metadata.json"
         }
     },
+    "serviceApiConfiguration": {
+        "anomalyDetection": {
+            "serviceEndpoint": null,
+            "profileName": "DEFAULT",
+            "projectId": "<project_id>",
+            "compartmentId": "<compartment_id>"
+        }
+    },
     "processingSteps": [
         {
             "stepType": "singleDataFrameProcessing",

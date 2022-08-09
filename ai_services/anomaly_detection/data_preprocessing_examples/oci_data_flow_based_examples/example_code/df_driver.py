@@ -22,7 +22,14 @@ from example_code.sharding import sharding
 from example_code.time_series_merge import time_series_merge
 from example_code.time_series_join import time_series_join
 
+from ai_services.anomaly_detection.data_preprocessing_examples. \
+    oci_data_flow_based_examples.example_code.ad_utils import AdUtils
+from ai_services.anomaly_detection.data_preprocessing_examples. \
+    oci_data_flow_based_examples.example_code.dataflow_utils import \
+    DataflowSession, get_spark_context, get_authenticated_client
+
 signer = oci.auth.signers.get_resource_principals_signer()
+dataflow_session = DataflowSession(app_name="DataFlow")
 data_flow_client = oci.data_flow.DataFlowClient(config={}, signer=signer)
 object_storage_client = \
     oci.object_storage.ObjectStorageClient(config={}, signer=signer)
@@ -33,30 +40,6 @@ MERGE = "merge"
 RESERVED_METADATA = ['distinct_categories']
 TRAINING = "applyAndFinalize"
 INFERENCING = "apply"
-
-
-def get_token_path(spark):
-    token_key = "spark.hadoop.fs.oci.client.auth.delegationTokenPath"
-    token_path = spark.sparkContext.getConf().get(token_key)
-    return token_path
-
-
-def get_authenticated_client(token_path, client):
-    if token_path is None:
-        # You are running locally, so use our API Key.
-        # TODO: read from local filesystem instead of obj storage in local mode
-        #       support optional profile name. Example: https://github.com/sudharkj/oci-data-science-ai-samples/commit/bedc36f312f3db5990f910d4c93e3b8561412d7a#diff-01004b5cf83417c2b0c1f208746048b2d4931e54ce5b7b55988ba76c285cd439R27-R33
-        config = oci.config.from_file()
-        authenticated_client = client(config)
-    else:
-        # You are running in Data Flow, so use our Delegation Token.
-        with open(token_path) as fd:
-            delegation_token = fd.read()
-        signer = oci.auth.signers.InstancePrincipalsDelegationTokenSigner(
-            delegation_token=delegation_token
-        )
-        authenticated_client = client(config={}, signer=signer)
-    return authenticated_client
 
 
 def get_object(object_storage_client, namespace, bucket, file):
@@ -180,6 +163,44 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, ge
 
         # writing metadata to metadata bucket during train
         if phase == TRAINING:
+            preprocessed_details = output_path.split('//')[1]
+            preprocessed_details = preprocessed_details.split('/')
+            bucket_details = preprocessed_details[0].split('@')
+
+            preprocessed_data_details = {
+                'namespace': bucket_details[1],
+                'bucket': bucket_details[0],
+                'prefix': preprocessed_details[1]
+            }
+
+            list_objects_response = object_storage_client.list_objects(
+                namespace_name=preprocessed_data_details['namespace'],
+                bucket_name=preprocessed_data_details['bucket'],
+                prefix=preprocessed_data_details['prefix'])
+            assert list_objects_response.status == 200, \
+                f'Error listing objects: {list_objects_response.text}'
+            objects_details = list_objects_response.data
+
+            model_ids = []
+            api_configuration = \
+                contents["serviceApiConfiguration"]["anomalyDetection"]
+            ad_utils = AdUtils(dataflow_session,
+                               api_configuration['profileName'],
+                               api_configuration['serviceEndpoint'])
+            data_asset_detail = preprocessed_data_details
+            data_asset_detail.pop('prefix')
+            for object_details in objects_details.objects:
+                if object_details.name.endswith('.csv'):
+                    data_asset_detail['object'] = object_details.name
+                    try:
+                        model_id = ad_utils.train(
+                            api_configuration['projectId'],
+                            api_configuration['compartmentId'],
+                            data_asset_detail)
+                        model_ids.append(model_id)
+                    except AssertionError as e:
+                        print(e)
+            metadata['model_ids'] = model_ids
             object_storage_client.put_object(
                 phaseInfo["connector"]["namespace"],
                 phaseInfo["connector"]["bucket"],
@@ -196,9 +217,9 @@ if __name__ == "__main__":
     parser.add_argument("--output_path", required=True)
     args = parser.parse_args()
 
-    spark = SparkSession.builder.appName("DataFlow").getOrCreate()
-    token_path = get_token_path(spark)
+    spark = get_spark_context(dataflow_session=dataflow_session)
     object_storage_client = get_authenticated_client(
-        token_path, oci.object_storage.ObjectStorageClient)
+        client=oci.object_storage.ObjectStorageClient,
+        dataflow_session=dataflow_session)
     parse_and_process_data_preprocessing_config(
         object_storage_client, spark, args.response, args.output_path)
