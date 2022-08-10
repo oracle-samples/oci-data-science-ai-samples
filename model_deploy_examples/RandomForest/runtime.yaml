@@ -1,24 +1,7 @@
 MODEL_ARTIFACT_VERSION: '3.0'
 MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
-    INFERENCE_ENV_PATH: oci://service_conda_packs@ociodscdev/service_pack/cpu/General
-      Machine Learning for CPUs/1.0/mlcpuv1
+    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.7/1.0/generalml_p37_cpu_v1
     INFERENCE_ENV_SLUG: mlcpuv1
     INFERENCE_ENV_TYPE: data_science
-    INFERENCE_PYTHON_VERSION: 3.6.11
-MODEL_PROVENANCE:
-  PROJECT_OCID: ocid1.datascienceproject.oc1.iad.amaaaaaav66vvniarsr5ukid3t7jk46dz6pdpjpjswa76bfb3zbm25d4jlkq
-  TENANCY_OCID: ocid1.tenancy.oc1..aaaaaaaahzy3x4boh7ipxyft2rowu2xeglvanlfewudbnueugsieyuojkldq
-  TRAINING_CODE:
-    ARTIFACT_DIRECTORY: /tmp/tmpuwhyck1e
-  TRAINING_COMPARTMENT_OCID: ocid1.compartment.oc1..aaaaaaaapvb3hearqum6wjvlcpzm5ptfxqa7xfftpth4h72xx46ygavkqteq
-  TRAINING_CONDA_ENV:
-    TRAINING_ENV_PATH: oci://service-conda-packs@id1ytzpctjnn/service_pack/cpu/General
-      Machine Learning for CPUs/1.0/mlcpuv1
-    TRAINING_ENV_SLUG: mlcpuv1
-    TRAINING_ENV_TYPE: data_science
-    TRAINING_PYTHON_VERSION: 3.6.11
-  TRAINING_REGION: us-ashburn-1
-  TRAINING_RESOURCE_OCID: ocid1.datasciencenotebooksessionint.oc1.iad.amaaaaaav66vvniaz3p6ivyrvaosuvqkrak3nsxxmwk3galhvmps5fpzmlfa
-  USER_OCID: ocid1.user.oc1..aaaaaaaamrmp6wwdkphl25tpmbfrklu3w3hvcahy5mq524tayrmocpcvdc4a
-  VM_IMAGE_INTERNAL_ID: NB495-DC191-VMP36-VMA233-JL1.2.3
+    INFERENCE_PYTHON_VERSION: 3.7
