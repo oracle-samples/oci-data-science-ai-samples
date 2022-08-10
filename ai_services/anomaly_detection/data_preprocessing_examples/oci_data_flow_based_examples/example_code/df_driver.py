@@ -283,8 +283,6 @@ if __name__ == "__main__":
             phaseInfo["connector"]["objectName"],
             json.dumps(result))
     elif args.phase == "apply":
-    # compartment_id = "ocid1.compartment.oc1..aaaaaaaabunvwyrhipu5nm7unj3buggkfuyogspduvphh3fjd7zqq4hjkpja",
-    # model_id = "ocid1.aianomalydetectionproject.oc1.phx.amaaaaaaor7l3jiamew3zpiqijsrtnzbtny6d7kq6jmrsnu44tq4vqer4srq",
         ad_utils.infer(compartment_id=args.compartment_id,
                        model_id=args.model_id,
                        namespace=args.namespace,
