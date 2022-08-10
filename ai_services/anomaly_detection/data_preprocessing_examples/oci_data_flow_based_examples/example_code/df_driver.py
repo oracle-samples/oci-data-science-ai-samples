@@ -47,20 +47,17 @@ def get_object(object_storage_client, namespace, bucket, file):
     return get_resp.data.text
 
 
-def parse_and_process_data_preprocessing_config(object_storage_client, spark, get_resp, phase):
+def parse_and_process_data_preprocessing_config(object_storage_client, spark, contents, phase):
     """
     Data Preprocessing Operation
     Args:
         object_storage_client: the object storage client for communicating with object storage
         spark: entry point for spark application
-        get_resp: the parsed response from config json
+        contents: the parsed response from config json
         phase: the phase info referring training or inferencing
-        staging_path: the destination of storing processed csv file(s)
-        output_path: the destination of storing finalized output like model information
     """
     dfs = dict()
     try:
-        contents = json.loads(get_resp)
         '''
         Deal with input sources
         '''
@@ -97,7 +94,6 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, ge
         metadata = dict()
         sharding_dict = list()
         phaseInfo = contents["phaseInfo"]
-        finalized_output_info = contents["outputDestination"]
         staging_namespace = contents["stagingDestination"]["namespace"]
         staging_bucket = contents["stagingDestination"]["bucket"]
         staging_folder = contents["stagingDestination"]["folder"]
@@ -121,7 +117,8 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, ge
                     # Usually one_hot_encoding will be conducted after merge and joining if multiple datasets involves
                     # TODO: for both cases, we need to add UNKNOWN category if it doesn't exist in training data
                     if func_name == "one_hot_encoding":
-                        # if it's training, we will put all the distinct categories of the specific column to metadata for later usage
+                        # if it's training, we will put all the distinct categories of the specific column
+                        # to metadata for later usage
                         if phase == TRAINING:
                             distinct_categories, dfs[step_config["configurations"]["dataframeName"]] = \
                                 eval(func_name)(dfs[step_config["configurations"]["dataframeName"]], **step["args"])
@@ -173,9 +170,6 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, ge
                         time_series_merge(left, right)
 
         # prepare the staging file path
-        # preprocessed_details = staging_path.split('//')[1]
-        # preprocessed_details = preprocessed_details.split('/')
-        # bucket_details = preprocessed_details[0].split('@')
         staging_namespace = contents["stagingDestination"]["namespace"]
         staging_bucket = contents["stagingDestination"]["bucket"]
         staging_folder = contents["stagingDestination"]["folder"]
@@ -183,20 +177,18 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, ge
 
         # writing it to output destination
         if (len(sharding_dict) == 0):
-            final_df = dfs[contents[
-                "stagingDestination"]["combinedResult"]]
+            final_df = dfs[contents["stagingDestination"]["combinedResult"]]
             final_df.coalesce(1).write.csv(staging_path, header=True)
-            preprocessed_data_prefix_to_column[
-                staging_folder] = final_df.columns
+            preprocessed_data_prefix_to_column[staging_folder] = final_df.columns
         else:
             # Sharded dfs
             idx = 0
             for df in sharding_dict:
                 final_df = dfs[df]
                 final_df.coalesce(1).write.csv(
-                    staging_path+str(idx), header=True)
+                    staging_path + str(idx), header=True)
                 preprocessed_data_prefix_to_column[
-                    staging_folder+str(idx)] = final_df.columns
+                    staging_folder + str(idx)] = final_df.columns
                 idx += 1
 
         output_processed_data_info = list()
@@ -237,32 +229,14 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, ge
                         "bucket": staging_bucket,
                         "columns": columns
                     })
-                    try:
-                        model_id = ad_utils.train(
-                            api_configuration['projectId'],
-                            api_configuration['compartmentId'],
-                            data_asset_detail)
-                        model_ids.append({
-                            "model_id": model_id,
-                            "columns": columns
-                        })
-                    except AssertionError as e:
-                        print(e)
 
             object_storage_client.put_object(
                 phaseInfo["connector"]["namespace"],
                 phaseInfo["connector"]["bucket"],
                 phaseInfo["connector"]["objectName"],
                 json.dumps(metadata))
-
-            object_storage_client.put_object(
-                finalized_output_info["namespace"],
-                finalized_output_info["bucket"],
-                finalized_output_info["objectName"],
-                json.dumps(model_ids)
-            )
-
         return output_processed_data_info
+
     except Exception as e:
         raise Exception(e)
 
@@ -276,7 +250,44 @@ if __name__ == "__main__":
     spark = get_spark_context(dataflow_session=dataflow_session)
 
     object_storage_client = get_authenticated_client(
-        client=oci.object_storage.ObjectStorageClient,
+        oci.object_storage.ObjectStorageClient,
         dataflow_session=dataflow_session)
-    parse_and_process_data_preprocessing_config(
-        object_storage_client, spark, args.response, args.phase)
+    config = json.loads(args.response)
+    staging_info = parse_and_process_data_preprocessing_config(
+        object_storage_client, spark, config, args.staging_path)
+
+    model_ids = []
+    api_configuration = \
+        config["serviceApiConfiguration"]["anomalyDetection"]
+    ad_utils = AdUtils(dataflow_session,
+                       api_configuration['profileName'],
+                       api_configuration['serviceEndpoint'])
+    if args.phase == "applyAndFinalize":
+        result = {}
+        for data_asset_detail in staging_info:
+            try:
+                model_id = ad_utils.train(
+                    api_configuration['projectId'],
+                    api_configuration['compartmentId'],
+                    data_asset_detail)
+                model_ids.append({
+                    "model_id": model_id,
+                    "columns": data_asset_detail["columns"]})
+            except AssertionError as e:
+                print(e)
+        result['model_ids'] = model_ids
+        phaseInfo = config["phaseInfo"]
+        object_storage_client.put_object(
+            phaseInfo["connector"]["namespace"],
+            phaseInfo["connector"]["bucket"],
+            phaseInfo["connector"]["objectName"],
+            json.dumps(result))
+    elif args.phase == "apply":
+    # compartment_id = "ocid1.compartment.oc1..aaaaaaaabunvwyrhipu5nm7unj3buggkfuyogspduvphh3fjd7zqq4hjkpja",
+    # model_id = "ocid1.aianomalydetectionproject.oc1.phx.amaaaaaaor7l3jiamew3zpiqijsrtnzbtny6d7kq6jmrsnu44tq4vqer4srq",
+        ad_utils.infer(compartment_id=args.compartment_id,
+                       model_id=args.model_id,
+                       namespace=args.namespace,
+                       input_bucket=args.staging_path,
+                       input_object=staging_info.objects[0].name,
+                       output_location=args.output_path)
