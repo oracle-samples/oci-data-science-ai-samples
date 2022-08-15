@@ -32,6 +32,7 @@ def spark_pivoting(df, **kwargs):
         groupby = groupby.split()
     agg = kwargs["agg"]
     agg_ops = dict()
+    distinct_column_values = kwargs.get('distinct_column_values', None)
 
     if isinstance(agg, str):
         agg = agg.split()
@@ -39,8 +40,10 @@ def spark_pivoting(df, **kwargs):
             key, value = kv.split(":")
             agg_ops[key] = value
 
-    return df.groupBy(groupby).pivot(
-        kwargs["pivot"]).agg(agg_ops)
+    distinct_column = df.select(kwargs['pivot']).distinct().collect()
+    pivot_res = df.groupBy(groupby).pivot(
+        kwargs['pivot'], distinct_column_values).agg(agg_ops)
+    return distinct_column, pivot_res
 
 
 if __name__ == "__main__":
@@ -67,7 +70,7 @@ if __name__ == "__main__":
     if "timestamp" not in df.columns:
         raise ValueError("timestamp column not found!")
 
-    df_pivot = spark_pivoting(df, **vars(args))
+    _, df_pivot = spark_pivoting(df, **vars(args))
 
     if args.coalesce:
         df_pivot.coalesce(1).write.csv(args.output, header=True)

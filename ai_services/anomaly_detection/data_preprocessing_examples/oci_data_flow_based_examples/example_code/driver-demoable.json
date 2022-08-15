@@ -27,19 +27,11 @@
         }
     ],
     "phaseInfo": {
-        "phase": "train",
+        "phase": "applyAndFinalize",
         "connector": {
             "namespace":"ax3dvjxgkemg",
             "bucket":"metadata-store",
             "objectName": "metadata.json"
-        }
-    },
-    "serviceApiConfiguration": {
-        "anomalyDetection": {
-            "serviceEndpoint": null,
-            "profileName": "DEFAULT",
-            "projectId": "<project_id>",
-            "compartmentId": "<compartment_id>"
         }
     },
     "processingSteps": [
@@ -130,11 +122,25 @@
             }
         }
     ],
-    "outputDestination": {
+    "stagingDestination": {
         "combinedResult":"M1",
         "type": "object-storage",
         "namespace":"<namespace>",
         "bucket": "<bucket>",
         "folder": "<path_to_file>"
+    }, 
+    "outputDestination": {
+        "type": "object-storage",
+        "namespace":"<namespace>",
+        "bucket": "<bucket>",
+        "folder": "<path_to_file>"
+    },
+    "serviceApiConfiguration": {
+        "anomalyDetection": {
+            "serviceEndpoint": null,
+            "profileName": "DEFAULT",
+            "projectId": "<project_id>",
+            "compartmentId": "<compartment_id>"
+        }
     }
 }

@@ -6,8 +6,7 @@ from oci.ai_anomaly_detection.models import CreateModelDetails, \
     ModelTrainingDetails, CreateDataAssetDetails, \
     DataSourceDetailsObjectStorage
 
-from ai_services.anomaly_detection.data_preprocessing_examples. \
-    oci_data_flow_based_examples.example_code.dataflow_utils import \
+from example_code.dataflow_utils import \
     get_authenticated_client, DEFAULT_PROFILE, DEFAULT_LOCATION, \
     DataflowSession
 
