@@ -29,11 +29,11 @@ In this lab you will:
 * Leanr how to run a notebook in a conda environment kernel
 
 ### Prerequisites
-* You have successfully completed labs 0 and 1. 
+* You have successfully completed labs 0 and 1.
 
 ## **STEP 1:** Open a Notebook Session
 
-1. Click on the notebook session you created during Lab 1 or Lab 0. 
+1. Click on the notebook session you created during Lab 1 or Lab 0.
 
 1. CLick on **Open**. It will open in a separate browser tab. If prompted to sign-in, provide your Oracle Cloud credentials.
     ![](./images/ns-open.png)
@@ -47,9 +47,9 @@ There is a menu across the top of the screen. For this lab, the most interesting
 
 ## **STEP 2:** Installing Your First Conda Environment
 
-The Environment Explorer is an extension in JupyterLab that provides an interface to manage the lifecycle of conda environments. A Conda Environment is a collection of libraries, programs, components and metadata. Think of them as halfway between a Python virtual environment and a Docker image. In the notebook session you can install a series of [pre-built conda environments (Data Science Environments)](https://docs.oracle.com/en-us/iaas/data-science/using/conda_environ_list.htm) or [create](https://docs.oracle.com/en-us/iaas/data-science/using/conda_create_conda_env.htm) and [publish your own conda environments](https://docs.oracle.com/en-us/iaas/data-science/using/conda_publishs_object.htm) from a notebook session. Published conda environments are the ones that you create or modify and want to share among team members or reuse in Jobs or Model Deployments. In addition to the Environment Explorer, the notebook session also comes with the `odsc conda` CLI. The `odsc` CLI lets you manage the lifecycle of conda environments. 
+The Environment Explorer is an extension in JupyterLab that provides an interface to manage the lifecycle of conda environments. A Conda Environment is a collection of libraries, programs, components and metadata. Think of them as halfway between a Python virtual environment and a Docker image. In the notebook session you can install a series of [pre-built conda environments (Data Science Environments)](https://docs.oracle.com/en-us/iaas/data-science/using/conda_environ_list.htm) or [create](https://docs.oracle.com/en-us/iaas/data-science/using/conda_create_conda_env.htm) and [publish your own conda environments](https://docs.oracle.com/en-us/iaas/data-science/using/conda_publishs_object.htm) from a notebook session. Published conda environments are the ones that you create or modify and want to share among team members or reuse in Jobs or Model Deployments. In addition to the Environment Explorer, the notebook session also comes with the `odsc conda` CLI. The `odsc` CLI lets you manage the lifecycle of conda environments.
 
-Before you can use a conda environment in your notebook session, you need to install it first. You will install a pre-built Data Science Conda Environment. 
+Before you can use a conda environment in your notebook session, you need to install it first. You will install a pre-built Data Science Conda Environment.
 
   1. In the *Launcher* tab, click **Environment Explorer**
     ![](./images/notebook_launcher.png)
@@ -57,26 +57,26 @@ Before you can use a conda environment in your notebook session, you need to ins
   1. In the Environment Explorer tab, select the **Data Science Conda Environment** filter button, select **CPU** architecture filter, then scroll down until you find the **TensorFlow 2.7 for CPU on Python 3.7** conda. (If you see no results, use the refresh button on the right side of the filter bar of the Environment Explorer.)
     ![](./images/select-tf-env.png)
 
-  1. Click on the caret on the right side, copy the install command 
+  1. Click on the caret on the right side, copy the install command
     ![](./images/copy-install-tf-env-command.png)
 
   1. Go back to the *Launcher* tab and select **Terminal** to open a terminal window.
 
-  1. **Paste the command** into the terminal window and hit **Return** to execute it. 
+  1. **Paste the command** into the terminal window and hit **Return** to execute it.
      The command that you previously copied is:  
       ```
-      odsc conda install -s tensorflow27_p37_cpu_v1 
+      odsc conda install -s tensorflow27_p37_cpu_v1
       ```
 
   1. You will receive a prompt related to what version number you want. Press `Enter` to select the default.
-  
+
   ![](./images/install-in-progress.png)
 
 It takes about 3-5 minutes for the conda package to be installed.
 
 ## **STEP 3** Confirm that the Conda Environment is Installed
 
-You can confirm that the conda environment has been successfully installed by going back to the launcher tab and see that a new kernel has been create with the slugname of the conda environment: 
+You can confirm that the conda environment has been successfully installed by going back to the launcher tab and see that a new kernel has been create with the slugname of the conda environment:
  ![](./images/confirm-success-condas.png)
 
 **Congratulations! You can proceed to the next lab.**
@@ -87,5 +87,3 @@ You can confirm that the conda environment has been successfully installed by go
  * [A YouTube Screencast on Installing and Publishing Conda Environments in OCI Data Science](https://www.youtube.com/watch?v=j6wVqpn6lqg&list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L&index=9&t=4s)
  * [A YouTube Screencast on Creating Your Own Conda Environment From Scratch](https://www.youtube.com/watch?v=3_qyf_GJUuM&list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L&index=13)
  * [Blog Post Announcing the new Conda Environments Feature in Notebook Sessions](https://blogs.oracle.com/ai-and-datascience/post/new-conda-environment-feature-available-in-oracle-cloud-infrastructure-data-science)
-
-
