@@ -18,9 +18,9 @@ class Job:
     def __init__(self):
         rp_version = os.environ.get(
             OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
-        if rp_version == "UNDEFINED":
+        if not rp_version or rp_version == "UNDEFINED":
             # RUN LOCAL TEST
-            self.signer = oci.config.from_file("~/.oci/config", "BIGDATA")
+            self.signer = oci.config.from_file("~/.oci/config", "DEFAULT")
         else:
             # RUN AS JOB
             self.signer = oci.auth.signers.get_resource_principals_signer()
@@ -40,7 +40,7 @@ class Job:
 
     def install(self, package):
         subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", package])
+            [sys.executable, "-m", "pip", "install", package, "--user"])
 
     # https://docs.oracle.com/en-us/iaas/api/#/en/notification/20181201/NotificationTopic/PublishMessage
     def publish_message(self, title, body):

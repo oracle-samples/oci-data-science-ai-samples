@@ -33,6 +33,11 @@ public class Test {
         System.out.println("* INIT");
         MLJobs client = new MLJobs(CONFIG_LOCATION,CONFIG_PROFILE,COMPARTMENT_OCID,PROJECT_OCID,SUBNET_OCID,LOG_GROUP_UUID);
 
+        // Create Job with Managed Egress
+        System.out.println("* CREATE JOB - MANAGED EGRESS");
+        CreateJobResponse jobManagedEgress = client.createJobWithManagedEgress("Java Job - Managed Egress", COMPARTMENT_OCID, PROJECT_OCID);
+        System.out.println(jobManagedEgress.getJob().getId());
+
         // Create Job
         System.out.println("* CREATE JOB");
         CreateJobResponse job = client.createJob("Java Job", COMPARTMENT_OCID, PROJECT_OCID, SUBNET_OCID);

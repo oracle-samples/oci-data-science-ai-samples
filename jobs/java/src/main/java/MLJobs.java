@@ -111,7 +111,35 @@ public class MLJobs {
 
         createJobRequest = CreateJobRequest.builder().createJobDetails(jobRequestDetails).build();
         return clientDataScience.createJob(createJobRequest);
+    }
 
+    public CreateJobResponse createJobWithManagedEgress(String jobName, String compartmentUuid,
+                                       String projectUuid) throws IOException {
+
+        CreateJobRequest createJobRequest = null;
+
+        Map<String, String> envVariables = new HashMap<String, String>();
+        envVariables.put("CONDA_ENV_TYPE", "service");
+        envVariables.put("CONDA_ENV_SLUG", "mlcpuv1");
+
+        CreateJobDetails jobRequestDetails = CreateJobDetails.builder()
+                .displayName(jobName)
+                .projectId(projectUuid)
+                .compartmentId(compartmentUuid)
+                .jobConfigurationDetails(
+                        DefaultJobConfigurationDetails
+                                .builder()
+                                .environmentVariables(envVariables)
+                                .build())
+                .jobInfrastructureConfigurationDetails(
+                        ManagedEgressStandaloneJobInfrastructureConfigurationDetails
+                                .builder()
+                                .shapeName("VM.Standard2.1")
+                                .blockStorageSizeInGBs(100).build()
+                ).build();
+
+        createJobRequest = CreateJobRequest.builder().createJobDetails(jobRequestDetails).build();
+        return clientDataScience.createJob(createJobRequest);
     }
 
     public CreateJobArtifactResponse createJobArtifact(String JOB_UUID)

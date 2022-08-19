@@ -140,3 +140,19 @@ oci data-science job delete --job-id $JOB --config-file $CONFIG --profile $TENAN
 ```bash
 oci data-science job-shape list --compartment-id $COMPARTMENT --config-file $CONFIG --profile $TENANCY
 ```
+
+## Advanced
+
+Search for a job by lifecycle status and display name
+
+```bash
+jobOCID=`oci data-science job list --compartment-id $COMPARTMENT --display-name $YOURJOBNAME --lifecycle-state ACTIVE | grep ocid1.datasciencejob.oc1 | cut -d "\"" -f 4`
+```
+
+... then use that $jobOCID for operations like:
+
+Delete a Job
+
+```bash
+oci data-science job delete --job-id $jobOCID
+```
