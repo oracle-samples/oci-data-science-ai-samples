@@ -8,7 +8,7 @@ In this lab you will use the Python SDK to identify if any workers in an image a
 
 Example of worker wearing their helmet:
 
-![](./images/constructionsite1_resized.jpg " ")
+![](./images/construction_site_with_helmets.jpg " ")
 
 Example of workers not wearing their helmets:
 
