@@ -430,17 +430,16 @@ for i in no_match_list:
     Job status:  ACCEPTED
     Job status:  IN_PROGRESS
     Job status:  SUCCEEDED
-    Number of persons found in images: 14
+    Number of persons found in images: 11
 
     Number of helmets found in images: 6
 
-    Number of images processed: 7
+    Number of images processed: 6
 
-    Names of images where helmet count is not equal to total number of persons:
+    Names of images where at least one person is not wearing their helmet:
 
     constructionsite5.jpg
     constructionsite6.jpg
-    constructionsite7.jpg
     ```
 
     Confirm the results by looking at each image.
