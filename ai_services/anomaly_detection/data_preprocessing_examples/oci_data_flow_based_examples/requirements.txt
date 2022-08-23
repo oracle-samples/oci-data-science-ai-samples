@@ -1,4 +1,4 @@
 -i https://pypi.org/simple
 /opt/dataflow/prepackaged_df-1.0-py3-none-any.whl
-oci==2.74.0
+/opt/dataflow/oci-2.70.1+preview.1.1420-py2.py3-none-any.whl
 pandas==1.1.5

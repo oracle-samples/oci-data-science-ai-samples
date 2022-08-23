@@ -96,7 +96,7 @@ class AdUtils:
         response = self.ad_client.create_detect_anomaly_job(
             create_detect_anomaly_job_details)
         print(response)
-        assert response.status == 201, \
+        assert response.status == 200, \
             f"Error detecting anomalies: {response.status}"
         return response.data
 
@@ -104,18 +104,26 @@ class AdUtils:
             -> int:
         jobs = []
         for data_asset_detail in staging_details:
-
             jobs.append(self.create_detect_anomalies_job(compartment_id,
                                                          model_id,
                                                          data_asset_detail,
                                                          output_path))
-        while jobs:
-            for job in jobs:
+        retries = 0
+        while jobs and retries < 10:
+            retries = retries + 1
+            for job in list(jobs):
                 time.sleep(self.RETRY_SECONDS)
-                job = self.ad_client.get_detect_anomaly_job(job.id)
-                if job.lifecycle_state in self.terminal_job_states:
-                    assert job.lifecycle_state == "SUCCEEDED"
-                    jobs.remove(job)
+                response = self.ad_client.get_detect_anomaly_job(job.id)
+                if response.status != 200:
+                    f"Error fetching detect job status: {response.status}"
+                else:
+                    job = response.data
+                    if job.lifecycle_state in self.terminal_job_states:
+                        jobs.remove(job)
+                        if job.lifecycle_state != DetectAnomalyJob.LIFECYCLE_STATE_SUCCEEDED:
+                            return 1
+
+        return 0
 
 
 if __name__ == '__main__':

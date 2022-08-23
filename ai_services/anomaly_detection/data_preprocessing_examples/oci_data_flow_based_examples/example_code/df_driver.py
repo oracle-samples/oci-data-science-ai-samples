@@ -4,6 +4,7 @@ import argparse
 import pandas as pd
 
 from pyspark.sql import functions as F
+from datetime import datetime
 from io import StringIO
 from example_code.remove_unnecessary_columns import remove_unnecessary_columns
 from example_code.column_rename import column_rename
@@ -63,7 +64,7 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
         '''
         input_sources = contents["inputSources"]
 
-        # build dictonary: df name: df
+        # build dictionary: df name: df
         for source in input_sources:
             if source["type"] == "object-storage":
                 raw_data = get_object(object_storage_client, source["namespace"], source["bucket"], source["objectName"])
@@ -100,10 +101,14 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
         staging_path = f'oci://{staging_bucket}@{staging_namespace}/{staging_folder}'
 
         if phase == INFERENCING:
-            metadata_dependent_raw = get_object(object_storage_client, phaseInfo["connector"]["namespace"], phaseInfo["connector"]["bucket"], phaseInfo["connector"]["objectName"])
+            metadata_dependent_raw = get_object(object_storage_client,
+                                                phaseInfo["connector"]["namespace"],
+                                                phaseInfo["connector"]["bucket"],
+                                                phaseInfo["connector"]["objectName"])
             metadata_dependent = json.loads(metadata_dependent_raw)
             for global_variable in RESERVED_METADATA:
-                metadata[global_variable] = metadata_dependent[global_variable]
+                if global_variable in metadata_dependent:
+                    metadata[global_variable] = metadata_dependent[global_variable]
         elif phase != TRAINING:
             raise Exception("phaseInfo is not correct")
 
@@ -174,11 +179,12 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
         staging_bucket = contents["stagingDestination"]["bucket"]
         staging_folder = contents["stagingDestination"]["folder"]
         preprocessed_data_prefix_to_column = dict()
+        uniquifier = datetime.now().strftime("_%d_%m_%Y_%H_%M_%S")
 
         # writing it to output destination
-        if (len(sharding_dict) == 0):
+        if len(sharding_dict) == 0:
             final_df = dfs[contents["stagingDestination"]["combinedResult"]]
-            final_df.coalesce(1).write.csv(staging_path, header=True)
+            final_df.coalesce(1).write.csv(staging_path + uniquifier, header=True)
             preprocessed_data_prefix_to_column[staging_folder] = final_df.columns
         else:
             # Sharded dfs
@@ -186,50 +192,45 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
             for df in sharding_dict:
                 final_df = dfs[df]
                 final_df.coalesce(1).write.csv(
-                    staging_path + str(idx), header=True)
+                    staging_path + uniquifier + str(idx), header=True)
                 preprocessed_data_prefix_to_column[
-                    staging_folder + str(idx)] = final_df.columns
+                    staging_folder + uniquifier + str(idx)] = final_df.columns
                 idx += 1
 
         output_processed_data_info = list()
-        # writing metadata to metadata bucket during train
-        if phase == TRAINING:
-            preprocessed_data_details = {
-                'namespace': staging_namespace,
-                'bucket': staging_bucket,
-                'prefix': staging_folder
+        preprocessed_data_details = {
+            'namespace': staging_namespace,
+            'bucket': staging_bucket,
+            'prefix': staging_folder + uniquifier
             }
 
-            list_objects_response = object_storage_client.list_objects(
-                namespace_name=preprocessed_data_details['namespace'],
-                bucket_name=preprocessed_data_details['bucket'],
-                prefix=preprocessed_data_details['prefix'])
-            assert list_objects_response.status == 200, \
-                f'Error listing objects: {list_objects_response.text}'
-            objects_details = list_objects_response.data
+        list_objects_response = object_storage_client.list_objects(
+            namespace_name=preprocessed_data_details['namespace'],
+            bucket_name=preprocessed_data_details['bucket'],
+            prefix=preprocessed_data_details['prefix'])
+        assert list_objects_response.status == 200, \
+            f'Error listing objects: {list_objects_response.text}'
+        objects_details = list_objects_response.data
 
-            model_ids = list()
-            api_configuration = \
-                contents["serviceApiConfiguration"]["anomalyDetection"]
-            ad_utils = AdUtils(dataflow_session,
-                               api_configuration['profileName'],
-                               api_configuration['serviceEndpoint'])
-            data_asset_detail = preprocessed_data_details
-            data_asset_detail.pop('prefix')
-            for object_details in objects_details.objects:
-                if object_details.name.endswith('.csv'):
-                    prefix = object_details.name.split('/')[0]
-                    if prefix not in preprocessed_data_prefix_to_column:
-                        continue
-                    columns = preprocessed_data_prefix_to_column[prefix]
-                    data_asset_detail['object'] = object_details.name
-                    output_processed_data_info.append({
-                        "object": object_details.name,
-                        "namespace": staging_namespace,
-                        "bucket": staging_bucket,
-                        "columns": columns
-                    })
-
+        api_configuration = \
+            contents["serviceApiConfiguration"]["anomalyDetection"]
+        data_asset_detail = preprocessed_data_details
+        data_asset_detail.pop('prefix')
+        for object_details in objects_details.objects:
+            if object_details.name.endswith('.csv'):
+                prefix = object_details.name.split('/')[0]
+                if prefix not in preprocessed_data_prefix_to_column:
+                    continue
+                columns = preprocessed_data_prefix_to_column[prefix]
+                data_asset_detail['object'] = object_details.name
+                output_processed_data_info.append({
+                    "object": object_details.name,
+                    "namespace": staging_namespace,
+                    "bucket": staging_bucket,
+                    "columns": columns
+                })
+        # writing metadata to metadata bucket during train
+        if phase == TRAINING:
             object_storage_client.put_object(
                 phaseInfo["connector"]["namespace"],
                 phaseInfo["connector"]["bucket"],
@@ -254,7 +255,7 @@ if __name__ == "__main__":
         dataflow_session=dataflow_session)
     config = json.loads(args.response)
     staging_info = parse_and_process_data_preprocessing_config(
-        object_storage_client, spark, config, args.staging_path)
+        object_storage_client, spark, config, args.phase)
 
     model_ids = []
     api_configuration = \
@@ -276,16 +277,15 @@ if __name__ == "__main__":
             except AssertionError as e:
                 print(e)
         result['model_ids'] = model_ids
-        phaseInfo = config["phaseInfo"]
+        outputInfo = config["outputDestination"]
         object_storage_client.put_object(
-            phaseInfo["connector"]["namespace"],
-            phaseInfo["connector"]["bucket"],
-            phaseInfo["connector"]["objectName"],
+            outputInfo["namespace"],
+            outputInfo["bucket"],
+            outputInfo["folder"],
             json.dumps(result))
     elif args.phase == "apply":
-        ad_utils.infer(compartment_id=args.compartment_id,
-                       model_id=args.model_id,
-                       namespace=args.namespace,
-                       input_bucket=args.staging_path,
-                       input_object=staging_info.objects[0].name,
-                       output_location=args.output_path)
+        outputInfo = config["outputDestination"]
+        ad_utils.infer(compartment_id=api_configuration["compartmentId"],
+                       model_id=api_configuration["modelId"],
+                       staging_details=staging_info,
+                       output_path=outputInfo["bucket"])
