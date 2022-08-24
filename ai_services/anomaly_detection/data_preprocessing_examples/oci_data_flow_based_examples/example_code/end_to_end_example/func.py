@@ -19,14 +19,14 @@ def handler(ctx, data: io.BytesIO=None):
         raise Exception(error)
     config_bucket_name = "placeholder"
     object_name = "placeholder"
-    if bucketName == "raw-data-bucket":
-        config_bucket_name = "training-config-bucket"
+    if bucketName == "<training_bucket_name>":
+        config_bucket_name = "<training_config_bucket_name>"
         object_name = "driver-demoable-complete-v2.json"
         resp = get_object(namespace, config_bucket_name, object_name)
         call_dataflow(resp, "applyAndFinalize")
-    elif bucketName == "inferencing-data-bucket":
-        config_bucket_name = "inferencing-config-bucket"
-        object_name = "driver-demoable-complete-v2.json"
+    elif bucketName == "<inferencing_bucket_name>":
+        config_bucket_name = "<inferencing_config_bucket_name>"
+        object_name = "<driver_config>.json"
         resp = get_object(namespace, config_bucket_name, object_name)
         call_dataflow(resp, "apply")
 
@@ -41,11 +41,11 @@ def get_object(namespace, bucket, file):
 def call_dataflow(response, phase):
     create_run_response = data_flow_client.create_run(
         create_run_details=oci.data_flow.models.CreateRunDetails(
-            compartment_id="ocid1.compartment.oc1..aaaaaaaa26brugmo3vvh7tjtyew5pbclnd4i4m2pr7kt2ho7db4gdlzekmha",
-            application_id="ocid1.dataflowapplication.oc1.phx.anyhqljtor7l3jiawefbhoanxrutylds32jpyozmtjrxcjjji4jnv5ztccla",
+            compartment_id="<compartment_ocid>",
+            application_id="<application_ocid>",
             arguments=[ "--response", response, "--phase", phase],
             display_name="complete-dpp-test",
-            logs_bucket_uri="oci://logs-bucket@ax3dvjxgkemg/")
+            logs_bucket_uri="oci://<bucket-name>@<namespace>/")
     )
 
     return { "content": create_run_response }
