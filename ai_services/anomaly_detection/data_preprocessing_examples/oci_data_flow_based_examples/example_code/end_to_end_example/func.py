@@ -1,66 +1,51 @@
 import io
-import os
+import oci
 import json
-import sys
+
 from fdk import response
 
-import oci.object_storage
-import oci.data_flow
-
 signer = oci.auth.signers.get_resource_principals_signer()
-os_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
+object_storage_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
 data_flow_client = oci.data_flow.DataFlowClient(config={}, signer=signer)
 
 def handler(ctx, data: io.BytesIO=None):
     try:
         body = json.loads(data.getvalue())
         bucketName = body["data"]["additionalDetails"]["bucketName"]
+        namespace = body["data"]["additionalDetails"]["namespace"]
         objectName = body["data"]["resourceName"]
     except Exception:
         error = 'Input a JSON object in the format: \'{"bucketName": "<bucket name>"}, "objectName": "<object name>"}\' '
         raise Exception(error)
-    try:
-        get_resp = get_object(bucketName, objectName)
-        contents = json.loads(get_resp)
-        input_csv = contents["inputCSV"]
-        columns_to_remove = contents["columnsToRemove"]
-        output = contents["outputPath"]
+    config_bucket_name = "placeholder"
+    object_name = "placeholder"
+    if bucketName == "raw-data-bucket":
+        config_bucket_name = "training-config-bucket"
+        object_name = "driver-demoable-complete-v2.json"
+        resp = get_object(namespace, config_bucket_name, object_name)
+        call_dataflow(resp, "applyAndFinalize")
+    elif bucketName == "inferencing-data-bucket":
+        config_bucket_name = "inferencing-config-bucket"
+        object_name = "driver-demoable-complete-v2.json"
+        resp = get_object(namespace, config_bucket_name, object_name)
+        call_dataflow(resp, "apply")
 
-        df_response = call_dataflow(input_csv, columns_to_remove, output)
-        # print(str(df_response))
+def get_object(namespace, bucket, file):
+    get_resp = object_storage_client.get_object(namespace, bucket, file)
+    assert get_resp.status in [
+        200,
+        201,
+    ], f"Unable to get object from {bucket}@{namespace}! Response: {get_resp.text}"
+    return get_resp.data.text
 
-    except Exception as e:
-        raise Exception(e)
-    
-    return response.Response(
-        ctx,
-        response_data=df_response,
-        headers={"Content-Type": "application/json"}
-    )
-
-def get_object(bucketName, objectName):
-    namespace = os_client.get_namespace().data
-    try:
-        print("Searching for bucket and object", flush=True)
-        object = os_client.get_object(namespace, bucketName, objectName)
-        print("found object", flush=True)
-        if object.status == 200:
-            print("Success: The object " + objectName + " was retrieved with the content: " + object.data.text, flush=True)
-            message = object.data.text
-        else:
-            message = "Failed: The object " + objectName + " could not be retrieved."
-    except Exception as e:
-        message = "Failed: " + str(e.message)
-    return message
-
-def call_dataflow(input_csv, columns_to_remove, output):
+def call_dataflow(response, phase):
     create_run_response = data_flow_client.create_run(
         create_run_details=oci.data_flow.models.CreateRunDetails(
-            compartment_id="<compartment-ocid>",
-            application_id="<application-ocid>",
-            arguments=[ "--input", input_csv, "--columns_to_remove", columns_to_remove, "--output", output],
-            display_name="<display-name-you-like>",
-            logs_bucket_uri="oci://<bucket-name>@<namespace>/")
+            compartment_id="ocid1.compartment.oc1..aaaaaaaa26brugmo3vvh7tjtyew5pbclnd4i4m2pr7kt2ho7db4gdlzekmha",
+            application_id="ocid1.dataflowapplication.oc1.phx.anyhqljtor7l3jiawefbhoanxrutylds32jpyozmtjrxcjjji4jnv5ztccla",
+            arguments=[ "--response", response, "--phase", phase],
+            display_name="complete-dpp-test",
+            logs_bucket_uri="oci://logs-bucket@ax3dvjxgkemg/")
     )
 
     return { "content": create_run_response }
