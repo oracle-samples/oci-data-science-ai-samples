@@ -21,7 +21,7 @@ def handler(ctx, data: io.BytesIO=None):
     object_name = "placeholder"
     if bucketName == "<training_bucket_name>":
         config_bucket_name = "<training_config_bucket_name>"
-        object_name = "driver-demoable-complete-v2.json"
+        object_name = "<driver_config>.json"
         resp = get_object(namespace, config_bucket_name, object_name)
         call_dataflow(resp, "applyAndFinalize")
     elif bucketName == "<inferencing_bucket_name>":
@@ -41,8 +41,8 @@ def get_object(namespace, bucket, file):
 def call_dataflow(response, phase):
     create_run_response = data_flow_client.create_run(
         create_run_details=oci.data_flow.models.CreateRunDetails(
-            compartment_id="<compartment_ocid>",
-            application_id="<application_ocid>",
+            compartment_id="<compartment-ocid>",
+            application_id="<application-ocid>",
             arguments=[ "--response", response, "--phase", phase],
             display_name="complete-dpp-test",
             logs_bucket_uri="oci://<bucket-name>@<namespace>/")
