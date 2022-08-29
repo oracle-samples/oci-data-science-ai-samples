@@ -8,7 +8,6 @@ signer = oci.auth.signers.get_resource_principals_signer()
 object_storage_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
 data_flow_client = oci.data_flow.DataFlowClient(config={}, signer=signer)
 
-SUPPORTED_EVENT_SOURCES = {"ObjectStorage"}
 
 def handler(ctx, data: io.BytesIO=None):
     try:
