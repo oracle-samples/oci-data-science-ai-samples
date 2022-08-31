@@ -185,7 +185,7 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
         if len(sharding_dict) == 0:
             final_df = dfs[contents["stagingDestination"]["combinedResult"]]
             final_df.coalesce(1).write.csv(staging_path + uniquifier, header=True)
-            preprocessed_data_prefix_to_column[staging_folder] = final_df.columns
+            preprocessed_data_prefix_to_column[staging_folder + uniquifier] = final_df.columns
         else:
             # Sharded dfs
             idx = 0
@@ -212,8 +212,6 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
             f'Error listing objects: {list_objects_response.text}'
         objects_details = list_objects_response.data
 
-        api_configuration = \
-            contents["serviceApiConfiguration"]["anomalyDetection"]
         data_asset_detail = preprocessed_data_details
         data_asset_detail.pop('prefix')
         for object_details in objects_details.objects:
@@ -229,6 +227,7 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
                     "bucket": staging_bucket,
                     "columns": columns
                 })
+        print(output_processed_data_info)
         # writing metadata to metadata bucket during train
         if phase == TRAINING:
             object_storage_client.put_object(
@@ -263,6 +262,7 @@ if __name__ == "__main__":
     ad_utils = AdUtils(dataflow_session,
                        api_configuration['profileName'],
                        api_configuration['serviceEndpoint'])
+    outputInfo = config["outputDestination"]
     if args.phase == "applyAndFinalize":
         result = {}
         for data_asset_detail in staging_info:
@@ -277,15 +277,18 @@ if __name__ == "__main__":
             except AssertionError as e:
                 print(e)
         result['model_ids'] = model_ids
-        outputInfo = config["outputDestination"]
         object_storage_client.put_object(
             outputInfo["namespace"],
             outputInfo["bucket"],
             outputInfo["folder"],
-            json.dumps(result))
+            json.dumps(result, default=lambda o: o.__dict__, indent=4))
     elif args.phase == "apply":
-        outputInfo = config["outputDestination"]
+        model_ids_serialized = get_object(object_storage_client,
+                               outputInfo["namespace"],
+                               outputInfo["bucket"],
+                               outputInfo["folder"])
+        model_ids = json.loads(model_ids_serialized)
         ad_utils.infer(compartment_id=api_configuration["compartmentId"],
-                       model_id=api_configuration["modelId"],
+                       model_ids=model_ids,
                        staging_details=staging_info,
                        output_path=outputInfo["bucket"])
