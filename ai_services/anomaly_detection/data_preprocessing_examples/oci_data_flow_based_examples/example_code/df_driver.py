@@ -1,7 +1,6 @@
 import oci
 import json
 import argparse
-import pandas as pd
 
 from pyspark.sql import functions as F
 from datetime import datetime
@@ -67,10 +66,13 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
         # build dictionary: df name: df
         for source in input_sources:
             if source["type"] == "object-storage":
-                raw_data = get_object(object_storage_client, source["namespace"], source["bucket"], source["objectName"])
-                data = StringIO(raw_data)
-                pd_df = pd.read_csv(data, sep=",")
-                df = spark.createDataFrame(pd_df)
+                df = None
+                if source["objectName"].endswith(".csv"):
+                    df = spark.read.options(header='True').csv(f'oci://{source["bucket"]}@{source["namespace"]}/{source["objectName"]}')
+                elif source["objectName"].endswith(".parquet"):
+                    df = spark.read.options(header='True').parquet(f'oci://{source["bucket"]}@{source["namespace"]}/{source["objectName"]}')
+                else:
+                    raise Exception("Format is not correct. Currently we only support csv and parquet!")
                 df = df.select([F.col(x).alias(x.lower()) for x in df.columns])
                 dfs[source["dataframeName"]] = df
             elif source["type"] == "oracle":
