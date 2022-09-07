@@ -1,8 +1,8 @@
-# Demonstrates a simple job that:
+# Demonstrates:
+# - how to use the OCI SDK with a Job
 # - switches the OCI SDK key to resource principal when running as a Job
 # - how to read the command line arguments
 # - how to read the environment variables
-# - how to use the OCI SDK
 
 import os
 import argparse
@@ -16,7 +16,7 @@ RP = os.environ.get("OCI_RESOURCE_PRINCIPAL_VERSION", "UNDEFINED")
 
 if not RP or RP == "UNDEFINED":
     # LOCAL RUN
-    config = oci.config.from_file("~/.oci/config", "BIGDATA")
+    config = oci.config.from_file("~/.oci/config", "DEFAULT")
     dsc = oci.data_science.DataScienceClient(config=config)
     TENANCY_OCID = config["tenancy"]
 else:
