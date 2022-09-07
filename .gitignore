@@ -16,5 +16,6 @@ jobs/java/target
 .project
 *.class
 jobs/flask_job_monitor/__pycache__
-/.idea/
+**/.idea/
 *.DS_Store
+**/__pycache__/

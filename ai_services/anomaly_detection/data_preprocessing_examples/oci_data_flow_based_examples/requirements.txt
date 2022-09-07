@@ -2,3 +2,6 @@
 /opt/dataflow/prepackaged_df-1.0-py3-none-any.whl
 /opt/dataflow/oci-2.70.1+preview.1.1420-py2.py3-none-any.whl
 pandas==1.1.5
+
+requests~=2.12.5
+backoff~=1.11.1

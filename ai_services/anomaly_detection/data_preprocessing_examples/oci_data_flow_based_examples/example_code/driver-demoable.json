@@ -23,7 +23,8 @@
             "type": "object-storage",
             "namespace":"<namespace>",
             "bucket":"<bucket>",
-            "objectName": "demo-3rd.csv"
+            "isEventDriven": true,
+            "objectName": "folder/*"
         }
     ],
     "phaseInfo": {

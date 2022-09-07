@@ -1,10 +1,12 @@
+import traceback
+
 import oci
 import json
 import argparse
 
-from pyspark.sql import functions as F
 from datetime import datetime
-from io import StringIO
+
+from example_code.content_delivery import ContentDeliveryFactory, ObjectStorageHelper
 from example_code.remove_unnecessary_columns import remove_unnecessary_columns
 from example_code.column_rename import column_rename
 from example_code.string_transformations import string_transformation
@@ -47,7 +49,7 @@ def get_object(object_storage_client, namespace, bucket, file):
     return get_resp.data.text
 
 
-def parse_and_process_data_preprocessing_config(object_storage_client, spark, contents, phase):
+def parse_and_process_data_preprocessing_config(object_storage_client, spark, contents, phase, event_data=None):
     """
     Data Preprocessing Operation
     Args:
@@ -55,6 +57,7 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
         spark: entry point for spark application
         contents: the parsed response from config json
         phase: the phase info referring training or inferencing
+        event_data: Information of the event that triggered the run
     """
     dfs = dict()
     try:
@@ -62,32 +65,20 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
         Deal with input sources
         '''
         input_sources = contents["inputSources"]
+        event_driven_input_sources = \
+            [1 for source in input_sources if 'isEventDriven' in source and source['isEventDriven']]
+        assert len(event_driven_input_sources) <= 1, \
+            f"At-most 1 event driven input-source is supported! But {len(event_driven_input_sources)} are provided."
 
         # build dictionary: df name: df
         for source in input_sources:
-            if source["type"] == "object-storage":
-                df = None
-                if source["objectName"].endswith(".csv"):
-                    df = spark.read.options(header='True').csv(f'oci://{source["bucket"]}@{source["namespace"]}/{source["objectName"]}')
-                elif source["objectName"].endswith(".parquet"):
-                    df = spark.read.options(header='True').parquet(f'oci://{source["bucket"]}@{source["namespace"]}/{source["objectName"]}')
-                else:
-                    raise Exception("Format is not correct. Currently we only support csv and parquet!")
-                df = df.select([F.col(x).alias(x.lower()) for x in df.columns])
-                dfs[source["dataframeName"]] = df
-            elif source["type"] == "oracle":
-                properties = {
-                    "adbId": source["adbId"],
-                    "dbtable": source["tableName"],
-                    "connectionId": source["connectionId"],
-                    "user": source["user"],
-                    "password": source["password"]}
-                df = spark.read \
-                    .format("oracle") \
-                    .options(**properties) \
-                    .load()
-                df = df.select([F.col(x).alias(x.lower()) for x in df.columns])
-                dfs[source["dataframeName"]] = df
+            if 'isEventDriven' in source and source['isEventDriven']:
+                content_delivery_client = ContentDeliveryFactory.get(source["type"], dataflow_session)
+                dfs[source['dataframeName']] = content_delivery_client.get_df(content_details=event_data,
+                                                                              content_validation=source)
+            else:
+                content_delivery_client = ContentDeliveryFactory.get(source["type"], dataflow_session)
+                dfs[source["dataframeName"]] = content_delivery_client.get_df(source)
 
         '''
         Check the phase
@@ -97,6 +88,8 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
         metadata = dict()
         sharding_dict = list()
         phaseInfo = contents["phaseInfo"]
+        # appending the staging folder with timestamp to differentiate between different requests.
+        contents["stagingDestination"]["folder"] += datetime.now().strftime("_%d_%m_%Y_%H_%M_%S")
         staging_namespace = contents["stagingDestination"]["namespace"]
         staging_bucket = contents["stagingDestination"]["bucket"]
         staging_folder = contents["stagingDestination"]["folder"]
@@ -177,33 +170,29 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
                         time_series_merge(left, right)
 
         # prepare the staging file path
-        staging_namespace = contents["stagingDestination"]["namespace"]
-        staging_bucket = contents["stagingDestination"]["bucket"]
-        staging_folder = contents["stagingDestination"]["folder"]
         preprocessed_data_prefix_to_column = dict()
-        uniquifier = datetime.now().strftime("_%d_%m_%Y_%H_%M_%S")
 
         # writing it to output destination
         if len(sharding_dict) == 0:
             final_df = dfs[contents["stagingDestination"]["combinedResult"]]
-            final_df.coalesce(1).write.csv(staging_path + uniquifier, header=True)
-            preprocessed_data_prefix_to_column[staging_folder + uniquifier] = final_df.columns
+            final_df.coalesce(1).write.csv(staging_path, header=True)
+            preprocessed_data_prefix_to_column[staging_folder] = final_df.columns
         else:
             # Sharded dfs
             idx = 0
             for df in sharding_dict:
                 final_df = dfs[df]
                 final_df.coalesce(1).write.csv(
-                    staging_path + uniquifier + str(idx), header=True)
+                    staging_path + str(idx), header=True)
                 preprocessed_data_prefix_to_column[
-                    staging_folder + uniquifier + str(idx)] = final_df.columns
+                    staging_folder + str(idx)] = final_df.columns
                 idx += 1
 
         output_processed_data_info = list()
         preprocessed_data_details = {
             'namespace': staging_namespace,
             'bucket': staging_bucket,
-            'prefix': staging_folder + uniquifier
+            'prefix': staging_folder
             }
 
         list_objects_response = object_storage_client.list_objects(
@@ -238,13 +227,22 @@ def parse_and_process_data_preprocessing_config(object_storage_client, spark, co
                 phaseInfo["connector"]["objectName"],
                 json.dumps(metadata))
         return output_processed_data_info
-
     except Exception as e:
         raise Exception(e)
 
 
+def ctx_event_data(value):
+    try:
+        value = json.loads(value)
+        return value if len(value) > 0 else None
+    except Exception as exception:
+        print(exception)
+        return None
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--event_data", required=False, type=ctx_event_data)
     parser.add_argument("--response", required=True)
     parser.add_argument("--phase", required=True)
     args = parser.parse_args()
@@ -252,7 +250,7 @@ if __name__ == "__main__":
     spark = get_spark_context(dataflow_session=dataflow_session)
 
     object_storage_client = get_authenticated_client(
-        oci.object_storage.ObjectStorageClient,
+        client=oci.object_storage.ObjectStorageClient,
         dataflow_session=dataflow_session)
     config = json.loads(args.response)
     staging_info = parse_and_process_data_preprocessing_config(

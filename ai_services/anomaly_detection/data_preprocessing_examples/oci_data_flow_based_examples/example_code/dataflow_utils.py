@@ -23,6 +23,7 @@ def _get_token_path_(app_name=SAMPLE_APP_NAME, token_key=SAMPLE_TOKEN_KEY,
         token_key = dataflow_session.token_key
 
     spark_context = get_spark_context(app_name)
+    print(f"Obtained spark context for app-name [{app_name}]!")
     return spark_context.sparkContext.getConf().get(token_key)
 
 
@@ -36,24 +37,24 @@ def get_authenticated_client(client, app_name=SAMPLE_APP_NAME,
         token_key = dataflow_session.token_key
 
     token_path = _get_token_path_(app_name, token_key)
+    print("Token with key [***] is available at path [***].")
     if token_path is None:
-        # This is local run, so use our API Key.
         config = oci.config.from_file(file_location, profile_name)
+        print(f"Loaded oci config of {profile_name} from {file_location}.")
         kwargs['config'] = config
         if 'signer' in kwargs:
             kwargs.pop('signer')
-        authenticated_client = client(**kwargs)
     else:
-        # This is Data Flow run, so use Delegation Token.
         with open(token_path) as fd:
             delegation_token = fd.read()
+            print("Read delegation token from path [***]!")
         signer = oci.auth.signers.InstancePrincipalsDelegationTokenSigner(
             delegation_token=delegation_token
         )
+        print("Created signer using instance principal and delegation token.")
         kwargs['signer'] = signer
         kwargs['config'] = {}
-        authenticated_client = client(**kwargs)
-    return authenticated_client
+    return client(**kwargs)
 
 
 class DataflowSession:
