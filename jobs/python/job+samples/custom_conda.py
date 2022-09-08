@@ -1,4 +1,8 @@
 # Exec against conda that has sklearn and schedule packages installed!
+# Demonstrates:
+# - how to read the job enviornment variables
+# - read the conda specific environment variables
+
 import time
 import sys
 import os
@@ -14,7 +18,7 @@ print("Custom conda test!")
 
 
 def job():
-    print('Hello, Logs')
+    print("Hello, Logs")
     time.sleep(5)
 
 
