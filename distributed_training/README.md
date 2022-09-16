@@ -19,6 +19,7 @@ You need to use a private subnet for distributed training and config the ports i
 
 * PyTorch: By default, PyTorch uses 29400.
 * Horovod: You need to allow all traffic within the subnet.
+* Tensorflow: Worker Port: Allow traffic from all source ports to one worker port (default: 12345). If changed, provide this in train.yaml config.
 
 See also: [Security Lists](https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/securitylists.htm)
 
@@ -97,7 +98,7 @@ See also [Object Storage Policies](https://docs.oracle.com/en-us/iaas/Content/Id
 Lastly, you need to install the ads-opctl utility which is required to package (dockerize) your distributed training script and
 launch odsc distributed job.
 
-* Install ADS >= 2.6.0
+* Install ADS >= 2.6.4
 
 ```
 python3 -m pip install "oracle-ads[opctl]"
@@ -115,6 +116,7 @@ Using the ads-opctl, download and initialize the relevant distributed training f
   ```
   ads opctl distributed-training init --framework dask
   ```
+
 * Horovod (Tensorflow):
   
   ```
@@ -132,10 +134,16 @@ Using the ads-opctl, download and initialize the relevant distributed training f
     ads opctl distributed-training init --framework pytorch --version v1
     ```
 
+* Tensorflow Native: [tensorflow.md](tensorflow.md)
+    ```
+    ads opctl distributed-training init --framework tensorflow --version v1
+    ```
+
 You are now all set to create, test locally and launch your distributed training workload. Refer these framework specific guides
 to continue.
 
 * Dask: [dask.md](dask.md)
 * Horovod (Tensorflow and Pytorch): [horovod.md](horovod.md)
 * Pytorch Native: [pytorch.md](pytorch.md)
+* Tensorflow Native: [tensorflow.md](tensorflow.md)
 

@@ -17,3 +17,4 @@ jobs/java/target
 *.class
 jobs/flask_job_monitor/__pycache__
 .vscode
+.idea/
