@@ -10,7 +10,7 @@ CONFIG_PROFILE = "DEFAULT"
 # region identifier of DLS Dataset
 REGION_IDENTIFIER = "uk-london-1"
 # service_endpoint
-SERVICE_ENDPOINT_DP = f"https://dlstest-dp.{REGION_IDENTIFIER}.oci.oraclecloud.com"
+SERVICE_ENDPOINT_DP = f"https://datalabeling-dp.{REGION_IDENTIFIER}.oci.oraclecloud.com"
 # ocid of the DLS Dataset
 DATASET_ID = "ocid1.datalabelingdatasetint.oc1.uk-london-1.amaaaaaaniob46iaqml2zdzd6wuhw27awc6nj2tnug72m765lfhdz2pzwwzq"
 # the no of processes to be used for parallel execution by default is set to maximum no of processors in the system
