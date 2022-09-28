@@ -412,3 +412,88 @@ Use ``OCI__SYNC_DIR`` env variable in your code to save the artifacts. Example:
 ```
 tf.keras.callbacks.ModelCheckpoint(os.path.join(os.environ.get("OCI__SYNC_DIR"),"ckpts",'checkpoint-{epoch}.h5'))
 ```
+
+### 8. Profiling
+At times, you may want to profile your training setup for optimization/performance tuning. Profiling typically gives a detailed analysis
+of cpu utilization, gpu utilization, top cuda kernels, top operators etc. You can choose to profile your training setup using the 
+native Tensorflow profiler or using a third party profiler such as [Nvidia Nsights](https://developer.nvidia.com/nsight-systems).
+
+#### 8a. Profiling using Tensorflow Profiler.
+
+[Tensorflow Profiler](https://www.tensorflow.org/tensorboard/tensorboard_profiling_keras) is a native offering from Tensforflow for Tensorflow performance profiling. 
+Profiling is invoked using code instrumentation using one of the following apis. 
+1. [```tf.keras.callbacks.TensorBoard```](https://www.tensorflow.org/tensorboard/tensorboard_profiling_keras) 
+2. [```tf.profiler.experimental.Profile```](https://www.tensorflow.org/api_docs/python/tf/profiler/experimental/Profile) 
+
+Refer above links for changes that you need to do in your training script for instrumentation. 
+You should choose the ```OCI__SYNC_DIR``` directory to save the profiling logs. For example:
+
+```
+options = tf.profiler.experimental.ProfilerOptions(
+     host_tracer_level=2,
+     python_tracer_level=1,
+     device_tracer_level=1,
+     delay_ms=None)
+with tf.profiler.experimental.Profile(os.environ.get("OCI__SYNC_DIR") + "/logs",options=options):
+    # training code 
+
+```
+In case of keras callback:
+
+```
+tboard_callback = tf.keras.callbacks.TensorBoard(log_dir = os.environ.get("OCI__SYNC_DIR") + "/logs",
+                                                 histogram_freq = 1,
+                                                 profile_batch = '500,520')
+model.fit(...,callbacks = [tboard_callback])
+
+```
+Also, the sync feature `SYNC_ARTIFACTS` should be enabled ('1') to sync the profiling logs to the configured object storage. 
+Thereafter, use Tensorboard to view logs. Refer this [tensorboard.md](tensorboard.md) for set-up on your computer.
+**The profiling logs are generated per node** and hence you will see logs for each job run. While invoking the tensorboard, point to the parent `<job_id>` directory to view all logs at once.
+```
+export OCIFS_IAM_KEY=api_key tensorboard --logdir oci://my-bucket@my-namespace/path_to_job_id
+```
+
+#### 8b. Profiling using Nvidia Nsights.
+
+[Nvidia Nsights](https://developer.nvidia.com/nsight-systems) is a system wide profiling tool from Nvidia that can be used to profile Deep Learning workloads. 
+Nsights requires no change in your training code. This works on process level. You can enable this **experimental** feature(highlighted in bold) in your training setup via the following configuration in the 
+runtime yaml file.
+
+
+<pre>
+    spec:
+      image: "<region>.ocir.io/<tenancy_id>/<repo_name>/<image_name>:<image_tag>"
+      workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
+      name: "tf_multiworker"
+      config:
+        env:
+          - name: WORKER_PORT #Optional. Defaults to 12345
+            value: 12345
+          - name: SYNC_ARTIFACTS #Mandatory: Switched on by Default.
+            value: 1
+          - name: WORKSPACE #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket to sync generated artifacts to.
+            value: "<bucket_name>"
+          - name: WORKSPACE_PREFIX #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket folder to sync generated artifacts to.
+            value: "<bucket_prefix>"
+          <b>- name: PROFILE #0: Off 1: On
+            value: 1
+          - name: PROFILE_CMD
+            value: "nsys profile -w true -t cuda,nvtx,osrt,cudnn,cublas -s none -o /opt/ml/nsight_report -x true"  </b>
+      main:
+        name: "chief"
+        replicas: 1 #this will be always 1.
+      worker:
+        name: "worker"
+        replicas: 1 #number of workers. This is in addition to the 'chief' worker. Could be more than 1
+</pre>
+
+Refer [here](https://docs.nvidia.com/nsight-systems/UserGuide/index.html#cli-profile-command-switch-options) for `nsys profile` command options. You can modify the command within the
+`PROFILE_CMD` but remember this is all experimental. The profiling reports are generated per node. You need to download the reports to your computer manually or via the oci
+command.
+
+```
+oci os object bulk-download -ns <namespace> -bn <bucket_name> --download-dir /path/on/your/computer --prefix path/on/bucket/<job_id>
+```
+To view the reports, you would need to install Nsight Systems app from [here](https://developer.nvidia.com/nsight-systems). 
+Thereafter, open the downloaded reports in the Nsight Systems app.
