@@ -174,7 +174,7 @@ model.fit(train_dataset, epochs=2, callbacks=mnist.get_callbacks(model, checkpoi
 model.save(model_dir, save_format='tf')
 ```
 
-**Note**: Whenever you change the code, you have to build, tag and push the image to repo. If you change the tag, it needs to be updated inside the cluster definition yaml.
+**Note**: Whenever you change the code, you have to build, tag and push the image to repo. This behaviour is automatically taken care in ```ads opctl run ``` cli command.
 
 The required python dependencies are provided inside the conda environment file `oci_dist_training_artifacts/tensorflow/v1/environments.yaml`.  If your code requires additional dependency, update this file. 
 
@@ -190,9 +190,8 @@ export TAG=latest
 ```
 
 ```
-docker build -t $IMAGE_NAME:$TAG \
-    -f oci_dist_training_artifacts/tensorflow/v1/Dockerfile .
-
+ads opctl distributed-training build-image -t $TAG -reg $IMAGE_NAME
+  -df oci_dist_training_artifacts/tensorflow/v1/Dockerfile -s $MOUNT_FOLDER_PATH
 ```
 
 If you are behind proxy, use this command - 
@@ -208,43 +207,49 @@ docker build  --build-arg no_proxy=$no_proxy \
 Push the docker image - 
 
 ```
-docker push $IMAGE_NAME:$TAG
+ads opctl distributed-training publish-image
 ```
 
-#### 2a. Test locally with stand-alone docker run.
+#### 2a. Test locally with stand-alone run.
 
 Before triggering the job run, you can test the docker image and verify the training code,
- dependencies etc. You can do this using a local stand-alone docker run or via a docker-compose setup(section 2b)
+ dependencies etc. You can do this using a local stand-alone run or via a docker-compose setup(section 2b)
 
-For a stand-alone docker run, start a docker container with ```bash``` entrypoint.
+In order to test the training code locally
 
-```
-docker run --rm -it --privileged --entrypoint bash $IMAGE_NAME:$TAG
-
-```
-Optionally, you can choose to mount oci keys and code directory to the docker container.  
-
-```
-docker run --rm -it --privileged -v $HOME/.oci:/home/oci_dist_training/.oci -v $PWD:/code --entrypoint bash $IMAGE_NAME:$TAG
-
+``` 
+ads opctl run
+        -f train.yaml 
+        -b local
 ```
 
-You have now a docker container and you are logged into it. Now test your training script with the following command.
+Optionally, you can choose to mount oci keys (update config.ini file) and code directory to the docker container.  
 
-```
-OCI_IAM_TYPE=api_key TF_CONFIG='''{"cluster": {"worker": ["localhost:12345"]}, "task": {"type": "worker", "index": 0}}''' python /code/examples/tensorflow/ctl/train.py 
-```
-**Note** Pass on any args that your training script requires using the ```--``` flag. For example:
-
-```
-OCI_IAM_TYPE=api_key TF_CONFIG='''{"cluster": {"worker": ["localhost:12345"]}, "task": {"type": "worker", "index": 0}}''' python /code/examples/tensorflow/ctl/train.py
+``` 
+ads opctl run
+        -f train.yaml 
+        -b local
+        -s $MOUNT_FOLDER_PATH
 ```
 
-Once done, exit the container with the exit command.
+**Note**: Pass on any args that your training script requires in the ``` ["spec"]["runtime"]["spec"]["args"] ``` section of 
+train.yaml file. For example
 
 ```
-exit
+runtime:
+    kind: python
+    apiVersion: v1.0
+    spec:
+      entryPoint: "/code/train.py" #location of user's training script in docker image.
+      args:  #any arguments that the training script requires.
+        - --data-dir
+        - /code/data
+        - --epochs
+        - "1"
 ```
+**Note**: 
+
+For detailed explanation of local run, Refer this [distributed_training_cmd.md](distributed_training_cmd.md)
 
 You can also test in a clustered manner using docker-compose. Next section.
 
