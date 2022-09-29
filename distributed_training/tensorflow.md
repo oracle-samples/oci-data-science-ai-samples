@@ -4,6 +4,11 @@
 
 All the docker image related artifacts are located under - `oci_dist_training_artifacts/tensorflow/v1/`
 
+### Installation
+
+```
+python3 -m pip install oracle-ads
+```
 
 ### 1. Prepare Docker Image
 The instruction assumes that you are running this within the folder where you ran `ads opctl distributed-training init --framework tensorflow`

@@ -4,6 +4,11 @@
 
 All the docker image related artifacts are located under - `oci_dist_training_artifacts/horovod/v1/`
 
+### Installation
+
+```
+python3 -m pip install oracle-ads
+```
 
 ### 1. Prepare Docker Image
 Horovod provides support for Pytorch and Tensorflow. Within these frameworks, there are two separate docker files, for cpu and gpu.
