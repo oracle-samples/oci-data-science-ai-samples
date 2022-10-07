@@ -400,7 +400,7 @@ Let's see changes that you would need to do to run ```ParameterServerStrategy```
 
 #### 9a Train.py 
 You can have the following training Tensorflow script for ```ParameterServerStrategy``` saved as `train.py` 
-(instead of mnist.py and train.py in case of MultiWorkerMirroredStrategy):
+(just like mnist.py and train.py in case of ```MultiWorkerMirroredStrategy```):
 
 ```
 # Script adapted from tensorflow tutorial: https://www.tensorflow.org/tutorials/distribute/parameter_server_training
@@ -408,53 +408,53 @@ You can have the following training Tensorflow script for ```ParameterServerStra
 import os
 import tensorflow as tf
 import json
+import multiprocessing
 
 NUM_PS = len(json.loads(os.environ['TF_CONFIG'])['cluster']['ps'])
 global_batch_size = 64
 
 
-def worker(num_workers, cluster_spec):
+def worker(num_workers, cluster_resolver):
     # Workers need some inter_ops threads to work properly.
     worker_config = tf.compat.v1.ConfigProto()
     if multiprocessing.cpu_count() < num_workers + 1:
         worker_config.inter_op_parallelism_threads = num_workers + 1
 
     for i in range(num_workers):
+        print("cluster_resolver.task_id: ", cluster_resolver.task_id, flush=True)
+
         s = tf.distribute.Server(
-            cluster_spec,
-            job_name="worker",
-            task_index=i,
+            cluster_resolver.cluster_spec(),
+            job_name=cluster_resolver.task_type,
+            task_index=cluster_resolver.task_id,
             config=worker_config,
             protocol="grpc")
         s.join()
 
 
-def ps(num_ps, cluster_spec):
+def ps(num_ps, cluster_resolver):
+    print("cluster_resolver.task_id: ", cluster_resolver.task_id, flush=True)
     for i in range(num_ps):
         s = tf.distribute.Server(
-            cluster_spec,
-            job_name="ps",
-            task_index=i,
+            cluster_resolver.cluster_spec(),
+            job_name=cluster_resolver.task_type,
+            task_index=cluster_resolver.task_id,
             protocol="grpc")
         s.join()
 
 
-def create_cluster(num_workers=1, num_ps=1, mode="worker"):
+def create_cluster(cluster_resolver, num_workers=1, num_ps=1, mode="worker"):
     os.environ["GRPC_FAIL_FAST"] = "use_caller"
-    cluster_dict = json.loads(os.environ['TF_CONFIG'])['cluster']
-
-    cluster_spec = tf.train.ClusterSpec(cluster_dict)
-    cluster_resolver = tf.distribute.cluster_resolver.SimpleClusterResolver(
-        cluster_spec, rpc_layer="grpc")
 
     if mode.lower() == 'worker':
         print("Starting worker server...", flush=True)
-        worker(num_workers, cluster_spec)
+        worker(num_workers, cluster_resolver)
     else:
         print("Starting ps server...", flush=True)
-        ps(num_ps, cluster_spec)
+        ps(num_ps, cluster_resolver)
 
-    return cluster_resolver, cluster_spec, cluster_dict
+    return cluster_resolver, cluster_resolver.cluster_spec()
+
 
 def decay(epoch):
     if epoch < 3:
@@ -464,16 +464,13 @@ def decay(epoch):
     else:
         return 1e-5
 
-def get_callbacks(model, checkpoint_dir="/opt/ml/checkpoints"):
-    checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
-
+def get_callbacks(model):
     class PrintLR(tf.keras.callbacks.Callback):
         def on_epoch_end(self, epoch, logs=None):
             print('\nLearning rate for epoch {} is {}'.format(epoch + 1, model.optimizer.lr.numpy()), flush=True)
 
     callbacks = [
         tf.keras.callbacks.TensorBoard(log_dir='./logs'),
-        tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix),
         tf.keras.callbacks.LearningRateScheduler(decay),
         PrintLR()
     ]
@@ -482,13 +479,6 @@ def get_callbacks(model, checkpoint_dir="/opt/ml/checkpoints"):
 def create_dir(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
-
-def get_cluster_resolver():
-    cluster_dict = json.loads(os.environ['TF_CONFIG'])['cluster']
-    cluster_spec = tf.train.ClusterSpec(cluster_dict)
-    cluster_resolver = tf.distribute.cluster_resolver.SimpleClusterResolver(
-        cluster_spec, rpc_layer="grpc")
-    return cluster_resolver
 
 def get_artificial_data():
     x = tf.random.uniform((10, 10))
@@ -500,9 +490,10 @@ def get_artificial_data():
     return dataset
 
 
-cluster_resolver = get_cluster_resolver()
+
+cluster_resolver = tf.distribute.cluster_resolver.TFConfigClusterResolver()
 if not os.environ["OCI__MODE"] == "MAIN":
-    create_cluster(num_workers= 1, num_ps=1, mode=os.environ["OCI__MODE"])
+    create_cluster(cluster_resolver, num_workers=1, num_ps=1, mode=os.environ["OCI__MODE"])
     pass
 
 variable_partitioner = (
