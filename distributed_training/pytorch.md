@@ -22,6 +22,13 @@ All the docker image related artifacts are located under `oci_dist_training_arti
 
 ```
 
+### Prerequisite. 
+
+You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#).
+```
+python3 -m pip install oracle-ads[opctl]
+```
+This guide uses ```ads opctl``` for creating distributed training jobs. Refer [distributed_training_cmd.md](distributed_training_cmd.md) for supported commands and options for distributed training.
 
 ### 1. Prepare Docker Image
 
@@ -294,11 +301,11 @@ if __name__ == "__main__":
 
 ```
 
-**Note**: Whenever you change the code, you have to build, tag and push the image to OCI container registry. If you change the tag, it needs to be updated inside the cluster definition yaml.
+**Note**: Whenever you change the code, you have to build, tag and push the image to OCI container registry. This is automatically taken care in ```ads opctl run ``` cli command.
 
 The required python dependencies are provided inside `oci_dist_training_artifacts/pytorch/v1/environment.yaml`.  If you code required additional dependencies, please add them to the `environment.yaml` file. 
 
-**Note**: While updating `environment.yaml` do not remove the existing libraries.
+Also, while updating `environment.yaml` do not remove the existing libraries.
 
 Set the TAG and IMAGE_NAME as environment variables based on your needs -
 ```
@@ -308,27 +315,98 @@ export TAG=latest
 
 Build the docker image -
 ```
-docker build -t $IMAGE_NAME:$TAG \
-    -f oci_dist_training_artifacts/pytorch/v1/Dockerfile .
+ads opctl distributed-training build-image -t $TAG -reg $IMAGE_NAME
+  -df oci_dist_training_artifacts/pytorch/v1/Dockerfile -s $MOUNT_FOLDER_PATH
+```
+
+If you are behind proxy, ads opctl will automatically use your proxy settings( defined via ```no_proxy```, ```http_proxy``` and ```https_proxy```).
+
+### 2. Create yaml file to define your cluster. 
+
+Cluster is specified using a yaml file. Below is an example to bring up 1 master node and 2 worker nodes for training. The code to run is stored in `train.py`. All code is assumed to be present inside `/code` directory within the container.
+
+Please refer to the [documentation](http://10.209.39.50:8000/user_guide/model_training/distributed_training/dask/creating.html) for more details.
+
+```
+# Example train.yaml
+kind: distributed
+apiVersion: v1.0
+spec:
+  name: PyTorch-Distributed
+  infrastructure:
+    kind: infrastructure
+    type: dataScienceJob
+    apiVersion: v1.0
+    spec:
+      projectId: oci.xxxx.<project_ocid>
+      compartmentId: oci.xxxx.<compartment_ocid>
+      displayName: my_distributed_training
+      logGroupId: oci.xxxx.<log_group_ocid>
+      logId: oci.xxx.<log_ocid>
+      subnetId: oci.xxxx.<subnet-ocid>
+      shapeName: VM.GPU2.1
+      blockStorageSize: 50
+  cluster:
+    kind: PYTORCH
+    apiVersion: v1.0
+    spec:
+      image: "@image" 
+      workDir: "oci://my-bucket@my-namespace/path/to/dir/"
+      config:
+        env:
+          - name: NCCL_ASYNC_ERROR_HANDLING
+            value: '1'
+      main:
+        name: PyTorch-Distributed-main
+        replicas: 1
+      worker:
+        name: PyTorch-Distributed-worker
+        replicas: 2
+  runtime:
+    kind: python
+    apiVersion: v1.0
+    spec:
+      entryPoint: "/code/train.py"
+      args:
+        - --data-dir
+        - /home/datascience/data
+        - --output-dir
+        - /home/datascience/outputs
+        - --timeout
+        - 5
 
 ```
 
-If you are behind proxy, use this command - 
+### 3. LocalTesting
+Before triggering the job run, you can test the docker image and verify the training code, dependencies etc.
+
+#### 3a. Test locally with stand-alone run.(Recommended)
+
+In order to test the training code locally, use the following command. With ```-b local``` flag, it uses a local backend. Further when you need to run this workload on odsc jobs, simply use ```-b job```
+flag instead (default). 
+
+``` 
+ads opctl run
+        -f train.yaml 
+        -b local
+```
+
+If your code requires to use any oci services (like object bucket), you need to mount oci keys from your local host machine onto the docker container. This is already done for you assuming
+the typical location of oci keys ```~/.oci```. You can modify it though, in-case you have keys at a different location. You need to do this in the ```config.ini``` file.
 
 ```
-docker build  --build-arg no_proxy=$no_proxy \
-              --build-arg http_proxy=$http_proxy \
-              --build-arg https_proxy=$http_proxy \
-              -t $IMAGE_NAME:$TAG \
-              -f oci_dist_training_artifacts/pytorch/v1/Dockerfile .
+oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
 ```
 
-Push the docker image - 
-```
-docker push $IMAGE_NAME:$TAG
-```
+Note: The training script location(entrypoint) and associated args will be picked up from the runtime ```train.yaml```.
+**Note**: 
 
-### 2. Test locally with help of `docker-compose`
+For detailed explanation of local run, Refer this [distributed_training_cmd.md](distributed_training_cmd.md)
+
+You can also test in a clustered manner using docker-compose. Next section.
+
+
+#### 3b. Test locally with `docker-compose` based cluster.
 
 Create a `docker-compose.yaml` file and copy the following content.
 ```
@@ -421,61 +499,6 @@ docker compose up
 
 You can learn more about docker compose [here](https://docs.docker.com/compose/)
 
-### 3. Create yaml file to define your cluster. 
-
-Cluster is specified using a yaml file. Below is an example to bring up 1 master node and 2 worker nodes for training. The code to run is stored in `train.py`. All code is assumed to be present inside `/code` directory within the container.
-
-Please refer to the [documentation](http://10.209.39.50:8000/user_guide/model_training/distributed_training/dask/creating.html) for more details.
-
-```
-# Example train.yaml
-kind: distributed
-apiVersion: v1.0
-spec:
-  name: PyTorch-Distributed
-  infrastructure:
-    kind: infrastructure
-    type: dataScienceJob
-    apiVersion: v1.0
-    spec:
-      projectId: oci.xxxx.<project_ocid>
-      compartmentId: oci.xxxx.<compartment_ocid>
-      displayName: my_distributed_training
-      logGroupId: oci.xxxx.<log_group_ocid>
-      logId: oci.xxx.<log_ocid>
-      subnetId: oci.xxxx.<subnet-ocid>
-      shapeName: VM.GPU2.1
-      blockStorageSize: 50
-  cluster:
-    kind: PYTORCH
-    apiVersion: v1.0
-    spec:
-      image: <region.ocir.io/my-tenancy/image-name>
-      workDir: "oci://my-bucket@my-namespace/path/to/dir/"
-      config:
-        env:
-          - name: NCCL_ASYNC_ERROR_HANDLING
-            value: '1'
-      main:
-        name: PyTorch-Distributed-main
-        replicas: 1
-      worker:
-        name: PyTorch-Distributed-worker
-        replicas: 2
-  runtime:
-    kind: python
-    apiVersion: v1.0
-    spec:
-      entryPoint: "train.py"
-      args:
-        - --data-dir
-        - /home/datascience/data
-        - --output-dir
-        - /home/datascience/outputs
-        - --timeout
-        - 5
-
-```
 
 ### 4. Dry Run to validate the Yaml definition
 
@@ -505,3 +528,112 @@ ads opctl watch <job runid>
 ```
 ads opctl distributed-training show-config -f info.yaml
 ```
+
+### 8. Saving Artifacts to Object Storage Buckets
+In case you want to save the artifacts generated by the training process (model checkpoints, TensorBoard logs, etc.) to an object bucket
+you can use the 'sync' feature. The environment variable ``OCI__SYNC_DIR`` exposes the directory location that will be automatically synchronized
+to the configured object storage bucket location. Use this directory in your training script to save the artifacts.
+
+To configure the destination object storage bucket location, use the following settings in the workload yaml file(train.yaml).
+
+```
+    - name: SYNC_ARTIFACTS
+      value: 1
+    - name: WORKSPACE
+      value: "<bucket_name>"
+    - name: WORKSPACE_PREFIX
+      value: "<bucket_prefix>"
+```
+**Note**: Change ``SYNC_ARTIFACTS`` to ``0`` to disable this feature.
+Use ``OCI__SYNC_DIR`` env variable in your code to save the artifacts. Example:
+
+```
+model_path = os.path.join(os.environ.get("OCI__SYNC_DIR"),"model.pt")
+torch.save(model, model_path)
+```
+
+### 9. Profiling
+At times, you may want to profile your training setup for optimization/performance tuning. Profiling typically gives a detailed analysis
+of cpu utilization, gpu utilization, top cuda kernels, top operators etc. You can choose to profile your training setup using the 
+native Pytorch profiler or using a third party profiler such as [Nvidia Nsights](https://developer.nvidia.com/nsight-systems).
+
+#### 9a. Profiling using Pytorch Profiler.
+
+[Pytorch Profiler](https://pytorch.org/docs/stable/profiler.html) is a native offering from Pytorch for Pytorch performance profiling. 
+Profiling is invoked using code instrumentation using the following api. 
+ [```torch.profiler.profile```](https://pytorch.org/docs/stable/profiler.html#torch.profiler.profile) 
+ 
+
+Refer the above link for changes that you need to do in your training script for instrumentation. 
+You should choose the ```OCI__SYNC_DIR``` directory to save the profiling logs. For example:
+
+```
+prof =  torch.profiler.profile(activities=[torch.profiler.ProfilerActivity.CPU,torch.profiler.ProfilerActivity.CUDA],
+        schedule=torch.profiler.schedule(
+            wait=1,
+            warmup=1,
+            active=3,
+            repeat=1),
+        on_trace_ready=torch.profiler.tensorboard_trace_handler(os.environ.get("OCI__SYNC_DIR") + "/logs"),
+        with_stack=False)
+prof.start()    
+# training code
+prof.end()   
+```
+
+Also, the sync feature `SYNC_ARTIFACTS` should be enabled ('1') to sync the profiling logs to the configured object storage. 
+Thereafter, use Tensorboard to view logs. Refer this [tensorboard.md](tensorboard.md) for set-up on your computer.
+On top of this you would need to install the [Pytorch Tensorboard Plugin](https://github.com/pytorch/kineto/tree/main/tb_plugin).
+
+``
+pip install torch-tb-profiler
+``
+
+**The profiling logs are generated per node** and hence you will see logs for each job run. While invoking the tensorboard, point to the parent `<job_id>` directory to view all logs at once.
+```
+export OCIFS_IAM_KEY=api_key tensorboard --logdir oci://my-bucket@my-namespace/path_to_job_id
+```
+
+#### 9b. Profiling using Nvidia Nsights.
+
+[Nvidia Nsights](https://developer.nvidia.com/nsight-systems) is a system wide profiling tool from Nvidia that can be used to profile Deep Learning workloads. 
+Nsights requires no change in your training code. This works on process level. You can enable this **experimental** feature(highlighted in bold) in your training setup via the following configuration in the 
+runtime yaml file.
+
+
+<pre>
+    spec:
+      image: "@image"
+      workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
+      name: "tf_multiworker"
+      config:
+        env:
+          - name: WORKER_PORT #Optional. Defaults to 12345
+            value: 12345
+          - name: SYNC_ARTIFACTS #Mandatory: Switched on by Default.
+            value: 1
+          - name: WORKSPACE #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket to sync generated artifacts to.
+            value: "<bucket_name>"
+          - name: WORKSPACE_PREFIX #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket folder to sync generated artifacts to.
+            value: "<bucket_prefix>"
+          <b>- name: PROFILE #0: Off 1: On
+            value: 1
+          - name: PROFILE_CMD
+            value: "nsys profile -w true -t cuda,nvtx,osrt,cudnn,cublas -s none -o /opt/ml/nsight_report -x true"  </b>
+      main:
+        name: "chief"
+        replicas: 1 #this will be always 1.
+      worker:
+        name: "worker"
+        replicas: 1 #number of workers. This is in addition to the 'chief' worker. Could be more than 1
+</pre>
+
+Refer [here](https://docs.nvidia.com/nsight-systems/UserGuide/index.html#cli-profile-command-switch-options) for `nsys profile` command options. You can modify the command within the
+`PROFILE_CMD` but remember this is all experimental. The profiling reports are generated per node. You need to download the reports to your computer manually or via the oci
+command.
+
+```
+oci os object bulk-download -ns <namespace> -bn <bucket_name> --download-dir /path/on/your/computer --prefix path/on/bucket/<job_id>
+```
+To view the reports, you would need to install Nsight Systems app from [here](https://developer.nvidia.com/nsight-systems). 
+Thereafter, open the downloaded reports in the Nsight Systems app.

@@ -4,13 +4,19 @@
 
 All the docker image related artifacts are located under - `oci_dist_training_artifacts/tensorflow/v1/`
 
+### Prerequisite. 
 
+You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#).
+```
+python3 -m pip install oracle-ads[opctl]
+```
+This guide uses ```ads opctl``` for creating distributed training jobs. Refer [distributed_training_cmd.md](distributed_training_cmd.md) for supported commands and options for distributed training.
 ### 1. Prepare Docker Image
 The instruction assumes that you are running this within the folder where you ran `ads opctl distributed-training init --framework tensorflow`
 
 All files in the current directory is copied over to `/code` folder inside docker image.
 
-For example, you can have the following training Tensorflow script saved as `mnist.py`:
+For example, you can have the following training Tensorflow script for MultiWorkerMirroredStrategy saved as `mnist.py`:
 
 ```
 # Script adapted from tensorflow tutorial: https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras
@@ -174,12 +180,11 @@ model.fit(train_dataset, epochs=2, callbacks=mnist.get_callbacks(model, checkpoi
 model.save(model_dir, save_format='tf')
 ```
 
-**Note**: Whenever you change the code, you have to build, tag and push the image to repo. If you change the tag, it needs to be updated inside the cluster definition yaml.
+**Note**: Whenever you change the code, you have to build, tag and push the image to repo. This is automatically done in ```ads opctl run ``` cli command.
 
 The required python dependencies are provided inside the conda environment file `oci_dist_training_artifacts/tensorflow/v1/environments.yaml`.  If your code requires additional dependency, update this file. 
 
-**Note**: While updating `environments.yaml` do not remove the existing libraries. You can append to the list.
-
+Also, while updating `environments.yaml` do not remove the existing libraries. You can append to the list.
 Building docker image - 
 
 Update the TAG and the IMAGE_NAME as per your needs - 
@@ -190,65 +195,99 @@ export TAG=latest
 ```
 
 ```
-docker build -t $IMAGE_NAME:$TAG \
-    -f oci_dist_training_artifacts/tensorflow/v1/Dockerfile .
-
+ads opctl distributed-training build-image -t $TAG -reg $IMAGE_NAME
+  -df oci_dist_training_artifacts/tensorflow/v1/Dockerfile -s $MOUNT_FOLDER_PATH
 ```
 
-If you are behind proxy, use this command - 
+If you are behind proxy, ads opctl will automatically use your proxy settings( defined via ```no_proxy```, ```http_proxy``` and ```https_proxy```). 
+
+
+### 2. Create yaml file to define your cluster. Here is an example.
+
+In this example, we bring up 1 worker node and 1 chief-worker node. 
+The training code to run is `train.py`. All your training code is assumed to be present inside `/code` directory within the container.
+Additionally, you can also put any data files inside the same directory (and pass on the location ex '/code/data/**' as an argument to your training script using runtime->spec->args).
 
 ```
-docker build  --build-arg no_proxy=$no_proxy \
-              --build-arg http_proxy=$http_proxy \
-              --build-arg https_proxy=$http_proxy \
-              -t $IMAGE_NAME:$TAG \
-              -f oci_dist_training_artifacts/tensorflow/v1/Dockerfile .
+kind: distributed
+apiVersion: v1.0
+spec:
+  infrastructure:
+    kind: infrastructure
+    type: dataScienceJob
+    apiVersion: v1.0
+    spec:
+      projectId: oci.xxxx.<project_ocid>
+      compartmentId: oci.xxxx.<compartment_ocid>
+      displayName: HVD-Distributed-TF
+      logGroupId: oci.xxxx.<log_group_ocid>
+      subnetId: oci.xxxx.<subnet-ocid>
+      shapeName: VM.Standard2.4
+      blockStorageSize: 50
+  cluster:
+    kind: TENSORFLOW
+    apiVersion: v1.0
+    spec:
+      image: "@image"
+      workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
+      name: "tf_multiworker"
+      config:
+        env:
+          - name: WORKER_PORT #Optional. Defaults to 12345
+            value: 12345
+          - name: SYNC_ARTIFACTS #Mandatory: Switched on by Default.
+            value: 1
+          - name: WORKSPACE #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket to sync generated artifacts to.
+            value: "<bucket_name>"
+          - name: WORKSPACE_PREFIX #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket folder to sync generated artifacts to.
+            value: "<bucket_prefix>"
+      main:
+        name: "chief"
+        replicas: 1 #this will be always 1.
+      worker:
+        name: "worker"
+        replicas: 1 #number of workers. This is in addition to the 'chief' worker. Could be more than 1
+  runtime:
+    kind: python
+    apiVersion: v1.0
+    spec:
+    spec:
+      entryPoint: "/code/train.py" #location of user's training script in docker image.
+      args:  #any arguments that the training script requires.
+          - --data-dir    # assuming data folder has been bundled in the docker image.
+          - /code/data/
+      env:
 ```
 
-Push the docker image - 
+### 3. Local Testing
+Before triggering the job run, you can test the docker image and verify the training code, dependencies etc. 
 
-```
-docker push $IMAGE_NAME:$TAG
-```
+#### 3a. Test locally with stand-alone run.(Recommended)
 
-#### 2a. Test locally with stand-alone docker run.
+In order to test the training code locally, use the following command. With ```-b local``` flag, it uses a local backend. Further when you need to run this workload on odsc jobs, simply use ```-b job```
+flag instead (default). 
 
-Before triggering the job run, you can test the docker image and verify the training code,
- dependencies etc. You can do this using a local stand-alone docker run or via a docker-compose setup(section 2b)
-
-For a stand-alone docker run, start a docker container with ```bash``` entrypoint.
-
-```
-docker run --rm -it --privileged --entrypoint bash $IMAGE_NAME:$TAG
-
-```
-Optionally, you can choose to mount oci keys and code directory to the docker container.  
-
-```
-docker run --rm -it --privileged -v $HOME/.oci:/home/oci_dist_training/.oci -v $PWD:/code --entrypoint bash $IMAGE_NAME:$TAG
-
+``` 
+ads opctl run
+        -f train.yaml 
+        -b local
 ```
 
-You have now a docker container and you are logged into it. Now test your training script with the following command.
+If your code requires to use any oci services (like object bucket), you need to mount oci keys from your local host machine onto the docker container. This is already done for you assuming
+the typical location of oci keys ```~/.oci```. You can modify it though, in-case you have keys at a different location. You need to do this in the ```config.ini``` file.
 
 ```
-OCI_IAM_TYPE=api_key TF_CONFIG='''{"cluster": {"worker": ["localhost:12345"]}, "task": {"type": "worker", "index": 0}}''' python /code/examples/tensorflow/ctl/train.py 
-```
-**Note** Pass on any args that your training script requires using the ```--``` flag. For example:
-
-```
-OCI_IAM_TYPE=api_key TF_CONFIG='''{"cluster": {"worker": ["localhost:12345"]}, "task": {"type": "worker", "index": 0}}''' python /code/examples/tensorflow/ctl/train.py
+oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
 ```
 
-Once done, exit the container with the exit command.
+Note: The training script location(entrypoint) and associated args will be picked up from the runtime ```train.yaml```.
+**Note**: 
 
-```
-exit
-```
+For detailed explanation of local run, Refer this [distributed_training_cmd.md](distributed_training_cmd.md)
 
 You can also test in a clustered manner using docker-compose. Next section.
 
-#### 2b. Test locally with help of `docker-compose`
+#### 3b. Test locally with `docker-compose` based cluster.
 
 Create `docker-compose.yaml` file and copy the following content.
 
@@ -304,63 +343,6 @@ Things to keep in mind:
 4. `OCI__WORK_DIR` can be a location in object storage or a local folder like `OCI__WORK_DIR: /work_dir`.
 5. In case you want to use a config_profile other than DEFAULT, please change it in `OCI_CONFIG_PROFILE` env variable.
 
-### 3. Create yaml file to define your cluster. Here is an example.
-
-In this example, we bring up 1 worker node and 1 chief-worker node. 
-The training code to run is `train.py`. All code is assumed to be present inside `/code` directory within the container.
-Additionaly you can also put any data files inside the same directory (and pass on the location ex '/code/data/**' as an argument to your training script).
-
-```
-kind: distributed
-apiVersion: v1.0
-spec:
-  infrastructure:
-    kind: infrastructure
-    type: dataScienceJob
-    apiVersion: v1.0
-    spec:
-      projectId: oci.xxxx.<project_ocid>
-      compartmentId: oci.xxxx.<compartment_ocid>
-      displayName: HVD-Distributed-TF
-      logGroupId: oci.xxxx.<log_group_ocid>
-      subnetId: oci.xxxx.<subnet-ocid>
-      shapeName: VM.Standard2.4
-      blockStorageSize: 50
-  cluster:
-    kind: TENSORFLOW
-    apiVersion: v1.0
-    spec:
-      image: "<region>.ocir.io/<tenancy_id>/<repo_name>/<image_name>:<image_tag>"
-      workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
-      name: "tf_multiworker"
-      config:
-        env:
-          - name: WORKER_PORT #Optional. Defaults to 12345
-            value: 12345
-          - name: SYNC_ARTIFACTS #Mandatory: Switched on by Default.
-            value: 1
-          - name: WORKSPACE #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket to sync generated artifacts to.
-            value: "<bucket_name>"
-          - name: WORKSPACE_PREFIX #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket folder to sync generated artifacts to.
-            value: "<bucket_prefix>"
-      main:
-        name: "chief"
-        replicas: 1 #this will be always 1.
-      worker:
-        name: "worker"
-        replicas: 1 #number of workers. This is in addition to the 'chief' worker. Could be more than 1
-  runtime:
-    kind: python
-    apiVersion: v1.0
-    spec:
-    spec:
-      entryPoint: "/code/train.py" #location of user's training script in docker image.
-      args:  #any arguments that the training script requires.
-          - --data-dir    # assuming data folder has been bundled in the docker image.
-          - /code/data/
-      env:
-```
-
 ### 4. Dry Run to validate the Yaml definition 
 
 ```
@@ -412,3 +394,354 @@ Use ``OCI__SYNC_DIR`` env variable in your code to save the artifacts. Example:
 ```
 tf.keras.callbacks.ModelCheckpoint(os.path.join(os.environ.get("OCI__SYNC_DIR"),"ckpts",'checkpoint-{epoch}.h5'))
 ```
+### 9. Other Tensorflow Strategies supported
+Tensorflow has two multi-worker strategies: ```MultiWorkerMirroredStrategy``` and ```ParameterServerStrategy```. 
+Let's see changes that you would need to do to run ```ParameterServerStrategy``` workload.
+
+#### 9a Train.py 
+You can have the following training Tensorflow script for ```ParameterServerStrategy``` saved as `train.py` 
+(just like mnist.py and train.py in case of ```MultiWorkerMirroredStrategy```):
+
+```
+# Script adapted from tensorflow tutorial: https://www.tensorflow.org/tutorials/distribute/parameter_server_training
+
+import os
+import tensorflow as tf
+import json
+import multiprocessing
+
+NUM_PS = len(json.loads(os.environ['TF_CONFIG'])['cluster']['ps'])
+global_batch_size = 64
+
+
+def worker(num_workers, cluster_resolver):
+    # Workers need some inter_ops threads to work properly.
+    worker_config = tf.compat.v1.ConfigProto()
+    if multiprocessing.cpu_count() < num_workers + 1:
+        worker_config.inter_op_parallelism_threads = num_workers + 1
+
+    for i in range(num_workers):
+        print("cluster_resolver.task_id: ", cluster_resolver.task_id, flush=True)
+
+        s = tf.distribute.Server(
+            cluster_resolver.cluster_spec(),
+            job_name=cluster_resolver.task_type,
+            task_index=cluster_resolver.task_id,
+            config=worker_config,
+            protocol="grpc")
+        s.join()
+
+
+def ps(num_ps, cluster_resolver):
+    print("cluster_resolver.task_id: ", cluster_resolver.task_id, flush=True)
+    for i in range(num_ps):
+        s = tf.distribute.Server(
+            cluster_resolver.cluster_spec(),
+            job_name=cluster_resolver.task_type,
+            task_index=cluster_resolver.task_id,
+            protocol="grpc")
+        s.join()
+
+
+def create_cluster(cluster_resolver, num_workers=1, num_ps=1, mode="worker"):
+    os.environ["GRPC_FAIL_FAST"] = "use_caller"
+
+    if mode.lower() == 'worker':
+        print("Starting worker server...", flush=True)
+        worker(num_workers, cluster_resolver)
+    else:
+        print("Starting ps server...", flush=True)
+        ps(num_ps, cluster_resolver)
+
+    return cluster_resolver, cluster_resolver.cluster_spec()
+
+
+def decay(epoch):
+    if epoch < 3:
+        return 1e-3
+    elif epoch >= 3 and epoch < 7:
+        return 1e-4
+    else:
+        return 1e-5
+
+def get_callbacks(model):
+    class PrintLR(tf.keras.callbacks.Callback):
+        def on_epoch_end(self, epoch, logs=None):
+            print('\nLearning rate for epoch {} is {}'.format(epoch + 1, model.optimizer.lr.numpy()), flush=True)
+
+    callbacks = [
+        tf.keras.callbacks.TensorBoard(log_dir='./logs'),
+        tf.keras.callbacks.LearningRateScheduler(decay),
+        PrintLR()
+    ]
+    return callbacks
+
+def create_dir(dir):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
+def get_artificial_data():
+    x = tf.random.uniform((10, 10))
+    y = tf.random.uniform((10,))
+
+    dataset = tf.data.Dataset.from_tensor_slices((x, y)).shuffle(10).repeat()
+    dataset = dataset.batch(global_batch_size)
+    dataset = dataset.prefetch(2)
+    return dataset
+
+
+
+cluster_resolver = tf.distribute.cluster_resolver.TFConfigClusterResolver()
+if not os.environ["OCI__MODE"] == "MAIN":
+    create_cluster(cluster_resolver, num_workers=1, num_ps=1, mode=os.environ["OCI__MODE"])
+    pass
+
+variable_partitioner = (
+    tf.distribute.experimental.partitioners.MinSizePartitioner(
+        min_shard_bytes=(256 << 10),
+        max_shards=NUM_PS))
+
+strategy = tf.distribute.ParameterServerStrategy(
+    cluster_resolver,
+    variable_partitioner=variable_partitioner)
+
+dataset = get_artificial_data()
+
+with strategy.scope():
+    model = tf.keras.models.Sequential([tf.keras.layers.Dense(10)])
+    model.compile(tf.keras.optimizers.SGD(), loss="mse", steps_per_execution=10)
+
+callbacks = get_callbacks(model)
+model.fit(dataset, epochs=5, steps_per_epoch=20, callbacks=callbacks)
+
+```
+
+#### 9b Train.yaml
+
+The only difference here is that the parameter server train.yaml also needs to have `ps` worker-pool. This will create dedicated instance(s) for Tensorflow Parameter Server.
+Use the following train.yaml: 
+
+```
+kind: distributed
+apiVersion: v1.0
+spec:
+  infrastructure:
+    kind: infrastructure
+    type: dataScienceJob
+    apiVersion: v1.0
+    spec:
+      projectId: oci.xxxx.<project_ocid>
+      compartmentId: oci.xxxx.<compartment_ocid>
+      displayName: Distributed-TF
+      logGroupId: oci.xxxx.<log_group_ocid>
+      subnetId: oci.xxxx.<subnet-ocid>
+      shapeName: VM.Standard2.4
+      blockStorageSize: 50
+  cluster:
+    kind: TENSORFLOW
+    apiVersion: v1.0
+    spec:
+      image: "@image"
+      workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
+      name: "tf_ps"
+      config:
+        env:
+          - name: WORKER_PORT #Optional. Defaults to 12345
+            value: 12345
+          - name: SYNC_ARTIFACTS #Mandatory: Switched on by Default.
+            value: 1
+          - name: WORKSPACE #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket to sync generated artifacts to.
+            value: "<bucket_name>"
+          - name: WORKSPACE_PREFIX #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket folder to sync generated artifacts to.
+            value: "<bucket_prefix>"
+      main:
+        name: "coordinator"
+        replicas: 1 #this will be always 1.
+      worker:
+        name: "worker"
+        replicas: 1 #number of workers; any number > 0
+      ps:
+        name: "ps" # number of parameter servers; any number > 0
+        replicas: 1
+  runtime:
+    kind: python
+    apiVersion: v1.0
+    spec:
+    spec:
+      entryPoint: "/code/train.py" #location of user's training script in docker image.
+      args:  #any arguments that the training script requires.
+      env:
+```
+
+#### 9c Test locally with stand-alone run. (Recommended)
+
+In order to test the training code locally, use the following command. With ```-b local``` flag, it uses a local backend. Further when you need to run this workload on odsc jobs, simply use ```-b job```
+flag instead (default). 
+
+``` 
+ads opctl run
+        -f train.yaml 
+        -b local
+```
+
+If your code requires to use any oci services (like object bucket), you need to mount oci keys from your local host machine onto the docker container. This is already done for you assuming
+the typical location of oci keys ```~/.oci```. You can modify it though, in-case you have keys at a different location. You need to do this in the ```config.ini``` file.
+
+```
+oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
+```
+
+Note: The training script location(entrypoint) and associated args will be picked up from the runtime ```train.yaml```.
+**Note**: 
+
+For detailed explanation of local run, Refer this [distributed_training_cmd.md](distributed_training_cmd.md)
+
+You can also test in a clustered manner using docker-compose. Next section.
+
+#### 9d Local Testing using docker-compose
+
+You may use the following docker-compose.yml for running ps workloads locally:
+
+```
+version: "3"
+services:
+  chief:
+    network_mode: "host"
+    environment:
+      WORKER_PORT: 12344
+      OCI_IAM_TYPE: api_key
+      OCI__CLUSTER_TYPE: TENSORFLOW
+      OCI__ENTRY_SCRIPT: /code/train.py
+      OCI__MODE: MAIN
+      OCI__WORKER_COUNT: '1'
+      OCI__PS_COUNT: '1'
+      OCI__WORK_DIR: /work_dir
+    image: <region>.ocir.io/<tenancy_id>/<repo_name>/<image_name>:<image_tag>
+    volumes:
+      - ~/.oci:/home/oci_dist_training/.oci
+      - ./work_dir:/work_dir
+      - ./artifacts:/opt/ml
+  worker-0:
+    network_mode: "host"
+    environment:
+      WORKER_PORT: 12345
+      OCI_IAM_TYPE: api_key
+      OCI__CLUSTER_TYPE: TENSORFLOW
+      OCI__ENTRY_SCRIPT: /code/train.py
+      OCI__MODE: WORKER
+      OCI__WORKER_COUNT: '1'
+      OCI__PS_COUNT: '1'
+      OCI__SYNC_DIR: /opt/ml
+      OCI__WORK_DIR: /work_dir
+    image: <region>.ocir.io/<tenancy_id>/<repo_name>/<image_name>:<image_tag>
+    volumes:
+      - ~/.oci:/home/oci_dist_training/.oci
+      - ./work_dir:/work_dir
+      - ./artifacts:/opt/ml
+  ps-0:
+    network_mode: "host"
+    environment:
+      WORKER_PORT: 12346
+      OCI_IAM_TYPE: api_key
+      OCI__CLUSTER_TYPE: TENSORFLOW
+      OCI__ENTRY_SCRIPT: /code/train.py
+      OCI__MODE: PS
+      OCI__WORKER_COUNT: '1'
+      OCI__PS_COUNT: '1'
+      OCI__SYNC_DIR: /opt/ml
+      OCI__WORK_DIR: /work_dir
+    image: <region>.ocir.io/<tenancy_id>/<repo_name>/<image_name>:<image_tag>
+    volumes:
+      - ~/.oci:/home/oci_dist_training/.oci
+      - ./work_dir:/work_dir
+      - ./artifacts:/opt/ml
+
+```
+
+The rest of the [steps](#4.-dry-run-to-validate-the-yaml-definition) remain the same and should be followed as it is.
+
+
+### 10. Profiling
+At times, you may want to profile your training setup for optimization/performance tuning. Profiling typically gives a detailed analysis
+of cpu utilization, gpu utilization, top cuda kernels, top operators etc. You can choose to profile your training setup using the 
+native Tensorflow profiler or using a third party profiler such as [Nvidia Nsights](https://developer.nvidia.com/nsight-systems).
+
+#### 10a. Profiling using Tensorflow Profiler.
+
+[Tensorflow Profiler](https://www.tensorflow.org/tensorboard/tensorboard_profiling_keras) is a native offering from Tensforflow for Tensorflow performance profiling. 
+Profiling is invoked using code instrumentation using one of the following apis. 
+1. [```tf.keras.callbacks.TensorBoard```](https://www.tensorflow.org/tensorboard/tensorboard_profiling_keras) 
+2. [```tf.profiler.experimental.Profile```](https://www.tensorflow.org/api_docs/python/tf/profiler/experimental/Profile) 
+
+Refer above links for changes that you need to do in your training script for instrumentation. 
+You should choose the ```OCI__SYNC_DIR``` directory to save the profiling logs. For example:
+
+```
+options = tf.profiler.experimental.ProfilerOptions(
+     host_tracer_level=2,
+     python_tracer_level=1,
+     device_tracer_level=1,
+     delay_ms=None)
+with tf.profiler.experimental.Profile(os.environ.get("OCI__SYNC_DIR") + "/logs",options=options):
+    # training code 
+
+```
+In case of keras callback:
+
+```
+tboard_callback = tf.keras.callbacks.TensorBoard(log_dir = os.environ.get("OCI__SYNC_DIR") + "/logs",
+                                                 histogram_freq = 1,
+                                                 profile_batch = '500,520')
+model.fit(...,callbacks = [tboard_callback])
+
+```
+Also, the sync feature `SYNC_ARTIFACTS` should be enabled ('1') to sync the profiling logs to the configured object storage. 
+Thereafter, use Tensorboard to view logs. Refer this [tensorboard.md](tensorboard.md) for set-up on your computer.
+**The profiling logs are generated per node** and hence you will see logs for each job run. While invoking the tensorboard, point to the parent `<job_id>` directory to view all logs at once.
+```
+export OCIFS_IAM_KEY=api_key tensorboard --logdir oci://my-bucket@my-namespace/path_to_job_id
+```
+
+#### 10b. Profiling using Nvidia Nsights.
+
+[Nvidia Nsights](https://developer.nvidia.com/nsight-systems) is a system wide profiling tool from Nvidia that can be used to profile Deep Learning workloads. 
+Nsights requires no change in your training code. This works on process level. You can enable this **experimental** feature(highlighted in bold) in your training setup via the following configuration in the 
+runtime yaml file.
+
+
+<pre>
+    spec:
+      image: "@image"
+      workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
+      name: "tf_multiworker"
+      config:
+        env:
+          - name: WORKER_PORT #Optional. Defaults to 12345
+            value: 12345
+          - name: SYNC_ARTIFACTS #Mandatory: Switched on by Default.
+            value: 1
+          - name: WORKSPACE #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket to sync generated artifacts to.
+            value: "<bucket_name>"
+          - name: WORKSPACE_PREFIX #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket folder to sync generated artifacts to.
+            value: "<bucket_prefix>"
+          <b>- name: PROFILE #0: Off 1: On
+            value: 1
+          - name: PROFILE_CMD
+            value: "nsys profile -w true -t cuda,nvtx,osrt,cudnn,cublas -s none -o /opt/ml/nsight_report -x true"  </b>
+      main:
+        name: "chief"
+        replicas: 1 #this will be always 1.
+      worker:
+        name: "worker"
+        replicas: 1 #number of workers. This is in addition to the 'chief' worker. Could be more than 1
+</pre>
+
+Refer [here](https://docs.nvidia.com/nsight-systems/UserGuide/index.html#cli-profile-command-switch-options) for `nsys profile` command options. You can modify the command within the
+`PROFILE_CMD` but remember this is all experimental. The profiling reports are generated per node. You need to download the reports to your computer manually or via the oci
+command.
+
+```
+oci os object bulk-download -ns <namespace> -bn <bucket_name> --download-dir /path/on/your/computer --prefix path/on/bucket/<job_id>
+```
+To view the reports, you would need to install Nsight Systems app from [here](https://developer.nvidia.com/nsight-systems). 
+Thereafter, open the downloaded reports in the Nsight Systems app.
