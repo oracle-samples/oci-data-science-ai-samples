@@ -513,7 +513,7 @@ spec:
     kind: python
     apiVersion: v1.0
     spec:
-      entryPoint: "train.py"
+      entryPoint: "/code/train.py"
       args:
         - --data-dir
         - /home/datascience/data
