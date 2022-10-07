@@ -4,11 +4,13 @@
 
 All the docker image related artifacts are located under - `oci_dist_training_artifacts/horovod/v1/`
 
-### Installation
+### Prerequisite. 
 
+You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#).
 ```
-python3 -m pip install oracle-ads
+python3 -m pip install oracle-ads[opctl]
 ```
+This guide uses ```ads opctl``` for creating distributed training jobs. Refer [distributed_training_cmd.md](distributed_training_cmd.md) for supported commands and options for distributed training.
 
 ### 1. Prepare Docker Image
 Horovod provides support for Pytorch and Tensorflow. Within these frameworks, there are two separate docker files, for cpu and gpu.
@@ -447,11 +449,11 @@ test()
 ```
 
 
-**Note**: Whenever you change the code, you have to build, tag and push the image to repo. This behaviour is automatically taken care in ```ads opctl run ``` cli command.
+**Note**: Whenever you change the code, you have to build, tag and push the image to repo. This is automatically done in the ```ads opctl run ``` cli command.
 
 The required python dependencies are provided inside the conda environment file `oci_dist_training_artifacts/horovod/v1/conda-<pytorch|tensorflow>-<cpu|gpu>.yaml`.  If your code requires additional dependency, update this file. 
 
-**Note**: While updating `conda-<pytorch|tensorflow>-<cpu|gpu>.yaml` do not remove the existing libraries. You can append to the list.
+Also, while updating `conda-<pytorch|tensorflow>-<cpu|gpu>.yaml` do not remove the existing libraries. You can append to the list.
 
 Building docker image - 
 
@@ -467,67 +469,105 @@ ads opctl distributed-training build-image -t $TAG -reg $IMAGE_NAME
   -df oci_dist_training_artifacts/horovod/v1/<pytorch|tensorflow>.<cpu|gpu>.Dockerfile -s $MOUNT_FOLDER_PATH
 ```
 
-If you are behind proxy, use this command - 
+If you are behind proxy, ads opctl will automatically use your proxy settings( defined via ```no_proxy```, ```http_proxy``` and ```https_proxy```).
+
+### 2. Create yaml file to define your cluster. Here is an example.
+
+In this example, we bring up 2 worker nodes and 1 scheduler node. The training code to run is `train.py`. All code is assumed to be present inside `/code` directory within the container. Additionaly 
+you can also put any data files inside the same directory (and pass on the location ex '/code/data/**' as an argument to your training script).
 
 ```
-docker build  --build-arg no_proxy=$no_proxy \
-              --build-arg http_proxy=$http_proxy \
-              --build-arg https_proxy=$http_proxy \
-              -t $IMAGE_NAME:$TAG \
-              -f oci_dist_training_artifacts/horovod/v1/<pytorch|tensorflow>.<cpu|gpu>.Dockerfile .
-```
-
-Push the docker image - 
-
-```
-ads opctl distributed-training publish-image
-```
-
-#### 2a. Test locally with stand-alone run.
-
-Before triggering the job run, you can test the docker image and verify the training code,
- dependencies etc. You can do this using a local stand-alone run or via a docker-compose setup(section 2b)
-
-In order to test the training code locally
-
-``` 
-ads opctl run
-        -f train.yaml 
-        -b local
-```
-
-Optionally, you can choose to mount oci keys (update config.ini file) and code directory to the docker container.  
-
-``` 
-ads opctl run
-        -f train.yaml 
-        -b local
-        -s $MOUNT_FOLDER_PATH
-```
-
-**Note**: Pass on any args that your training script requires in the ``` ["spec"]["runtime"]["spec"]["args"] ``` section of 
-train.yaml file. For example
-
-```
-runtime:
+kind: distributed
+apiVersion: v1.0
+spec:
+  infrastructure: # This section maps to Job definition. Does not include environment variables
+    kind: infrastructure
+    type: dataScienceJob
+    apiVersion: v1.0
+    spec:
+      projectId: oci.xxxx.<project_ocid>
+      compartmentId: oci.xxxx.<compartment_ocid>
+      displayName: HVD-Distributed-TF
+      logGroupId: oci.xxxx.<log_group_ocid>
+      subnetId: oci.xxxx.<subnet-ocid>
+      shapeName: VM.Standard2.4 #use a gpu shape such as VM.GPU2.1 incase you have built a gpu based docker image.
+      blockStorageSize: 50
+  cluster:
+    kind: HOROVOD
+    apiVersion: v1.0
+    spec:
+      image: "@image" 
+      workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
+      name: "horovod_tf"
+      config:
+        env:
+          # MIN_NP, MAX_NP and SLOTS are inferred from the shape. Modify only when needed.
+          # - name: MIN_NP
+          #   value: 2
+          # - name: MAX_NP
+          #   value: 4
+          # - name: SLOTS
+          #   value: 2
+          - name: WORKER_PORT
+            value: 12345
+          - name: START_TIMEOUT #Optional: Defaults to 600.
+            value: 600
+          - name: ENABLE_TIMELINE # Optional: Disabled by Default.Significantly increases training duration if switched on (1).
+            value: 0
+          - name: SYNC_ARTIFACTS #Mandatory: Switched on by Default.
+            value: 1
+          - name: WORKSPACE #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket to sync generated artifacts to.
+            value: "<bucket_name>"
+          - name: WORKSPACE_PREFIX #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket folder to sync generated artifacts to.
+            value: "<bucket_prefix>"
+          - name: HOROVOD_ARGS # Parameters for cluster tuning.
+            value: "--verbose"
+      main:
+        name: "worker-main"
+        replicas: 1 #this will be always 1. Handles scheduler's responsibilities too.
+      worker:
+        name: "worker-0"
+        replicas: 1 #number of workers. This is in addition to the 'worker-main' worker. Could be more than 1
+  runtime:
     kind: python
     apiVersion: v1.0
     spec:
       entryPoint: "/code/train.py" #location of user's training script in docker image.
       args:  #any arguments that the training script requires.
-        - --data-dir
-        - /code/data
-        - --epochs
-        - "1"
+          - --data-dir    # assuming data folder has been bundled in the docker image.
+          - /code/data/mnist.npz
+      env:
 ```
 
+###3. Local Testing
+Before triggering the job run, you can test the docker image and verify the training code, dependencies etc.
+
+#### 3a. Test locally with stand-alone run.(Recommended)
+
+In order to test the training code locally, use the following command. With ```-b local``` flag, it uses a local backend. Further when you need to run this workload on odsc jobs, simply use ```-b job```
+flag instead (default). 
+
+``` 
+ads opctl run
+        -f train.yaml 
+        -b local
+```
+
+If your code requires to use any oci services (like object bucket), you need to mount oci keys from your local host machine onto the docker container. This is already done for you assuming
+the typical location of oci keys ```~/.oci```. You can modify it though, in-case you have keys at a different location. You need to do this in the ```config.ini``` file.
+
+```
+oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
+```
+
+Note: The training script location(entrypoint) and associated args will be picked up from the runtime ```train.yaml```.
 **Note**: 
 
 For detailed explanation of local run, Refer this [distributed_training_cmd.md](distributed_training_cmd.md)
 
 You can also test in a clustered manner using docker-compose. Next section.
 
-#### 2b. Test locally with help of `docker-compose`
+#### 3b. Test locally with `docker-compose` based cluster.
 
 Create `docker-compose.yaml` file and copy the following content.
 
@@ -611,73 +651,7 @@ Things to keep in mind:
 5. `OCI__WORK_DIR` can be a location in object storage or a local folder like `OCI__WORK_DIR: /work_dir`.
 6. In case you want to use a config_profile other than DEFAULT, please change it in `OCI_CONFIG_PROFILE` env variable.
 
-### 3. Create yaml file to define your cluster. Here is an example.
 
-In this example, we bring up 2 worker nodes and 1 scheduler node. The training code to run is `train.py`. All code is assumed to be present inside `/code` directory within the container. Additionaly 
-you can also put any data files inside the same directory (and pass on the location ex '/code/data/**' as an argument to your training script).
-
-```
-kind: distributed
-apiVersion: v1.0
-spec:
-  infrastructure: # This section maps to Job definition. Does not include environment variables
-    kind: infrastructure
-    type: dataScienceJob
-    apiVersion: v1.0
-    spec:
-      projectId: oci.xxxx.<project_ocid>
-      compartmentId: oci.xxxx.<compartment_ocid>
-      displayName: HVD-Distributed-TF
-      logGroupId: oci.xxxx.<log_group_ocid>
-      subnetId: oci.xxxx.<subnet-ocid>
-      shapeName: VM.Standard2.4 #use a gpu shape such as VM.GPU2.1 incase you have built a gpu based docker image.
-      blockStorageSize: 50
-  cluster:
-    kind: HOROVOD
-    apiVersion: v1.0
-    spec:
-      image: "<region>.ocir.io/<tenancy_id>/<repo_name>/<image_name>:<image_tag>"
-      workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
-      name: "horovod_tf"
-      config:
-        env:
-          # MIN_NP, MAX_NP and SLOTS are inferred from the shape. Modify only when needed.
-          # - name: MIN_NP
-          #   value: 2
-          # - name: MAX_NP
-          #   value: 4
-          # - name: SLOTS
-          #   value: 2
-          - name: WORKER_PORT
-            value: 12345
-          - name: START_TIMEOUT #Optional: Defaults to 600.
-            value: 600
-          - name: ENABLE_TIMELINE # Optional: Disabled by Default.Significantly increases training duration if switched on (1).
-            value: 0
-          - name: SYNC_ARTIFACTS #Mandatory: Switched on by Default.
-            value: 1
-          - name: WORKSPACE #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket to sync generated artifacts to.
-            value: "<bucket_name>"
-          - name: WORKSPACE_PREFIX #Mandatory if SYNC_ARTIFACTS==1: Destination object bucket folder to sync generated artifacts to.
-            value: "<bucket_prefix>"
-          - name: HOROVOD_ARGS # Parameters for cluster tuning.
-            value: "--verbose"
-      main:
-        name: "worker-main"
-        replicas: 1 #this will be always 1. Handles scheduler's responsibilities too.
-      worker:
-        name: "worker-0"
-        replicas: 1 #number of workers. This is in addition to the 'worker-main' worker. Could be more than 1
-  runtime:
-    kind: python
-    apiVersion: v1.0
-    spec:
-      entryPoint: "/code/train.py" #location of user's training script in docker image.
-      args:  #any arguments that the training script requires.
-          - --data-dir    # assuming data folder has been bundled in the docker image.
-          - /code/data/mnist.npz
-      env:
-```
 
 ### 4. Dry Run to validate the Yaml definition 
 

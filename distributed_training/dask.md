@@ -4,11 +4,13 @@
 
 All the docker image related artifacts are located under - `oci_dist_training_artifacts/dask/v1/`
 
-### Installation
+### Prerequisite. 
 
+You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#).
 ```
-python3 -m pip install oracle-ads
+python3 -m pip install oracle-ads[opctl]
 ```
+This guide uses ```ads opctl``` for creating distributed training jobs. Refer [distributed_training_cmd.md](distributed_training_cmd.md) for supported commands and options for distributed training.
 
 ### 1. Prepare Docker Image
 
@@ -56,11 +58,11 @@ with joblib.parallel_backend("dask"):
 
 ```
 
-**Note**: Whenever you change the code, you have to build, tag and push the image to repo. This behaviour is automatically taken care in ```ads opctl run ``` cli command.
+**Note**: Whenever you change the code, you have to build, tag and push the image to repo. This is automatically done in ```ads opctl run ``` cli command.
 
 The required python dependencies are provided inside `oci_dist_training_artifacts/dask/v1/environment.yaml`.  If you code required additional dependency, update the `environment.yaml` file. 
 
-**Note**: While updating `environment.yaml` do not remove the existing libraries. You can append to the list.
+Also, while updating `environment.yaml` do not remove the existing libraries. You can append to the list.
 
 Building docker image - 
 
@@ -76,61 +78,79 @@ ads opctl distributed-training build-image -t $TAG -reg $IMAGE_NAME
   -df oci_dist_training_artifacts/dask/v1/Dockerfile -s $MOUNT_FOLDER_PATH
 ```
 
-If you are behind proxy, use this command - 
+
+If you are behind proxy, ads opctl will automatically use your proxy settings( defined via ```no_proxy```, ```http_proxy``` and ```https_proxy```).
+
+### 2. Create yaml file to define your cluster. 
+
+Cluster is specified using yaml file. Below is an example to bring up 2 worker nodes and 1 scheduler node. The code to run is `gridserach.py`. All code is assumed to be present inside `/code` directory within the container.
+
+Please refer to the [documentation](http://10.209.39.50:8000/user_guide/model_training/distributed_training/dask/creating.html) for more details.
 
 ```
-docker build  --build-arg no_proxy=$no_proxy \
-              --build-arg http_proxy=$http_proxy \
-              --build-arg https_proxy=$http_proxy \
-              -t $IMAGE_NAME:$TAG \
-              -f oci_dist_training_artifacts/dask/v1/Dockerfile .
-```
+# Example train.yaml for defining dask cluster
 
-Push the docker image - 
-
-```
-ads opctl distributed-training publish-image
-```
-
-
-#### 2a. Test locally with stand-alone run.
-
-Before triggering the job run, you can test the docker image and verify the training code,
- dependencies etc. You can do this using a local stand-alone run or via a docker-compose setup(section 2b)
-
-In order to test the training code locally
-
-``` 
-ads opctl run
-        -f train.yaml 
-        -b local
-```
-
-Optionally, you can choose to mount oci keys (update config.ini file) and code directory to the docker container.  
-
-``` 
-ads opctl run
-        -f train.yaml 
-        -b local
-        -s $MOUNT_FOLDER_PATH
-```
-
-**Note**: Pass on any args that your training script requires in the ``` ["spec"]["runtime"]["spec"]["args"] ``` section of 
-train.yaml file. For example
-
-```
-runtime:
+kind: distributed
+apiVersion: v1.0
+spec:
+  infrastructure:
+    kind: infrastructure
+    type: dataScienceJob
+    apiVersion: v1.0
+    spec:
+      projectId: oci.xxxx.<project_ocid>
+      compartmentId: oci.xxxx.<compartment_ocid>
+      displayName: my_distributed_training
+      logGroupId: oci.xxxx.<log_group_ocid>
+      logId: oci.xxx.<log_ocid>
+      subnetId: oci.xxxx.<subnet-ocid>
+      shapeName: VM.Standard2.4
+      blockStorageSize: 50
+  cluster:
+    kind: dask
+    apiVersion: v1.0
+    spec:
+      image: "@image" 
+      workDir: "oci://my-bucket@my-namespace/daskexample/001"
+      name: GridSearch Dask
+      main:
+          config:
+      worker:
+          config:
+          replicas: 2
+  runtime:
     kind: python
     apiVersion: v1.0
     spec:
-      entryPoint: "/code/train.py" #location of user's training script in docker image.
-      args:  #any arguments that the training script requires.
-        - --data-dir
-        - /code/data
-        - --epochs
-        - "1"
+      entryPoint: "gridsearch.py"
+      kwargs: "--cv 5"
+      env:
+        - name: DEFAULT_N_SAMPLES
+          value: 5000
 ```
 
+### 3. LocalTesting
+Before triggering the job run, you can test the docker image and verify the training code, dependencies etc.
+
+#### 3a. Test locally with stand-alone run.
+
+In order to test the training code locally, use the following command. With ```-b local``` flag, it uses a local backend. Further when you need to run this workload on odsc jobs, simply use ```-b job```
+flag instead (default). 
+
+``` 
+ads opctl run
+        -f train.yaml 
+        -b local
+```
+
+If your code requires to use any oci services (like object bucket), you need to mount oci keys from your local host machine onto the docker container. This is already done for you assuming
+the typical location of oci keys ```~/.oci```. You can modify it though, in-case you have keys at a different location. You need to do this in the ```config.ini``` file.
+
+```
+oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
+```
+
+Note: The training script location(entrypoint) and associated args will be picked up from the runtime ```train.yaml```.
 **Note**: 
 
 For detailed explanation of local run, Refer this [distributed_training_cmd.md](distributed_training_cmd.md)
@@ -138,7 +158,7 @@ For detailed explanation of local run, Refer this [distributed_training_cmd.md](
 You can also test in a clustered manner using docker-compose. Next section.
 
 
-### 2b. Test locally with help of `docker-compose`
+### 3b. Test locally with `docker-compose` based cluster.
 
 Create `docker-compose.yaml` file and copy the following content. Update the object storage path for `OCI__WORK_DIR`
 
@@ -218,53 +238,7 @@ services:
           OCI__EPHEMERAL: 1
           OCI__WORKER_COUNT: 1
 ```
-### 3. Create yaml file to define your cluster. 
 
-Cluster is specified using yaml file. Below is an example to bring up 2 worker nodes and 1 scheduler node. The code to run is `gridserach.py`. All code is assumed to be present inside `/code` directory within the container.
-
-Please refer to the [documentation](http://10.209.39.50:8000/user_guide/model_training/distributed_training/dask/creating.html) for more details.
-
-```
-# Example train.yaml for defining dask cluster
-
-kind: distributed
-apiVersion: v1.0
-spec:
-  infrastructure:
-    kind: infrastructure
-    type: dataScienceJob
-    apiVersion: v1.0
-    spec:
-      projectId: oci.xxxx.<project_ocid>
-      compartmentId: oci.xxxx.<compartment_ocid>
-      displayName: my_distributed_training
-      logGroupId: oci.xxxx.<log_group_ocid>
-      logId: oci.xxx.<log_ocid>
-      subnetId: oci.xxxx.<subnet-ocid>
-      shapeName: VM.Standard2.4
-      blockStorageSize: 50
-  cluster:
-    kind: dask
-    apiVersion: v1.0
-    spec:
-      image: my-region.ocir.io/my-tenancy/dask-cluster-examples:dev
-      workDir: "oci://my-bucket@my-namespace/daskexample/001"
-      name: GridSearch Dask
-      main:
-          config:
-      worker:
-          config:
-          replicas: 2
-  runtime:
-    kind: python
-    apiVersion: v1.0
-    spec:
-      entryPoint: "gridsearch.py"
-      kwargs: "--cv 5"
-      env:
-        - name: DEFAULT_N_SAMPLES
-          value: 5000
-```
 
 ### 4. Dry Run to validate the Yaml definition 
 
