@@ -64,7 +64,7 @@ This command can be used to push images to the OCI repository. In case the name 
 1. -f: Path to train.YAML file (required argument)
 2. -b : 
    1. ```local``` → Run DT workflow on the local environment
-   2. ```jobs``` → Run DT workflow on the OCI ML Jobs 
+   2. ```job``` → Run DT workflow on the OCI ML Jobs 
    3. **Note** : default value is set to jobs
 3. -i: Auto increments the tag of the image 
 4. -nopush: Doesn't Push the latest image to OCIR
@@ -74,9 +74,7 @@ This command can be used to push images to the OCI repository. In case the name 
 8. -df: Dockerfile using which docker will be build
 9. -s: source code dir
 
-**Note** : ``` -t ``` and ``` -reg ``` args are not required if image name is mentioned in train.yaml 
-file. If the image name in train.yaml file starts with ```@``` then image name is updated using ``` -t ```
-and ``` -reg ``` args.
+**Note** : In case train.yaml has "@image" for ```image```, the image name will be replaced at runtime using combination of  ```-t``` and ```-r``` params.
 
 **Command**
 

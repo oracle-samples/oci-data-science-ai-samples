@@ -532,7 +532,7 @@ spec:
     spec:
       projectId: oci.xxxx.<project_ocid>
       compartmentId: oci.xxxx.<compartment_ocid>
-      displayName: HVD-Distributed-TF
+      displayName: Distributed-TF
       logGroupId: oci.xxxx.<log_group_ocid>
       subnetId: oci.xxxx.<subnet-ocid>
       shapeName: VM.Standard2.4
@@ -543,7 +543,7 @@ spec:
     spec:
       image: "@image"
       workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
-      name: "tf_multiworker"
+      name: "tf_ps"
       config:
         env:
           - name: WORKER_PORT #Optional. Defaults to 12345
