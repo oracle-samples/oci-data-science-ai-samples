@@ -1,21 +1,27 @@
 # Developer Guide
 
-## Ads CLI commands to run Ml distributed frameworks
+## ADS CLI commands for distributed training
 
-### 1. Build Image using ads CLI
+ADS Opctl CLI provides a set of commands for seamless local setup and testing of code for distributed training.
 
+`OCI` = Oracle Cloud Infrastructure
+`DT` = Distributed Training
+`ADS` = Oracle Accelerated Data Science Library
+`OCIR` = Oracle Cloud Infrastructure Registry
 
-**Args**
+### Build Container Image Only Using ADS CLI
 
-1. -t: Tag of the docker image
-2. -reg: Docker Repository 
-3. -df: Dockerfile using which docker will be build 
-4. -push: push the image to oci registry
-5. -s: source code dir
+#### Args
 
-**Command**
+- `-t`: tag of the container image
+- `-reg`: OCIR Container Registry
+- `-df`: the location of Dockerfile used to build the container image
+- `-push`: to push the image to OCI Registry
+- `-s`: your project source code directory
 
-```
+#### Command
+
+```bash
 ads opctl distributed-training build-image
    -t $TAG
    -reg $NAME_OF_REGISTRY
@@ -23,15 +29,13 @@ ads opctl distributed-training build-image
    -s $MOUNT_FOLDER_PATH
 ```
 
-**Note** : 
+**Note** these commands can be used to build a container image from ADS CLI. It writes a `config.ini` file into your project which can be used further referred by other CLI commands.
 
-This command can be used to build a docker image from ads CLI. It writes the config.ini file in the user's runtime environment which can be used further referred by other CLI commands.
+When the `-push` flag is used in the command then container image is pushed to the specified OCIR repository und successsful build.
 
-If ```-push``` tag is used in command then docker image is pushed to mentioned repository
+Sample **config.ini** file
 
-*Sample config.ini file*
-
-```
+```ini
 [main]
 tag = $TAG
 registry = $NAME_OF_REGISTRY
@@ -41,111 +45,138 @@ source_folder = $MOUNT_FOLDER_PATH
 oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
 ```
 
-### 2. Publish Docker Image to the repository using Ads CLI
+**Note** the `~/.oci` is the default location for the Oracle SDK API Keys. Change this only if you store your keys in a different location.
 
-**Args**
+### Publish Container Image to OCI Registry
 
-1. -image: Name of the Docker image (default value is picked from config.ini file)
+#### Args
 
-**Command**
+`-image`: Name of the container image (default value is picked from config.ini file)
 
-```
+#### Command
+
+```bash
 ads opctl distributed-training publish-image
 ```
 
-**Note**
+**Note** this command can be used to push images to the OCI repository. In case the name of the image is not mentioned it refers to the image name from the `config.ini` file.
 
-This command can be used to push images to the OCI repository. In case the name of the image is not mentioned it refers to the image name from the config.ini file.
+### Run the Container Image on the OCI Data Science Service Jobs platform or local
 
-### 3. Run the Docker Image on the OCI Jobs platform or local using Ads CLI
+#### Args
 
-**Args**
+- `-f`: path to `train.yaml` file (required argument)
+- `-b`:
+  - `local` → run DT workflow on the local environment
+  - `job` → run DT workflow on the OCI Data Science Jobs
+  **Note** : default value is set to `job`
+- `-i`: auto increments the tag of the image
+- `-nopush`: do not push the latest image to OCIR
+- `-nobuild`: do not build the image
+- `-t`: sets the tag of the container image
+- `-reg`: Oracle Cloud Infrastructure Registry location to push the build container images
+- `-df`: Dockerfile location used to build the container image
+- `-s`: your project source code directory
 
-1. -f: Path to train.YAML file (required argument)
-2. -b : 
-   1. ```local``` → Run DT workflow on the local environment
-   2. ```job``` → Run DT workflow on the OCI ML Jobs 
-   3. **Note** : default value is set to jobs
-3. -i: Auto increments the tag of the image 
-4. -nopush: Doesn't Push the latest image to OCIR
-5. -nobuild: Doesn't build the image
-6. -t: Tag of the docker image
-7. -reg: Docker Repository 
-8. -df: Dockerfile using which docker will be build
-9. -s: source code dir
+**Note**: In case `train.yaml` has `"@image"` specified for `image` property, the image name will be replaced at runtime using combination of  `-t` and `-r` params.
 
-**Note** : In case train.yaml has "@image" for ```image```, the image name will be replaced at runtime using combination of  ```-t``` and ```-r``` params.
+#### Command
 
-**Command**
+_Run locally_
 
-*Local Command*
-
-```
+```bash
 ads opctl run
         -f train.yaml
         -b local
         -i
 ```
 
-*Jobs Command*
+_Run as a Job on OCI_
 
-```
+```bash
 ads opctl run
         -f train.yaml
 ```
 
-**Note**
+**Note** the command `ads opctl run -f train.yaml` is used to run the DT jobs on the Oracle Cloud Infrastructure Data Science Jobs platform. By default, it builds the new image and pushes it to the OCIR and executes the distributed training job.
 
-The command ``` ads opctl run -f train.yaml ``` is used to run the DT jobs on the Jobs platform. By default, it builds the new image and pushes it to the OCIR. 
-
-If required OCI API keys can be mounted by specifying the location in the config.ini file
-
-
+If required OCI API keys can be mounted by specifying the location in the `config.ini` file
 
 ## User Flow For Seamless Development Experience
 
-**Step1**: 
+**Init Your Project**:
 
-Build the Docker and run it locally.
+Setup your project on your local machine with all the required project files to run distributed training.
 
-If required mount the code folder using the ```-s``` tag 
-``` 
-ads opctl run
-        -f train.yaml 
-        -b local
-        -t $TAG
-        -reg $NAME_OF_REGISTRY 
-        -df $PATH_TO_DOCKERFILE
+```bash
+ads opctl distributed-training init --framework <framework>
+```
+
+`<framework>` - could be `horovod-tensorflow|horovod-pytorch|pytorch|tensorflow|dask`
+
+**Step1**:
+
+Build the container image and run it locally.
+
+If you run the CLI outside of the init setup folder, mount your project code folder using the ```-s``` tag.
+
+```bash
+ads opctl run \
+        -f train.yaml \
+        -b local \
+        -t $TAG \
+        -reg $NAME_OF_REGISTRY \
+        -df $PATH_TO_DOCKERFILE \
         -s $MOUNT_FOLDER_PATH
 ```
 
-**Step2**: 
+**Example**:
 
-If the user has changed files only in the mounted folder and needs to run it locally. *{Build is not required}*
-
+```bash
+ads opctl run \
+        -f train.yaml \
+        -b local \
+        -t 1.0 \
+        -reg iad.ocir.io/bigdatadatasciencelarge/dtv15 \
+        -df oci_dist_training_artifacts/horovod/v1/docker/pytorch.cpu.Dockerfile \
+        -s .
 ```
-ads opctl run
-        -f train.yaml
-        -b local
-        -nobuild
+
+**Note** that the above `run` will also setup your `config.ini` file and you no longer need to use all of the flags next time.
+
+**Step2**:
+
+After the initial run, if you do changes to your project like Dockefile or environment.yaml files, just re-run with:
+
+```bash
+ads opctl run \
+        -f train.yaml \
+        -b local \
 ```
 
-In case there are some changes apart from the mounted folder and needs to run it locally. *{Build is required}*
+If you change files only in you mounted code folder and never change Dockerfile or related environment.yaml files you can run locally with the `-nobuild` flat, which means the container image will not be rebuild:
 
-```-i``` tag is required only if the user needs to increment the tag of the image 
-
+```bash
+ads opctl run \
+        -f train.yaml \
+        -b local \
+        -nobuild \
 ```
-ads opctl run
-        -f train.yaml
-        -b local
+
+`-i` tag is required only if the you want to auto-increment the tag version of the container image:
+
+```bash
+ads opctl run \
+        -f train.yaml \
+        -b local \
         -i
 ```
 
-**Step3**: 
+**Step3**:
 
 Finally, to run on a jobs platform
 
-```
-ads opctl run
+```bash
+ads opctl run \
         -f train.yaml
 ```

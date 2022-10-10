@@ -1,28 +1,44 @@
 # Developer Guide
 
+`OCI` = Oracle Cloud Infrastructure
+`DT` = Distributed Training
+`ADS` = Oracle Accelerated Data Science Library
+`OCIR` = Oracle Cloud Infrastructure Registry
+
 ## Steps to run Distributed Horovod
 
-All the docker image related artifacts are located under - `oci_dist_training_artifacts/horovod/v1/`
+All the container image related artifacts are located under - `oci_dist_training_artifacts/horovod/v1/`
 
-### Prerequisite. 
+### Prerequisite
 
-You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#).
-```
+#### Install ADS
+
+You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#) and the `ads opctl` CLI.
+
+```bash
 python3 -m pip install oracle-ads[opctl]
 ```
+
 This guide uses ```ads opctl``` for creating distributed training jobs. Refer [distributed_training_cmd.md](distributed_training_cmd.md) for supported commands and options for distributed training.
 
-### 1. Prepare Docker Image
-Horovod provides support for Pytorch and Tensorflow. Within these frameworks, there are two separate docker files, for cpu and gpu.
-Choose the docker file and conda environment files based on whether you are going to use Pytorch or Tensorflow with either cpu or gpu.
+#### Configurations
+
+Make sure you followed and configured your Oracle Cloud tenancy as shown in the [Getting Started](README.md) guide
+
+### Prepare Container Image
+
+Horovod provides support for Pytorch and Tensorflow. Within these frameworks, there are two separate Dockerfiles, for cpu and gpu. Choose the Dockerfile and conda environment files based on whether you are going to use Pytorch or Tensorflow with either cpu or gpu.
 
 The instruction assumes that you are running this within the folder where you ran `ads opctl distributed-training init --framework horovod-<pytorch|tensorflow>`
 
-All files in the current directory is copied over to `/code` folder inside docker image.
+All files in the current directory is copied over to `/code` folder inside container image.
 
 For example, you can have the following training Tensorflow script saved as `train.py`:
 
-```
+<details>
+<summary>tensorflow horovod <b>train.py</b></summary>
+
+```python
 # Script adapted from https://github.com/horovod/horovod/blob/master/examples/elastic/tensorflow2/tensorflow2_keras_mnist_elastic.py
 
 # ==============================================================================
@@ -181,12 +197,19 @@ def train(state):
 train(state)
 ```
 
-If you are creating a Pytorch based workload, here is an example that you can save as `train.py`.
+</details>
+&nbsp;
 
-```
+If you are creating a PyTorch based workload, here is an example that you can save as `train.py`.
+
+<details>
+<summary>pytorch horovod <b>train.py</b></summary>
+
+```python
 # Script adapted from https://github.com/horovod/horovod/blob/master/examples/elastic/pytorch/pytorch_mnist_elastic.py
 
 # ==============================================================================
+
 import argparse
 import os
 from filelock import FileLock
@@ -205,6 +228,7 @@ import ads
 warnings.filterwarnings("ignore")
 
 # Training settings
+
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
 parser.add_argument('--batch-size', type=int, default=64, metavar='N',
                     help='input batch size for training (default: 64)')
@@ -237,7 +261,8 @@ args.cuda = not args.no_cuda and torch.cuda.is_available()
 
 checkpoint_format = 'checkpoint-{epoch}.pth.tar'
 
-# Horovod: initialize library.
+# Horovod: initialize library
+
 hvd.init()
 torch.manual_seed(args.seed)
 
@@ -246,8 +271,8 @@ if args.cuda:
     torch.cuda.set_device(hvd.local_rank())
     torch.cuda.manual_seed(args.seed)
 
+# Horovod: limit # of CPU threads to be used per worker
 
-# Horovod: limit # of CPU threads to be used per worker.
 torch.set_num_threads(1)
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
@@ -267,7 +292,9 @@ with FileLock(os.path.expanduser("~/.horovod_lock")):
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ]))
-# Horovod: use ElasticSampler to partition the training data.
+
+# Horovod: use ElasticSampler to partition the training data
+
 train_sampler = hvd.elastic.ElasticSampler(train_dataset, shuffle=False)
 train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=args.batch_size, sampler=train_sampler, **kwargs)
@@ -277,13 +304,16 @@ test_dataset = \
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ]))
-# Horovod: use DistributedSampler to partition the test data.
+
+# Horovod: use DistributedSampler to partition the test data
+
 test_sampler = torch.utils.data.distributed.DistributedSampler(
     test_dataset, num_replicas=hvd.size(), rank=hvd.rank())
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.test_batch_size,
                                           sampler=test_sampler, **kwargs)
 
 # Sync artifacts?
+
 save_artifacts = hvd.rank() == 0 and os.environ.get("SYNC_ARTIFACTS") == "1"
 
 class Net(nn.Module):
@@ -304,10 +334,10 @@ class Net(nn.Module):
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
-
 model = Net()
 
-# By default, Adasum doesn't need scaling up learning rate.
+# By default, Adasum doesn't need scaling up learning rate
+
 lr_scaler = hvd.size() if not args.use_adasum else 1
 
 if args.cuda:
@@ -317,13 +347,14 @@ if args.cuda:
     if args.use_adasum and hvd.nccl_built():
         lr_scaler = hvd.local_size()
 
-# Horovod: scale learning rate by lr_scaler.
+# Horovod: scale learning rate by lr_scaler
+
 optimizer = optim.SGD(model.parameters(), lr=args.lr * lr_scaler,
                       momentum=args.momentum)
 
-# Horovod: (optional) compression algorithm.
-compression = hvd.Compression.fp16 if args.fp16_allreduce else hvd.Compression.none
+# Horovod: (optional) compression algorithm
 
+compression = hvd.Compression.fp16 if args.fp16_allreduce else hvd.Compression.none
 
 def metric_average(val, name):
     tensor = torch.tensor(val)
@@ -333,7 +364,9 @@ def metric_average(val, name):
 def create_dir(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
-# Horovod: average metrics from distributed training.
+
+# Horovod: average metrics from distributed training
+
 class Metric(object):
     def __init__(self, name):
         self.name = name
@@ -399,7 +432,6 @@ def train(state):
             torch.save(chkpt, chkpt_path)
         state.batch = 0
 
-
 def test():
     model.eval()
     test_loss = 0.
@@ -411,7 +443,7 @@ def test():
         # sum up batch loss
         test_loss += F.nll_loss(output, target, reduction='sum').item()
         # get the index of the max log-probability
-        pred = output.data.max(1, keepdim=True)[1]
+        pred = output.data.max[1, keepdim=True](1)
         test_accuracy += pred.eq(target.data.view_as(pred)).cpu().float().sum()
 
     # Horovod: use test_sampler to determine the number of examples in
@@ -428,55 +460,60 @@ def test():
         print('\nTest set: Average loss: {:.4f}, Accuracy: {:.2f}%\n'.format(
             test_loss, 100. * test_accuracy))
 
+# Horovod: wrap optimizer with DistributedOptimizer
 
-# Horovod: wrap optimizer with DistributedOptimizer.
 optimizer = hvd.DistributedOptimizer(optimizer,
                                      named_parameters=model.named_parameters(),
                                      compression=compression,
                                      op=hvd.Adasum if args.use_adasum else hvd.Average)
 
-
 # adjust learning rate on reset
+
 def on_state_reset():
     for param_group in optimizer.param_groups:
         param_group['lr'] = args.lr * hvd.size()
-
 
 state = hvd.elastic.TorchState(model, optimizer, epoch=1, batch=0)
 state.register_reset_callbacks([on_state_reset])
 train(state)
 test()
+
 ```
 
+</details>
+&nbsp;
 
-**Note**: Whenever you change the code, you have to build, tag and push the image to repo. This is automatically done in the ```ads opctl run ``` cli command.
+**Note**: Whenever you change the code, you have to build, tag and push the image to OCIR. This is automatically done in the ```ads opctl run``` cli command.
 
-The required python dependencies are provided inside the conda environment file `oci_dist_training_artifacts/horovod/v1/conda-<pytorch|tensorflow>-<cpu|gpu>.yaml`.  If your code requires additional dependency, update this file. 
+The required python dependencies are provided inside the conda environment file `oci_dist_training_artifacts/horovod/v1/conda-<pytorch|tensorflow>-<cpu|gpu>.yaml`.  If your code requires additional dependency, update this file.
 
 Also, while updating `conda-<pytorch|tensorflow>-<cpu|gpu>.yaml` do not remove the existing libraries. You can append to the list.
 
-Building docker image - 
+### Building the container image
 
-Update the TAG and the IMAGE_NAME as per your needs - 
+Update the TAG and the IMAGE_NAME as per your needs, notice the `$IMAGE_NAME` is the location you would like to pus the container image in OCIR.
 
-```
+```bash
 export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
 export TAG=latest
 ```
 
+```bash
+ads opctl distributed-training build-image \ 
+    -t $TAG \ 
+    -reg $IMAGE_NAME \ 
+    -df oci_dist_training_artifacts/horovod/v1/<pytorch|tensorflow>.<cpu|gpu>.Dockerfile \ 
+    -s $MOUNT_FOLDER_PATH
 ```
-ads opctl distributed-training build-image -t $TAG -reg $IMAGE_NAME
-  -df oci_dist_training_artifacts/horovod/v1/<pytorch|tensorflow>.<cpu|gpu>.Dockerfile -s $MOUNT_FOLDER_PATH
-```
 
-If you are behind proxy, ads opctl will automatically use your proxy settings( defined via ```no_proxy```, ```http_proxy``` and ```https_proxy```).
+If you are behind proxy, `ads opctl` will automatically use your proxy settings (defined via ```no_proxy```, ```http_proxy``` and ```https_proxy```).
 
-### 2. Create yaml file to define your cluster. Here is an example.
+### Create Yaml Cluster Definition
 
-In this example, we bring up 2 worker nodes and 1 scheduler node. The training code to run is `train.py`. All code is assumed to be present inside `/code` directory within the container. Additionaly 
-you can also put any data files inside the same directory (and pass on the location ex '/code/data/**' as an argument to your training script).
+In this example, we would bring up 2 worker nodes and 1 scheduler node. The training code to run is the `train.py` file. All code is assumed to be present inside `/code` directory within the container, which is the default, if no changes were made to the provided Dockerfile. Additionaly
+you can also put any data files inside the same directory (and pass on the location, for example `/code/data/**` as an argument to your training script).
 
-```
+```yaml
 kind: distributed
 apiVersion: v1.0
 spec:
@@ -487,16 +524,16 @@ spec:
     spec:
       projectId: oci.xxxx.<project_ocid>
       compartmentId: oci.xxxx.<compartment_ocid>
-      displayName: HVD-Distributed-TF
+      displayName: HVD-Distributed
       logGroupId: oci.xxxx.<log_group_ocid>
       subnetId: oci.xxxx.<subnet-ocid>
-      shapeName: VM.Standard2.4 #use a gpu shape such as VM.GPU2.1 incase you have built a gpu based docker image.
+      shapeName: VM.Standard2.4 #use a gpu shape such as VM.GPU2.1 incase you have built a gpu based container image.
       blockStorageSize: 50
   cluster:
     kind: HOROVOD
     apiVersion: v1.0
     spec:
-      image: "@image" 
+      image: "@image"
       workDir:  "oci://<bucket_name>@<bucket_namespace>/<bucket_prefix>"
       name: "horovod_tf"
       config:
@@ -532,55 +569,48 @@ spec:
     kind: python
     apiVersion: v1.0
     spec:
-      entryPoint: "/code/train.py" #location of user's training script in docker image.
+      entryPoint: "/code/train.py" #location of user's training script in container image.
       args:  #any arguments that the training script requires.
-          - --data-dir    # assuming data folder has been bundled in the docker image.
+          - --data-dir    # assuming data folder has been bundled in the container image.
           - /code/data/mnist.npz
       env:
 ```
 
-###3. Local Testing
-Before triggering the job run, you can test the docker image and verify the training code, dependencies etc.
+**Note** that you have to setup the `workDir` property to point to your object storage bucket, that will be used to storage checkpoints and logs. Additionally the `WORKSPACE` and the `WORKSPACE_PREFIX` have to be set as well to point to bucket that will be used to sync those logs.
 
-#### 3a. Test locally with stand-alone run.(Recommended)
+### Local Testing
 
-In order to test the training code locally, use the following command. With ```-b local``` flag, it uses a local backend. Further when you need to run this workload on odsc jobs, simply use ```-b job```
-flag instead (default). 
+Before triggering the job run, you can test the container image and verify the training code, dependencies etc.
 
-``` 
+#### a. Test locally - stand-alone run (Recommended)
+
+In order to test the training code locally, run the `ads opctl run` with `-b local` flag. Further when you ready to run your code as a Job on Oracle Cloud Infrastructure Data Science Service, simply use `-b job` flag instead (default).
+
+```bash
 ads opctl run
-        -f train.yaml 
+        -f train.yaml
         -b local
 ```
 
-If your code requires to use any oci services (like object bucket), you need to mount oci keys from your local host machine onto the docker container. This is already done for you assuming
-the typical location of oci keys ```~/.oci```. You can modify it though, in-case you have keys at a different location. You need to do this in the ```config.ini``` file.
+If your code requires to use any Oracle Cloud Infrastructure Services (like object storage bucket), you need to mount OCI API Keys from your local host machine onto the container for the local testing. This is already done for you assuming the default location of OCI API Keys `~/.oci` is used. You can modify it though, in-case you have keys at a different location. For this, you have modify the `config.ini` file and specify the new location, for example:
 
-```
+```bash
 oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
 ```
 
-Note: The training script location(entrypoint) and associated args will be picked up from the runtime ```train.yaml```.
-**Note**: 
+**Note**: The training script location (entrypoint) and associated args will be picked up from the runtime ```train.yaml```.
 
-For detailed explanation of local run, Refer this [distributed_training_cmd.md](distributed_training_cmd.md)
+**Note**: For detailed explanation of local run, refer to [distributed_training_cmd.md](distributed_training_cmd.md)
 
-You can also test in a clustered manner using docker-compose. Next section.
+#### b. Test locally with `docker-compose`
 
-#### 3b. Test locally with `docker-compose` based cluster.
+Create `docker-compose.yaml` file and copy the content of the **docker-compose.yaml** `example` file below. You can learn more about docker compose [here](https://docs.docker.com/compose/)
 
-Create `docker-compose.yaml` file and copy the following content.
+<details>
+<summary><b>docker-compose.yaml</b></summary>
 
-Once the docker-compose.yaml is created, you can start the containers by running - 
-
-```
-docker compose up
-```
-You can learn more about docker compose [here](https://docs.docker.com/compose/)
-
-```
-#docker-compose.yaml for distributed horovod testing
-
+```yaml
+# docker-compose.yaml for distributed horovod testing
 services:
   worker-main:
     ports:
@@ -643,54 +673,61 @@ services:
   
 ```
 
-Things to keep in mind:
-1. Port mapping needs to be added as each container needs a different ssh port to be able to run on the same machine. Ensure that `network_mode: host` is not present when port mapping is added.
-2. You can mount your training script directory to /code like the above docker-compose (`../examples:/code`). This way there's no need to build docker image every time you change training script during local development
-3. Pass in any parameters that your training script requires in 'OCI__ENTRY_SCRIPT_ARGS'.
-4. During multiple runs, delete your all mounted folders as appropriate; especially `OCI__WORK_DIR`
-5. `OCI__WORK_DIR` can be a location in object storage or a local folder like `OCI__WORK_DIR: /work_dir`.
-6. In case you want to use a config_profile other than DEFAULT, please change it in `OCI_CONFIG_PROFILE` env variable.
+</details>
+&nbsp;
 
+Once the docker-compose.yaml is created, you can start the containers by running:
 
-
-### 4. Dry Run to validate the Yaml definition 
-
+```bash
+docker compose up
 ```
+
+***Things to keep in mind:***
+
+- Port mapping needs to be added as each container needs a different ssh port to be able to run on the same machine. Ensure that `network_mode: host` is not present when port mapping is added.
+- You can mount your training script directory to /code like the above docker-compose (`../examples:/code`). This way there's no need to build container image every time you change training script during local development
+- Pass in any parameters that your training script requires in `OCI__ENTRY_SCRIPT_ARGS`.
+- During multiple runs, delete your all mounted folders as appropriate; especially `OCI__WORK_DIR`
+- `OCI__WORK_DIR` can be a location in object storage or a local folder like `OCI__WORK_DIR: /work_dir`.
+- In case you want to use a `config_profile` other than `DEFAULT`, please change it in `OCI_CONFIG_PROFILE` env variable.
+
+### Dry Run to validate the Yaml definition
+
+This will validate the YAML and print the Job and Job Run configuration without launching the actual job.
+
+```bash
 ads opctl run -f train.yaml --dry-run
 ```
 
-This will print the Job and Job run configuration without launching the actual job.
+### Start Distributed Job
 
-### 5. Start Distributed Job
+Run the command to launch the distributed job on OCI Data Science Jobs and save the output to `info.yaml`. You could use the info.yaml for checking the runtime details of the cluster and scheduler ip.
 
-This will run the command and also save the output to `info.yaml`. You could use this yaml for checking the runtime details of the cluster - scheduler ip.
-
-```
+```bash
 ads opctl run -f train.yaml | tee info.yaml
 ```
 
-### 6. Tail the logs
+### Tail the logs
 
-This command will stream the log from logging infrastructure that you provided while defining the cluster inside `train.yaml` in the example above.
+Stream the log from logging OCI Logging Service that you provided while defining the cluster inside `train.yaml` to your local machine.
 
+```bash
+ads opctl watch <job-run-id>
 ```
-ads opctl watch <job runid>
-```
 
-### 7. Check runtime configuration, run - 
+### Check runtime configuration
 
-```
+```bash
 ads opctl distributed-training show-config -f info.yaml
 ```
 
-### 8. Saving Artifacts to Object Storage Buckets
-In case you want to save the artifacts generated by the training process (model checkpoints, TensorBoard logs, etc.) to an object bucket
-you can use the 'sync' feature. The environment variable ``OCI__SYNC_DIR`` exposes the directory location that will be automatically synchronized
-to the configured object storage bucket location. Use this directory in your training script to save the artifacts.
+### Saving Artifacts to Object Storage Buckets
+
+In case you want to save the artifacts generated by the training process (model checkpoints, TensorBoard logs, etc.) to an object storage bucket you can use the `sync` feature. The environment variable `OCI__SYNC_DIR` exposes the directory location that will be automatically synchronized to the configured object storage bucket location. Use this directory in your training script to save the artifacts.
 
 To configure the destination object storage bucket location, use the following settings in the workload yaml file(train.yaml).
 
-```
+```yaml
     - name: SYNC_ARTIFACTS
       value: 1
     - name: WORKSPACE
@@ -698,9 +735,11 @@ To configure the destination object storage bucket location, use the following s
     - name: WORKSPACE_PREFIX
       value: "<bucket_prefix>"
 ```
-**Note**: Change ``SYNC_ARTIFACTS`` to ``0`` to disable this feature.
-Use ``OCI__SYNC_DIR`` env variable in your code to save the artifacts. Example:
 
-```
+**Note**: Change `SYNC_ARTIFACTS` to `0` to disable this feature.
+
+Use `OCI__SYNC_DIR` env variable in your code to save your checkpoints or artifacts. Example:
+
+`
 tf.keras.callbacks.ModelCheckpoint(os.path.join(os.environ.get("OCI__SYNC_DIR"),"ckpts",'checkpoint-{epoch}.h5'))
-```
+`

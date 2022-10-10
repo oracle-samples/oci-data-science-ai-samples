@@ -2,10 +2,16 @@
 
 This instruction assumes that you are running this within the folder where you ran `ads opctl distributed-training init --framework pytorch`.
 
+`OCI` = Oracle Cloud Infrastructure
+`DT` = Distributed Training
+`ADS` = Oracle Accelerated Data Science Library
+`OCIR` = Oracle Cloud Infrastructure Registry
+
 ## Steps to run PyTorch Distributed Data-Parallel Training
 
 All the docker image related artifacts are located under `oci_dist_training_artifacts/pytorch/v1/`. For your reference, this guide assumes the following directory structure:
-```
+
+```ini
 .
 ├── oci_dist_training_artifacts
 │   ├── pytorch
@@ -19,15 +25,16 @@ All the docker image related artifacts are located under `oci_dist_training_arti
 ├── train.py
 ├── train.yaml
 ├── ...
-
 ```
 
-### Prerequisite. 
+### Prerequisite
 
-You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#).
-```
+You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#) to run this guide.
+
+```bash
 python3 -m pip install oracle-ads[opctl]
 ```
+
 This guide uses ```ads opctl``` for creating distributed training jobs. Refer [distributed_training_cmd.md](distributed_training_cmd.md) for supported commands and options for distributed training.
 
 ### 1. Prepare Docker Image
@@ -36,13 +43,14 @@ All files in the current directory will be copied over to `/code` folder inside 
 
 For example, you can have the following training script saved as `train.py`:
 
-```
+<details>
+<summary>pytorch <b>train.py</b></summary>
 
+```python
 #
 # Script adapted from:
 # https://github.com/Azure/azureml-examples/blob/main/python-sdk/workflows/train/pytorch/cifar-distributed/src/train.py
 # ==============================================================================
-
 
 import datetime
 import torch
@@ -54,6 +62,7 @@ import torch.optim as optim
 import os, argparse
 
 # define network architecture
+
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -61,7 +70,7 @@ class Net(nn.Module):
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(32, 64, 3)
         self.conv3 = nn.Conv2d(64, 128, 3)
-        self.fc1 = nn.Linear(128 * 6 * 6, 120)
+        self.fc1 = nn.Linear(128 *6* 6, 120)
         self.dropout = nn.Dropout(p=0.2)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
@@ -76,8 +85,8 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
-
 # define functions
+
 def train(train_loader, model, criterion, optimizer, epoch, device, print_freq, rank):
     running_loss = 0.0
     for i, data in enumerate(train_loader, 0):
@@ -101,7 +110,6 @@ def train(train_loader, model, criterion, optimizer, epoch, device, print_freq, 
                 % (rank, epoch + 1, i + 1, running_loss / print_freq)
             )
             running_loss = 0.0
-
 
 def evaluate(test_loader, model, device):
     classes = (
@@ -148,7 +156,6 @@ def evaluate(test_loader, model, device):
             "Accuracy of %5s : %2d %%"
             % (classes[i], 100 * class_correct[i] / class_total[i])
         )
-
 
 def main(args):
     # get PyTorch environment variables
@@ -252,8 +259,8 @@ def main(args):
         # evaluate on full test dataset
         evaluate(test_loader, model, device)
 
-
 # run script
+
 if __name__ == "__main__":
     # setup argparse
     parser = argparse.ArgumentParser()
@@ -298,36 +305,43 @@ if __name__ == "__main__":
 
     # call main function
     main(args)
-
 ```
 
-**Note**: Whenever you change the code, you have to build, tag and push the image to OCI container registry. This is automatically taken care in ```ads opctl run ``` cli command.
+</details>
+&nbsp;
 
-The required python dependencies are provided inside `oci_dist_training_artifacts/pytorch/v1/environment.yaml`.  If you code required additional dependencies, please add them to the `environment.yaml` file. 
+**Note**: Whenever you change the code, you have to build, tag and push the image to OCI container registry. This is automatically taken care in ```ads opctl run``` cli command.
+
+The required python dependencies are provided inside `oci_dist_training_artifacts/pytorch/v1/environment.yaml`.  If you code required additional dependencies, please add them to the `environment.yaml` file.
 
 Also, while updating `environment.yaml` do not remove the existing libraries.
 
-Set the TAG and IMAGE_NAME as environment variables based on your needs -
-```
+Set the TAG and IMAGE_NAME as environment variables based on your needs.
+
+```bash
 export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
 export TAG=latest
 ```
 
-Build the docker image -
-```
-ads opctl distributed-training build-image -t $TAG -reg $IMAGE_NAME
-  -df oci_dist_training_artifacts/pytorch/v1/Dockerfile -s $MOUNT_FOLDER_PATH
+Build the docker image.
+
+```bash
+ads opctl distributed-training build-image \ 
+  -t $TAG \
+  -reg $IMAGE_NAME \
+  -df oci_dist_training_artifacts/pytorch/v1/Dockerfile \
+  -s $MOUNT_FOLDER_PATH
 ```
 
 If you are behind proxy, ads opctl will automatically use your proxy settings( defined via ```no_proxy```, ```http_proxy``` and ```https_proxy```).
 
-### 2. Create yaml file to define your cluster. 
+### 2. Create yaml file to define your cluster
 
 Cluster is specified using a yaml file. Below is an example to bring up 1 master node and 2 worker nodes for training. The code to run is stored in `train.py`. All code is assumed to be present inside `/code` directory within the container.
 
 Please refer to the [documentation](http://10.209.39.50:8000/user_guide/model_training/distributed_training/dask/creating.html) for more details.
 
-```
+```yaml
 # Example train.yaml
 kind: distributed
 apiVersion: v1.0
@@ -350,7 +364,7 @@ spec:
     kind: PYTORCH
     apiVersion: v1.0
     spec:
-      image: "@image" 
+      image: "@image"
       workDir: "oci://my-bucket@my-namespace/path/to/dir/"
       config:
         env:
@@ -377,39 +391,45 @@ spec:
 
 ```
 
-### 3. LocalTesting
+**Note**: Change the `workDir` to point to the object storage bucket at OCI.
+
+### 3. Local Testing
+
 Before triggering the job run, you can test the docker image and verify the training code, dependencies etc.
 
-#### 3a. Test locally with stand-alone run.(Recommended)
+#### 3a. Test locally with stand-alone run. (Recommended)
 
 In order to test the training code locally, use the following command. With ```-b local``` flag, it uses a local backend. Further when you need to run this workload on odsc jobs, simply use ```-b job```
-flag instead (default). 
+flag instead (default).
 
-``` 
+```bash
 ads opctl run
-        -f train.yaml 
+        -f train.yaml
         -b local
 ```
 
 If your code requires to use any oci services (like object bucket), you need to mount oci keys from your local host machine onto the docker container. This is already done for you assuming
 the typical location of oci keys ```~/.oci```. You can modify it though, in-case you have keys at a different location. You need to do this in the ```config.ini``` file.
 
-```
+```ini
 oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
 ```
 
 Note: The training script location(entrypoint) and associated args will be picked up from the runtime ```train.yaml```.
-**Note**: 
+**Note**:
 
 For detailed explanation of local run, Refer this [distributed_training_cmd.md](distributed_training_cmd.md)
 
 You can also test in a clustered manner using docker-compose. Next section.
 
-
-#### 3b. Test locally with `docker-compose` based cluster.
+#### 3b. Test locally with `docker-compose` based cluster
 
 Create a `docker-compose.yaml` file and copy the following content.
-```
+
+<details>
+<summary><b>docker-compose.yaml</b></summary>
+
+```yaml
 services:
   PyTorch-Distributed-main:
     environment:
@@ -485,25 +505,30 @@ services:
       - "30002:29400"
 ```
 
+</details>
+&nbsp;
+
 This example `docker-compose.yaml` assumes that you have OCI API key and config stored at `~/.oci`. The default profile is used for authentication.
 
 Set an object storage path as environment variable for `OCI__WORK_DIR` -
-```
+
+```bash
 export WORK_DIR=oci://<my-bucket>@<my-tenancy>/prefix
 ```
 
-Once the `docker-compose.yaml` is created, you can start the containers by running - 
-```
+Once the `docker-compose.yaml` is created, you can start the containers by running -
+
+```bash
 docker compose up
 ```
 
 You can learn more about docker compose [here](https://docs.docker.com/compose/)
 
-
 ### 4. Dry Run to validate the Yaml definition
 
 The following command will print the Job and Job run configuration without launching the actual job.
-```
+
+```bash
 ads opctl run -f train.yaml --dry-run
 ```
 
@@ -511,7 +536,7 @@ ads opctl run -f train.yaml --dry-run
 
 The following command will start the training and also save the output to `info.yaml`. You could use this yaml for checking the runtime details of the cluster.
 
-```
+```bash
 ads opctl run -f train.yaml | tee info.yaml
 ```
 
@@ -519,24 +544,25 @@ ads opctl run -f train.yaml | tee info.yaml
 
 This command will stream the log from logging infrastructure that you provided while defining the cluster inside `train.yaml` in the example above.
 
-```
+```bash
 ads opctl watch <job runid>
 ```
 
-### 7. Check runtime configuration, run - 
+### 7. Check runtime configuration, run -
 
-```
+```bash
 ads opctl distributed-training show-config -f info.yaml
 ```
 
 ### 8. Saving Artifacts to Object Storage Buckets
+
 In case you want to save the artifacts generated by the training process (model checkpoints, TensorBoard logs, etc.) to an object bucket
 you can use the 'sync' feature. The environment variable ``OCI__SYNC_DIR`` exposes the directory location that will be automatically synchronized
 to the configured object storage bucket location. Use this directory in your training script to save the artifacts.
 
 To configure the destination object storage bucket location, use the following settings in the workload yaml file(train.yaml).
 
-```
+```yaml
     - name: SYNC_ARTIFACTS
       value: 1
     - name: WORKSPACE
@@ -544,30 +570,30 @@ To configure the destination object storage bucket location, use the following s
     - name: WORKSPACE_PREFIX
       value: "<bucket_prefix>"
 ```
+
 **Note**: Change ``SYNC_ARTIFACTS`` to ``0`` to disable this feature.
 Use ``OCI__SYNC_DIR`` env variable in your code to save the artifacts. Example:
 
-```
+```python
 model_path = os.path.join(os.environ.get("OCI__SYNC_DIR"),"model.pt")
 torch.save(model, model_path)
 ```
 
 ### 9. Profiling
-At times, you may want to profile your training setup for optimization/performance tuning. Profiling typically gives a detailed analysis
-of cpu utilization, gpu utilization, top cuda kernels, top operators etc. You can choose to profile your training setup using the 
-native Pytorch profiler or using a third party profiler such as [Nvidia Nsights](https://developer.nvidia.com/nsight-systems).
 
-#### 9a. Profiling using Pytorch Profiler.
+At times, you may want to profile your training setup for optimization/performance tuning. Profiling typically gives a detailed analysis of cpu utilization, gpu utilization, top cuda kernels, top operators etc. You can choose to profile your training setup using the native Pytorch profiler or using a third party profiler such as [Nvidia Nsights](https://developer.nvidia.com/nsight-systems).
 
-[Pytorch Profiler](https://pytorch.org/docs/stable/profiler.html) is a native offering from Pytorch for Pytorch performance profiling. 
-Profiling is invoked using code instrumentation using the following api. 
- [```torch.profiler.profile```](https://pytorch.org/docs/stable/profiler.html#torch.profiler.profile) 
- 
+#### 9a. Profiling using Pytorch Profiler
 
-Refer the above link for changes that you need to do in your training script for instrumentation. 
+[Pytorch Profiler](https://pytorch.org/docs/stable/profiler.html) is a native offering from Pytorch for Pytorch performance profiling.
+Profiling is invoked using code instrumentation using the following api.
+ [```torch.profiler.profile```](https://pytorch.org/docs/stable/profiler.html#torch.profiler.profile)
+
+Refer the above link for changes that you need to do in your training script for instrumentation.
+
 You should choose the ```OCI__SYNC_DIR``` directory to save the profiling logs. For example:
 
-```
+```python
 prof =  torch.profiler.profile(activities=[torch.profiler.ProfilerActivity.CPU,torch.profiler.ProfilerActivity.CUDA],
         schedule=torch.profiler.schedule(
             wait=1,
@@ -576,13 +602,16 @@ prof =  torch.profiler.profile(activities=[torch.profiler.ProfilerActivity.CPU,t
             repeat=1),
         on_trace_ready=torch.profiler.tensorboard_trace_handler(os.environ.get("OCI__SYNC_DIR") + "/logs"),
         with_stack=False)
-prof.start()    
+prof.start()
+
 # training code
-prof.end()   
+prof.end()
 ```
 
-Also, the sync feature `SYNC_ARTIFACTS` should be enabled ('1') to sync the profiling logs to the configured object storage. 
+Also, the sync feature `SYNC_ARTIFACTS` should be enabled ('1') to sync the profiling logs to the configured object storage.
+
 Thereafter, use Tensorboard to view logs. Refer this [tensorboard.md](tensorboard.md) for set-up on your computer.
+
 On top of this you would need to install the [Pytorch Tensorboard Plugin](https://github.com/pytorch/kineto/tree/main/tb_plugin).
 
 ``
@@ -590,16 +619,17 @@ pip install torch-tb-profiler
 ``
 
 **The profiling logs are generated per node** and hence you will see logs for each job run. While invoking the tensorboard, point to the parent `<job_id>` directory to view all logs at once.
-```
+
+```bash
 export OCIFS_IAM_KEY=api_key tensorboard --logdir oci://my-bucket@my-namespace/path_to_job_id
 ```
 
-#### 9b. Profiling using Nvidia Nsights.
+#### 9b. Profiling using Nvidia Nsights
 
-[Nvidia Nsights](https://developer.nvidia.com/nsight-systems) is a system wide profiling tool from Nvidia that can be used to profile Deep Learning workloads. 
-Nsights requires no change in your training code. This works on process level. You can enable this **experimental** feature(highlighted in bold) in your training setup via the following configuration in the 
+[Nvidia Nsights](https://developer.nvidia.com/nsight-systems) is a system wide profiling tool from Nvidia that can be used to profile Deep Learning workloads.
+
+Nsights requires no change in your training code. This works on process level. You can enable this **experimental** feature (highlighted in bold) in your training setup via the following configuration in the
 runtime yaml file.
-
 
 <pre>
     spec:
@@ -628,12 +658,15 @@ runtime yaml file.
         replicas: 1 #number of workers. This is in addition to the 'chief' worker. Could be more than 1
 </pre>
 
-Refer [here](https://docs.nvidia.com/nsight-systems/UserGuide/index.html#cli-profile-command-switch-options) for `nsys profile` command options. You can modify the command within the
-`PROFILE_CMD` but remember this is all experimental. The profiling reports are generated per node. You need to download the reports to your computer manually or via the oci
+Refer [here](https://docs.nvidia.com/nsight-systems/UserGuide/index.html#cli-profile-command-switch-options) for `nsys profile` command options. You can modify the command within the `PROFILE_CMD` but remember this is all experimental. The profiling reports are generated per node. You need to download the reports to your computer manually or via the oci
 command.
 
+```bash
+oci os object bulk-download \
+  -ns <namespace> \
+  -bn <bucket_name> \
+  --download-dir /path/on/your/computer \
+  --prefix path/on/bucket/<job_id>
 ```
-oci os object bulk-download -ns <namespace> -bn <bucket_name> --download-dir /path/on/your/computer --prefix path/on/bucket/<job_id>
-```
-To view the reports, you would need to install Nsight Systems app from [here](https://developer.nvidia.com/nsight-systems). 
-Thereafter, open the downloaded reports in the Nsight Systems app.
+
+To view the reports, you would need to install Nsight Systems app from [here](https://developer.nvidia.com/nsight-systems). Thereafter, open the downloaded reports in the Nsight Systems app.
