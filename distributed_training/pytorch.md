@@ -321,6 +321,7 @@ Set the TAG and IMAGE_NAME as environment variables based on your needs.
 ```bash
 export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
 export TAG=latest
+export MOUNT_FOLDER_PATH=.
 ```
 
 Build the docker image.
@@ -403,9 +404,9 @@ In order to test the training code locally, use the following command. With ```-
 flag instead (default).
 
 ```bash
-ads opctl run
-        -f train.yaml
-        -b local
+ads opctl run \
+  -f train.yaml
+  -b local
 ```
 
 If your code requires to use any oci services (like object bucket), you need to mount oci keys from your local host machine onto the docker container. This is already done for you assuming
@@ -548,7 +549,7 @@ This command will stream the log from logging infrastructure that you provided w
 ads opctl watch <job runid>
 ```
 
-### 7. Check runtime configuration, run -
+### 7. Check runtime configuration
 
 ```bash
 ads opctl distributed-training show-config -f info.yaml

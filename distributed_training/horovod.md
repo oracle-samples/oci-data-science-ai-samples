@@ -496,6 +496,7 @@ Update the TAG and the IMAGE_NAME as per your needs, notice the `$IMAGE_NAME` is
 ```bash
 export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
 export TAG=latest
+export MOUNT_FOLDER_PATH=.
 ```
 
 Buld the container image.
@@ -589,9 +590,9 @@ Before triggering the job run, you can test the container image and verify the t
 In order to test the training code locally, run the `ads opctl run` with `-b local` flag. Further when you ready to run your code as a Job on Oracle Cloud Infrastructure Data Science Service, simply use `-b job` flag instead (default).
 
 ```bash
-ads opctl run
-        -f train.yaml
-        -b local
+ads opctl run \
+    -f train.yaml \
+    -b local
 ```
 
 If your code requires to use any Oracle Cloud Infrastructure Services (like object storage bucket), you need to mount your OCI API Keys from your local host machine onto the container for the local testing. This is already done for you assuming the default location of OCI API Keys `~/.oci` is used. You can modify it though, in-case you have keys at a different location. For this, you have modify the `config.ini` file and specify the new location, for example:

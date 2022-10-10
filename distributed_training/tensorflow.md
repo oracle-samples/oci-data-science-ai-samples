@@ -212,6 +212,7 @@ Update the TAG and the IMAGE_NAME as per your needs -
 ```bash
 export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
 export TAG=latest
+export MOUNT_FOLDER_PATH=.
 ```
 
 Build the container image.

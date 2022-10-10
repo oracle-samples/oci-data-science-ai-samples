@@ -90,7 +90,7 @@ Build the container image.
 ```bash
 ads opctl distributed-training build-image \
   -t $TAG \ 
-  -reg $IMAGE_NAME
+  -reg $IMAGE_NAME \
   -df oci_dist_training_artifacts/dask/v1/Dockerfile \
   -s $MOUNT_FOLDER_PATH
 ```
@@ -156,9 +156,9 @@ In order to test the training code locally, use the following command. With ```-
 flag instead (default).
 
 ```bash
-ads opctl run
-        -f train.yaml
-        -b local
+ads opctl run \ 
+  -f train.yaml \
+  -b local
 ```
 
 If your code requires to use any oci services (like object bucket), you need to mount oci keys from your local host machine onto the docker container. This is already done for you assuming the typical location of oci keys ```~/.oci```. You can modify it though, in-case you have keys at a different location. You need to do this in the ```config.ini``` file.
