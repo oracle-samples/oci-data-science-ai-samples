@@ -1,9 +1,9 @@
 # Developer Guide
 
-`OCI` = Oracle Cloud Infrastructure
-`DT` = Distributed Training
-`ADS` = Oracle Accelerated Data Science Library
-`OCIR` = Oracle Cloud Infrastructure Registry
+- `OCI` = Oracle Cloud Infrastructure
+- `DT` = Distributed Training
+- `ADS` = Oracle Accelerated Data Science Library
+- `OCIR` = Oracle Cloud Infrastructure Registry
 
 ## Steps to run Distributed Tensorflow
 
@@ -28,7 +28,7 @@ All files in the current directory is copied over to `/code` folder inside conta
 For example, you can have the following training Tensorflow script for MultiWorkerMirroredStrategy saved as `mnist.py`:
 
 <details>
-<summary><b>mnist.py</b></summary>
+<summary><b>mnist.py</b> <== click to open</summary>
 
 ```python
 # Script adapted from tensorflow tutorial: https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras
@@ -163,7 +163,7 @@ def build_and_compile_cnn_model():
 And, save the following script as `train.py`
 
 <details>
-<summary><b>train.py</b></summary>
+<summary><b>train.py</b> <== click to open</summary>
 
 ```python
 import tensorflow as tf
@@ -325,7 +325,7 @@ docker compose up --remove-orphans
 You can learn more about docker compose [here](https://docs.docker.com/compose/)
 
 <details>
-<summary><b>docker-compose.yaml</b></summary>
+<summary><b>docker-compose.yaml</b> <== click to open</summary>
 
 ```yaml
 #docker-compose.yaml for distributed tensorflow testing
@@ -439,7 +439,7 @@ You can have the following training Tensorflow script for ```ParameterServerStra
 (just like mnist.py and train.py in case of ```MultiWorkerMirroredStrategy```):
 
 <details>
-<summary>ParameterServerStrategy <b>train.py</b></summary>
+<summary><b>ParameterServerStrategy train.py</b> <== click to open </summary>
 
 ```python
 # Script adapted from tensorflow tutorial: https://www.tensorflow.org/tutorials/distribute/parameter_server_training
@@ -565,7 +565,7 @@ The only difference here is that the parameter server train.yaml also needs to h
 Use the following train.yaml:
 
 <details>
-<summary>ParameterServerStrategy <b>train.yaml</b></summary>
+<summary>ParameterServerStrategy <b>train.yaml</b> <== click to open</summary>
 
 ```yaml
 kind: distributed
@@ -650,7 +650,7 @@ You can also test in a clustered manner using docker-compose. Next section.
 You may use the following docker-compose.yml for running ps workloads locally:
 
 <details>
-<summary><b>docker-compose.yml</b></summary>
+<summary><b>docker-compose.yml</b> <== click to open</summary>
 
 ```yaml
 version: "3"

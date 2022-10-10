@@ -1,9 +1,9 @@
 # Developer Guide
 
-`OCI` = Oracle Cloud Infrastructure
-`DT` = Distributed Training
-`ADS` = Oracle Accelerated Data Science Library
-`OCIR` = Oracle Cloud Infrastructure Registry
+- `OCI` = Oracle Cloud Infrastructure
+- `DT` = Distributed Training
+- `ADS` = Oracle Accelerated Data Science Library
+- `OCIR` = Oracle Cloud Infrastructure Registry
 
 ## Steps to run Distributed Horovod
 
@@ -25,7 +25,7 @@ This guide uses ```ads opctl``` for creating distributed training jobs. Refer [d
 
 Make sure you followed and configured your Oracle Cloud tenancy as shown in the [Getting Started](README.md) guide
 
-### Prepare Container Image
+### Prepare the container image
 
 Horovod provides support for Pytorch and Tensorflow. Within these frameworks, there are two separate Dockerfiles, for cpu and gpu. Choose the Dockerfile and conda environment files based on whether you are going to use Pytorch or Tensorflow with either cpu or gpu.
 
@@ -36,7 +36,7 @@ All files in the current directory is copied over to `/code` folder inside conta
 For example, you can have the following training Tensorflow script saved as `train.py`:
 
 <details>
-<summary>tensorflow horovod <b>train.py</b></summary>
+<summary><b>tensorflow horovod train.py</b> <== click to open</summary>
 
 ```python
 # Script adapted from https://github.com/horovod/horovod/blob/master/examples/elastic/tensorflow2/tensorflow2_keras_mnist_elastic.py
@@ -203,7 +203,7 @@ train(state)
 If you are creating a PyTorch based workload, here is an example that you can save as `train.py`.
 
 <details>
-<summary>pytorch horovod <b>train.py</b></summary>
+<summary><b>pytorch horovod train.py</b> <== click to open</summary>
 
 ```python
 # Script adapted from https://github.com/horovod/horovod/blob/master/examples/elastic/pytorch/pytorch_mnist_elastic.py
@@ -491,12 +491,14 @@ Also, while updating `conda-<pytorch|tensorflow>-<cpu|gpu>.yaml` do not remove t
 
 ### Building the container image
 
-Update the TAG and the IMAGE_NAME as per your needs, notice the `$IMAGE_NAME` is the location you would like to pus the container image in OCIR.
+Update the TAG and the IMAGE_NAME as per your needs, notice the `$IMAGE_NAME` is the location you would like to push the container image in OCIR.
 
 ```bash
 export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
 export TAG=latest
 ```
+
+Buld the container image.
 
 ```bash
 ads opctl distributed-training build-image \ 
@@ -508,7 +510,7 @@ ads opctl distributed-training build-image \
 
 If you are behind proxy, `ads opctl` will automatically use your proxy settings (defined via ```no_proxy```, ```http_proxy``` and ```https_proxy```).
 
-### Create Yaml Cluster Definition
+### Create yaml cluster definition
 
 In this example, we would bring up 2 worker nodes and 1 scheduler node. The training code to run is the `train.py` file. All code is assumed to be present inside `/code` directory within the container, which is the default, if no changes were made to the provided Dockerfile. Additionaly
 you can also put any data files inside the same directory (and pass on the location, for example `/code/data/**` as an argument to your training script).
@@ -576,13 +578,13 @@ spec:
       env:
 ```
 
-**Note** that you have to setup the `workDir` property to point to your object storage bucket, that will be used to storage checkpoints and logs. Additionally the `WORKSPACE` and the `WORKSPACE_PREFIX` have to be set as well to point to bucket that will be used to sync those logs.
+**Note** that you have to setup the `workDir` property to point to your object storage bucket on OCI, that will be used to storage checkpoints and logs. Additionally the `WORKSPACE` and the `WORKSPACE_PREFIX` have to be set as well to point to bucket that will be used to sync those logs.
 
 ### Local Testing
 
 Before triggering the job run, you can test the container image and verify the training code, dependencies etc.
 
-#### a. Test locally - stand-alone run (Recommended)
+#### a. Test locally, stand-alone run (Recommended)
 
 In order to test the training code locally, run the `ads opctl run` with `-b local` flag. Further when you ready to run your code as a Job on Oracle Cloud Infrastructure Data Science Service, simply use `-b job` flag instead (default).
 
@@ -592,7 +594,7 @@ ads opctl run
         -b local
 ```
 
-If your code requires to use any Oracle Cloud Infrastructure Services (like object storage bucket), you need to mount OCI API Keys from your local host machine onto the container for the local testing. This is already done for you assuming the default location of OCI API Keys `~/.oci` is used. You can modify it though, in-case you have keys at a different location. For this, you have modify the `config.ini` file and specify the new location, for example:
+If your code requires to use any Oracle Cloud Infrastructure Services (like object storage bucket), you need to mount your OCI API Keys from your local host machine onto the container for the local testing. This is already done for you assuming the default location of OCI API Keys `~/.oci` is used. You can modify it though, in-case you have keys at a different location. For this, you have modify the `config.ini` file and specify the new location, for example:
 
 ```bash
 oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
@@ -607,7 +609,7 @@ oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
 Create `docker-compose.yaml` file and copy the content of the **docker-compose.yaml** `example` file below. You can learn more about docker compose [here](https://docs.docker.com/compose/)
 
 <details>
-<summary><b>docker-compose.yaml</b></summary>
+<summary><b>docker-compose.yaml</b> <== click to open</summary>
 
 ```yaml
 # docker-compose.yaml for distributed horovod testing

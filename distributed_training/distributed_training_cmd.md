@@ -4,10 +4,10 @@
 
 ADS Opctl CLI provides a set of commands for seamless local setup and testing of code for distributed training.
 
-`OCI` = Oracle Cloud Infrastructure
-`DT` = Distributed Training
-`ADS` = Oracle Accelerated Data Science Library
-`OCIR` = Oracle Cloud Infrastructure Registry
+- `OCI` = Oracle Cloud Infrastructure
+- `DT` = Distributed Training
+- `ADS` = Oracle Accelerated Data Science Library
+- `OCIR` = Oracle Cloud Infrastructure Registry
 
 ### Build Container Image Only Using ADS CLI
 

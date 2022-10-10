@@ -1,9 +1,9 @@
 # Developer Guide
 
-`OCI` = Oracle Cloud Infrastructure
-`DT` = Distributed Training
-`ADS` = Oracle Accelerated Data Science Library
-`OCIR` = Oracle Cloud Infrastructure Registry
+- `OCI` = Oracle Cloud Infrastructure
+- `DT` = Distributed Training
+- `ADS` = Oracle Accelerated Data Science Library
+- `OCIR` = Oracle Cloud Infrastructure Registry
 
 ## Steps to run Distributed Dask
 
@@ -28,7 +28,7 @@ All files in the current directory is copied over to `/code` folder inside docke
 For example, you can have the following grid search script saved as train.py;
 
 <details>
-<summary><b>train.py</b></summary>
+<summary><b>gridsearch.py</b> <== click to open</summary>
 
 ```python
 from dask.distributed import Client

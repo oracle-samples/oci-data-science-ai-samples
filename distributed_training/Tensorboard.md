@@ -48,17 +48,17 @@ conda activate tensorboard
 To launch a TensorBoard session on your local workstation, run -
 
 ```bash
-export OCIFS_IAM_KEY=api_key # If you are using resource principal, set resource_principal
+export OCIFS_IAM_KEY=api_key
 tensorboard --logdir oci://my-bucket@my-namespace/path/to/logs
 ```
 
-`OCIFS_IAM_KEY=api_key` - If you are using resource principal, set resource_principal
+`OCIFS_IAM_KEY=api_key` - If you are using resource principal, set `resource_principal`
 
 This will bring up TensorBoard app on your workstation. Access TensorBoard at ``http://localhost:6006/``
 
 **Note**: The logs take some initial time (few minutes) to reflect on the tensorboard dashboard.
 
-#### Writing TensorBoard logs to Object Storage
+### Writing TensorBoard logs to Object Storage
 
 Your training script can write tensorboard logs to the directory reference by ``OCI__SYNC_DIR`` env variable.
 

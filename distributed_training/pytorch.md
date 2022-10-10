@@ -2,10 +2,10 @@
 
 This instruction assumes that you are running this within the folder where you ran `ads opctl distributed-training init --framework pytorch`.
 
-`OCI` = Oracle Cloud Infrastructure
-`DT` = Distributed Training
-`ADS` = Oracle Accelerated Data Science Library
-`OCIR` = Oracle Cloud Infrastructure Registry
+- `OCI` = Oracle Cloud Infrastructure
+- `DT` = Distributed Training
+- `ADS` = Oracle Accelerated Data Science Library
+- `OCIR` = Oracle Cloud Infrastructure Registry
 
 ## Steps to run PyTorch Distributed Data-Parallel Training
 
@@ -44,7 +44,7 @@ All files in the current directory will be copied over to `/code` folder inside 
 For example, you can have the following training script saved as `train.py`:
 
 <details>
-<summary>pytorch <b>train.py</b></summary>
+<summary>pytorch <b>train.py</b> <== click to open</summary>
 
 ```python
 #
@@ -427,7 +427,7 @@ You can also test in a clustered manner using docker-compose. Next section.
 Create a `docker-compose.yaml` file and copy the following content.
 
 <details>
-<summary><b>docker-compose.yaml</b></summary>
+<summary><b>docker-compose.yaml</b> <== click to open</summary>
 
 ```yaml
 services:
@@ -594,7 +594,7 @@ Refer the above link for changes that you need to do in your training script for
 You should choose the ```OCI__SYNC_DIR``` directory to save the profiling logs. For example:
 
 ```python
-prof =  torch.profiler.profile(activities=[torch.profiler.ProfilerActivity.CPU,torch.profiler.ProfilerActivity.CUDA],
+prof = torch.profiler.profile(activities=[torch.profiler.ProfilerActivity.CPU,torch.profiler.ProfilerActivity.CUDA],
         schedule=torch.profiler.schedule(
             wait=1,
             warmup=1,
