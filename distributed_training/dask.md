@@ -76,16 +76,16 @@ with joblib.parallel_backend("dask"):
 
 The required python dependencies are provided inside `oci_dist_training_artifacts/dask/v1/environment.yaml`.  If you code required additional dependency, update the `environment.yaml` file.
 
-Also, while updating `environment.yaml` do not remove the existing libraries. You can append to the list.
+While updating `environment.yaml` do not remove the existing libraries. You can append to the list.
 
-Building docker image -
-
-Update the TAG and the IMAGE_NAME as per your needs -
+Update the `TAG` and the `IMAGE_NAME` as per your needs.
 
 ```bash
 export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
 export TAG=latest
 ```
+
+Build the container image.
 
 ```bash
 ads opctl distributed-training build-image \
@@ -144,11 +144,13 @@ spec:
           value: 5000
 ```
 
+**Note**: make sure that the `workDir` points to your object storage bucket at OCI.
+
 ### 3. Local Testing
 
 Before triggering the job run, you can test the docker image and verify the training code, dependencies etc.
 
-#### 3a. Test locally with stand-alone run
+#### 3a. Test locally with stand-alone run (Recommended)
 
 In order to test the training code locally, use the following command. With ```-b local``` flag, it uses a local backend. Further when you need to run this workload on odsc jobs, simply use ```-b job```
 flag instead (default).
@@ -174,27 +176,9 @@ You can also test in a clustered manner using docker-compose. Next section.
 
 ### 3b. Test locally with `docker-compose` based cluster
 
-Create `docker-compose.yaml` file and copy the following content. Update the object storage path for `OCI__WORK_DIR`
+Create `docker-compose.yaml` file and copy the content from the example compose file below.
 
 **Note** For local testing only `WORKER_COUNT=1` is supported.
-
-Once the docker-compose.yaml is created, you can start the containers by running -
-
-```bash
-docker compose up
-```
-
-You can learn more about docker compose [here](https://docs.docker.com/compose/)
-
-```bash
-export WORK_DIR=oci://<my-bucket>@<my-tenancy>/prefix
-```
-
-Alternative to exporting variable is to define it inline -
-
-```bash
-IMAGE_NAME=iad.ocir.io/<tenancy>/<repo-name> TAG=<TAG> WORK_DIR=oci://<my-bucket>@<tenancy>/<prefix> docker compose up
-```
 
 <details>
 <summary><b>docker-compose.yaml</b></summary>
@@ -260,6 +244,30 @@ services:
 ```
 
 </details>
+&nbsp;
+
+Set your `WORK_DIR` and `IMAGE_NAME` to be used with the docker-compose.yml.
+
+```bash
+export WORK_DIR=oci://<my-bucket>@<my-tenancy>/prefix
+export TAG=<TAG>
+export WORK_DIR=oci://<my-bucket>@<tenancy>/<prefix>
+```
+
+Alternativly you can set those directly into the `docker-compose.yml` file
+
+```yaml
+image: iad.ocir.io/<tenancy>/<repo-name>:<tag>
+OCI__WORK_DIR: oci://<my-bucket>@<tenancy>/<prefix>
+```
+
+Once the `docker-compose.yaml` is created, you can start the containers by running:
+
+```bash
+docker compose up
+```
+
+You can learn more about docker compose [here](https://docs.docker.com/compose/)
 
 ### 4. Dry Run to validate the Yaml definition
 
@@ -300,12 +308,12 @@ to the configured object storage bucket location. Use this directory in your tra
 To configure the destination object storage bucket location, use the following settings in the workload yaml file(train.yaml).
 
 ```yaml
-    - name: SYNC_ARTIFACTS
-      value: 1
-    - name: WORKSPACE
-      value: "<bucket_name>"
-    - name: WORKSPACE_PREFIX
-      value: "<bucket_prefix>"
+  - name: SYNC_ARTIFACTS
+    value: 1
+  - name: WORKSPACE
+    value: "<bucket_name>"
+  - name: WORKSPACE_PREFIX
+    value: "<bucket_prefix>"
 ```
 
 **Note**: Change ``SYNC_ARTIFACTS`` to ``0`` to disable this feature.

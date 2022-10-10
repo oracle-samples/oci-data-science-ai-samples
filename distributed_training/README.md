@@ -89,7 +89,7 @@ Allow service datascience to manage virtual-network-family in compartment <your_
 
 See also [Data Science Policies](https://docs.oracle.com/en-us/iaas/data-science/using/policies.htm).
 
-**_Example for a OCI Data Science Service Dynamic Group Rules_**:
+**_Example for an OCI Data Science Service Dynamic Group Rules_**:
 
 ```bash
 all {resource.type='datasciencejobrun',resource.compartment.id='ocid1.compartment.oc1..aaaaaaaa<>'}
@@ -99,7 +99,7 @@ all {resource.type='datasciencenotebooksession',resource.compartment.id='ocid1.c
 
 **Note** `resource.compartment.id` point to the OCID of your compartment
 
-### Restricting Access
+### Further Restricting Access
 
 You can restrict the permission to specific container repository, for example:
 
