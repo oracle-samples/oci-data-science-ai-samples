@@ -122,6 +122,15 @@ See also [Object Storage Policies](https://docs.oracle.com/en-us/iaas/Content/Id
 Lastly, you need to install the ads-opctl utility which is required to package (containerize) your distributed training script and
 launch OCI Data Science distributed jobs.
 
+* Setup Conda (optional, but recommended)
+
+```bash
+curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+conda create -n distributed-training python=3.8
+conda activate distributed-training
+```
+
 * Install ADS >= 2.6.6
 
 ```bash
