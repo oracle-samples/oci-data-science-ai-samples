@@ -14,25 +14,26 @@ If you want to try this samples on your local machine, we would recommend you to
 Download and install the Conda.
 
 ```bash
-curl -L https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh >> miniconda.sh
-bash ./miniconda.sh -b -p $HOME/miniconda
-cd $HOME/miniconda
-./conda init <zsh or shell>
+curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
 ```
+
+You may need to restart your terminal or source ~/.bashrc to enable the conda command. Use conda -V to test if it is installed successfully.
 
 Create new conda environment with Python 3.7
 
 ```bash
-conda create -n jobs python=3.7
+conda create -n jobs python=3.8
 ```
 
 Activate it.
 
 ```bash
+conda deactivate
 conda activate jobs
 ```
 
-Download the OCI CLI Preview release
+Install the OCI CLI Preview release
 
 ```bash
 pip install oci

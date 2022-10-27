@@ -8,7 +8,7 @@ In this lab you will use the Python SDK to identify if any workers in an image a
 
 Example of worker wearing their helmet:
 
-![](./images/constructionsite1_resized.jpg " ")
+![](./images/construction_site_with_helmets.jpg " ")
 
 Example of workers not wearing their helmets:
 
@@ -261,6 +261,7 @@ bucket_name = "<bucket name>"
 compartment_id = "<compartment id>"
 input_prefix = "<folder name for images>"
 output_prefix = "<output folder name for results>"
+max_results_per_image = 25
 
 # Auth Config Definition
 config = oci.config.from_file('~/.oci/config')
@@ -290,6 +291,7 @@ for i in object_list.data.objects:
 ### Vision AI
 # Send the Request to Service with Multiple Features
 image_object_detection_feature = ImageObjectDetectionFeature()
+image_object_detection_feature.max_results = max_results_per_image
 features = [image_object_detection_feature]
 
 # Setup Input Location
@@ -317,9 +319,9 @@ res = ai_vision_client.create_image_job(create_image_job_details=create_image_jo
 final_prefix= output_prefix+"/"+res.data.id+"/"+namespace_name+"_"+bucket_name+"_"+input_prefix+"/"
 
 # Logic to perform the following statistics:
-# 1. Count the number of persons and hardhats in each image, and total up the counts
-# 2. Report the person and hardhat counts, and the number of images processed
-# 3. Also, list the names of images where the person count and hardhat count don’t match
+# 1. Count the number of persons and helmets in each image, and total up the counts
+# 2. Report the person and helmets counts, and the number of images processed
+# 3. Also, list the names of images where the person count and helmets count don’t match
 
 # Wait for images to be processed
 print("Wait for images to be analyzed. Timeout after 90 seconds")
@@ -337,12 +339,14 @@ while i <= 18:
         time.sleep(5)
         i+= 1
 
-person_count=0
-hat_count=0
-total_person_count=0
-total_hat_count=0
-image_counter=0
-no_match_list=[]
+print("\n")
+
+person_count = 0
+helmet_count = 0
+total_person_count = 0
+total_helmet_count = 0
+image_counter = 0
+no_match_list = []
 
 # List all JSON responses received by Vision AI
 object_storage_client = ObjectStorageClient(config)
@@ -352,29 +356,30 @@ object_list = object_storage_client.list_objects(
     prefix = final_prefix
 )
 
-# Count number of persons and number of hats
+# Count number of persons and number of helmets
 for i in object_list.data.objects:
+    person_count = 0
+    helmet_count = 0
+
     image_counter=image_counter+1
     body=object_storage_client.get_object(namespace_name, bucket_name, object_name=i.name)
     dict_test= json.loads(body.data.content.decode('utf-8'))
     for j in dict_test['imageObjects']:
-        if (j['name'] =='Person' or j['name']=='Man' or j['name']=='Woman' or j['name']=='Human'):
-            person_count = person_count+1
+        if (j['name'] == 'Person' or j['name'] == 'Man' or j['name'] == 'Woman' or j['name'] == 'Human'):
+            person_count = person_count + 1
         if (j['name'] == 'Helmet'):
-            hat_count = hat_count+1
+            helmet_count = helmet_count + 1
 
-    if (person_count != hat_count):
+    if (person_count != helmet_count):
         no_match_list.append(i.name)
        
     total_person_count = total_person_count + person_count
-    total_hat_count = total_hat_count + hat_count  
-    person_count=0
-    hat_count=0
+    total_helmet_count = total_helmet_count + helmet_count  
 
-print ("Number of persons found in images:", person_count,"\n")
-print ("Number of hardhats found in images:", hat_count, "\n")
+print ("Number of persons found in images:", total_person_count,"\n")
+print ("Number of helmets found in images:", total_helmet_count, "\n")
 print ("Number of images processed:", image_counter, "\n")     
-print ("Names of images where hat count is not equal to total number of persons:\n")
+print ("Names of images where at least one person is not wearing their helmet:\n")
 
 for i in no_match_list:
     i=re.sub(final_prefix,'',i)
@@ -425,17 +430,16 @@ for i in no_match_list:
     Job status:  ACCEPTED
     Job status:  IN_PROGRESS
     Job status:  SUCCEEDED
-    Number of persons found in images: 14
+    Number of persons found in images: 11
 
     Number of helmets found in images: 6
 
-    Number of images processed: 7
+    Number of images processed: 6
 
-    Names of images where helmet count is not equal to total number of persons:
+    Names of images where at least one person is not wearing their helmet:
 
     constructionsite5.jpg
     constructionsite6.jpg
-    constructionsite7.jpg
     ```
 
     Confirm the results by looking at each image.

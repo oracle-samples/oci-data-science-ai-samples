@@ -5,4 +5,4 @@ oci==2.53.2+preview.1.1343
 vision_service_python_client==0.3.60
 opencv-python==4.5.3.56
 moviepy==1.0.3
-joblib==1.0.1
+joblib==1.2.0

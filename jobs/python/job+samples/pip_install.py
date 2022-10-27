@@ -22,7 +22,7 @@ class Job:
         # Auto switch between key or resource princiapal, for local run or as job
         rp_version = os.environ.get(
             OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
-        if rp_version == "UNDEFINED":
+        if not rp_version or rp_version == "UNDEFINED":
             # RUN LOCAL TEST
             self.signer = oci.config.from_file("~/.oci/config", "DEFAULT")
         else:
@@ -35,7 +35,7 @@ class Job:
 
     def install(self, package):
         subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", package])
+            [sys.executable, "-m", "pip", "install", package, "--user"])
 
     def get_by_key(self, key, default="LOCAL"):
         return os.environ.get(key, default)

@@ -14,3 +14,7 @@ jobs/java/.idea
 jobs/java/.settings
 jobs/java/target
 .project
+*.class
+jobs/flask_job_monitor/__pycache__
+.vscode
+.idea/

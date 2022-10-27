@@ -2,9 +2,8 @@
 
 ## Use case
 
-```
 The user wants to get and combine data from multiple input sources.
-```
+
 ## DIS Data Flow
 
 For this example, we will demonstrate how to get input from 3 data sources, ATP, ADW and Object Store, and combine them into a single data file which
@@ -13,9 +12,9 @@ can be then used as in input for AD Service.
 
 
 ### Importing Object Store:
-```
-Add a source operator for the raw data. Refer to Load Data in DIS Data Flow, Object Store Section.
-```
+
+Add a source operator for the raw data. Refer to [Load Data in DIS Data Flow](./dataIO.md), Object Store Section.
+
 Ensure the successful parsing of data through the attributes and data column.
 
 ![image info](./utils/MIS1.png)
