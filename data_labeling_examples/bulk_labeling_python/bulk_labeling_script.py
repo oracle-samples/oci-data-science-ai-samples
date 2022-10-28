@@ -13,6 +13,7 @@ import time
 from itertools import repeat
 import pandas as pd
 import ast
+import logging
 
 sys.path.append("..")
 
@@ -96,7 +97,7 @@ def letter_to_label(letter):
             return l
 
 
-def first_letter(name, record_id, compartment_id):
+def first_letter(name, record_id, compartment_id, logger):
     """ The function is used to annotate the record with the input label
 
     :param name: name of the record to be annotated
@@ -106,8 +107,10 @@ def first_letter(name, record_id, compartment_id):
     """
     label = letter_to_label(letter=name[0])
     if label:
+        logger.info("labeling record id: " + str(record_id) + "of name " + str(name) + " with label " + str(label))
         dls_create_annotation(label=label, record_id=record_id, compartment_id=compartment_id)
     else:
+        logger.info("No label match for record " + str(name) + " with id: " + str(record_id))
         print("current time: " + str(datetime.datetime.now()))
         print("No label match for record " + str(name))
         print("with id: " + str(record_id))
@@ -127,7 +130,7 @@ def match_to_label(name):
             return l
 
 
-def first_match(name, record_id, compartment_id):
+def first_match(name, record_id, compartment_id, logger):
     """ The function is used to annotate the record with the input label
 
     :param name: name of the record to be annotated
@@ -137,15 +140,17 @@ def first_match(name, record_id, compartment_id):
     """
     label = match_to_label(name=name)
     if label:
+        logger.info("labeling record id: " + str(record_id) + "of name " + str(name) + " with label " + str(label))
         dls_create_annotation(label=label, record_id=record_id, compartment_id=compartment_id)
     else:
+        logger.info("No label match for record " + str(name) + " with id: " + str(record_id))
         print("current time: " + str(datetime.datetime.now()))
         print("No label match for record " + str(name))
         print("with id: " + str(record_id))
         print()
 
 
-def custom_label_match(name, record_id, compartment_id):
+def custom_label_match(name, record_id, compartment_id, logger):
     """ The function is used to annotate the record with the input label
 
     :param name: name of the record to be annotated
@@ -161,12 +166,16 @@ def custom_label_match(name, record_id, compartment_id):
             break
     if label_var != "":
         label_lst = LABEL_MAP[label_var]
+        logger.info("labeling record id: " + str(record_id) + "of name " + str(name) + " with label " + str(label_lst))
         dls_create_annotation(label=label_lst, record_id=record_id, compartment_id=compartment_id)
+    else:
+        logger.info("No label match for record " + str(name) + " with id: " + str(record_id))
 
 
-def label_record(name, id, labeling_algorithm, compartment_id):
+def label_record(name, id, labeling_algorithm, compartment_id, logger):
     """ The function chooses the annotates the record by choosing the label corresponding to input labeling algorithm
 
+    :param logger: save logs
     :param name: name of the record to be annotated
     :param id: the ocid of the record to be annotated
     :param labeling_algorithm: the algorithm that will be used to assign labels to DLS Dataset records
@@ -175,14 +184,17 @@ def label_record(name, id, labeling_algorithm, compartment_id):
     :return: the annotated record
     """
     if labeling_algorithm == "FIRST_REGEX_MATCH":
-        first_match(name=name, record_id=id, compartment_id=compartment_id)
+        logger.info("labeling algorithm FIRST_REGEX_MATCH for record_id: " + str(id))
+        first_match(name=name, record_id=id, compartment_id=compartment_id, logger=logger)
     elif labeling_algorithm == "FIRST_LETTER_MATCH":
-        first_letter(name=name, record_id=id, compartment_id=compartment_id)
+        logger.info("labeling algorithm FIRST_LETTER_MATCH for record_id: " + str(id))
+        first_letter(name=name, record_id=id, compartment_id=compartment_id, logger=logger)
     elif labeling_algorithm == "CUSTOM_LABELS_MATCH":
-        custom_label_match(name=name, record_id=id, compartment_id=compartment_id)
+        logger.info("labeling algorithm CUSTOM_LABELS_MATCH for record_id: " + str(id))
+        custom_label_match(name=name, record_id=id, compartment_id=compartment_id, logger=logger)
 
 
-def bounding_box_annotation(row, compartment_id):
+def bounding_box_annotation(row, compartment_id, logger):
     """ This Function is used to annotate records of type object detection
 
     :param row: row of the input csv grouped by record_id
@@ -210,7 +222,7 @@ def bounding_box_annotation(row, compartment_id):
 
         normalized_vector_obj_lst = []
         for i in range(4):
-            normalized_vector_obj = NormalizedVertex(x=row_ent[i + 1], y=row_ent[i + 1])
+            normalized_vector_obj = NormalizedVertex(x=row_ent[i + 1], y=row_ent[i + 5])
             normalized_vector_obj_lst.append(normalized_vector_obj)
 
         bounding_polygon_obj = BoundingPolygon(normalized_vertices=normalized_vector_obj_lst)
@@ -222,34 +234,48 @@ def bounding_box_annotation(row, compartment_id):
                                                             entities=entity_obj)
     print(create_annotation_details_obj)
     try:
+        logger.info("Creating annotation for record id: " + str(record_id))
         anno_response = dls_dp_client.create_annotation(create_annotation_details=create_annotation_details_obj)
+        logger.info("Successfully annotated record id: " + str(record_id))
     except Exception as error:
+        logger.info("Failed to annotate for record id: " + str(record_id))
         anno_response = error
     return anno_response
 
 
 def main():
+
+    logging.basicConfig(filename="debug.log",
+                        format='%(asctime)s %(message)s',
+                        filemode='w')
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logger.info("...........starting.............")
     try:
         response = dls_dp_client.get_dataset(dataset_id=DATASET_ID)
+        logger.info("Fetching Dataset")
     except Exception as error:
         response = error
     if response.status == 200:
+        logger.info("Fetching Dataset Successful")
         compartment_id = response.data.compartment_id
         start = time.perf_counter()
         num_records = LIST_RECORDS_LIMIT
         pool = mp.Pool(NO_OF_PROCESSORS)
         if ANNOTATION_TYPE == "BOUNDING_BOX":
+            logger.info("Annotation type: Bounding Box")
             df = pd.read_csv(PATH)
             df['label'] = df['label'].apply(lambda x: ast.literal_eval(x))
             rows = df.groupby('record_id').apply(lambda x: x.values.tolist()).tolist()[:]
-            pool.starmap(bounding_box_annotation, zip(rows, repeat(compartment_id)))
+            pool.starmap(bounding_box_annotation, zip(rows, repeat(compartment_id), repeat(logger)))
             pool.close()
             end = time.perf_counter()
             print(f'Finished in {round(end - start, 2)} second(s)')
         elif ANNOTATION_TYPE == "CLASSIFICATION":
             while num_records == LIST_RECORDS_LIMIT:
                 names, ids, num_records = dls_list_records(compartment_id=compartment_id)
-                pool.starmap(label_record, zip(names, ids, repeat(LABELING_ALGORITHM), repeat(compartment_id)))
+                pool.starmap(label_record, zip(names, ids, repeat(LABELING_ALGORITHM), repeat(compartment_id), repeat(logger)))
             pool.close()
             end = time.perf_counter()
             print(f'Finished in {round(end - start, 2)} second(s)')
