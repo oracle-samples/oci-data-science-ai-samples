@@ -10,8 +10,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Topics
-<img src="https://img.shields.io/badge/deploy model-6-brightgreen">
-<img src="https://img.shields.io/badge/register model-6-brightgreen">
+<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen">
 <img src="https://img.shields.io/badge/train model-6-brightgreen">
 <img src="https://img.shields.io/badge/pyspark-4-brightgreen">
 <img src="https://img.shields.io/badge/data flow-4-brightgreen">
