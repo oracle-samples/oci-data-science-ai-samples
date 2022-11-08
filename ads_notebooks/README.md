@@ -10,31 +10,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Topics
-<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen">
-<img src="https://img.shields.io/badge/train model-6-brightgreen">
-<img src="https://img.shields.io/badge/pyspark-4-brightgreen">
-<img src="https://img.shields.io/badge/data flow-4-brightgreen">
-<img src="https://img.shields.io/badge/oracle open data-3-brightgreen">
-<img src="https://img.shields.io/badge/bds-3-brightgreen">
-<img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen">
-<img src="https://img.shields.io/badge/xgboost-2-brightgreen">
-<img src="https://img.shields.io/badge/nlp-2-brightgreen">
-<img src="https://img.shields.io/badge/big data service-2-brightgreen">
-<img src="https://img.shields.io/badge/scikit learn-2-brightgreen">
-<img src="https://img.shields.io/badge/dcat-1-brightgreen">
-<img src="https://img.shields.io/badge/autonomous driving-1-brightgreen">
-<img src="https://img.shields.io/badge/tensorflow-1-brightgreen">
-<img src="https://img.shields.io/badge/model evaluation-1-brightgreen">
-<img src="https://img.shields.io/badge/binary classification-1-brightgreen">
-<img src="https://img.shields.io/badge/regression-1-brightgreen">
-<img src="https://img.shields.io/badge/multi class classification-1-brightgreen">
-<img src="https://img.shields.io/badge/imbalanced dataset-1-brightgreen">
-<img src="https://img.shields.io/badge/synthetic dataset-1-brightgreen">
-<img src="https://img.shields.io/badge/caltech-1-brightgreen">
-<img src="https://img.shields.io/badge/pedestrian detection-1-brightgreen">
-<img src="https://img.shields.io/badge/data visualization-1-brightgreen">
-<img src="https://img.shields.io/badge/seaborn plot-1-brightgreen">
-
+<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen"> <img src="https://img.shields.io/badge/train model-6-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/dcat-1-brightgreen"> <img src="https://img.shields.io/badge/autonomous driving-1-brightgreen"> <img src="https://img.shields.io/badge/tensorflow-1-brightgreen"> <img src="https://img.shields.io/badge/model evaluation-1-brightgreen"> <img src="https://img.shields.io/badge/binary classification-1-brightgreen"> <img src="https://img.shields.io/badge/regression-1-brightgreen"> <img src="https://img.shields.io/badge/multi class classification-1-brightgreen"> <img src="https://img.shields.io/badge/imbalanced dataset-1-brightgreen"> <img src="https://img.shields.io/badge/synthetic dataset-1-brightgreen"> <img src="https://img.shields.io/badge/caltech-1-brightgreen"> <img src="https://img.shields.io/badge/pedestrian detection-1-brightgreen"> <img src="https://img.shields.io/badge/data visualization-1-brightgreen"> <img src="https://img.shields.io/badge/seaborn plot-1-brightgreen"> 
 
 ## Notebooks
 ### - Using Data Catalog Metastore with PySpark
