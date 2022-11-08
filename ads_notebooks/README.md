@@ -17,7 +17,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 #### `data_catalog-hive_metastore-data_flow-2.ipynb`
 
  
-> Configure and use PySpark to process data in the Oracle Cloud Infrastructure (OCI) Data Catalog metastore, including common operations like creating and loading data from the metastore.
+Configure and use PySpark to process data in the Oracle Cloud Infrastructure (OCI) Data Catalog metastore, including common operations like creating and loading data from the metastore.
 
 This notebook was developed on: `pyspark30_p37_cpu_v5`
 
@@ -31,7 +31,7 @@ This notebook was developed on: `pyspark30_p37_cpu_v5`
 #### `pyspark-data_flow.ipynb`
 
  
-> Develop local PySpark applications and work with remote clusters using Data Flow.
+Develop local PySpark applications and work with remote clusters using Data Flow.
 
 This notebook was developed on: `pyspark24_p37_cpu_v3`
 
@@ -45,7 +45,7 @@ This notebook was developed on: `pyspark24_p37_cpu_v3`
 #### `audi-autonomous_driving-oracle_open_data.ipynb`
 
  
-> Download, process and display autonomous driving data, and map LiDAR data onto images.
+Download, process and display autonomous driving data, and map LiDAR data onto images.
 
 This notebook was developed on: `computervision_p37_cpu_v1`
 
@@ -59,7 +59,7 @@ This notebook was developed on: `computervision_p37_cpu_v1`
 #### `train-register-deploy-tensorflow.ipynb`
 
  
-> Train, register, and deploy a TensorFlow model.
+Train, register, and deploy a TensorFlow model.
 
 This notebook was developed on: `tensorflow27_p37_cpu_v1`
 
@@ -73,7 +73,7 @@ This notebook was developed on: `tensorflow27_p37_cpu_v1`
 #### `train-register-deploy-xgboost.ipynb`
 
  
-> Train, register, and deploy an XGBoost model.
+Train, register, and deploy an XGBoost model.
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -87,7 +87,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `model_evaluation.ipynb`
 
  
-> Train and evaluate different types of models: binary classification using an imbalanced dataset, multi-class classification using a synthetically generated dataset consisting of three equally distributed classes, and a regression using a synthetically generated dataset with positive targets.
+Train and evaluate different types of models: binary classification using an imbalanced dataset, multi-class classification using a synthetically generated dataset consisting of three equally distributed classes, and a regression using a synthetically generated dataset with positive targets.
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -101,7 +101,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `caltech-pedestrian_detection-oracle_open_data.ipynb`
 
  
-> Download and process annotated video data of vehicles and pedestrians.
+Download and process annotated video data of vehicles and pedestrians.
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -115,7 +115,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `visualizing_data.ipynb`
 
  
-> Perform common data visualization tasks and explore data with the ADS SDK. Plotting approaches include 3D plots, pie chart, GIS plots, and Seaborn pairplot graphs.
+Perform common data visualization tasks and explore data with the ADS SDK. Plotting approaches include 3D plots, pie chart, GIS plots, and Seaborn pairplot graphs.
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -129,7 +129,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `pyspark-data_flow_studio-spark_nlp.ipynb`
 
  
-> Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.
+Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.
 
 This notebook was developed on: `pyspark32_p38_cpu_v1`
 
@@ -143,7 +143,7 @@ This notebook was developed on: `pyspark32_p38_cpu_v1`
 #### `train-register-deploy-pytorch.ipynb`
 
  
-> Train, register, and deploy a PyTorch model.
+Train, register, and deploy a PyTorch model.
 
 This notebook was developed on: `pytorch110_p37_cpu_v1`
 
@@ -157,7 +157,7 @@ This notebook was developed on: `pytorch110_p37_cpu_v1`
 #### `xgboost-rapids.ipynb`
 
  
-> Compare training time between CPU and GPU trained models using XGBoost.
+Compare training time between CPU and GPU trained models using XGBoost.
 
 This notebook was developed on: `rapids2110_p37_gpu_v1`
 
@@ -171,7 +171,7 @@ This notebook was developed on: `rapids2110_p37_gpu_v1`
 #### `document-text_extraction.ipynb`
 
  
-> Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.
+Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.
 
 This notebook was developed on: `nlp_p37_cpu_v2`
 
@@ -185,7 +185,7 @@ This notebook was developed on: `nlp_p37_cpu_v2`
 #### `text_classification-model_explanation-lime.ipynb`
 
  
-> Perform model explanations on an NLP classifier using the locally interpretable model explanations technique (LIME).
+Perform model explanations on an NLP classifier using the locally interpretable model explanations technique (LIME).
 
 This notebook was developed on: `nlp_p37_cpu_v2`
 
@@ -199,7 +199,7 @@ This notebook was developed on: `nlp_p37_cpu_v2`
 #### `big_data_service-(BDS)-kerberos.ipynb`
 
  
-> Connect to Oracle Big Data services using Kerberos.
+Connect to Oracle Big Data services using Kerberos.
 
 This notebook was developed on: `pyspark30_p37_cpu_v5`
 
@@ -213,7 +213,7 @@ This notebook was developed on: `pyspark30_p37_cpu_v5`
 #### `natural_language_processing.ipynb`
 
  
-> Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.
+Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.
 
 This notebook was developed on: `nlp_p37_cpu_v2`
 
@@ -227,7 +227,7 @@ This notebook was developed on: `nlp_p37_cpu_v2`
 #### `pyspark-data_flow_studio-introduction.ipynb`
 
  
-> Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.
+Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.
 
 This notebook was developed on: `pyspark32_p38_cpu_v1`
 
@@ -241,7 +241,7 @@ This notebook was developed on: `pyspark32_p38_cpu_v1`
 #### `read-write-big_data_service-(BDS).ipynb`
 
  
-> Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
+Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
 
 This notebook was developed on: `pyspark30_p37_cpu_v5`
 
@@ -255,7 +255,7 @@ This notebook was developed on: `pyspark30_p37_cpu_v5`
 #### `data_labeling-text_classification.ipynb`
 
  
-> Use the Oracle Cloud Infrastructure (OCI) Data Labeling service to efficiently build enriched, labeled datasets for the purpose of accurately training AI/ML models. This notebook demonstrates operations that can be performed using the Advanced Data Science (ADS) Data Labeling module.
+Use the Oracle Cloud Infrastructure (OCI) Data Labeling service to efficiently build enriched, labeled datasets for the purpose of accurately training AI/ML models. This notebook demonstrates operations that can be performed using the Advanced Data Science (ADS) Data Labeling module.
 
 This notebook was developed on: `nlp_p37_cpu_v2`
 
@@ -269,7 +269,7 @@ This notebook was developed on: `nlp_p37_cpu_v2`
 #### `data_catalog-hive_metastore-data_flow.ipynb`
 
  
-> Write and test a Data Flow batch application using the Oracle Cloud Infrastructure (OCI) Data Catalog Metastore. Configure the job, run the application and clean up resources.
+Write and test a Data Flow batch application using the Oracle Cloud Infrastructure (OCI) Data Catalog Metastore. Configure the job, run the application and clean up resources.
 
 This notebook was developed on: `pyspark30_p37_cpu_v5`
 
@@ -283,7 +283,7 @@ This notebook was developed on: `pyspark30_p37_cpu_v5`
 #### `genome_visualization-oracle_open_data.ipynb`
 
  
-> Load visual data, define regions, and visualize objects using metadata to connect structured images to language.
+Load visual data, define regions, and visualize objects using metadata to connect structured images to language.
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -297,7 +297,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `sql_magic-commands-with-autonomous_database.ipynb`
 
  
-> Use SQL Magic commands to work with a database within a Jupytyer notebook. This notebook shows how to to use both line and cell magics.
+Use SQL Magic commands to work with a database within a Jupytyer notebook. This notebook shows how to to use both line and cell magics.
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -311,7 +311,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `train-register-deploy-other-frameworks.ipynb`
 
  
-> Train, register, and deploy a generic model
+Train, register, and deploy a generic model
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -325,7 +325,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `hyperparameter_tuning.ipynb`
 
  
-> Use ADSTuner to optimize an estimator using the scikit-learn API
+Use ADSTuner to optimize an estimator using the scikit-learn API
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -339,7 +339,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `accelerate-scikit_learn-with-intel_extension.ipynb`
 
  
-> Enhance performance of scikit-learn models using the Intel(R) oneAPI Data Analytics Library. Train a k-means model using both sklearn and the accelerated Intel library and compare performance.
+Enhance performance of scikit-learn models using the Intel(R) oneAPI Data Analytics Library. Train a k-means model using both sklearn and the accelerated Intel library and compare performance.
 
 This notebook was developed on: `sklearnex202130_p37_cpu_v1`
 
@@ -353,7 +353,7 @@ This notebook was developed on: `sklearnex202130_p37_cpu_v1`
 #### `train-register-deploy-lightgbm.ipynb`
 
  
-> Train, register, and deploy a LightGBM model.
+Train, register, and deploy a LightGBM model.
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -367,7 +367,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `streaming-service.ipynb`
 
  
-> Connect to Oracle Cloud Insfrastructure (OCI) Streaming service with kafka.
+Connect to Oracle Cloud Insfrastructure (OCI) Streaming service with kafka.
 
 This notebook was developed on: `dataexpl_p37_cpu_v3`
 
@@ -381,7 +381,7 @@ This notebook was developed on: `dataexpl_p37_cpu_v3`
 #### `big_data_service-(BDS)-livy.ipynb`
 
  
-> Work interactively with a BDS cluster using Livy and two different connection techniques, SparkMagic (for a notebook environment) and with REST.
+Work interactively with a BDS cluster using Livy and two different connection techniques, SparkMagic (for a notebook environment) and with REST.
 
 This notebook was developed on: `pyspark30_p37_cpu_v5`
 
@@ -395,7 +395,7 @@ This notebook was developed on: `pyspark30_p37_cpu_v5`
 #### `api_keys.ipynb`
 
  
-> Configure and test API key authentication, attach keys to user account through Oracle's identity service, and test access to the API.
+Configure and test API key authentication, attach keys to user account through Oracle's identity service, and test access to the API.
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
@@ -409,7 +409,7 @@ This notebook was developed on: `generalml_p37_cpu_v1`
 #### `train-register-deploy-sklearn.ipynb`
 
  
-> Train, register, and deploy an scikit-learn model.
+Train, register, and deploy an scikit-learn model.
 
 This notebook was developed on: `generalml_p37_cpu_v1`
 
