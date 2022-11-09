@@ -44,6 +44,10 @@ def parse_adsbib_format(input: str) -> dict:
     return results
 
 
+def escape_underscore(str: str) -> str:
+    return str.replace("_", "\_")
+
+
 def make_readme():
 
     README_FILE = "README.md"
@@ -94,18 +98,21 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             print(
                 f"""<img src="https://img.shields.io/badge/{tag_name.replace('-', ' ')}-{tag_count}-brightgreen">""",
                 file=f,
-		end = " "
+                end=" ",
             )
 
         print("\n\n## Notebooks", file=f)
-        for notebook_file, notebook_metadata in all_notebooks.items():
+        for notebook_file, notebook_metadata in sorted(
+            all_notebooks.items(),
+            key=lambda nb: nb[1].get("keywords", None)[0],
+        ):
 
             print(f"### - {notebook_metadata['title']}", file=f)
             print(f"#### `{notebook_metadata['filename']}`", file=f)
             print("\n ", file=f)
             print(f"{notebook_metadata['summary']}", file=f)
             print(
-                f"\nThis notebook was developed on: `{notebook_metadata['developed on']}`",
+                f"\nThis notebook was developed on the conda pack with slug: *{escape_underscore(notebook_metadata['developed on'])}*",
                 file=f,
             )
             print("\n ", file=f)
