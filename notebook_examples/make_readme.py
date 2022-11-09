@@ -67,6 +67,8 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
         all_notebooks = {}
         for notebook_file in tqdm(glob.glob("[!_]*.ipynb"), leave=True):
+            if notebook_file == "getting-started.ipynb":
+                continue
 
             nb = nbf.read(notebook_file, nbf.NO_CONVERT)
 

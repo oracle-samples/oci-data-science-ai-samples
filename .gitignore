@@ -18,3 +18,5 @@ jobs/java/target
 jobs/flask_job_monitor/__pycache__
 .vscode
 .idea/
+/notebook_examples/__*.ipynb
+/notebook_examples/Untitled*.ipynb
