@@ -67,7 +67,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
         all_notebooks = {}
         for notebook_file in tqdm(glob.glob("[!_]*.ipynb"), leave=True):
-            if notebook_file == "getting-started.ipynb":
+            if notebook_file == "getting_started.ipynb":
                 continue
 
             nb = nbf.read(notebook_file, nbf.NO_CONVERT)
@@ -94,6 +94,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             print(
                 f"""<img src="https://img.shields.io/badge/{tag_name.replace('-', ' ')}-{tag_count}-brightgreen">""",
                 file=f,
+		end = " "
             )
 
         print("\n\n## Notebooks", file=f)
@@ -102,7 +103,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             print(f"### - {notebook_metadata['title']}", file=f)
             print(f"#### `{notebook_metadata['filename']}`", file=f)
             print("\n ", file=f)
-            print(f"> {notebook_metadata['summary']}", file=f)
+            print(f"{notebook_metadata['summary']}", file=f)
             print(
                 f"\nThis notebook was developed on: `{notebook_metadata['developed on']}`",
                 file=f,
