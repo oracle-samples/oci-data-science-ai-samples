@@ -23,9 +23,20 @@ This guide uses `ads opctl` for creating distributed training jobs. Refer our [d
 
 The instruction assumes that you are running this within the folder where you initlize your tensorflow distributed training project. If you haven't done so yet, please run following command:
 
+Create project folder and enter the folder:
+
+```bash
+mkdir dt-tf
+cd dt-tf
+```
+
+Initialize the Tensorflow distributed training project.
+
 ```bash
 ads opctl distributed-training init --framework tensorflow
 ```
+
+> You can also initialize existing project.
 
 ### Setup Sample Code
 
@@ -211,7 +222,7 @@ model.save(model_dir, save_format='tf')
 
 ### Build the Container Image
 
-Set the TAG and the IMAGE_NAME as per your needs:
+Set the TAG and the IMAGE_NAME as per your needs. `IMAGE_NAME` refers to your Oracle Cloud Container Registry. `MOUNT_FOLDER_PATH` is the root directory of your project code, but you can use `.` in case you executed all of the `ads opctl run` commands directly from your root project folder.
 
 ```bash
 export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
@@ -231,7 +242,7 @@ ads opctl distributed-training build-image \
 
 > If you are behind proxy, `ads opctl` will **automatically** use your proxy settings (defined via `no_proxy`, `http_proxy` and `https_proxy`).
 
-Note that whenever you change the code, you have to build, tag and push the image to repo. This is automatically done with the `ads opctl run` command.
+Note that whenever you change the code, you have to build, tag and push the image to Oracle Cloud Container Registry. This is automatically done with the `ads opctl run` command.
 
 > The python dependencies are set inside the conda environment file:
 `oci_dist_training_artifacts/tensorflow/v1/environments.yaml`.
@@ -292,7 +303,6 @@ spec:
   runtime:
     kind: python
     apiVersion: v1.0
-    spec:
     spec:
       entryPoint: "/code/train.py" #location of user's training script in the container image.
       args:  #any arguments that the training script requires.
@@ -656,7 +666,6 @@ spec:
   runtime:
     kind: python
     apiVersion: v1.0
-    spec:
     spec:
       entryPoint: "/code/train.py" #location of user's training script in the container image.
       args:  #any arguments that the training script requires.
