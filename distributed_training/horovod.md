@@ -502,7 +502,7 @@ export MOUNT_FOLDER_PATH=.
 Buld the container image.
 
 ```bash
-ads opctl distributed-training build-image \ 
+ads opctl distributed-training build-image \
     -t $TAG \ 
     -reg $IMAGE_NAME \ 
     -df oci_dist_training_artifacts/horovod/v1/<pytorch|tensorflow>.<cpu|gpu>.Dockerfile \ 

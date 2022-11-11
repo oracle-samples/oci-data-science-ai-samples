@@ -89,7 +89,7 @@ Build the container image.
 
 ```bash
 ads opctl distributed-training build-image \
-  -t $TAG \ 
+  -t $TAG \
   -reg $IMAGE_NAME \
   -df oci_dist_training_artifacts/dask/v1/Dockerfile \
   -s $MOUNT_FOLDER_PATH
@@ -156,7 +156,7 @@ In order to test the training code locally, use the following command. With ```-
 flag instead (default).
 
 ```bash
-ads opctl run \ 
+ads opctl run \
   -f train.yaml \
   -b local
 ```

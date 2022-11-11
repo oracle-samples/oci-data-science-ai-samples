@@ -16,7 +16,7 @@ RP = os.environ.get("OCI_RESOURCE_PRINCIPAL_VERSION", "UNDEFINED")
 
 if not RP or RP == "UNDEFINED":
     # LOCAL RUN
-    config = oci.config.from_file("~/.oci/config", "BIGDATA")
+    config = oci.config.from_file("~/.oci/config", "DEFAULT")
     dsc = oci.data_science.DataScienceClient(config=config)
 else:
     # JOB RUN

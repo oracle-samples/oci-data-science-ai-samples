@@ -25,8 +25,7 @@ class MJobs:
             self.identity = oci.identity.IdentityClient(config=self.oci_config)
 
             if service_endpoint == None:
-                self.dsc = oci.data_science.DataScienceClient(
-                    config=self.oci_config)
+                self.dsc = oci.data_science.DataScienceClient(config=self.oci_config)
             else:
                 self.dsc = oci.data_science.DataScienceClient(
                     config=self.oci_config, service_endpoint=service_endpoint
@@ -105,8 +104,7 @@ class MJobs:
             },
         }
         update_job_payload = (
-            update_job_details if (update_job_details !=
-                                   None) else update_payload
+            update_job_details if (update_job_details != None) else update_payload
         )
         return self.dsc.update_job(job_id=job_id, update_job_details=update_job_payload)
 
