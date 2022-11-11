@@ -311,7 +311,7 @@ spec:
       env:
 ```
 
-**Note** that you have to setup the `workDir` property to point to your object storage bucket, that will be used to synchronize the cluster. Additionally the `WORKSPACE` and the `WORKSPACE_PREFIX` have to be set as well to point to object storage bucket that will be used to sync the logs.
+**Note** that you have to setup the `workDir` property to point to your object storage bucket, that will be used to synchronize the cluster. Additionally the `WORKSPACE` and the `WORKSPACE_PREFIX` have to be set as well to point to object storage folder within the `workDir` that will be used to sync the logs. If those folders does not exist, our utility service will create them automatically, as long as the `manage` policy was configured for the job runs resource principal, as shown in the getting started guide.
 
 **Your project structure should look like this:**
 
@@ -350,14 +350,6 @@ In order to test the training code locally, use the following command with the `
 ads opctl run \
         -f train.yaml \
         -b local
-```
-
-When you ready to run your workload on OCI Data Science Jobs, simply use `-b job` flag instead *(default, if not specified)*.
-
-```bash
-ads opctl run \
-        -f train.yaml \
-        -b job
 ```
 
 If your code requires to use any OCI Services also during the local test (like object storage, database, AI Service etc.), you need to mount your OCI API Keys from your local host machine onto the container. This is already done for you automatically, assuming the typical location of the OCI Keys `~/.oci`. You can modify the default behaviour, in-case you have the keys at a different location, by changing the `oci_key_mnt` property in the `config.ini` file.
@@ -861,4 +853,4 @@ oci os object bulk-download \
   --prefix path/on/bucket/<job_id>
 ```
 
-To view the reports, you would need to install Nsight Systems app from [here](https://developer.nvidia.com/nsight-systems). Thereafter, open the downloaded reports in the Nsight Systems app.
+To view the reports, you would need to install Nsight Systems app from [here](https://developer.nvidia.com/nsight-systems), then open the downloaded reports in the Nsight Systems application.
