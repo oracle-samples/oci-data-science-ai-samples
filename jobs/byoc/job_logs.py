@@ -16,7 +16,7 @@ class Job:
         rp_version = os.environ.get(OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
         if not rp_version or rp_version == "UNDEFINED":
             # RUN LOCAL TEST
-            self.signer = oci.config.from_file("~/.oci/config", "BIGDATA")
+            self.signer = oci.config.from_file("~/.oci/config", "DEFAULT")
         else:
             # RUN AS JOB
             self.signer = oci.auth.signers.get_resource_principals_signer()
@@ -24,11 +24,7 @@ class Job:
 
 job = Job()
 
-print(
-    "Start logging for job run: {}".format(
-        os.environ.get(JOB_RUN_OCID_KEY, "LOCAL")
-    )
-)
+print("Start logging for job run: {}".format(os.environ.get(JOB_RUN_OCID_KEY, "LOCAL")))
 print("Current timestamp in UTC: {}".format(str(datetime.datetime.utcnow())))
 
 print("Delay 5s")

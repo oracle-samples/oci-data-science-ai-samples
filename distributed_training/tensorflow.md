@@ -218,7 +218,7 @@ export MOUNT_FOLDER_PATH=.
 Build the container image.
 
 ```bash
-ads opctl distributed-training build-image \ 
+ads opctl distributed-training build-image \
   -t $TAG \
   -reg $IMAGE_NAME \
   -df oci_dist_training_artifacts/tensorflow/v1/Dockerfile \
