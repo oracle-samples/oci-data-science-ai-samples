@@ -15,7 +15,7 @@ class Logging:
         # rp_version = os.environ.get(OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
         if is_resource_principal() == False:
             # RUN LOCAL TEST
-            self.signer = oci.config.from_file("~/.oci/config", "BIGDATA")
+            self.signer = oci.config.from_file("~/.oci/config", "DEFAULT")
         else:
             # RUN AS JOB
             self.signer = oci.auth.signers.get_resource_principals_signer()

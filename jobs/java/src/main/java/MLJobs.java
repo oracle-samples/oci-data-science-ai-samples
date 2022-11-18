@@ -19,7 +19,7 @@ import java.util.*;
 public class MLJobs {
 
     String CONFIG_LOCATION = "~/.oci/config";
-    String CONFIG_PROFILE = "DEFAULT"; //BIGDATA
+    String CONFIG_PROFILE = "DEFAULT";
     String COMPARTMENT_OCID = "";
     String PROJECT_OCID = "";
     String SUBNET_OCID = "";
