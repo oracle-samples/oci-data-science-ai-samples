@@ -1,0 +1,25 @@
+channels:
+- conda-forge
+- defaults
+dependencies:
+- numpy
+- pandas
+
+- pip:
+  - scikit-image
+  - seaborn
+
+manifest:
+  arch_type: CPU
+  description: ' This Conda only includes basic packages. We suggest adding additional list of packages per need.
+    '
+  libraries:
+  - category-encoders (v2.2.2)
+  - lightgbm (v3.3.1)
+  - Oracle AutoML (v1.0)
+  - Oracle MLX (v1.1.1)
+  - Oracle-ads (v2.5.4)
+  - scikit-learn (v1.0.2)
+  - TensorFlow (v2.6.2)
+  - xgboost (v1.5.1)
+
