@@ -137,8 +137,7 @@ conda activate distributed-training
 python3 -m pip install "oracle-ads[opctl]"
 ```
 
-* Install Docker. Refer <https://docs.docker.com/get-docker>
-**Note** A good alternative solution to Docker for your local environment is Rancher Desktop <https://rancherdesktop.io/>
+* Install [Docker](<https://docs.docker.com/get-docker>) **or** [Rancher Desktop](<https://rancherdesktop.io/>) as docker alternative
 
 ### Next steps
 
