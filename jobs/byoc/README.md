@@ -108,5 +108,5 @@ CONTAINER_CUSTOM_IMAGE=iad.ocir.io/bigdatadatasciencelarge/byoc:1.0
 
 Instead of hardcoding the ENTRYPOINT and the CMD in the Dockerfile, you can also pass those using following environment variables:
 
-CONTAINER_ENTRYPOINT - the container image entrypoints as a list of strings: `"ls", "-l"`
-CONTAINER_CMD - the container run CMD as a list of strings: `"ls", "-l", "-a", "-h"`
+- CONTAINER_ENTRYPOINT - the container image entrypoints as a list of strings: `"ls", "-l"`
+- CONTAINER_CMD - the container run CMD as a list of strings: `"ls", "-l", "-a", "-h"`
