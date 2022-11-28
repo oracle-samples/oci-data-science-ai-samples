@@ -7,6 +7,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import com.oracle.bmc.ailanguage.AIServiceLanguageClient;
+import com.oracle.bmc.aivision.AIServiceVisionClient;
+import com.oracle.bmc.objectstorage.ObjectStorageClient;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedEntityExtraction;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedImageClassification;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedObjectDetection;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedTextClassification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -32,15 +39,22 @@ public enum Config {
 	INSTANCE;
 
 	private DataLabelingClient dlsDpClient;
+	private AIServiceVisionClient aiVisionClient;
+	private AIServiceLanguageClient aiLanguageClient;
+	private ObjectStorageClient objectStorageClient;
 	private String configFilePath;
 	private String configProfile;
 	private String dpEndpoint;
+	private String region;
 	private String datasetId;
+	private String customModelId;
+	private String mlModelType;
 
 	private List<String> labels;
 	private Map<String, List<String>> customLabels;
 	private String labelingAlgorithm;
 	private LabelingStrategy labelingStrategy;
+	private AssistedLabelingParams assistedLabelingParams;
 	private String regexPattern;
 	private Pattern pattern;
 	private int threadCount;
@@ -49,6 +63,8 @@ public enum Config {
 		try {
 			Properties config = new Properties();
 			config.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
+
+			// TODO  get assisted labeling params
 			configFilePath = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIG_FILE_PATH))
 					? config.getProperty(DataLabelingConstants.CONFIG_FILE_PATH)
 					: System.getProperty(DataLabelingConstants.CONFIG_FILE_PATH);
@@ -61,6 +77,12 @@ public enum Config {
 			datasetId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DATASET_ID))
 					? config.getProperty(DataLabelingConstants.DATASET_ID)
 					: System.getProperty(DataLabelingConstants.DATASET_ID);
+			mlModelType = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.ML_MODEL_TYPE))
+					? config.getProperty(DataLabelingConstants.ML_MODEL_TYPE)
+					: System.getProperty(DataLabelingConstants.ML_MODEL_TYPE);
+			customModelId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CUSTOM_MODEL_ID))
+					? config.getProperty(DataLabelingConstants.CUSTOM_MODEL_ID)
+					: System.getProperty(DataLabelingConstants.CUSTOM_MODEL_ID);
 			labelingAlgorithm = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.LABELING_ALGORITHM))
 					? config.getProperty(DataLabelingConstants.LABELING_ALGORITHM)
 					: System.getProperty(DataLabelingConstants.LABELING_ALGORITHM);
@@ -73,6 +95,9 @@ public enum Config {
 			initializeLabelingStrategy();
 			validateAndInitializeLabels(config);
 			dlsDpClient = initializeDpClient();
+			aiLanguageClient = initializeLanguageClient();
+			aiVisionClient = initializeVisionClient();
+			objectStorageClient = initializeObjectStorageClient();
 		} catch (IOException ex) {
 			ExceptionUtils.wrapAndThrow(ex);
 		}
@@ -90,6 +115,22 @@ public enum Config {
 
 		case "CUSTOM_LABELS_MATCH":
 			labelingStrategy = new CustomLabelMatch();
+			break;
+
+		case "ML_ASSISTED_IMAGE_CLASSIFICATION":
+			labelingStrategy = new MlAssistedImageClassification();
+			break;
+
+		case "ML_ASSISTED_TEXT_CLASSIFICATION":
+			labelingStrategy = new MlAssistedTextClassification();
+			break;
+
+		case "ML_ASSISTED_OBJECT_DETECTION":
+			labelingStrategy = new MlAssistedObjectDetection();
+			break;
+
+		case "ML_ASSISTED_ENTITY_EXTRACTION":
+			labelingStrategy = new MlAssistedEntityExtraction();
 			break;
 		}
 	}
@@ -118,6 +159,38 @@ public enum Config {
 				ExceptionUtils.wrapAndThrow(e);
 			}
 			break;
+//		case "ML_ASSISTED_IMAGE_CLASSIFICATION":
+//			try {
+//
+//			}
+//			catch () {
+//
+//			}
+//		    break;
+//		case "ML_ASSISTED_TEXT_CLASSIFICATION":
+//			try {
+//
+//			}
+//			catch () {
+//
+//			}
+//			break;
+//		case "ML_ASSISTED_OBJECT_DETECTION":
+//			try {
+//
+//			}
+//			catch () {
+//
+//			}
+//			break;
+//		case "ML_ASSISTED_ENTITY_EXTRACTION":
+//			try {
+//
+//			}
+//			catch () {
+//
+//			}
+//			break;
 		}
 
 		if (labelingAlgorithm.equals("FIRST_REGEX_MATCH")) {
@@ -141,6 +214,55 @@ public enum Config {
 		dlsDpClient = new DataLabelingClient(configFileProvider);
 		dlsDpClient.setEndpoint(dpEndpoint);
 		return dlsDpClient;
+	}
+
+	private AIServiceVisionClient initializeVisionClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		aiVisionClient = new AIServiceVisionClient(configFileProvider);
+		aiVisionClient.setEndpoint(String.format(
+				"https://vision.aiservice.%s.oci.oraclecloud.com",
+				region));
+		return aiVisionClient;
+	}
+
+	private AIServiceLanguageClient initializeLanguageClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		aiLanguageClient = new AIServiceLanguageClient(configFileProvider);
+		aiLanguageClient.setEndpoint(String.format(
+				"https://language.aiservice.%s.oci.oraclecloud.com",
+				region));
+		return aiLanguageClient;
+	}
+
+	private ObjectStorageClient initializeObjectStorageClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		objectStorageClient = new ObjectStorageClient(configFileProvider);
+		objectStorageClient.setRegion(region);
+		return objectStorageClient;
 	}
 
 	private void performAssertionOninput() {
