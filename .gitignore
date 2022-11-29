@@ -14,3 +14,18 @@ jobs/java/.idea
 jobs/java/.settings
 jobs/java/target
 .project
+*.class
+jobs/flask_job_monitor/__pycache__
+.vscode/
+.idea/
+/notebook_examples/__*.ipynb
+/notebook_examples/Untitled*.ipynb
+.DS_Store
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+*.log
+.ipynb_checkpoints
+

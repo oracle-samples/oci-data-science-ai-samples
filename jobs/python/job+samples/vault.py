@@ -20,11 +20,10 @@ SECRET_OCID = "<vaultsecret_ocid>"
 
 class Jobs:
     def __init__(self):
-        rp_version = os.environ.get(
-            OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
-        if rp_version == "UNDEFINED":
+        rp_version = os.environ.get(OCI_RESOURCE_PRINCIPAL_VERSION, "UNDEFINED")
+        if not rp_version or rp_version == "UNDEFINED":
             # RUN LOCAL TEST
-            self.signer = oci.config.from_file("~/.oci/config", "BIGDATA")
+            self.signer = oci.config.from_file("~/.oci/config", "DEFAULT")
             self.secret_client = oci.secrets.SecretsClient(config=self.signer)
         else:
             # RUN AS JOB
@@ -47,18 +46,14 @@ try:
 
     print("Start Vault Job Logging...")
 
-    print("Logging for job run: {}".format(
-        job.get_by_key(JOB_RUN_OCID_KEY, "LOCAL")))
-    print("Current timestamp in UTC: {}".format(
-        str(datetime.datetime.utcnow())))
-
-    print("Init Vault")
+    print("Logging for job run: {}".format(os.environ.get(JOB_RUN_OCID_KEY, "LOCAL")))
+    print("Current timestamp in UTC: {}".format(str(datetime.datetime.utcnow())))
 
     print("Get Vault Secret UUID: {}".format(SECRET_OCID))
 
-    # Print secret
+    # print secret
     secret_content = job.read_secret_value(SECRET_OCID)
-    print("Secret:{}".format(secret_content))
+    print("Secret: {}".format(secret_content))
 
     print("Job Done.")
 

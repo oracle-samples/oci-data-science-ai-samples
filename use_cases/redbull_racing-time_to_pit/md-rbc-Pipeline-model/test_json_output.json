@@ -1,0 +1,71 @@
+{
+    "score_py": {
+        "key": "score_py",
+        "category": "Mandatory Files Check",
+        "description": "Check that the file \"score.py\" exists and is in the top level directory of the artifact directory",
+        "error_msg": "The file 'score.py' is missing.",
+        "success": true
+    },
+    "runtime_yaml": {
+        "category": "Mandatory Files Check",
+        "description": "Check that the file \"runtime.yaml\" exists and is in the top level directory of the artifact directory",
+        "error_msg": "The file 'runtime.yaml' is missing.",
+        "success": true
+    },
+    "score_syntax": {
+        "category": "score.py",
+        "description": "Check for Python syntax errors",
+        "error_msg": "There is Syntax error in score.py: ",
+        "success": true
+    },
+    "score_load_model": {
+        "category": "score.py",
+        "description": "Check that load_model() is defined",
+        "error_msg": "Function load_model is not present in score.py.",
+        "success": true
+    },
+    "score_predict": {
+        "category": "score.py",
+        "description": "Check that predict() is defined",
+        "error_msg": "Function predict is not present in score.py.",
+        "success": true
+    },
+    "score_predict_data": {
+        "category": "score.py",
+        "description": "Check that the only required argument for predict() is named \"data\"",
+        "error_msg": "The predict function in score.py must have a formal argument named 'data'.",
+        "success": true
+    },
+    "score_predict_arg": {
+        "category": "score.py",
+        "description": "Check that all other arguments in predict() are optional and have default values",
+        "error_msg": "All formal arguments in the predict function must have default values, except that 'data' argument.",
+        "success": true
+    },
+    "runtime_version": {
+        "category": "runtime.yaml",
+        "description": "Check that field MODEL_ARTIFACT_VERSION is set to 3.0",
+        "error_msg": "In runtime.yaml, the key MODEL_ARTIFACT_VERSION must be set to 3.0.",
+        "success": true
+    },
+    "runtime_env_python": {
+        "category": "conda_env",
+        "description": "Check that field MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION is set to a value of 3.6 or higher",
+        "error_msg": "In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION must be set to a value of 3.6 or higher.",
+        "success": true,
+        "value": "3.7"
+    },
+    "runtime_env_path": {
+        "category": "conda_env",
+        "description": "Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set",
+        "error_msg": "In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH must have a value.",
+        "success": true,
+        "value": "oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.7/1.0/generalml_p37_cpu_v1"
+    },
+    "runtime_path_exist": {
+        "category": "conda_env",
+        "description": "Check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct.",
+        "error_msg": "In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH does not exist.",
+        "success": true
+    }
+}

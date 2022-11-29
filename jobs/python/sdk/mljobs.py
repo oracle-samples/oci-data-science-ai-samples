@@ -13,6 +13,7 @@ ENV_TYPE = ""
 
 class MLJobs:
     def __init__(self, env_type, config_file, compartment_id, subnet_id):
+        
         self.config_file = config_file
         self.compartment_id = compartment_id
         self.subnet_id = subnet_id

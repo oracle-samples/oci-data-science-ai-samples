@@ -4,7 +4,7 @@ Natural Language Processing Conda Environment Family Notebooks
 The [Natural Language Processing conda environment family](https://docs.oracle.com/en-us/iaas/data-science/using/conda-dem-fam.htm) provides the libraries to perform cutting-edge NLP tasks. This [conda environment family]((https://docs.cloud.oracle.com/en-us/iaas/data-science/using/use-notebook-sessions.htm#conda_understand_environments) contains a set of libraries and frameworks for working with text data and performing natural language processing tasks. This environment includes libraries such as HuggingFace’s Transformers library, keybert, NLTK, Simple-Transformers, Pytorch-Ligthning and UMAP.
 
 
-The notebooks in this folder are meant to be run in the [Natural Language Processing conda environment family](https://docs.oracle.com/en-us/iaas/data-science/using/conda-dem-fam.htm) conda environments.
+The notebooks in this folder are meant to be run in the [Natural Language Processing conda environment family](https://docs.oracle.com/en-us/iaas/data-science/using/conda-nlp-fam.htm) conda environments.
 
 # Notebook Descriptions
 
