@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import com.oracle.bmc.ailanguage.AIServiceLanguageClient;
 import com.oracle.bmc.aivision.AIServiceVisionClient;
+import com.oracle.bmc.datalabelingservice.DataLabelingManagementClient;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedEntityExtraction;
 import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedImageClassification;
@@ -39,14 +40,17 @@ public enum Config {
 	INSTANCE;
 
 	private DataLabelingClient dlsDpClient;
+	private DataLabelingManagementClient dlsCpClient;
 	private AIServiceVisionClient aiVisionClient;
 	private AIServiceLanguageClient aiLanguageClient;
 	private ObjectStorageClient objectStorageClient;
 	private String configFilePath;
 	private String configProfile;
 	private String dpEndpoint;
+	private String cpEndpoint;
 	private String region;
 	private String datasetId;
+	private String compartmentId;
 	private String customModelId;
 	private String mlModelType;
 
@@ -54,7 +58,6 @@ public enum Config {
 	private Map<String, List<String>> customLabels;
 	private String labelingAlgorithm;
 	private LabelingStrategy labelingStrategy;
-	private AssistedLabelingParams assistedLabelingParams;
 	private String regexPattern;
 	private Pattern pattern;
 	private int threadCount;
@@ -64,19 +67,27 @@ public enum Config {
 			Properties config = new Properties();
 			config.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
 
-			// TODO  get assisted labeling params
 			configFilePath = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIG_FILE_PATH))
 					? config.getProperty(DataLabelingConstants.CONFIG_FILE_PATH)
 					: System.getProperty(DataLabelingConstants.CONFIG_FILE_PATH);
 			configProfile = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIG_PROFILE))
 					? config.getProperty(DataLabelingConstants.CONFIG_PROFILE)
 					: System.getProperty(DataLabelingConstants.CONFIG_PROFILE);
+			region = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.REGION))
+					? config.getProperty(DataLabelingConstants.REGION)
+					: System.getProperty(DataLabelingConstants.REGION);
 			dpEndpoint = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DLS_DP_URL))
 					? config.getProperty(DataLabelingConstants.DLS_DP_URL)
 					: System.getProperty(DataLabelingConstants.DLS_DP_URL);
+			cpEndpoint = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DLS_CP_URL))
+					? config.getProperty(DataLabelingConstants.DLS_CP_URL)
+					: System.getProperty(DataLabelingConstants.DLS_CP_URL);
 			datasetId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DATASET_ID))
 					? config.getProperty(DataLabelingConstants.DATASET_ID)
 					: System.getProperty(DataLabelingConstants.DATASET_ID);
+			compartmentId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.COMPARTMENT_ID))
+					? config.getProperty(DataLabelingConstants.COMPARTMENT_ID)
+					: System.getProperty(DataLabelingConstants.COMPARTMENT_ID);
 			mlModelType = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.ML_MODEL_TYPE))
 					? config.getProperty(DataLabelingConstants.ML_MODEL_TYPE)
 					: System.getProperty(DataLabelingConstants.ML_MODEL_TYPE);
@@ -95,6 +106,7 @@ public enum Config {
 			initializeLabelingStrategy();
 			validateAndInitializeLabels(config);
 			dlsDpClient = initializeDpClient();
+			dlsCpClient = initializeCpClient();
 			aiLanguageClient = initializeLanguageClient();
 			aiVisionClient = initializeVisionClient();
 			objectStorageClient = initializeObjectStorageClient();
@@ -159,38 +171,6 @@ public enum Config {
 				ExceptionUtils.wrapAndThrow(e);
 			}
 			break;
-//		case "ML_ASSISTED_IMAGE_CLASSIFICATION":
-//			try {
-//
-//			}
-//			catch () {
-//
-//			}
-//		    break;
-//		case "ML_ASSISTED_TEXT_CLASSIFICATION":
-//			try {
-//
-//			}
-//			catch () {
-//
-//			}
-//			break;
-//		case "ML_ASSISTED_OBJECT_DETECTION":
-//			try {
-//
-//			}
-//			catch () {
-//
-//			}
-//			break;
-//		case "ML_ASSISTED_ENTITY_EXTRACTION":
-//			try {
-//
-//			}
-//			catch () {
-//
-//			}
-//			break;
 		}
 
 		if (labelingAlgorithm.equals("FIRST_REGEX_MATCH")) {
@@ -199,6 +179,21 @@ public enum Config {
 					: System.getProperty(DataLabelingConstants.FIRST_MATCH_REGEX_PATTERN);
 			pattern = Pattern.compile(regexPattern);
 		}
+	}
+
+	private DataLabelingManagementClient initializeCpClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		dlsCpClient = new DataLabelingManagementClient(configFileProvider);
+		dlsCpClient.setEndpoint(cpEndpoint);
+		return dlsCpClient;
 	}
 
 	private DataLabelingClient initializeDpClient() {

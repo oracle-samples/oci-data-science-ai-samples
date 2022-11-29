@@ -24,6 +24,7 @@ import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
+import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import com.oracle.datalabelingservicesamples.requests.ObjectDetails;
@@ -42,21 +43,21 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
     }
 
     @Override
-    public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, List<String> dlsDatasetLabels) throws Exception {
+    public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, AssistedLabelingParams assistedLabelingParams) throws Exception {
 
         List<ImageFeature> imageJobFeatureList = new ArrayList<>();
         imageJobFeatureList.add(
                 ImageClassificationFeature.builder()
                         .maxResults(10)
-                        .modelId(Config.INSTANCE.getMlModelType().equalsIgnoreCase("pretrained") ? null : Config.INSTANCE.getCustomModelId())
+                        .modelId(assistedLabelingParams.getCustomModelId())
                         .build());
 
         List<ObjectLocation> imageObjectLocations = new ArrayList<>();
         for (RecordSummary recordSummary : recordSummaries) {
             imageObjectLocations.add(
                     ObjectLocation.builder()
-                            .namespaceName(Config.INSTANCE.getAssistedLabelingParams().getCustomerBucket().getNamespace())
-                            .bucketName(Config.INSTANCE.getAssistedLabelingParams().getCustomerBucket().getBucketName())
+                            .namespaceName(assistedLabelingParams.getCustomerBucket().getNamespace())
+                            .bucketName(assistedLabelingParams.getCustomerBucket().getBucketName())
                             .objectName(recordSummary.getName())
                             .build());
         }
@@ -68,14 +69,14 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
 
         OutputLocation imageJobOutput =
                 OutputLocation.builder()
-                        .namespaceName(Config.INSTANCE.getAssistedLabelingParams().getCustomerBucket().getNamespace())
-                        .bucketName(Config.INSTANCE.getAssistedLabelingParams().getCustomerBucket().getBucketName())
+                        .namespaceName(assistedLabelingParams.getCustomerBucket().getNamespace())
+                        .bucketName(assistedLabelingParams.getCustomerBucket().getBucketName())
                         .prefix(OUTPUT_LOCATION_PREFIX + "/")
                         .build();
 
         CreateImageJobDetails createImageJobDetails =
                 CreateImageJobDetails.builder()
-                        .compartmentId(Config.INSTANCE.getAssistedLabelingParams().getCompartmentId())
+                        .compartmentId(assistedLabelingParams.getCompartmentId())
                         .features(imageJobFeatureList)
                         .inputLocation(imageJobInput)
                         .isZipOutputEnabled(false)
@@ -152,13 +153,13 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
                 if (analyzeImageResult.getImageObjects() != null) {
                     List<Entity> entities =
                             mapToDLSEntities(
-                                    dlsDatasetLabels,
+                                    assistedLabelingParams.getDlsDatasetLabels(),
                                     analyzeImageResult.getImageObjects());
                     if (!entities.isEmpty()) {
                         createAnnotationDetails.add(
                                 new CreateAnnotationDetails(
                                         recordID,
-                                        "compartmentID",
+                                        assistedLabelingParams.getCompartmentId(),
                                         entities,
                                         null,
                                         null));

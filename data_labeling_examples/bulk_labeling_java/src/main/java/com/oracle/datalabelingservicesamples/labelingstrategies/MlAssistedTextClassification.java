@@ -13,6 +13,7 @@ import com.oracle.bmc.datalabelingservicedataplane.model.Label;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.bmc.datalabelingservicedataplane.requests.GetRecordContentRequest;
 import com.oracle.bmc.datalabelingservicedataplane.responses.GetRecordContentResponse;
+import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -25,7 +26,7 @@ import java.util.List;
 public class MlAssistedTextClassification implements AssistedLabelingStrategy {
 
     @Override
-    public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, List<String> dlsDatasetLabels) {
+    public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, AssistedLabelingParams assistedLabelingParams) {
         List<TextClassificationDocument> documentList = new ArrayList<>();
         for (RecordSummary recordSummary : recordSummaries) {
             GetRecordContentRequest recordContentRequest =
@@ -67,13 +68,13 @@ public class MlAssistedTextClassification implements AssistedLabelingStrategy {
                             .getDocuments()) {
                 List<Entity> entities =
                         mapToDLSEntities(
-                                dlsDatasetLabels, document.getTextClassification());
+                                assistedLabelingParams.getDlsDatasetLabels(), document.getTextClassification());
                 if (!entities.isEmpty()) {
                     // TODO - compartment ID
                     createAnnotationDetails.add(
                             new CreateAnnotationDetails(
                                     document.getKey(),
-                                    "compartmentID",
+                                    assistedLabelingParams.getCompartmentId(),
                                     entities,
                                     null,
                                     null));

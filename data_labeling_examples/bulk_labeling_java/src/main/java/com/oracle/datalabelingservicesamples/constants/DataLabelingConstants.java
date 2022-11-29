@@ -8,7 +8,9 @@ public class DataLabelingConstants {
 	public static final String CONFIG_FILE_PATH = "CONFIG_FILE_PATH";
 	public static final String CONFIG_PROFILE = "CONFIG_PROFILE";
 	public static final String DLS_DP_URL = "DLS_DP_URL";
+	public static final String DLS_CP_URL = "DLS_CP_URL";
 	public static final String DATASET_ID = "DATASET_ID";
+	public static final String COMPARTMENT_ID = "COMPARTMENT_ID";
 	public static final String ML_MODEL_TYPE = "ML_MODEL_TYPE";
 	public static final String CUSTOM_MODEL_ID = "CUSTOM_MODEL_ID";
 	public static final String REGION = "REGION";
@@ -17,4 +19,5 @@ public class DataLabelingConstants {
 	public static final String LABELS = "LABELS";
 	public static final String CUSTOM_LABELS="CUSTOM_LABELS";
 	public static final String FIRST_MATCH_REGEX_PATTERN = "FIRST_MATCH_REGEX_PATTERN";
+	public static final int ASSISTED_LABELING_TIMEOUT = 3000; // Timeout in seconds
 }

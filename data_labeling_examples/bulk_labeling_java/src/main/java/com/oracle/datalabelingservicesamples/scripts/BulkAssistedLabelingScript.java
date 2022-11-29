@@ -14,8 +14,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import com.oracle.bmc.datalabelingservice.model.ObjectStorageSourceDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.Annotation;
+import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.labelingstrategies.AssistedLabelingStrategy;
+import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
+import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.tasks.TaskHandler;
 import com.oracle.datalabelingservicesamples.tasks.TaskProvider;
 import com.oracle.datalabelingservicesamples.utils.DataPlaneAPIWrapper;
@@ -56,6 +60,7 @@ public class BulkAssistedLabelingScript {
     static ExecutorService executorService;
     static ExecutorService annotationExecutorService;
     static Dataset dataset;
+    private static AssistedLabelingParams assistedLabelingParams  = new AssistedLabelingParams();
     private static final TaskHandler taskHandler = new TaskHandler(new TaskProvider());
     private static final DataPlaneAPIWrapper dataPlaneAPIWrapper = new DataPlaneAPIWrapper();
     private static final AssistedLabelingStrategy assistedLabelingStrategy = (AssistedLabelingStrategy) Config.INSTANCE.getLabelingStrategy();
@@ -70,29 +75,53 @@ public class BulkAssistedLabelingScript {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         long startTime = System.nanoTime();
         String datasetId = Config.INSTANCE.getDatasetId();
-        Map<String, List<String>> bulkLabelingRequest = Config.INSTANCE.getCustomLabels();
-        validateRequest(datasetId, bulkLabelingRequest);
+//        TODO - validation changes
+//        Map<String, List<String>> bulkLabelingRequest = Config.INSTANCE.getCustomLabels();
+//        validateRequest(datasetId, bulkLabelingRequest);
         DataPlaneAPIWrapper dpAPIWrapper = new DataPlaneAPIWrapper();
-        log.info("Starting Assisted Labeling for dataset: {}", dataset.getDisplayName());
 
-        // 1. Get Dataset details
-        log.info("Get Dataset Details : {}", datasetId);
-        final Dataset dataset;
+//        Initialize parameters required for bulk assisted labeling
+        assistedLabelingParams.setAssistedLabelingTimeout(DataLabelingConstants.ASSISTED_LABELING_TIMEOUT);
+        assistedLabelingParams.setCompartmentId(Config.INSTANCE.getCompartmentId());
+        com.oracle.bmc.datalabelingservice.model.Dataset dataset = Config.INSTANCE.getDlsCpClient().getDataset(com.oracle.bmc.datalabelingservice.requests.GetDatasetRequest.builder()
+                .datasetId(datasetId)
+                .build())
+                .getDataset();
+
+        ObjectStorageSourceDetails sourceDetails = (ObjectStorageSourceDetails) dataset.getDatasetSourceDetails();
+
+        assistedLabelingParams.setCustomerBucket(BucketDetails.builder()
+                .bucketName(sourceDetails.getBucket())
+                .namespace(sourceDetails.getNamespace())
+                .prefix(sourceDetails.getPrefix())
+                .region(Config.INSTANCE.getRegion())
+                .build());
+        assistedLabelingParams.setMlModelType(Config.INSTANCE.getMlModelType());
+        switch (Config.INSTANCE.getMlModelType()) {
+            case "CUSTOM":
+                assistedLabelingParams.setCustomModelId(Config.INSTANCE.getCustomModelId());
+                break;
+            case "PRETRAINED":
+                assistedLabelingParams.setCustomModelId(null);
+                break;
+        }
+
         List<String> dlsDatasetLabels = new ArrayList<>();
         try {
-            dataset =
-                    dpAPIWrapper.getDataset(datasetId);
             dataset.getLabelSet().getItems().stream()
                     .forEach(
                             LabelName -> {
                                 dlsDatasetLabels.add(LabelName.getName());
                             });
+            assistedLabelingParams.setDlsDatasetLabels(dlsDatasetLabels);
         } catch (Exception e) {
-            log.error("Exception in creating dataset with Id {}", datasetId);
+            log.error("Exception in getting labels from dataset {}", datasetId);
             return;
         }
 
-        // 2. List existing record files
+        log.info("Starting Assisted Labeling for dataset: {}", dataset.getDisplayName());
+
+        // 1. List existing record files
         log.info("List Dataset Records");
         List<RecordSummary> existingRecords = null;
         try {
@@ -111,7 +140,7 @@ public class BulkAssistedLabelingScript {
                     e);
         }
 
-        // 3. Get unlabelled records
+        // 2. Get unlabelled records
         List<RecordSummary> recordsForAssistedLabelling =
                 existingRecords.stream()
                         .filter(
@@ -119,13 +148,13 @@ public class BulkAssistedLabelingScript {
                                         !recordSummary.getIsLabeled())
                         .collect(Collectors.toList());
 
-        // 4. Create batch requests to downstream AI service for predictions
+        // 3. Create batch requests to downstream AI service for predictions
         int maxDownstreamBatchrequest = 8;
         List<List<RecordSummary>> recordRequestsInBatches =
                 ListUtils.partition(recordsForAssistedLabelling, maxDownstreamBatchrequest);
 
         try {
-            createAndWaitForAssistedLabelTasks(recordRequestsInBatches, dlsDatasetLabels, executorService);
+            createAndWaitForAssistedLabelTasks(recordRequestsInBatches, assistedLabelingParams, executorService);
             executorService.shutdown();
             annotationExecutorService.shutdown();
             log.info("Time Taken for datasetId {}", datasetId);
@@ -142,12 +171,12 @@ public class BulkAssistedLabelingScript {
 
     private static void createAndWaitForAssistedLabelTasks(
             List<List<RecordSummary>> recordSummaries,
-            List<String> dlsDatasetLabels,
+            AssistedLabelingParams assistedLabelingParams,
             ExecutorService executorService) {
         List<Future<List<CreateAnnotationDetails>>> getAssistedLabellingTasks =
                 taskHandler.getAssistedLabelTasks(
                         recordSummaries,
-                        dlsDatasetLabels,
+                        assistedLabelingParams,
                         assistedLabelingStrategy,
                         executorService);
 
@@ -168,7 +197,7 @@ public class BulkAssistedLabelingScript {
                     //                    if (exception.getCause() instanceof BmcException) {
                     //                        BmcException bmcException = (BmcException)
                 },
-                Config.INSTANCE.getAssistedLabelingParams().getAssistedLabelingTimeout());
+                assistedLabelingParams.getAssistedLabelingTimeout());
         log.info("Coming here after thread finished");
         createAndWaitForAnnotationTasksToComplete(createAnnotationDetailsList);
     }
@@ -194,7 +223,7 @@ public class BulkAssistedLabelingScript {
                     //                    if (exception.getCause() instanceof BmcException) {
                     //                        BmcException bmcException = (BmcException)
                 },
-                Config.INSTANCE.getAssistedLabelingParams().getAssistedLabelingTimeout());
+                assistedLabelingParams.getAssistedLabelingTimeout());
 
     }
 

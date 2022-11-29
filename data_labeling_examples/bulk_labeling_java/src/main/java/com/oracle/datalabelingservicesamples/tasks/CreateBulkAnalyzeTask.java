@@ -4,6 +4,7 @@ package com.oracle.datalabelingservicesamples.tasks;
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.datalabelingservicesamples.labelingstrategies.AssistedLabelingStrategy;
+import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -13,15 +14,15 @@ public class CreateBulkAnalyzeTask extends Tasks<List<CreateAnnotationDetails>> 
     private final AssistedLabelingStrategy assistedLabelingStrategy;
     private final List<RecordSummary> recordSummaries;
 
-    private final List<String> dlsDatasetLabels;
+    private final AssistedLabelingParams assistedLabelingParams;
 
     public CreateBulkAnalyzeTask(
             AssistedLabelingStrategy assistedLabelingStrategy,
             List<RecordSummary> recordSummaries,
-            List<String> dlsDatasetLabels) {
+            AssistedLabelingParams assistedLabelingParams) {
         this.assistedLabelingStrategy = assistedLabelingStrategy;
         this.recordSummaries = recordSummaries;
-        this.dlsDatasetLabels = dlsDatasetLabels;
+        this.assistedLabelingParams = assistedLabelingParams;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class CreateBulkAnalyzeTask extends Tasks<List<CreateAnnotationDetails>> 
         try {
             createAnnotationDetails =
                     assistedLabelingStrategy.bulkAnalyzeRecords(
-                            recordSummaries, dlsDatasetLabels);
+                            recordSummaries, assistedLabelingParams);
         } catch (Exception e) {
             log.error("Error is {}", e.getMessage());
         }

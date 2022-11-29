@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,7 +20,10 @@ import lombok.ToString;
 public class AssistedLabelingParams {
 
     /* parameters to identify the resource */
+    private String mlModelType;
+    private String customModelId;
     private String compartmentId;
+    private List<String> dlsDatasetLabels;
     private BucketDetails customerBucket;
     private int assistedLabelingTimeout;
 }

@@ -14,6 +14,7 @@ import com.oracle.bmc.datalabelingservicedataplane.model.TextSelectionEntity;
 import com.oracle.bmc.datalabelingservicedataplane.model.TextSpan;
 import com.oracle.bmc.datalabelingservicedataplane.requests.GetRecordContentRequest;
 import com.oracle.bmc.datalabelingservicedataplane.responses.GetRecordContentResponse;
+import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -27,7 +28,7 @@ import java.util.List;
 public class MlAssistedEntityExtraction implements AssistedLabelingStrategy {
 
     @Override
-    public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, List<String> dlsDatasetLabels) {
+    public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, AssistedLabelingParams assistedLabelingParams) {
         List<EntityDocument> documentList = new ArrayList<>();
         for (RecordSummary recordSummary : recordSummaries) {
             GetRecordContentRequest recordContentRequest =
@@ -69,13 +70,13 @@ public class MlAssistedEntityExtraction implements AssistedLabelingStrategy {
                             .getDocuments()) {
                 List<Entity> entities =
                         mapToDLSEntities(
-                                dlsDatasetLabels, document.getEntities());
+                                assistedLabelingParams.getDlsDatasetLabels(), document.getEntities());
                 if (!entities.isEmpty()) {
                     // TODO - compartment ID
                     createAnnotationDetails.add(
                             new CreateAnnotationDetails(
                                     document.getKey(),
-                                    "compartmentID",
+                                    assistedLabelingParams.getCompartmentId(),
                                     entities,
                                     null,
                                     null));
