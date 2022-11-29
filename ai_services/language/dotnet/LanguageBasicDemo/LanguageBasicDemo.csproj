@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OCI.DotNetSDK.Ailanguage" Version="30.1.0" />
-    <PackageReference Include="OCI.DotNetSDK.Common" Version="30.1.0" />
+    <PackageReference Include="OCI.DotNetSDK.Ailanguage" Version="49.1.0" />
+    <PackageReference Include="OCI.DotNetSDK.Common" Version="49.1.0" />
   </ItemGroup>
 
 </Project>

@@ -93,6 +93,9 @@ namespace LanguageBasicDemo
                 }
             }
 
+            // Perform translation
+            var translatedText = await langInstance.TranslateTextAsync(textToAnalyze);
+            Console.WriteLine("\nTranslated text: \n\t" + translatedText);
         }
 
     }
