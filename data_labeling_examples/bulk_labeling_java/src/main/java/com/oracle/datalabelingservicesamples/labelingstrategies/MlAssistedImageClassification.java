@@ -150,11 +150,13 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
                         new ObjectMapper()
                                 .readValue(
                                         objectDetails.getContentString(), AnalyzeImageResult.class);
-                if (analyzeImageResult.getImageObjects() != null) {
+                log.debug("results from vision :{}",analyzeImageResult.getLabels());
+                if (analyzeImageResult.getLabels() != null) {
+                    if()
                     List<Entity> entities =
                             mapToDLSEntities(
                                     assistedLabelingParams.getDlsDatasetLabels(),
-                                    analyzeImageResult.getImageObjects());
+                                    analyzeImageResult.getLabels());
                     if (!entities.isEmpty()) {
                         createAnnotationDetails.add(
                                 new CreateAnnotationDetails(
@@ -173,18 +175,18 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
         return createAnnotationDetails;
     }
 
-    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<ImageObject> imageObjects) {
+    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<com.oracle.bmc.aivision.model.Label> visionLabels) {
         List<Entity> imageClassificationEntities = new ArrayList<>();
-        for (ImageObject imageObject : imageObjects) {
-            log.info("label from vision {}", imageObject.getName());
+        for (com.oracle.bmc.aivision.model.Label visionLabel : visionLabels) {
+            log.info("label from vision {}", visionLabel.getName());
 
             List<Label> labels = new ArrayList<>();
             float confidenceScoreThreshold = 0.6F;
-            if (dlsLabels.contains(imageObject.getName())
-                    && imageObject.getConfidence() >= confidenceScoreThreshold) {
+            if (dlsLabels.contains(visionLabel.getName())
+                    && visionLabel.getConfidence() >= confidenceScoreThreshold) {
                 labels.add(
                         Label.builder()
-                                .label(imageObject.getName())
+                                .label(visionLabel.getName())
                                 .build());
                 GenericEntity imageClassificationEntity =
                         GenericEntity.builder()
@@ -192,6 +194,27 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
                                 .build();
                 imageClassificationEntities.add(imageClassificationEntity);
             }
+        }
+        return imageClassificationEntities;
+    }
+
+    public List<Entity> mapToDLSEntities(List<String> dlsLabels, com.oracle.bmc.aivision.model.Label visionLabel) {
+        List<Entity> imageClassificationEntities = new ArrayList<>();
+        log.info("label from vision {}", visionLabel.getName());
+
+        List<Label> labels = new ArrayList<>();
+        float confidenceScoreThreshold = 0.6F;
+        if (dlsLabels.contains(visionLabel.getName())
+                && visionLabel.getConfidence() >= confidenceScoreThreshold) {
+            labels.add(
+                    Label.builder()
+                            .label(visionLabel.getName())
+                            .build());
+            GenericEntity imageClassificationEntity =
+                    GenericEntity.builder()
+                            .labels(labels)
+                            .build();
+            imageClassificationEntities.add(imageClassificationEntity);
         }
         return imageClassificationEntities;
     }

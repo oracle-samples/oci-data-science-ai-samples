@@ -26,4 +26,5 @@ public class AssistedLabelingParams {
     private List<String> dlsDatasetLabels;
     private BucketDetails customerBucket;
     private int assistedLabelingTimeout;
+    private String annotationFormat;
 }

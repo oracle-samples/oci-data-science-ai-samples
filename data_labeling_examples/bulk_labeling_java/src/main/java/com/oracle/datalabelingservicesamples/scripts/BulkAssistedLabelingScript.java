@@ -88,6 +88,7 @@ public class BulkAssistedLabelingScript {
                 .build())
                 .getDataset();
 
+        assistedLabelingParams.setAnnotationFormat(dataset.getAnnotationFormat());
         ObjectStorageSourceDetails sourceDetails = (ObjectStorageSourceDetails) dataset.getDatasetSourceDetails();
 
         assistedLabelingParams.setCustomerBucket(BucketDetails.builder()

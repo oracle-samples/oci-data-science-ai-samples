@@ -92,8 +92,9 @@ public class MlAssistedEntityExtraction implements AssistedLabelingStrategy {
     public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<HierarchicalEntity> entities) {
         List<Entity> entityList = new ArrayList<>();
         for (HierarchicalEntity entity : entities) {
-            float confidenceScoreThreshold = 0.6F;
+            float confidenceScoreThreshold = 0.5F;
             List<Label> languageLabels = new ArrayList<>();
+            log.info("label from language {}", entity.getType());
             if (dlsLabels.contains(entity.getType())
                     && entity.getScore() >= confidenceScoreThreshold) {
                 languageLabels.add(
