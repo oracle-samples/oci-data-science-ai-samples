@@ -26,7 +26,7 @@ public class CreateBulkAnalyzeTask extends Tasks<List<CreateAnnotationDetails>> 
     }
 
     @Override
-    public List<CreateAnnotationDetails> call() throws Exception {
+    public List<CreateAnnotationDetails> call() {
         List<CreateAnnotationDetails> createAnnotationDetails = null;
         try {
             createAnnotationDetails =

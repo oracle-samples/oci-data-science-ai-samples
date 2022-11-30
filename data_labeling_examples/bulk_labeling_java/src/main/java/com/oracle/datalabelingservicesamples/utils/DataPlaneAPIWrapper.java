@@ -2,13 +2,10 @@ package com.oracle.datalabelingservicesamples.utils;
 
 import com.oracle.bmc.datalabelingservicedataplane.model.Annotation;
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
-import com.oracle.bmc.datalabelingservicedataplane.model.Dataset;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.bmc.datalabelingservicedataplane.requests.CreateAnnotationRequest;
-import com.oracle.bmc.datalabelingservicedataplane.requests.GetDatasetRequest;
 import com.oracle.bmc.datalabelingservicedataplane.requests.ListRecordsRequest;
 import com.oracle.bmc.datalabelingservicedataplane.responses.CreateAnnotationResponse;
-import com.oracle.bmc.datalabelingservicedataplane.responses.GetDatasetResponse;
 import com.oracle.bmc.datalabelingservicedataplane.responses.ListRecordsResponse;
 import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
@@ -22,22 +19,6 @@ import java.util.Optional;
 
 @Slf4j
 public class DataPlaneAPIWrapper {
-
-    public Dataset getDataset(String datasetId)
-            throws Exception {
-        try {
-            log.info("Get Dataset details for {}", datasetId);
-            GetDatasetRequest.Builder requestBuilder =
-                    GetDatasetRequest.builder().datasetId(datasetId);
-            GetDatasetResponse response = Config.INSTANCE.getDlsDpClient().getDataset(requestBuilder.build());
-            log.debug("Response : {}", response);
-            return response.getDataset();
-        } catch (Exception e) {
-            log.error("Failed to Get Dataset details for {}", datasetId, e);
-            throw new Exception("Failed to get Dataset details : " + datasetId);
-        }
-    }
-
     public List<RecordSummary> listRecords(
             String datasetId,
             String compartmentId,

@@ -41,7 +41,6 @@ public class TaskHandler {
         final long timeoutDuration = timeOutInSeconds * 1000;
         final long sleepDuration = 5 * 1000;
 
-        //        List<E> results = new ArrayList<>();
         log.info("Waiting for the submitted tasks to complete");
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime <= timeoutDuration) {
@@ -53,7 +52,6 @@ public class TaskHandler {
                         try {
                             E result = task.get();
                             successHandler.accept(result);
-                            //                            results.add(result);
                         } catch (Exception ex) {
                             log.error("Failed in task execution", ex);
                             if (failureHandler != null) {

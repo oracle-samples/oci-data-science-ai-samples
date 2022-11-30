@@ -35,7 +35,6 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
-import com.oracle.bmc.datalabelingservicedataplane.model.LabelName;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
@@ -82,8 +81,7 @@ public class BulkAssistedLabelingScript {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         long startTime = System.nanoTime();
         String datasetId = Config.INSTANCE.getDatasetId();
-//        TODO - validation changes
-//        validateRequest(datasetId, bulkLabelingRequest);
+        preprocessAssistedLabelingRequest(datasetId);
         DataPlaneAPIWrapper dpAPIWrapper = new DataPlaneAPIWrapper();
 
 //        Initialize parameters required for bulk assisted labeling
@@ -230,7 +228,7 @@ public class BulkAssistedLabelingScript {
 
     }
 
-    private static void preprocessAssistedLabelingRequest(String datasetId, Map<String, List<String>> bulkAssistedLabelingRequest) {
+    private static void preprocessAssistedLabelingRequest(String datasetId) {
         /*
          * Validate Dataset
          */
@@ -240,27 +238,11 @@ public class BulkAssistedLabelingScript {
         List<Label> datasetLabelSet = datasetResponse.getDataset().getLabelSet().getItems();
 
         /*
-         * Validate Request
-         */
-        if (bulkAssistedLabelingRequest.size() > 3) {
-            log.error("More than allowed limit of 3 paths were provided");
-            throw new InvalidParameterException("More than allowed limit of 3 paths were provided");
-        }
-
-        /*
          * Validate Input Label Set
          */
         Set<String> actualLabels = new HashSet<>();
         for (Label labelName : datasetLabelSet) {
             actualLabels.add(labelName.getName());
-        }
-
-        for (Entry<String, List<String>> requestEntry : bulkAssistedLabelingRequest.entrySet()) {
-
-            if (StringUtils.countMatches(requestEntry.getKey(), "/") != 1) {
-                log.error("Invalid Path Name provided {}", requestEntry.getKey());
-                throw new InvalidParameterException("Invalid Path Name Provided");
-            }
         }
 
         /*

@@ -11,10 +11,6 @@ import com.oracle.bmc.ailanguage.AIServiceLanguageClient;
 import com.oracle.bmc.aivision.AIServiceVisionClient;
 import com.oracle.bmc.datalabelingservice.DataLabelingManagementClient;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
-import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedEntityExtraction;
-import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedImageClassification;
-import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedObjectDetection;
-import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedTextClassification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
