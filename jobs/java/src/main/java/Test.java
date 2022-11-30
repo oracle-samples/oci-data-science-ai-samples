@@ -1,14 +1,8 @@
-import com.oracle.bmc.ConfigFileReader;
-import com.oracle.bmc.Region;
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
-import com.oracle.bmc.datascience.DataScienceClient;
 import com.oracle.bmc.datascience.responses.CreateJobArtifactResponse;
 import com.oracle.bmc.datascience.responses.CreateJobResponse;
 import com.oracle.bmc.datascience.responses.CreateJobRunResponse;
 import com.oracle.bmc.datascience.responses.GetJobResponse;
 import com.oracle.bmc.datascience.model.*;
-import com.oracle.bmc.datascience.requests.*;
 import com.oracle.bmc.datascience.responses.*;
 
 import java.io.IOException;
@@ -81,7 +75,7 @@ public class Test {
         System.out.println("getOpcRequestId: " + headJobArtifactResponse.getOpcRequestId());
 
         // Get Job Artifact
-        // TODO: how to download and store!
+        // TODO: download and store artifact!
 
         // List Job Shapes
         System.out.println("* LIST JOB SHAPES");
