@@ -14,10 +14,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import com.oracle.bmc.datalabelingservice.model.Dataset;
+import com.oracle.bmc.datalabelingservice.model.Label;
 import com.oracle.bmc.datalabelingservice.model.ObjectStorageSourceDetails;
+import com.oracle.bmc.datalabelingservice.requests.GetDatasetRequest;
+import com.oracle.bmc.datalabelingservice.responses.GetDatasetResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.Annotation;
 import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.labelingstrategies.AssistedLabelingStrategy;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedEntityExtraction;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedImageClassification;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedObjectDetection;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedTextClassification;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.tasks.TaskHandler;
@@ -27,11 +35,8 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
-import com.oracle.bmc.datalabelingservicedataplane.model.Dataset;
 import com.oracle.bmc.datalabelingservicedataplane.model.LabelName;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
-import com.oracle.bmc.datalabelingservicedataplane.requests.GetDatasetRequest;
-import com.oracle.bmc.datalabelingservicedataplane.responses.GetDatasetResponse;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +46,12 @@ import lombok.extern.slf4j.Slf4j;
  * This Script takes following input for Assisted Labeling:
  *
  * DATASET_ID : the id of the dataset that you want to bulk label
- * CUSTOM_LABELS : JSON input specifying the labels to be applied for a object storage path.
- * 					Ex: { "dog/": ["dog"], "cat/": ["cat"] }
- * LABELING_ALGORITHM : The pattern matching algorithm that will determine the label of any record.
- * 						Currently following algorithms are supported: CUSTOM_LABELS_MATCH
+ * ML_MODEL_TYPE : String input specifying whether to use Pretrained/Custom models for the ai services
+ * LABELING_ALGORITHM : The algorithm that will determine the label of any record.
+ * 						Currently following algorithms are supported: ML_ASSISTED_IMAGE_CLASSIFICATION
+ *                                                                    ML_ASSISTED_TEXT_CLASSIFICATION
+ *                                                                    ML_ASSISTED_OBJECT_DETECTION
+ *                                                                    ML_ASSISTED_ENTITY_EXTRACTION
  *
  *
  * Following code constraints are added:
@@ -63,7 +70,7 @@ public class BulkAssistedLabelingScript {
     private static AssistedLabelingParams assistedLabelingParams  = new AssistedLabelingParams();
     private static final TaskHandler taskHandler = new TaskHandler(new TaskProvider());
     private static final DataPlaneAPIWrapper dataPlaneAPIWrapper = new DataPlaneAPIWrapper();
-    private static final AssistedLabelingStrategy assistedLabelingStrategy = (AssistedLabelingStrategy) Config.INSTANCE.getLabelingStrategy();
+    private static AssistedLabelingStrategy assistedLabelingStrategy = null;
     static List<String> successRecordIds = Collections.synchronizedList(new ArrayList<String>());
     static List<String> failedRecordIds = Collections.synchronizedList(new ArrayList<String>());
 
@@ -76,17 +83,12 @@ public class BulkAssistedLabelingScript {
         long startTime = System.nanoTime();
         String datasetId = Config.INSTANCE.getDatasetId();
 //        TODO - validation changes
-//        Map<String, List<String>> bulkLabelingRequest = Config.INSTANCE.getCustomLabels();
 //        validateRequest(datasetId, bulkLabelingRequest);
         DataPlaneAPIWrapper dpAPIWrapper = new DataPlaneAPIWrapper();
 
 //        Initialize parameters required for bulk assisted labeling
         assistedLabelingParams.setAssistedLabelingTimeout(DataLabelingConstants.ASSISTED_LABELING_TIMEOUT);
         assistedLabelingParams.setCompartmentId(Config.INSTANCE.getCompartmentId());
-        com.oracle.bmc.datalabelingservice.model.Dataset dataset = Config.INSTANCE.getDlsCpClient().getDataset(com.oracle.bmc.datalabelingservice.requests.GetDatasetRequest.builder()
-                .datasetId(datasetId)
-                .build())
-                .getDataset();
 
         assistedLabelingParams.setAnnotationFormat(dataset.getAnnotationFormat());
         ObjectStorageSourceDetails sourceDetails = (ObjectStorageSourceDetails) dataset.getDatasetSourceDetails();
@@ -228,19 +230,19 @@ public class BulkAssistedLabelingScript {
 
     }
 
-    private static void validateRequest(String datasetId, Map<String, List<String>> bulkLabelingRequest) {
+    private static void preprocessAssistedLabelingRequest(String datasetId, Map<String, List<String>> bulkAssistedLabelingRequest) {
         /*
          * Validate Dataset
          */
         GetDatasetRequest getDatasetRequest = GetDatasetRequest.builder().datasetId(datasetId).build();
-        GetDatasetResponse datasetResponse = Config.INSTANCE.getDlsDpClient().getDataset(getDatasetRequest);
+        GetDatasetResponse datasetResponse = Config.INSTANCE.getDlsCpClient().getDataset(getDatasetRequest);
         assert datasetResponse.get__httpStatusCode__() == 200 : "Invalid Dataset Id Provided";
-        List<LabelName> datasetLabelSet = datasetResponse.getDataset().getLabelSet().getItems();
+        List<Label> datasetLabelSet = datasetResponse.getDataset().getLabelSet().getItems();
 
         /*
          * Validate Request
          */
-        if (bulkLabelingRequest.size() > 3) {
+        if (bulkAssistedLabelingRequest.size() > 3) {
             log.error("More than allowed limit of 3 paths were provided");
             throw new InvalidParameterException("More than allowed limit of 3 paths were provided");
         }
@@ -249,25 +251,57 @@ public class BulkAssistedLabelingScript {
          * Validate Input Label Set
          */
         Set<String> actualLabels = new HashSet<>();
-        for (LabelName labelName : datasetLabelSet) {
+        for (Label labelName : datasetLabelSet) {
             actualLabels.add(labelName.getName());
         }
 
-        for (Entry<String, List<String>> requestEntry : bulkLabelingRequest.entrySet()) {
+        for (Entry<String, List<String>> requestEntry : bulkAssistedLabelingRequest.entrySet()) {
 
             if (StringUtils.countMatches(requestEntry.getKey(), "/") != 1) {
                 log.error("Invalid Path Name provided {}", requestEntry.getKey());
                 throw new InvalidParameterException("Invalid Path Name Provided");
             }
-            for (String label : requestEntry.getValue()) {
-                if (!actualLabels.contains(label)) {
-                    log.error("Invalid Labels Provided {}", label);
-                    throw new InvalidParameterException("Invalid Input Label Provided");
-                }
+        }
+
+        /*
+         * Validate custom model id
+         */
+        if (Config.INSTANCE.getMlModelType().equals("CUSTOM")) {
+            if(Config.INSTANCE.getCustomModelId().isEmpty()) {
+                log.error("Custom model ID cannot be empty when ML model type is custom");
+                throw new InvalidParameterException("Custom model ID cannot be empty");
             }
         }
 
         dataset = datasetResponse.getDataset();
 
+        /*
+         * Initialise labeling algorithm
+         */
+        String labelingAlgorithm = Config.INSTANCE.getLabelingAlgorithm();
+        if(!labelingAlgorithm.equals("ML_ASSISTED_LABELING")){
+            log.error("Invalid algorithm for ML assisted labeling");
+            throw new InvalidParameterException("Invalid algorithm for ML assisted labeling");
+        }
+        if(dataset.getDatasetFormatDetails().equals("IMAGE")&&
+                    (dataset.getAnnotationFormat().equals("SINGLE_LABEL")||dataset.getAnnotationFormat().equals("MULTI_LABEL"))){
+            assistedLabelingStrategy = new MlAssistedImageClassification();
+        }
+        else if(dataset.getDatasetFormatDetails().equals("IMAGE")&&
+                (dataset.getAnnotationFormat().equals("OBJECT_DETECTION"))){
+            assistedLabelingStrategy = new MlAssistedObjectDetection();
+        }
+        else if(dataset.getDatasetFormatDetails().equals("TEXT")&&
+                (dataset.getAnnotationFormat().equals("SINGLE_LABEL")||dataset.getAnnotationFormat().equals("MULTI_LABEL"))){
+            assistedLabelingStrategy = new MlAssistedTextClassification();
+        }
+        else if(dataset.getDatasetFormatDetails().equals("TEXT")&&
+                (dataset.getAnnotationFormat().equals("ENTITY_EXTRACTION"))){
+            assistedLabelingStrategy = new MlAssistedEntityExtraction();
+        }
+        else{
+            log.error("Invalid dataset format for ML assisted labeling");
+            throw new InvalidParameterException("Invalid dataset format for ML assisted labeling");
+        }
     }
 }

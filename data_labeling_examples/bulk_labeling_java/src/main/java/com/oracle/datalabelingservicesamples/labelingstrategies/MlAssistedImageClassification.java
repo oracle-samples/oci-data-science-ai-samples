@@ -6,7 +6,6 @@ import com.oracle.bmc.aivision.model.CreateImageJobDetails;
 import com.oracle.bmc.aivision.model.ImageClassificationFeature;
 import com.oracle.bmc.aivision.model.ImageFeature;
 import com.oracle.bmc.aivision.model.ImageJob;
-import com.oracle.bmc.aivision.model.ImageObject;
 import com.oracle.bmc.aivision.model.InputLocation;
 import com.oracle.bmc.aivision.model.ObjectListInlineInputLocation;
 import com.oracle.bmc.aivision.model.ObjectLocation;
@@ -32,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -152,11 +152,11 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
                                         objectDetails.getContentString(), AnalyzeImageResult.class);
                 log.debug("results from vision :{}",analyzeImageResult.getLabels());
                 if (analyzeImageResult.getLabels() != null) {
-                    if()
                     List<Entity> entities =
                             mapToDLSEntities(
                                     assistedLabelingParams.getDlsDatasetLabels(),
-                                    analyzeImageResult.getLabels());
+                                    analyzeImageResult.getLabels(),
+                                    assistedLabelingParams.getAnnotationFormat());
                     if (!entities.isEmpty()) {
                         createAnnotationDetails.add(
                                 new CreateAnnotationDetails(
@@ -171,50 +171,39 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
                 log.info("exception occurred in wrapper");
                 throw e;
             }
-        }
-        return createAnnotationDetails;
+        }return createAnnotationDetails;
     }
 
-    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<com.oracle.bmc.aivision.model.Label> visionLabels) {
+    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<com.oracle.bmc.aivision.model.Label> visionLabels, String annotationFormat) {
         List<Entity> imageClassificationEntities = new ArrayList<>();
         for (com.oracle.bmc.aivision.model.Label visionLabel : visionLabels) {
             log.info("label from vision {}", visionLabel.getName());
 
             List<Label> labels = new ArrayList<>();
-            float confidenceScoreThreshold = 0.6F;
+            float confidenceScoreThreshold = 0.1F;
             if (dlsLabels.contains(visionLabel.getName())
                     && visionLabel.getConfidence() >= confidenceScoreThreshold) {
                 labels.add(
                         Label.builder()
                                 .label(visionLabel.getName())
                                 .build());
-                GenericEntity imageClassificationEntity =
-                        GenericEntity.builder()
-                                .labels(labels)
-                                .build();
+                GenericEntity imageClassificationEntity = null;
+                if(annotationFormat.equalsIgnoreCase("SINGLE_LABEL")){
+                    if(!labels.isEmpty()) {
+                        imageClassificationEntity =
+                                GenericEntity.builder()
+                                        .labels(Collections.singletonList(labels.get(0)))
+                                        .build();
+                    }
+                }
+                else if(annotationFormat.equalsIgnoreCase("MULTI_LABEL")){
+                    imageClassificationEntity =
+                            GenericEntity.builder()
+                                    .labels(labels)
+                                    .build();
+                }
                 imageClassificationEntities.add(imageClassificationEntity);
             }
-        }
-        return imageClassificationEntities;
-    }
-
-    public List<Entity> mapToDLSEntities(List<String> dlsLabels, com.oracle.bmc.aivision.model.Label visionLabel) {
-        List<Entity> imageClassificationEntities = new ArrayList<>();
-        log.info("label from vision {}", visionLabel.getName());
-
-        List<Label> labels = new ArrayList<>();
-        float confidenceScoreThreshold = 0.6F;
-        if (dlsLabels.contains(visionLabel.getName())
-                && visionLabel.getConfidence() >= confidenceScoreThreshold) {
-            labels.add(
-                    Label.builder()
-                            .label(visionLabel.getName())
-                            .build());
-            GenericEntity imageClassificationEntity =
-                    GenericEntity.builder()
-                            .labels(labels)
-                            .build();
-            imageClassificationEntities.add(imageClassificationEntity);
         }
         return imageClassificationEntities;
     }

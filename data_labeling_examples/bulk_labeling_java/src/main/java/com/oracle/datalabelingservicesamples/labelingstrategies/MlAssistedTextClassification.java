@@ -20,6 +20,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -68,7 +69,7 @@ public class MlAssistedTextClassification implements AssistedLabelingStrategy {
                             .getDocuments()) {
                 List<Entity> entities =
                         mapToDLSEntities(
-                                assistedLabelingParams.getDlsDatasetLabels(), document.getTextClassification());
+                                assistedLabelingParams.getDlsDatasetLabels(), document.getTextClassification(), assistedLabelingParams.getAnnotationFormat());
                 if (!entities.isEmpty()) {
                     // TODO - compartment ID
                     createAnnotationDetails.add(
@@ -87,10 +88,10 @@ public class MlAssistedTextClassification implements AssistedLabelingStrategy {
         }
     }
 
-    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<TextClassification> entities) {
+    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<TextClassification> entities, String annotationFormat) {
         List<Entity> entityList = new ArrayList<>();
         for (TextClassification entity : entities) {
-            float confidenceScoreThreshold = 0.6F;
+            float confidenceScoreThreshold = 0.1F;
             List<Label> languageLabels = new ArrayList<>();
             if (dlsLabels.contains(entity.getLabel())
                     && entity.getScore() >= confidenceScoreThreshold) {
@@ -98,10 +99,21 @@ public class MlAssistedTextClassification implements AssistedLabelingStrategy {
                         Label.builder()
                                 .label(entity.getLabel())
                                 .build());
-                Entity genericEntity =
-                        GenericEntity.builder()
-                                .labels(languageLabels)
-                                .build();
+                Entity genericEntity = null;
+                if(annotationFormat.equalsIgnoreCase("SINGLE_LABEL")){
+                    if(!languageLabels.isEmpty()) {
+                        genericEntity =
+                                GenericEntity.builder()
+                                        .labels(Collections.singletonList(languageLabels.get(0)))
+                                        .build();
+                    }
+                }
+                else if(annotationFormat.equalsIgnoreCase("MULTI_LABEL")){
+                    genericEntity =
+                            GenericEntity.builder()
+                                    .labels(Collections.singletonList(languageLabels.get(0)))
+                                    .build();
+                }
                 entityList.add(genericEntity);
             }
         }

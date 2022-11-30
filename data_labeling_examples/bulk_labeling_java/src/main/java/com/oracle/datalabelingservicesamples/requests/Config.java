@@ -128,22 +128,6 @@ public enum Config {
 		case "CUSTOM_LABELS_MATCH":
 			labelingStrategy = new CustomLabelMatch();
 			break;
-
-		case "ML_ASSISTED_IMAGE_CLASSIFICATION":
-			labelingStrategy = new MlAssistedImageClassification();
-			break;
-
-		case "ML_ASSISTED_TEXT_CLASSIFICATION":
-			labelingStrategy = new MlAssistedTextClassification();
-			break;
-
-		case "ML_ASSISTED_OBJECT_DETECTION":
-			labelingStrategy = new MlAssistedObjectDetection();
-			break;
-
-		case "ML_ASSISTED_ENTITY_EXTRACTION":
-			labelingStrategy = new MlAssistedEntityExtraction();
-			break;
 		}
 	}
 
