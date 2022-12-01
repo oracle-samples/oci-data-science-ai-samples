@@ -14,7 +14,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 ## Notebooks
 ### - API Keys
-#### `api_keys.ipynb`
+#### [`api_keys.ipynb`](api_keys.ipynb)
 
  
 Configure and test API key authentication, attach keys to user account through Oracle's identity service, and test access to the API.
@@ -28,7 +28,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Audi Autonomous Driving Dataset Repository
-#### `audi-autonomous_driving-oracle_open_data.ipynb`
+#### [`audi-autonomous_driving-oracle_open_data.ipynb`](audi-autonomous_driving-oracle_open_data.ipynb)
 
  
 Download, process and display autonomous driving data, and map LiDAR data onto images.
@@ -42,7 +42,7 @@ This notebook was developed on the conda pack with slug: *computervision\_p37\_c
 
 ---
 ### - How to Read Data with fsspec from Oracle Big Data Service (BDS)
-#### `read-write-big_data_service-(BDS).ipynb`
+#### [`read-write-big_data_service-(BDS).ipynb`](read-write-big_data_service-(BDS).ipynb)
 
  
 Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
@@ -56,7 +56,7 @@ This notebook was developed on the conda pack with slug: *pyspark30\_p37\_cpu\_v
 
 ---
 ### - Using Livy on the Big Data Service
-#### `big_data_service-(BDS)-livy.ipynb`
+#### [`big_data_service-(BDS)-livy.ipynb`](big_data_service-(BDS)-livy.ipynb)
 
  
 Work interactively with a BDS cluster using Livy and two different connection techniques, SparkMagic (for a notebook environment) and with REST.
@@ -70,7 +70,7 @@ This notebook was developed on the conda pack with slug: *pyspark30\_p37\_cpu\_v
 
 ---
 ### - Caltech Pedestrian Detection Benchmark Repository
-#### `caltech-pedestrian_detection-oracle_open_data.ipynb`
+#### [`caltech-pedestrian_detection-oracle_open_data.ipynb`](caltech-pedestrian_detection-oracle_open_data.ipynb)
 
  
 Download and process annotated video data of vehicles and pedestrians.
@@ -84,7 +84,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Using Data Catalog Metastore with DataFlow
-#### `pyspark-data_catalog-hive_metastore-data_flow.ipynb`
+#### [`pyspark-data_catalog-hive_metastore-data_flow.ipynb`](pyspark-data_catalog-hive_metastore-data_flow.ipynb)
 
  
 Write and test a Data Flow batch application using the Oracle Cloud Infrastructure (OCI) Data Catalog Metastore. Configure the job, run the application and clean up resources.
@@ -98,7 +98,7 @@ This notebook was developed on the conda pack with slug: *pyspark30\_p37\_cpu\_v
 
 ---
 ### - Text Classification with Data Labeling Service Integration
-#### `data_labeling-text_classification.ipynb`
+#### [`data_labeling-text_classification.ipynb`](data_labeling-text_classification.ipynb)
 
  
 Use the Oracle Cloud Infrastructure (OCI) Data Labeling service to efficiently build enriched, labeled datasets for the purpose of accurately training AI/ML models. This notebook demonstrates operations that can be performed using the Advanced Data Science (ADS) Data Labeling module.
@@ -112,7 +112,7 @@ This notebook was developed on the conda pack with slug: *nlp\_p37\_cpu\_v2*
 
 ---
 ### - Visualizing Data
-#### `visualizing_data.ipynb`
+#### [`visualizing_data.ipynb`](visualizing_data.ipynb)
 
  
 Perform common data visualization tasks and explore data with the ADS SDK. Plotting approaches include 3D plots, pie chart, GIS plots, and Seaborn pairplot graphs.
@@ -126,7 +126,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Using Data Catalog Metastore with PySpark
-#### `pyspark-data_catalog-hive_metastore.ipynb`
+#### [`pyspark-data_catalog-hive_metastore.ipynb`](pyspark-data_catalog-hive_metastore.ipynb)
 
  
 Configure and use PySpark to process data in the Oracle Cloud Infrastructure (OCI) Data Catalog metastore, including common operations like creating and loading data from the metastore.
@@ -140,7 +140,7 @@ This notebook was developed on the conda pack with slug: *pyspark30\_p37\_cpu\_v
 
 ---
 ### - Train, Register, and Deploy a Generic Model
-#### `train-register-deploy-other-frameworks.ipynb`
+#### [`train-register-deploy-other-frameworks.ipynb`](train-register-deploy-other-frameworks.ipynb)
 
  
 Train, register, and deploy a generic model
@@ -154,7 +154,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Introduction to ADSTuner
-#### `hyperparameter_tuning.ipynb`
+#### [`hyperparameter_tuning.ipynb`](hyperparameter_tuning.ipynb)
 
  
 Use ADSTuner to optimize an estimator using the scikit-learn API
@@ -168,7 +168,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Intel Extension for Scikit-Learn
-#### `accelerate-scikit_learn-with-intel_extension.ipynb`
+#### [`accelerate-scikit_learn-with-intel_extension.ipynb`](accelerate-scikit_learn-with-intel_extension.ipynb)
 
  
 Enhance performance of scikit-learn models using the Intel(R) oneAPI Data Analytics Library. Train a k-means model using both sklearn and the accelerated Intel library and compare performance.
@@ -182,7 +182,7 @@ This notebook was developed on the conda pack with slug: *sklearnex202130\_p37\_
 
 ---
 ### - Connect to Oracle Big Data Service
-#### `big_data_service-(BDS)-kerberos.ipynb`
+#### [`big_data_service-(BDS)-kerberos.ipynb`](big_data_service-(BDS)-kerberos.ipynb)
 
  
 Connect to Oracle Big Data services using Kerberos.
@@ -196,7 +196,7 @@ This notebook was developed on the conda pack with slug: *pyspark30\_p37\_cpu\_v
 
 ---
 ### - Natural Language Processing
-#### `natural_language_processing.ipynb`
+#### [`natural_language_processing.ipynb`](natural_language_processing.ipynb)
 
  
 Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.
@@ -210,7 +210,7 @@ This notebook was developed on the conda pack with slug: *nlp\_p37\_cpu\_v2*
 
 ---
 ### - Train, Register, and Deploy a LightGBM Model
-#### `train-register-deploy-lightgbm.ipynb`
+#### [`train-register-deploy-lightgbm.ipynb`](train-register-deploy-lightgbm.ipynb)
 
  
 Train, register, and deploy a LightGBM model.
@@ -224,7 +224,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Loading Data with DatasetFactory
-#### `load_data-object_storage-hive-autonomous-database.ipynb`
+#### [`load_data-object_storage-hive-autonomous-database.ipynb`](load_data-object_storage-hive-autonomous-database.ipynb)
 
  
 Load data from a variety of sources and in different formats. Sources include local storage, OCI storage, and different databases. Formats include Pandas DataFrames, parquet, excel, csv, and Python primitives.
@@ -238,7 +238,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Model Evaluation with ADSEvaluator
-#### `model_evaluation.ipynb`
+#### [`model_evaluation.ipynb`](model_evaluation.ipynb)
 
  
 Train and evaluate different types of models: binary classification using an imbalanced dataset, multi-class classification using a synthetically generated dataset consisting of three equally distributed classes, and a regression using a synthetically generated dataset with positive targets.
@@ -252,7 +252,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Text Classification and Model Explanations using LIME
-#### `text_classification-model_explanation-lime.ipynb`
+#### [`text_classification-model_explanation-lime.ipynb`](text_classification-model_explanation-lime.ipynb)
 
  
 Perform model explanations on an NLP classifier using the locally interpretable model explanations technique (LIME).
@@ -266,7 +266,7 @@ This notebook was developed on the conda pack with slug: *nlp\_p37\_cpu\_v2*
 
 ---
 ### - Visual Genome Repository
-#### `genome_visualization-oracle_open_data.ipynb`
+#### [`genome_visualization-oracle_open_data.ipynb`](genome_visualization-oracle_open_data.ipynb)
 
  
 Load visual data, define regions, and visualize objects using metadata to connect structured images to language.
@@ -279,8 +279,22 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 <sub>Universal Permissive License v 1.0 (https://oss.oracle.com/licenses/upl/)</sup>
 
 ---
+### - Working with Pipelines [Limited Availability]
+#### [`pipelines-ml_lifecycle.ipynb`](pipelines-ml_lifecycle.ipynb)
+
+ 
+Create and use ML pipelines through the entire machine learning lifecycle
+
+This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+
+ 
+`pipelines`  `pipeline step`  `jobs pipeline`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### - PySpark
-#### `pyspark-data_flow.ipynb`
+#### [`pyspark-data_flow.ipynb`](pyspark-data_flow.ipynb)
 
  
 Develop local PySpark applications and work with remote clusters using Data Flow.
@@ -294,7 +308,7 @@ This notebook was developed on the conda pack with slug: *pyspark24\_p37\_cpu\_v
 
 ---
 ### - Spark NLP within Oracle Cloud Infrastructure Data Flow Studio
-#### `pyspark-data_flow_studio-spark_nlp.ipynb`
+#### [`pyspark-data_flow_studio-spark_nlp.ipynb`](pyspark-data_flow_studio-spark_nlp.ipynb)
 
  
 Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.
@@ -308,7 +322,7 @@ This notebook was developed on the conda pack with slug: *pyspark32\_p38\_cpu\_v
 
 ---
 ### - Introduction to the Oracle Cloud Infrastructure Data Flow Studio
-#### `pyspark-data_flow_studio-introduction.ipynb`
+#### [`pyspark-data_flow_studio-introduction.ipynb`](pyspark-data_flow_studio-introduction.ipynb)
 
  
 Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.
@@ -322,7 +336,7 @@ This notebook was developed on the conda pack with slug: *pyspark32\_p38\_cpu\_v
 
 ---
 ### - Train, Register, and Deploy a PyTorch Model
-#### `train-register-deploy-pytorch.ipynb`
+#### [`train-register-deploy-pytorch.ipynb`](train-register-deploy-pytorch.ipynb)
 
  
 Train, register, and deploy a PyTorch model.
@@ -336,7 +350,7 @@ This notebook was developed on the conda pack with slug: *pytorch110\_p37\_cpu\_
 
 ---
 ### - Train, register, and deploy Sklearn Model
-#### `train-register-deploy-sklearn.ipynb`
+#### [`train-register-deploy-sklearn.ipynb`](train-register-deploy-sklearn.ipynb)
 
  
 Train, register, and deploy an scikit-learn model.
@@ -350,7 +364,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Introduction to SQL Magic
-#### `sql_magic-commands-with-autonomous_database.ipynb`
+#### [`sql_magic-commands-with-autonomous_database.ipynb`](sql_magic-commands-with-autonomous_database.ipynb)
 
  
 Use SQL Magic commands to work with a database within a Jupytyer notebook. This notebook shows how to to use both line and cell magics.
@@ -364,7 +378,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - Introduction to Streaming
-#### `streaming-service.ipynb`
+#### [`streaming-service.ipynb`](streaming-service.ipynb)
 
  
 Connect to Oracle Cloud Insfrastructure (OCI) Streaming service with kafka.
@@ -378,7 +392,7 @@ This notebook was developed on the conda pack with slug: *dataexpl\_p37\_cpu\_v3
 
 ---
 ### - Train, Register, and Deploy a TensorFlow Model
-#### `train-register-deploy-tensorflow.ipynb`
+#### [`train-register-deploy-tensorflow.ipynb`](train-register-deploy-tensorflow.ipynb)
 
  
 Train, register, and deploy a TensorFlow model.
@@ -392,7 +406,7 @@ This notebook was developed on the conda pack with slug: *tensorflow27\_p37\_cpu
 
 ---
 ### - Text Extraction Using the Accelerated Data Science (ADS) SDK
-#### `document-text_extraction.ipynb`
+#### [`document-text_extraction.ipynb`](document-text_extraction.ipynb)
 
  
 Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.
@@ -406,7 +420,7 @@ This notebook was developed on the conda pack with slug: *nlp\_p37\_cpu\_v2*
 
 ---
 ### - Train, Register, and Deploy an XGBoost Model
-#### `train-register-deploy-xgboost.ipynb`
+#### [`train-register-deploy-xgboost.ipynb`](train-register-deploy-xgboost.ipynb)
 
  
 Train, register, and deploy an XGBoost model.
@@ -420,7 +434,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 
 ---
 ### - XGBoost with RAPIDS
-#### `xgboost-rapids.ipynb`
+#### [`xgboost-rapids.ipynb`](xgboost-rapids.ipynb)
 
  
 Compare training time between CPU and GPU trained models using XGBoost.

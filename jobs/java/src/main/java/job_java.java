@@ -41,7 +41,7 @@ public class job_java {
             }
 
             System.out.println("Log Client");
-            LoggingClient loggingClient = new LoggingClient(provider);
+            LoggingClient loggingClient = LoggingClient.builder().build(provider);
             loggingClient.setRegion(Region.US_ASHBURN_1);
 
             LogEntry logEntry = LogEntry.builder()
