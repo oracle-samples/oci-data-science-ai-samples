@@ -108,7 +108,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
         ):
 
             print(f"### - {notebook_metadata['title']}", file=f)
-            print(f"#### `{notebook_metadata['filename']}`", file=f)
+            print(f"#### [`{notebook_metadata['filename']}`]({notebook_metadata['filename']})", file=f)
             print("\n ", file=f)
             print(f"{notebook_metadata['summary']}", file=f)
             print(
