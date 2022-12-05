@@ -3,6 +3,7 @@ package com.oracle.datalabelingservicesamples.scripts;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import com.oracle.bmc.aivision.model.CreateModelDetails;
+import com.oracle.bmc.aivision.model.CreateProjectDetails;
+import com.oracle.bmc.aivision.model.DataScienceLabelingDataset;
+import com.oracle.bmc.aivision.model.Model;
+import com.oracle.bmc.aivision.requests.CreateModelRequest;
+import com.oracle.bmc.aivision.requests.CreateProjectRequest;
+import com.oracle.bmc.aivision.responses.CreateModelResponse;
+import com.oracle.bmc.aivision.responses.CreateProjectResponse;
 import com.oracle.bmc.datalabelingservice.model.Dataset;
 import com.oracle.bmc.datalabelingservice.model.ImageDatasetFormatDetails;
 import com.oracle.bmc.datalabelingservice.model.Label;
@@ -101,6 +110,7 @@ public class BulkAssistedLabelingScript {
         }
 
         assistedLabelingParams = AssistedLabelingParams.builder()
+                .datasetId(datasetId)
                 .compartmentId(dataset.getCompartmentId())
                 .annotationFormat(dataset.getAnnotationFormat())
                 .assistedLabelingTimeout(DataLabelingConstants.ASSISTED_LABELING_TIMEOUT)
@@ -114,9 +124,14 @@ public class BulkAssistedLabelingScript {
                         .prefix(sourceDetails.getPrefix())
                         .region(Config.INSTANCE.getRegion())
                         .build())
+                .customTrainingEnabled(Config.INSTANCE.getCustomTrainingEnabled().equalsIgnoreCase("true"))
                 .build();
 
         log.info("Starting Assisted Labeling for dataset: {}", dataset.getDisplayName());
+
+        if(assistedLabelingParams.isCustomTrainingEnabled()){
+            performCustomModelTraining(assistedLabelingParams);
+        }
 
         // 1. List existing record files
         log.info("List Dataset Records");
@@ -295,5 +310,98 @@ public class BulkAssistedLabelingScript {
             log.error("Invalid dataset format type for ML assisted labeling");
             throw new InvalidParameterException("Invalid dataset format type for ML assisted labeling");
         }
+    }
+
+    public static void performCustomModelTraining(AssistedLabelingParams assistedLabelingParams){
+        createVisionModel(createVisionProject(assistedLabelingParams), assistedLabelingParams);
+    }
+
+    public static CreateProjectResponse createVisionProject(AssistedLabelingParams assistedLabelingParams){
+
+        CreateProjectResponse response = null;
+        log.info("Starting Custom model training using input dataset: {}", dataset.getDisplayName());
+
+        try {
+            /* Create a request and dependent object(s). */
+            CreateProjectDetails createProjectDetails = CreateProjectDetails.builder()
+                    .displayName("test-project")
+                    .description("Project for testing custom model training")
+                    .compartmentId(assistedLabelingParams.getCompartmentId())
+//                .freeformTags(new HashMap<String, String>() {
+//                    {
+//                        put("datasetId",assistedLabelingParams.getDatasetId());
+//                    }
+//                })
+//                .definedTags(new HashMap<String, Map<String, Object>>() {
+//                    {
+//                        put("EXAMPLE_KEY_eKLnn",new HashMap<java.lang.String, java.lang.Object>() {
+//                            {
+//                                put("EXAMPLE_KEY_9a8GL","EXAMPLE--Value");
+//                            }
+//                        });
+//                    }
+//                })
+                    .build();
+
+            CreateProjectRequest createProjectRequest = CreateProjectRequest.builder()
+                    .createProjectDetails(createProjectDetails)
+                    .opcRetryToken("EXAMPLE-opcRetryToken-Value")
+                    .opcRequestId("BulkAssistedLabeling").build();
+
+            /* Send request to the Client */
+            response = Config.INSTANCE.getAiVisionClient().createProject(createProjectRequest);
+        }
+        catch (Exception e){
+            log.error("Failed to create new project in vision service");
+        }
+        return response;
+    }
+
+    public static CreateModelResponse createVisionModel(CreateProjectResponse createProjectResponse, AssistedLabelingParams assistedLabelingParams){
+        CreateModelResponse modelResponse = null;
+
+        try {
+            /* Create a request and dependent object(s). */
+            CreateModelDetails createModelDetails = CreateModelDetails.builder()
+                    .displayName("test-model")
+                    .description("Test custom model training")
+//                .modelVersion("EXAMPLE-modelVersion-Value") Going with default value
+                    .modelType(Model.ModelType.ImageClassification)
+                    .compartmentId(assistedLabelingParams.getCompartmentId())
+                    .isQuickMode(true)
+                    .maxTrainingDurationInHours(1757.9204)
+                    .trainingDataset(DataScienceLabelingDataset.builder()
+                            .datasetId(assistedLabelingParams.getDatasetId()).build())
+                    .projectId(createProjectResponse.getProject().getId())
+                    .freeformTags(new HashMap<java.lang.String, java.lang.String>() {
+                        {
+                            put("datasetId", assistedLabelingParams.getDatasetId());
+                        }
+                    })
+//                .definedTags(new HashMap<java.lang.String, java.util.Map<java.lang.String, java.lang.Object>>() {
+//                    {
+//                        put("EXAMPLE_KEY_XbxiZ",new HashMap<java.lang.String, java.lang.Object>() {
+//                            {
+//                                put("EXAMPLE_KEY_v3Chd","EXAMPLE--Value");
+//                            }
+//                        });
+//                    }
+//                })
+                    .build();
+
+            CreateModelRequest createModelRequest = CreateModelRequest.builder()
+                    .createModelDetails(createModelDetails)
+                    .opcRetryToken("EXAMPLE-opcRetryToken-Value")
+                    .opcRequestId("BulkAssistedLabeling").build();
+
+            /* Send request to the Client */
+            modelResponse = Config.INSTANCE.getAiVisionClient().createModel(createModelRequest);
+
+            assistedLabelingParams.setCustomModelId(modelResponse.getModel().getId());
+        }
+        catch (Exception e){
+            log.error("Failed to train model in vision service", e);
+        }
+        return modelResponse;
     }
 }

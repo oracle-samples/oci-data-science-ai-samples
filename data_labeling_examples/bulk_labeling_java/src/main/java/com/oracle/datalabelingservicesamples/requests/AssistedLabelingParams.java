@@ -22,10 +22,12 @@ public class AssistedLabelingParams {
     /* parameters to identify the resource */
     private String mlModelType;
     private String customModelId;
+    private String datasetId;
     private String compartmentId;
     private List<String> dlsDatasetLabels;
     private BucketDetails customerBucket;
     private int assistedLabelingTimeout;
     private String annotationFormat;
     private float confidenceThreshold;
+    private boolean customTrainingEnabled;
 }

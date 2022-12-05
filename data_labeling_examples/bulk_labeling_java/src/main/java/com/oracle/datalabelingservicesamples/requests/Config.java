@@ -50,6 +50,7 @@ public enum Config {
 	private String customModelId;
 	private String mlModelType;
 	private String confidenceThreshold;
+	private String customTrainingEnabled;
 
 	private List<String> labels;
 	private Map<String, List<String>> customLabels;
@@ -94,9 +95,9 @@ public enum Config {
 			labelingAlgorithm = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.LABELING_ALGORITHM))
 					? config.getProperty(DataLabelingConstants.LABELING_ALGORITHM)
 					: System.getProperty(DataLabelingConstants.LABELING_ALGORITHM);
-			confidenceThreshold = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.PREDICTION_CONFIDENCE_THRESHOLD))
-					? config.getProperty(DataLabelingConstants.PREDICTION_CONFIDENCE_THRESHOLD)
-					: System.getProperty(DataLabelingConstants.PREDICTION_CONFIDENCE_THRESHOLD);
+			confidenceThreshold = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIDENCE_THRESHOLD))
+					? config.getProperty(DataLabelingConstants.CONFIDENCE_THRESHOLD)
+					: System.getProperty(DataLabelingConstants.CONFIDENCE_THRESHOLD);
 			String threadConfig = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.THREAD_COUNT))
 					? config.getProperty(DataLabelingConstants.THREAD_COUNT)
 					: System.getProperty(DataLabelingConstants.THREAD_COUNT);
