@@ -70,13 +70,13 @@ public class MlAssistedEntityExtraction implements AssistedLabelingStrategy {
                             .getDocuments()) {
                 List<Entity> entities =
                         mapToDLSEntities(
-                                assistedLabelingParams.getDlsDatasetLabels(), document.getEntities());
+                                assistedLabelingParams.getDlsDatasetLabels(), document.getEntities(), assistedLabelingParams.getConfidenceThreshold());
                 if (!entities.isEmpty()) {
                     // TODO - compartment ID
                     createAnnotationDetails.add(
                             new CreateAnnotationDetails(
                                     document.getKey(),
-                                    assistedLabelingParams.getCompartmentId(),
+                                    "assistedLabelingParams.getCompartmentId()",
                                     entities,
                                     null,
                                     null));
@@ -89,14 +89,13 @@ public class MlAssistedEntityExtraction implements AssistedLabelingStrategy {
         }
     }
 
-    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<HierarchicalEntity> entities) {
+    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<HierarchicalEntity> entities, float confidenceThreshold) {
         List<Entity> entityList = new ArrayList<>();
         for (HierarchicalEntity entity : entities) {
-            float confidenceScoreThreshold = 0.5F;
             List<Label> languageLabels = new ArrayList<>();
             log.info("label from language {}", entity.getType());
             if (dlsLabels.contains(entity.getType())
-                    && entity.getScore() >= confidenceScoreThreshold) {
+                    && entity.getScore() >= confidenceThreshold) {
                 languageLabels.add(
                         Label.builder()
                                 .label(entity.getType())

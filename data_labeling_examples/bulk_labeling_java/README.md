@@ -47,6 +47,28 @@ Result of CUSTOM_LABELS_MATCH algorithm:
     dog/dog2.png will be labeled with dog and pup labels
 ```
 
+3. **BulkAssistedLabelingScript**: This script takes object storage path as input along with the labeling algorithm as ML_ASSISTED_LABELING. Only root level path is supported. Multiple labels can also be assigned to a given path. The labeling algorithm for this case is CUSTOM_LABELS_MATCH.
+
+```
+Consider a dataset with the following dataset labels - 
+{Dog, Cat, Animal}
+If these labels are identified by the machine learning model (either pretrained/custom), then annotations will 
+automatically be created.
+
+Conditions - 
+
+1. For a label from ML prediction response to be converted to annotation, it has to be part of the DLS dataset label set.
+2. The label comparison is case sensitive - Provide the label names in intial case i.e first letter of each word is capitalised 
+Eg: Dog, Wildlife, Pet Animal etc.
+3. Ensure that the following assisted labeling specific params are set in config.properties file - 
+
+    LABELING_ALGORITHM (Required)
+    ML_MODEL_TYPE (Required)
+    PREDICTION_CONFIDENCE_THRESHOLD (Optional, default is 0.7)
+    CUSTOM_MODEL_ID (Optional, default is null)
+    
+```
+
 ### Requirements
 1. An Oracle Cloud Infrastructure account. <br/>
 2. A user created in that account, in a group with a policy that grants the desired permissions. This can be a user for yourself, or another person/system that needs to call the API. <br/>
@@ -55,6 +77,21 @@ Result of CUSTOM_LABELS_MATCH algorithm:
 5. A TTL value of 60. For more information, see [Configuring the SDK](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkgettingstarted.htm#Configur). <br/>
 
 For more information [SDK for Java](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdk.htm)
+
+### Additional requirements for Assisted Labeling Utility 
+1. The group where the user is present needs to have the following policies: 
+    a) AI Vision service access: 
+    Quick set up of Vision policies using a template - https://docs.oracle.com/en-us/iaas/vision/vision/using/policies_quick_set_up.htm
+    Manual set up of Vision policies - https://docs.oracle.com/en-us/iaas/vision/vision/using/about_vision_policies.htm
+    
+    b) AI Language service access:
+    Manual set up of Language service policies - https://docs.oracle.com/en-us/iaas/language/using/policies.htm
+    
+### Training custom models with OCI AI services 
+
+1. If you have a niche labeling use case which will not be covered by the pretrained models supplied by Vision/Language,
+this route applies to you. 
+
 
 ### Running the Utility
 1. Open Terminal on your system.
@@ -88,6 +125,20 @@ java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=ht
 ```
 java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.CustomBulkLabelingScript
 ```
+8. Run the below command to bulk label by "ML_ASSISTED_LABELING" labeling algorithm.
+
+```
+java -DCONFIG_FILE_PATH='~/.oci/config' 
+-DCONFIG_PROFILE=DEFAULT 
+-DTHREAD_COUNT=20 
+-DREGION=us-phoenix-1 
+-DLABELING_ALGORITHM=ML_ASSISTED_LABELING 
+-DML_MODEL_TYPE=PRETRAINED 
+-DPREDICTION_CONFIDENCE_THRESHOLD=0.8 
+-DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a 
+-DCUSTOM_MODEL_ID=ocid1.aivisionmodel.oc1.phx.amaaaaaaniob46iazrkx6ir57egwpbcmfstr6lgwxzle4tw7qkkkoilmuita 
+-cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.BulkAssistedLabelingScript
+```
 
 Note: You can override any config using -D followed by the configuration name. The list of all configurations are mentioned in following section. 
 
@@ -111,7 +162,7 @@ DATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s
 #Number of Parallel Threads for Bulk Labeling. Default is 20
 THREAD_COUNT=30
 
-# Algorithm that will be used to assign labels to DLS Dataset records : FIRST_LETTER_MATCH, FIRST_REGEX_MATCH, CUSTOM_LABELS_MATCH
+# Algorithm that will be used to assign labels to DLS Dataset records : FIRST_LETTER_MATCH, FIRST_REGEX_MATCH, CUSTOM_LABELS_MATCH, ML_ASSISTED_LABELING
 LABELING_ALGORITHM=FIRST_REGEX_MATCH
 
 # Comma separated Input Label Set for FIRST_LETTER_MATCH, FIRST_REGEX_MATCH algorithm. Each element is a separate label.
@@ -122,3 +173,14 @@ FIRST_MATCH_REGEX_PATTERN=^abc*
 
 # JSON Request for CUSTOM_LABELS_MATCH labeling algorithm. The request consists of a Map of path and its corresponding list of labels that you want to apply to that path
 CUSTOM_LABELS={ "dog/": ["dog","pup"], "cat/": ["cat", "kitten"] }
+
+REGION=us-phoenix-1
+
+#Machine learning model type for assisted labeling, choices are PRETRAINED and CUSTOM
+ML_MODEL_TYPE=PRETRAINED
+
+#Minimum confidence score for a label predicted by the Machine learning model to be used to create annotation
+PREDICTION_CONFIDENCE_THRESHOLD=0.7
+
+#The OCID of the custom machine learning model trained in Vision or Language service for assisted labeling
+CUSTOM_MODEL_ID=ocid1.aivisionmodel.oc1.phx.amaaaaaaniob46iazrkx6ir57egwpbcmfstr6lgwxzle4tw7qkkkoilmuita

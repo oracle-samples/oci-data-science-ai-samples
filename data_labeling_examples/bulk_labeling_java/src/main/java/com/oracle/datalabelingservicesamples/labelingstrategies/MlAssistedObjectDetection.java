@@ -26,6 +26,7 @@ import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
+import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.requests.Config;
@@ -157,7 +158,8 @@ public class MlAssistedObjectDetection implements AssistedLabelingStrategy {
                     List<Entity> entities =
                             mapToDLSEntities(
                                     assistedLabelingParams.getDlsDatasetLabels(),
-                                    analyzeImageResult.getImageObjects());
+                                    analyzeImageResult.getImageObjects(),
+                                    assistedLabelingParams.getConfidenceThreshold());
                     if (!entities.isEmpty()) {
                         createAnnotationDetails.add(
                                 new CreateAnnotationDetails(
@@ -176,7 +178,7 @@ public class MlAssistedObjectDetection implements AssistedLabelingStrategy {
         return createAnnotationDetails;
     }
 
-    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<ImageObject> imageObjects) {
+    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<ImageObject> imageObjects, float confidenceThreshold) {
         List<Entity> imageObjectSelectionEntities = new ArrayList<>();
         for (ImageObject imageObject : imageObjects) {
             List<NormalizedVertex> normalizedVertices = new ArrayList<>();
@@ -195,10 +197,9 @@ public class MlAssistedObjectDetection implements AssistedLabelingStrategy {
 
             BoundingPolygon boundingPolygon = new BoundingPolygon(normalizedVertices);
             List<Label> labels = new ArrayList<>();
-            float confidenceScoreThreshold = 0.6F;
             // TODO - handle case insensitive labels
             if (dlsLabels.contains(imageObject.getName())
-                    && imageObject.getConfidence() >= confidenceScoreThreshold) {
+                    && imageObject.getConfidence() >= confidenceThreshold) {
                 labels.add(
                         Label.builder()
                                 .label(imageObject.getName())

@@ -13,9 +13,11 @@ import com.oracle.bmc.datalabelingservicedataplane.model.Label;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.bmc.datalabelingservicedataplane.requests.GetRecordContentRequest;
 import com.oracle.bmc.datalabelingservicedataplane.responses.GetRecordContentResponse;
+import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -69,9 +71,8 @@ public class MlAssistedTextClassification implements AssistedLabelingStrategy {
                             .getDocuments()) {
                 List<Entity> entities =
                         mapToDLSEntities(
-                                assistedLabelingParams.getDlsDatasetLabels(), document.getTextClassification(), assistedLabelingParams.getAnnotationFormat());
+                                assistedLabelingParams.getDlsDatasetLabels(), document.getTextClassification(), assistedLabelingParams.getConfidenceThreshold());
                 if (!entities.isEmpty()) {
-                    // TODO - compartment ID
                     createAnnotationDetails.add(
                             new CreateAnnotationDetails(
                                     document.getKey(),
@@ -88,32 +89,22 @@ public class MlAssistedTextClassification implements AssistedLabelingStrategy {
         }
     }
 
-    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<TextClassification> entities, String annotationFormat) {
+    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<TextClassification> textClassifications, float confidenceThreshold) {
         List<Entity> entityList = new ArrayList<>();
-        for (TextClassification entity : entities) {
-            float confidenceScoreThreshold = 0.1F;
-            List<Label> languageLabels = new ArrayList<>();
-            if (dlsLabels.contains(entity.getLabel())
-                    && entity.getScore() >= confidenceScoreThreshold) {
+        List<Label> languageLabels = new ArrayList<>();
+        TextClassification textClassification;
+        if(!textClassifications.isEmpty()) {
+            textClassification = textClassifications.get(0);
+            if (dlsLabels.contains(textClassification.getLabel())
+                    && textClassification.getScore() >= confidenceThreshold) {
                 languageLabels.add(
                         Label.builder()
-                                .label(entity.getLabel())
+                                .label(textClassification.getLabel())
                                 .build());
-                Entity genericEntity = null;
-                if(annotationFormat.equalsIgnoreCase("SINGLE_LABEL")){
-                    if(!languageLabels.isEmpty()) {
-                        genericEntity =
-                                GenericEntity.builder()
-                                        .labels(Collections.singletonList(languageLabels.get(0)))
-                                        .build();
-                    }
-                }
-                else if(annotationFormat.equalsIgnoreCase("MULTI_LABEL")){
-                    genericEntity =
-                            GenericEntity.builder()
-                                    .labels(Collections.singletonList(languageLabels.get(0)))
-                                    .build();
-                }
+                Entity genericEntity =
+                        GenericEntity.builder()
+                                .labels(languageLabels)
+                                .build();
                 entityList.add(genericEntity);
             }
         }

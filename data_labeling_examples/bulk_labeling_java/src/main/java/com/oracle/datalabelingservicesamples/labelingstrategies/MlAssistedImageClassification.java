@@ -23,10 +23,12 @@ import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
+import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import com.oracle.datalabelingservicesamples.requests.ObjectDetails;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -48,7 +50,7 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
         List<ImageFeature> imageJobFeatureList = new ArrayList<>();
         imageJobFeatureList.add(
                 ImageClassificationFeature.builder()
-                        .maxResults(10)
+                        .maxResults(5)
                         .modelId(assistedLabelingParams.getCustomModelId())
                         .build());
 
@@ -156,7 +158,8 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
                             mapToDLSEntities(
                                     assistedLabelingParams.getDlsDatasetLabels(),
                                     analyzeImageResult.getLabels(),
-                                    assistedLabelingParams.getAnnotationFormat());
+                                    assistedLabelingParams.getAnnotationFormat(),
+                                    assistedLabelingParams.getConfidenceThreshold());
                     if (!entities.isEmpty()) {
                         createAnnotationDetails.add(
                                 new CreateAnnotationDetails(
@@ -174,37 +177,37 @@ public class MlAssistedImageClassification implements AssistedLabelingStrategy {
         }return createAnnotationDetails;
     }
 
-    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<com.oracle.bmc.aivision.model.Label> visionLabels, String annotationFormat) {
+    public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<com.oracle.bmc.aivision.model.Label> visionLabels,
+                                         String annotationFormat, float confidenceThreshold) {
         List<Entity> imageClassificationEntities = new ArrayList<>();
+        List<Label> labels = new ArrayList<>();
         for (com.oracle.bmc.aivision.model.Label visionLabel : visionLabels) {
             log.info("label from vision {}", visionLabel.getName());
 
-            List<Label> labels = new ArrayList<>();
-            float confidenceScoreThreshold = 0.1F;
             if (dlsLabels.contains(visionLabel.getName())
-                    && visionLabel.getConfidence() >= confidenceScoreThreshold) {
+                    && visionLabel.getConfidence() >= confidenceThreshold) {
                 labels.add(
                         Label.builder()
                                 .label(visionLabel.getName())
                                 .build());
-                GenericEntity imageClassificationEntity = null;
-                if(annotationFormat.equalsIgnoreCase("SINGLE_LABEL")){
-                    if(!labels.isEmpty()) {
-                        imageClassificationEntity =
-                                GenericEntity.builder()
-                                        .labels(Collections.singletonList(labels.get(0)))
-                                        .build();
-                    }
-                }
-                else if(annotationFormat.equalsIgnoreCase("MULTI_LABEL")){
-                    imageClassificationEntity =
-                            GenericEntity.builder()
-                                    .labels(labels)
-                                    .build();
-                }
-                imageClassificationEntities.add(imageClassificationEntity);
             }
         }
+        GenericEntity imageClassificationEntity = null;
+        if(annotationFormat.equalsIgnoreCase("SINGLE_LABEL")){
+            if(!labels.isEmpty()) {
+                imageClassificationEntity =
+                        GenericEntity.builder()
+                                .labels(Collections.singletonList(labels.get(0)))
+                                .build();
+            }
+        }
+        else if(annotationFormat.equalsIgnoreCase("MULTI_LABEL")){
+            imageClassificationEntity =
+                    GenericEntity.builder()
+                            .labels(labels)
+                            .build();
+        }
+        imageClassificationEntities.add(imageClassificationEntity);
         return imageClassificationEntities;
     }
 

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -15,8 +13,10 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import com.oracle.bmc.datalabelingservice.model.Dataset;
+import com.oracle.bmc.datalabelingservice.model.ImageDatasetFormatDetails;
 import com.oracle.bmc.datalabelingservice.model.Label;
 import com.oracle.bmc.datalabelingservice.model.ObjectStorageSourceDetails;
+import com.oracle.bmc.datalabelingservice.model.TextDatasetFormatDetails;
 import com.oracle.bmc.datalabelingservice.requests.GetDatasetRequest;
 import com.oracle.bmc.datalabelingservice.responses.GetDatasetResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.Annotation;
@@ -32,13 +32,15 @@ import com.oracle.datalabelingservicesamples.tasks.TaskHandler;
 import com.oracle.datalabelingservicesamples.tasks.TaskProvider;
 import com.oracle.datalabelingservicesamples.utils.DataPlaneAPIWrapper;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
+import static java.lang.Float.parseFloat;
 
 /*
  *
@@ -54,10 +56,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  *
  * Following code constraints are added:
- * 	1. At max 3 distinct path is accepted
- *	2. No nested path is allowed. Only top-level path is considered.
- *	 In case the user wants nested folder support, he/she can place the nested folder at top level to use this API.
- * 	3. The API only annotates unlabeled records. Labels that are already annotated will be skipped.
+ * 	1. The API only annotates unlabeled records. Labels that are already annotated will be skipped.
  *
  */
 @Slf4j
@@ -66,7 +65,7 @@ public class BulkAssistedLabelingScript {
     static ExecutorService executorService;
     static ExecutorService annotationExecutorService;
     static Dataset dataset;
-    private static AssistedLabelingParams assistedLabelingParams  = new AssistedLabelingParams();
+    private static AssistedLabelingParams assistedLabelingParams;
     private static final TaskHandler taskHandler = new TaskHandler(new TaskProvider());
     private static final DataPlaneAPIWrapper dataPlaneAPIWrapper = new DataPlaneAPIWrapper();
     private static AssistedLabelingStrategy assistedLabelingStrategy = null;
@@ -84,28 +83,10 @@ public class BulkAssistedLabelingScript {
         preprocessAssistedLabelingRequest(datasetId);
         DataPlaneAPIWrapper dpAPIWrapper = new DataPlaneAPIWrapper();
 
-//        Initialize parameters required for bulk assisted labeling
-        assistedLabelingParams.setAssistedLabelingTimeout(DataLabelingConstants.ASSISTED_LABELING_TIMEOUT);
-        assistedLabelingParams.setCompartmentId(Config.INSTANCE.getCompartmentId());
+        // Initialize parameters required for bulk assisted labeling
+        float confidenceScore = parseFloat(Config.INSTANCE.getConfidenceThreshold());
 
-        assistedLabelingParams.setAnnotationFormat(dataset.getAnnotationFormat());
         ObjectStorageSourceDetails sourceDetails = (ObjectStorageSourceDetails) dataset.getDatasetSourceDetails();
-
-        assistedLabelingParams.setCustomerBucket(BucketDetails.builder()
-                .bucketName(sourceDetails.getBucket())
-                .namespace(sourceDetails.getNamespace())
-                .prefix(sourceDetails.getPrefix())
-                .region(Config.INSTANCE.getRegion())
-                .build());
-        assistedLabelingParams.setMlModelType(Config.INSTANCE.getMlModelType());
-        switch (Config.INSTANCE.getMlModelType()) {
-            case "CUSTOM":
-                assistedLabelingParams.setCustomModelId(Config.INSTANCE.getCustomModelId());
-                break;
-            case "PRETRAINED":
-                assistedLabelingParams.setCustomModelId(null);
-                break;
-        }
 
         List<String> dlsDatasetLabels = new ArrayList<>();
         try {
@@ -114,11 +95,26 @@ public class BulkAssistedLabelingScript {
                             LabelName -> {
                                 dlsDatasetLabels.add(LabelName.getName());
                             });
-            assistedLabelingParams.setDlsDatasetLabels(dlsDatasetLabels);
         } catch (Exception e) {
             log.error("Exception in getting labels from dataset {}", datasetId);
             return;
         }
+
+        assistedLabelingParams = AssistedLabelingParams.builder()
+                .compartmentId(dataset.getCompartmentId())
+                .annotationFormat(dataset.getAnnotationFormat())
+                .assistedLabelingTimeout(DataLabelingConstants.ASSISTED_LABELING_TIMEOUT)
+                .mlModelType(Config.INSTANCE.getMlModelType())
+                .customModelId(Config.INSTANCE.getMlModelType().equals("CUSTOM") ? Config.INSTANCE.getCustomModelId() : null)
+                .confidenceThreshold(confidenceScore)
+                .dlsDatasetLabels(dlsDatasetLabels)
+                .customerBucket(BucketDetails.builder()
+                        .bucketName(sourceDetails.getBucket())
+                        .namespace(sourceDetails.getNamespace())
+                        .prefix(sourceDetails.getPrefix())
+                        .region(Config.INSTANCE.getRegion())
+                        .build())
+                .build();
 
         log.info("Starting Assisted Labeling for dataset: {}", dataset.getDisplayName());
 
@@ -160,7 +156,7 @@ public class BulkAssistedLabelingScript {
             annotationExecutorService.shutdown();
             log.info("Time Taken for datasetId {}", datasetId);
             log.info("Successfully Annotated {} record Ids", successRecordIds.size());
-            log.info("Failed record Ids {}", failedRecordIds);
+            log.info("Create annotation failed for record Ids {}", failedRecordIds);
             long elapsedTime = System.nanoTime() - startTime;
             log.info("Time Taken for datasetId {} is {} seconds", datasetId, elapsedTime / 1_000_000_000);
         } catch (Exception e) {
@@ -218,14 +214,18 @@ public class BulkAssistedLabelingScript {
                             "Assisted labels for {} created successfully. Record Id :{}",
                             annotation.getRecordId(),
                             annotation.getId());
+                    successRecordIds.add(annotation.getRecordId());
                 },
                 exception -> {
+                    if(exception.getMessage().contains("recordId")){
+                        failedRecordIds.add(StringUtils.substringAfter(exception.getMessage(), "recordId: "));
+                    }
+
                     // TODO - Changes required here
                     //                    if (exception.getCause() instanceof BmcException) {
                     //                        BmcException bmcException = (BmcException)
                 },
                 assistedLabelingParams.getAssistedLabelingTimeout());
-
     }
 
     private static void preprocessAssistedLabelingRequest(String datasetId) {
@@ -265,25 +265,35 @@ public class BulkAssistedLabelingScript {
             log.error("Invalid algorithm for ML assisted labeling");
             throw new InvalidParameterException("Invalid algorithm for ML assisted labeling");
         }
-        if(dataset.getDatasetFormatDetails().equals("IMAGE")&&
-                    (dataset.getAnnotationFormat().equals("SINGLE_LABEL")||dataset.getAnnotationFormat().equals("MULTI_LABEL"))){
-            assistedLabelingStrategy = new MlAssistedImageClassification();
+
+
+
+        if(dataset.getDatasetFormatDetails() instanceof ImageDatasetFormatDetails) {
+            if (dataset.getAnnotationFormat().equals("SINGLE_LABEL") || dataset.getAnnotationFormat().equals("MULTI_LABEL")) {
+                assistedLabelingStrategy = new MlAssistedImageClassification();
+            } else if (dataset.getAnnotationFormat().equals("OBJECT_DETECTION")) {
+                assistedLabelingStrategy = new MlAssistedObjectDetection();
+            }
+            else{
+                log.error("Invalid annotation format for ML assisted labeling");
+                throw new InvalidParameterException("Invalid annotation format for ML assisted labeling");
+            }
         }
-        else if(dataset.getDatasetFormatDetails().equals("IMAGE")&&
-                (dataset.getAnnotationFormat().equals("OBJECT_DETECTION"))){
-            assistedLabelingStrategy = new MlAssistedObjectDetection();
-        }
-        else if(dataset.getDatasetFormatDetails().equals("TEXT")&&
-                (dataset.getAnnotationFormat().equals("SINGLE_LABEL")||dataset.getAnnotationFormat().equals("MULTI_LABEL"))){
-            assistedLabelingStrategy = new MlAssistedTextClassification();
-        }
-        else if(dataset.getDatasetFormatDetails().equals("TEXT")&&
-                (dataset.getAnnotationFormat().equals("ENTITY_EXTRACTION"))){
-            assistedLabelingStrategy = new MlAssistedEntityExtraction();
+        else if(dataset.getDatasetFormatDetails() instanceof TextDatasetFormatDetails){
+            if(dataset.getAnnotationFormat().equals("SINGLE_LABEL")||dataset.getAnnotationFormat().equals("MULTI_LABEL")) {
+                assistedLabelingStrategy = new MlAssistedTextClassification();
+            }
+            else if(dataset.getAnnotationFormat().equals("ENTITY_EXTRACTION")){
+                assistedLabelingStrategy = new MlAssistedEntityExtraction();
+            }
+            else{
+                log.error("Invalid annotation format for ML assisted labeling");
+                throw new InvalidParameterException("Invalid annotation format for ML assisted labeling");
+            }
         }
         else{
-            log.error("Invalid dataset format for ML assisted labeling");
-            throw new InvalidParameterException("Invalid dataset format for ML assisted labeling");
+            log.error("Invalid dataset format type for ML assisted labeling");
+            throw new InvalidParameterException("Invalid dataset format type for ML assisted labeling");
         }
     }
 }

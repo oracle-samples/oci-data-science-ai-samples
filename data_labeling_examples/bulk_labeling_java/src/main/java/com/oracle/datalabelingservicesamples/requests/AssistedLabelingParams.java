@@ -27,4 +27,5 @@ public class AssistedLabelingParams {
     private BucketDetails customerBucket;
     private int assistedLabelingTimeout;
     private String annotationFormat;
+    private float confidenceThreshold;
 }

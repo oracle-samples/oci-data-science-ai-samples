@@ -49,6 +49,7 @@ public enum Config {
 	private String compartmentId;
 	private String customModelId;
 	private String mlModelType;
+	private String confidenceThreshold;
 
 	private List<String> labels;
 	private Map<String, List<String>> customLabels;
@@ -93,6 +94,9 @@ public enum Config {
 			labelingAlgorithm = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.LABELING_ALGORITHM))
 					? config.getProperty(DataLabelingConstants.LABELING_ALGORITHM)
 					: System.getProperty(DataLabelingConstants.LABELING_ALGORITHM);
+			confidenceThreshold = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.PREDICTION_CONFIDENCE_THRESHOLD))
+					? config.getProperty(DataLabelingConstants.PREDICTION_CONFIDENCE_THRESHOLD)
+					: System.getProperty(DataLabelingConstants.PREDICTION_CONFIDENCE_THRESHOLD);
 			String threadConfig = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.THREAD_COUNT))
 					? config.getProperty(DataLabelingConstants.THREAD_COUNT)
 					: System.getProperty(DataLabelingConstants.THREAD_COUNT);
@@ -110,6 +114,9 @@ public enum Config {
 			ExceptionUtils.wrapAndThrow(ex);
 		}
 	}
+
+	/* Initialise labeling strategy only for rule based algorithms. ML based algorithms are initialised automatically
+	based on the dataset format type */
 
 	private void initializeLabelingStrategy() {
 		switch (labelingAlgorithm) {
