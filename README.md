@@ -17,8 +17,8 @@ The Oracle Cloud Infrastructure (OCI) Data Science service has created this repo
 
 Check out the following resources for more information about the OCI Data Science and AI services:
 
-* [ADS class documentation](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/modules.html)
-* [ADS user guide](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html)
+* [ADS class documentation](https://accelerated-data-science.readthedocs.io/en/latest/modules.html)
+* [ADS user guide](https://accelerated-data-science.readthedocs.io/en/latest/index.html)
 * [AI & Data Science blog](https://blogs.oracle.com/ai-and-datascience/)
 * [OCI Data Science service guide](https://docs.oracle.com/en-us/iaas/data-science/using/data-science.htm)
 * [OCI Data Science service release notes](https://docs.cloud.oracle.com/en-us/iaas/releasenotes/services/data-science/)
