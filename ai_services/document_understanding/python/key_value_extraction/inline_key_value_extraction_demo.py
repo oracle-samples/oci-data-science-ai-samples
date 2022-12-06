@@ -34,7 +34,7 @@ CONFIG_PROFILE = "DEFAULT"
 config = oci.config.from_file('~/.oci/config', CONFIG_PROFILE)
 
 # Compartment where processor job will be created (required)
-COMPARTMENT_ID = "<enter-your-compartment-ocid-here"  # e.g. "ocid1.compartment.oc1..aaaaaaaae5j73axsja5fnahbn23ilop3ynjkcg77mcvgryddz4pkh2t5ppaq";
+COMPARTMENT_ID = "<enter-your-compartment-ocid-here>"  # e.g. "ocid1.compartment.oc1..aaaaaaaae5j73axsja5fnahbn23ilop3ynjkcg77mcvgryddz4pkh2t5ppaq";
 
 #sample document
 key_value_extraction_sample_string = None
@@ -51,7 +51,7 @@ key_value_extraction_feature = oci.ai_document.models.DocumentKeyValueExtraction
 
 # Setup the output location where processor job results will be created
 output_location = oci.ai_document.models.OutputLocation()
-output_location.namespace_name = "<enter-your-objectstorage-namespsace-here>"  # e.g. "axk2tfhlrens"
+output_location.namespace_name = "<enter-your-objectstorage-namespace-here>"  # e.g. "axk2tfhlrens"
 output_location.bucket_name = "<enter-your-bucket-name-here>"  # e.g "output"
 output_location.prefix = "<enter-your-prefix-here>"  # e.g "demo"
 
