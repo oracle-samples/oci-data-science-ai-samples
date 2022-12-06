@@ -56,7 +56,7 @@ output_location.bucket_name = "<enter-your-bucket-name-here>"  # e.g "output"
 output_location.prefix = "<enter-your-prefix-here>"  # e.g "demo"
 
 # Create a processor_job for invoice key_value_extraction feature. 
-# Note: If you want to use another key value extraction feature, set document_type to "RECIEPT" "PASSPORT" or "DRIVER_ID". If you have a mix of document types, you can remove document_type
+# Note: If you want to use another key value extraction feature, set document_type to "RECEIPT" "PASSPORT" or "DRIVER_ID". If you have a mix of document types, you can remove document_type
 create_processor_job_details_key_value_extraction = oci.ai_document.models.CreateProcessorJobDetails(
                                                     display_name=str(uuid.uuid4()),
                                                     compartment_id=COMPARTMENT_ID,
