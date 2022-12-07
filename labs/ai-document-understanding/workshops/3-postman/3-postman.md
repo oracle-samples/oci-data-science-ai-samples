@@ -18,8 +18,10 @@ We have put together a Postman Collection to help you get started with calling t
 2. Use this [link](https://www.postman.com/oracledevs/workspace/oracle-cloud-infrastructure-rest-apis/overview) to download the **Document Understanding API Collection**. The link opens Postman on the web. Select **Collections** on the left side of the screen. Hover over *Document Understanding Service API* and click the 3 dots to open the popup menu. Select **Export** to export the collection file and save it to your local computer.
   ![](./images/documentcollection.png)
 
-3. Use this [link](https://www.postman.com/oracledevs/workspace/oracle-cloud-infrastructure-rest-apis/environment/29850-eab82db8-e9a1-4200-9f39-de10b4a0f371) to download the **OCI Credentials Environment**. The link opens Postman on the web. Select **Environmments** on the left side of the screen then select **OCI Credentials**. One the right side of the screen find the 3 dots and click it to open a popup menu. On the menu click **Export** to export the credentials file and save it to your local computer.
   ![](./images/postman-exportoci.png)
+
+3. Use this [link](https://www.postman.com/oracledevs/workspace/oracle-cloud-infrastructure-rest-apis/environment/29850-eab82db8-e9a1-4200-9f39-de10b4a0f371) to download the **OCI Credentials Environment**. The link opens Postman on the web. Select **Environmments** on the left side of the screen then select **OCI Credentials**. One the right side of the screen find the 3 dots and click it to open a popup menu. On the menu click **Export** to export the credentials file and save it to your local computer.
+  ![](./images/postman-exportoci-credentials.png)
 
 ## **TASK 2:** Set up your OCI credentials
 
@@ -172,9 +174,9 @@ The information in the table is found here: https://docs.oracle.com/en-us/iaas/C
 
 1. Import the Document Understanding API Collection file (**DocumentUnderstanding API.postman_collection.json**) into Postman running on your local machine by selecting **Collections** on the left side of the  screen then clicking the **Import** button at the top.
 
-  ![](./images/postman-import.png)
+  ![](./images/postman-importoci.png)
 
-2. In the *Import* dialog, click the **Upload Files** button and select the json file you exported in the previous step (**DocumentUnderstanding API.postman_collection.json**).
+2. In the *Import* dialog, click the **Upload Files** button and select the json file you exported in Task 1 (**DocumentUnderstanding API.postman_collection.json**).
 
 ## **TASK 4:** Invoke the Processor Job REST API
 
@@ -208,7 +210,7 @@ In this task you'll call the Processor Job REST API.
       }
     ]
   },
-  "compartmentId": "ocid1.compartment.oc1..aaaaaaaaxuv2vdvqhjesjfy5ve26m3lk6okhkz7khu4iaqytetc72jwg6kdq",
+  "compartmentId": {{compartmentId}}
   "outputLocation": {
     "namespaceName": ##todo
     "bucketName": ##todo
