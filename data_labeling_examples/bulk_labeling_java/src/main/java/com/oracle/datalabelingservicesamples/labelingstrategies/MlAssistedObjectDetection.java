@@ -26,7 +26,6 @@ import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
-import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.requests.Config;
@@ -40,12 +39,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class MlAssistedObjectDetection implements AssistedLabelingStrategy {
-    @Override
-    public List<String> getLabel(RecordSummary record) {
-        return null;
-    }
-
+public class MlAssistedObjectDetection implements MlAssistedLabelingStrategy {
     @Override
     public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, AssistedLabelingParams assistedLabelingParams) throws Exception {
 

@@ -20,6 +20,8 @@ public class DataLabelingConstants {
 	public static final String CUSTOM_LABELS="CUSTOM_LABELS";
 	public static final String FIRST_MATCH_REGEX_PATTERN = "FIRST_MATCH_REGEX_PATTERN";
 	public static final String CONFIDENCE_THRESHOLD = "CONFIDENCE_THRESHOLD";
+	public static final String CUSTOM_TRAINING_ENABLED = "CUSTOM_TRAINING_ENABLED";
+	public static final String MODEL_TRAINING_PROJECT_ID = "MODEL_TRAINING_PROJECT_ID";
 	public static final float DEFAULT_CONFIDENCE_THRESHOLD = 0.7F;
 	public static final int ASSISTED_LABELING_TIMEOUT = 3000; // Timeout in seconds
 }

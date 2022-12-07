@@ -1,10 +1,12 @@
 package com.oracle.datalabelingservicesamples.labelingstrategies;
 
 import com.oracle.bmc.ailanguage.model.BatchDetectLanguageEntitiesDetails;
-import com.oracle.bmc.ailanguage.model.EntityDocument;
+import com.oracle.bmc.ailanguage.model.CreateEndpointDetails;
 import com.oracle.bmc.ailanguage.model.EntityDocumentResult;
 import com.oracle.bmc.ailanguage.model.HierarchicalEntity;
+import com.oracle.bmc.ailanguage.model.TextDocument;
 import com.oracle.bmc.ailanguage.requests.BatchDetectLanguageEntitiesRequest;
+import com.oracle.bmc.ailanguage.requests.CreateEndpointRequest;
 import com.oracle.bmc.ailanguage.responses.BatchDetectLanguageEntitiesResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.Entity;
@@ -25,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class MlAssistedEntityExtraction implements AssistedLabelingStrategy {
+public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
 
     @Override
     public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, AssistedLabelingParams assistedLabelingParams) {
-        List<EntityDocument> documentList = new ArrayList<>();
+        List<TextDocument> documentList = new ArrayList<>();
         for (RecordSummary recordSummary : recordSummaries) {
             GetRecordContentRequest recordContentRequest =
                     GetRecordContentRequest.builder().recordId(recordSummary.getId()).build();
@@ -43,13 +45,38 @@ public class MlAssistedEntityExtraction implements AssistedLabelingStrategy {
                 e.printStackTrace();
             }
             documentList.add(
-                    EntityDocument.builder()
+                    TextDocument.builder()
                             .key(recordSummary.getId())
                             .text(documentText)
                             .build());
         }
+
+        if(assistedLabelingParams.getMlModelType().equals("CUSTOM")) {
+            CreateEndpointDetails createEndpointDetails = CreateEndpointDetails.builder()
+                    .compartmentId(assistedLabelingParams.getCompartmentId())
+                    .description("Endpoint for model Id : " + assistedLabelingParams.getCustomModelId())
+                    .modelId(assistedLabelingParams.getCustomModelId())
+                    .build();
+
+            CreateEndpointRequest createEndpointRequest =
+                    CreateEndpointRequest.builder()
+                            .createEndpointDetails(createEndpointDetails)
+                            .build();
+
+            try {
+                /* Send request to the Client */
+                assistedLabelingParams.setCustomModelEndpoint(Config.INSTANCE.getAiLanguageClient().createEndpoint(createEndpointRequest).getEndpoint().getId());
+            } catch (Exception ex) {
+                log.error("Error in creating an endpoint for custom model Id provided - {}", ex.getMessage());
+                throw ex;
+            }
+        }
+
         BatchDetectLanguageEntitiesDetails languageEntitiesDetails =
-                BatchDetectLanguageEntitiesDetails.builder().documents(documentList).build();
+                BatchDetectLanguageEntitiesDetails.builder()
+                        .documents(documentList)
+                        .endpointId(assistedLabelingParams.getCustomModelEndpoint())
+                        .build();
 
         BatchDetectLanguageEntitiesRequest languageEntitiesRequest =
                 BatchDetectLanguageEntitiesRequest.builder()
@@ -113,10 +140,5 @@ public class MlAssistedEntityExtraction implements AssistedLabelingStrategy {
             }
         }
         return entityList;
-    }
-
-    @Override
-    public List<String> getLabel(RecordSummary record) {
-        return null;
     }
 }

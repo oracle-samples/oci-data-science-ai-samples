@@ -11,6 +11,7 @@ import com.oracle.bmc.ailanguage.AIServiceLanguageClient;
 import com.oracle.bmc.aivision.AIServiceVisionClient;
 import com.oracle.bmc.datalabelingservice.DataLabelingManagementClient;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
+import com.oracle.datalabelingservicesamples.modelTraining.ModelTrainingWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -24,7 +25,7 @@ import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.labelingstrategies.CustomLabelMatch;
 import com.oracle.datalabelingservicesamples.labelingstrategies.FirstLetterMatch;
 import com.oracle.datalabelingservicesamples.labelingstrategies.FirstRegexMatch;
-import com.oracle.datalabelingservicesamples.labelingstrategies.LabelingStrategy;
+import com.oracle.datalabelingservicesamples.labelingstrategies.RuleBasedLabelingStrategy;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -51,11 +52,12 @@ public enum Config {
 	private String mlModelType;
 	private String confidenceThreshold;
 	private String customTrainingEnabled;
+	private String modelTrainingProjectId;
 
 	private List<String> labels;
 	private Map<String, List<String>> customLabels;
 	private String labelingAlgorithm;
-	private LabelingStrategy labelingStrategy;
+	private RuleBasedLabelingStrategy ruleBasedLabelingStrategy;
 	private String regexPattern;
 	private Pattern pattern;
 	private int threadCount;
@@ -98,6 +100,12 @@ public enum Config {
 			confidenceThreshold = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIDENCE_THRESHOLD))
 					? config.getProperty(DataLabelingConstants.CONFIDENCE_THRESHOLD)
 					: System.getProperty(DataLabelingConstants.CONFIDENCE_THRESHOLD);
+			modelTrainingProjectId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.MODEL_TRAINING_PROJECT_ID))
+					? config.getProperty(DataLabelingConstants.MODEL_TRAINING_PROJECT_ID)
+					: System.getProperty(DataLabelingConstants.MODEL_TRAINING_PROJECT_ID);
+			customTrainingEnabled = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CUSTOM_TRAINING_ENABLED))
+					? config.getProperty(DataLabelingConstants.CUSTOM_TRAINING_ENABLED)
+					: System.getProperty(DataLabelingConstants.CUSTOM_TRAINING_ENABLED);
 			String threadConfig = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.THREAD_COUNT))
 					? config.getProperty(DataLabelingConstants.THREAD_COUNT)
 					: System.getProperty(DataLabelingConstants.THREAD_COUNT);
@@ -122,15 +130,15 @@ public enum Config {
 	private void initializeLabelingStrategy() {
 		switch (labelingAlgorithm) {
 		case "FIRST_LETTER_MATCH":
-			labelingStrategy = new FirstLetterMatch();
+			ruleBasedLabelingStrategy = new FirstLetterMatch();
 			break;
 
 		case "FIRST_REGEX_MATCH":
-			labelingStrategy = new FirstRegexMatch();
+			ruleBasedLabelingStrategy = new FirstRegexMatch();
 			break;
 
 		case "CUSTOM_LABELS_MATCH":
-			labelingStrategy = new CustomLabelMatch();
+			ruleBasedLabelingStrategy = new CustomLabelMatch();
 			break;
 		}
 	}

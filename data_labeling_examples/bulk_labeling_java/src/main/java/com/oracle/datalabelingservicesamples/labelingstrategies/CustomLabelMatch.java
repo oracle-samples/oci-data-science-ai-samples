@@ -7,7 +7,7 @@ import java.util.Set;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
-public class CustomLabelMatch implements LabelingStrategy{
+public class CustomLabelMatch implements RuleBasedLabelingStrategy {
 
 	@Override
 	public List<String> getLabel(RecordSummary record) {

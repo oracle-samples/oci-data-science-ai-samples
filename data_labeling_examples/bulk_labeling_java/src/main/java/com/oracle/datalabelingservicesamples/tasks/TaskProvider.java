@@ -2,7 +2,7 @@ package com.oracle.datalabelingservicesamples.tasks;
 
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
-import com.oracle.datalabelingservicesamples.labelingstrategies.AssistedLabelingStrategy;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedLabelingStrategy;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.utils.DataPlaneAPIWrapper;
 
@@ -18,11 +18,11 @@ public class TaskProvider {
     }
 
     public CreateBulkAnalyzeTask provideAssistedLabellingTask(
-            AssistedLabelingStrategy assistedLabelingStrategy,
+            MlAssistedLabelingStrategy mlAssistedLabelingStrategy,
             List<RecordSummary> recordSummaries,
             AssistedLabelingParams assistedLabelingParams) {
         return new CreateBulkAnalyzeTask(
-                assistedLabelingStrategy,
+                mlAssistedLabelingStrategy,
                 recordSummaries,
                 assistedLabelingParams);
     }

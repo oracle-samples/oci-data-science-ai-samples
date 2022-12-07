@@ -1,10 +1,12 @@
 package com.oracle.datalabelingservicesamples.labelingstrategies;
 
 import com.oracle.bmc.ailanguage.model.BatchDetectLanguageTextClassificationDetails;
+import com.oracle.bmc.ailanguage.model.CreateEndpointDetails;
 import com.oracle.bmc.ailanguage.model.TextClassification;
-import com.oracle.bmc.ailanguage.model.TextClassificationDocument;
 import com.oracle.bmc.ailanguage.model.TextClassificationDocumentResult;
+import com.oracle.bmc.ailanguage.model.TextDocument;
 import com.oracle.bmc.ailanguage.requests.BatchDetectLanguageTextClassificationRequest;
+import com.oracle.bmc.ailanguage.requests.CreateEndpointRequest;
 import com.oracle.bmc.ailanguage.responses.BatchDetectLanguageTextClassificationResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.Entity;
@@ -13,24 +15,21 @@ import com.oracle.bmc.datalabelingservicedataplane.model.Label;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.bmc.datalabelingservicedataplane.requests.GetRecordContentRequest;
 import com.oracle.bmc.datalabelingservicedataplane.responses.GetRecordContentResponse;
-import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-public class MlAssistedTextClassification implements AssistedLabelingStrategy {
+public class MlAssistedTextClassification implements MlAssistedLabelingStrategy {
 
     @Override
     public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, AssistedLabelingParams assistedLabelingParams) {
-        List<TextClassificationDocument> documentList = new ArrayList<>();
+        List<TextDocument> documentList = new ArrayList<>();
         for (RecordSummary recordSummary : recordSummaries) {
             GetRecordContentRequest recordContentRequest =
                     GetRecordContentRequest.builder().recordId(recordSummary.getId()).build();
@@ -44,13 +43,37 @@ public class MlAssistedTextClassification implements AssistedLabelingStrategy {
                 e.printStackTrace();
             }
             documentList.add(
-                    TextClassificationDocument.builder()
+                    TextDocument.builder()
                             .key(recordSummary.getId())
                             .text(documentText)
                             .build());
         }
+
+        if(assistedLabelingParams.getMlModelType().equals("CUSTOM")) {
+            CreateEndpointDetails createEndpointDetails = CreateEndpointDetails.builder()
+                    .compartmentId(assistedLabelingParams.getCompartmentId())
+                    .description("Endpoint for model Id : " + assistedLabelingParams.getCustomModelId())
+                    .modelId(assistedLabelingParams.getCustomModelId())
+                    .build();
+
+            CreateEndpointRequest createEndpointRequest =
+                    CreateEndpointRequest.builder()
+                            .createEndpointDetails(createEndpointDetails)
+                            .build();
+
+            try {
+                /* Send request to the Client */
+                assistedLabelingParams.setCustomModelEndpoint(Config.INSTANCE.getAiLanguageClient().createEndpoint(createEndpointRequest).getEndpoint().getId());
+            } catch (Exception ex) {
+                log.error("Error in creating an endpoint for custom model Id provided - {}", ex.getMessage());
+                throw ex;
+            }
+        }
+
         BatchDetectLanguageTextClassificationDetails textClassificationDetails =
-                BatchDetectLanguageTextClassificationDetails.builder().documents(documentList).build();
+                BatchDetectLanguageTextClassificationDetails.builder()
+                        .endpointId(assistedLabelingParams.getCustomModelEndpoint())
+                        .documents(documentList).build();
 
         BatchDetectLanguageTextClassificationRequest textClassificationRequest =
                 BatchDetectLanguageTextClassificationRequest.builder()
@@ -109,10 +132,5 @@ public class MlAssistedTextClassification implements AssistedLabelingStrategy {
             }
         }
         return entityList;
-    }
-
-    @Override
-    public List<String> getLabel(RecordSummary record) {
-        return null;
     }
 }

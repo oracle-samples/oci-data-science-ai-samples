@@ -6,7 +6,7 @@ import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 
 import java.util.List;
 
-public interface AssistedLabelingStrategy extends LabelingStrategy{
+public interface MlAssistedLabelingStrategy {
 	String OUTPUT_LOCATION_PREFIX = "AssitedLabellingOutput";
 	public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> records, AssistedLabelingParams assistedLabelingParams) throws Exception;
 }

@@ -72,7 +72,7 @@ public class SingleLabelDatasetBulkLabelingScript {
 			if (response.getRecordCollection().getItems().size() > 0) {
 				List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
 				for (RecordSummary record : response.getRecordCollection().getItems()) {
-					List<String> label = Config.INSTANCE.getLabelingStrategy().getLabel(record);
+					List<String> label = Config.INSTANCE.getRuleBasedLabelingStrategy().getLabel(record);
 					if (null != label) {
 						CompletableFuture<Void> future = CompletableFuture
 								.runAsync(() -> processAnnotationForRecord(record, label), executorService);

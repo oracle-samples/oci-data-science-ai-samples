@@ -3,7 +3,7 @@ package com.oracle.datalabelingservicesamples.tasks;
 import com.oracle.bmc.datalabelingservicedataplane.model.Annotation;
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
-import com.oracle.datalabelingservicesamples.labelingstrategies.AssistedLabelingStrategy;
+import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedLabelingStrategy;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.utils.DataPlaneAPIWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +79,7 @@ public class TaskHandler {
     public List<Future<List<CreateAnnotationDetails>>> getAssistedLabelTasks(
             List<List<RecordSummary>> assistedLabellingRequests,
             AssistedLabelingParams assistedLabelingParams,
-            AssistedLabelingStrategy assistedLabelingStrategy,
+            MlAssistedLabelingStrategy mlAssistedLabelingStrategy,
             ExecutorService executorService) {
         return assistedLabellingRequests.stream()
                 .map(
@@ -87,7 +87,7 @@ public class TaskHandler {
                                 executorService.submit(
                                         mdcWrap(
                                                 taskProvider.provideAssistedLabellingTask(
-                                                        assistedLabelingStrategy,
+                                                        mlAssistedLabelingStrategy,
                                                         recordSummaries,
                                                         assistedLabelingParams))))
                 .collect(Collectors.toList());
