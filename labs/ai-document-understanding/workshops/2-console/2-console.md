@@ -9,10 +9,11 @@ In this lab, we will learn how to use OCI Document Understanding in the OCI Cons
 This is an optional set of steps if you want to test OCI Document Understanding with a variety of sample documents
 
 1. Create an Object Storage Bucket (This step is optional in case the bucket is already created)
-  a. First, From the OCI Services menu, click Object Storage.
+
+  a. First, From the OCI Services menu, click Storage then Buckets.
   ![Console navigation window](./images/bucket1.png)
 
-  b. Then, Select Compartment from the left dropdown menu. Choose the compartment matching your name or company name.
+  b. Then, Select Compartment from the left dropdown menu. Choose the compartment that you gave rights to according to your policies in Lab 1. If you have a new trial tenancy, you can select the root compartment.
   ![Create object storage compartment window](./images/bucket2.png)
 
   c. Next click Create Bucket.
@@ -27,31 +28,32 @@ This is an optional set of steps if you want to test OCI Document Understanding 
 
 2. Upload image files into Storage Bucket
 
-  a. Switch to OCI window and click the Bucket Name.
-
-  b. Bucket detail window should be visible. 
+  a. Bucket detail window should be visible. 
   ![Console navigation window](./images/bucket5.png)
 
-  c.Click on Upload and then browse to file which you desire to upload. 
+  b.Click on Upload and then click Select Files to browse to select your desired files to upload. 
   ![Console navigation window](./images/bucket6.png)
 
 ## **Task 2:** Analyze Document Data
 
-  **a. Navigate to the Document Understanding page**
+  **1. Navigate to the Document Understanding page**
   Using the Burger Menu on the top left corner, navigate to Analytics and AI and click it, and then select Document Understanding
   ![Console navigation window](./images/DUS1.png)
 
-  **b. Test with a demo image**
+  **2. Test with a demo image**
   On the panel under Document Understanding, select a feature page like text detection. Toggle between sample image buttons to see the different extraction results on the right hand Results panel. 
   ![DUS demo window](./images/DUS2.PNG)
 
-  If you're curious about the raw JSON response, select the dropdown button under "Response"
+  If you're curious about the raw JSON response, scroll down on the results panel
+  ![Results panel](./images/results-highlighted.PNG)
+  
+  Then select the dropdown button under "Response"
   ![Results panel](./images/DUS3.PNG)
 
-  You can repeat these steps across the Table detection, key value detection, and document classification panels in the console.
+  You can repeat these steps to try other features like table detection, key value detection, and document classification panels in the console.
   ![DUS navigation panel](./images/DUS4.PNG)
 
-  **c. Test with your own documents**
+  **3. Test with your own documents**
   To test with your own documents, you have two options: either select a local file from your machine or a document in Object storage. To select either option, click either radio button next to "Demo Files" at the top of the page:
   ![Local file panel](./images/DUS5.PNG)
 
