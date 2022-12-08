@@ -66,7 +66,7 @@ If this is your first time using the OCI SDK, you'll need to create a config fil
 
       ![](./images/conf.png " ")      
 
-3. Create a file with the name *config* (with no extension) in the .oci folder and paste the values previously copied.
+3. Create a file with the name *config* (with no extension) in the .oci folder and paste the values previously copied. Save your changes.
 
      Replace the **key_file value** with the path of your generated private key.
 
@@ -78,7 +78,7 @@ To Know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Conte
 
 ## **TASK 2:** Add Sample Documents to Object Storage
 
-1. Download the [Lab-4 sample documents](./sample-documents/lab4).
+1. Download the [Lab-4 sample documents](./sample-documents/lab4) and upload them to your Object Storage bucket.
 
 2. Login to the OCI Console and navigate to your Object Storage Buckets
 
@@ -111,25 +111,25 @@ CONFIG_PROFILE = "DEFAULT"
 config = oci.config.from_file('~/.oci/config', CONFIG_PROFILE)
 
 # Compartment where processor job will be created (required)
-COMPARTMENT_ID = "<enter-your-compartment-ocid-here"  # e.g. "ocid1.compartment.oc1..aaaaaaaae5j73axsja5fnahbn23ilop3ynjkcg77mcvgryddz4pkh2t5ppaq";
+COMPARTMENT_ID = "<enter-your-compartment-ocid-here>"  # e.g. "ocid1.compartment.oc1..aaaaaaaae5j73axsja5fnahbn23ilop3ynjkcg77mcvgryddz4pkh2t5ppaq";
 
 def create_processor_job_callback(times_called, response):
     print("Waiting for processor lifecycle state to go into succeeded state:", response.data)
+
+# Setup input location where document being processed is stored.
+object_location = oci.ai_document.models.ObjectLocation()
+object_location.namespace_name = "<enter-your-objectstorage-namespace-here>"  # e.g. "axhh9gizbq5x"
+object_location.bucket_name = "<enter-your-bucket-name-here>"  # e.g "demo_examples"
+object_location.object_name = "<enter-your-object-name-here>"  # e.g "key_value_extraction_demo.jpg
 
 aiservicedocument_client = oci.ai_document.AIServiceDocumentClientCompositeOperations(oci.ai_document.AIServiceDocumentClient(config=config))
 
 # Document Key-Value extraction Feature
 key_value_extraction_feature = oci.ai_document.models.DocumentKeyValueExtractionFeature()
 
-# Setup input location where document being processed is stored.
-object_location = oci.ai_document.models.ObjectLocation()
-object_location.namespace_name = "<enter-your-objectstorage-namespsace-here>"  # e.g. "axhh9gizbq5x"
-object_location.bucket_name = "<enter-your-bucket-name-here>"  # e.g "demo_examples"
-object_location.object_name = "<enter-your-object-name-here>"  # e.g "key_value_extraction_demo.jpg"
-
 # Setup the output location where processor job results will be created
 output_location = oci.ai_document.models.OutputLocation()
-output_location.namespace_name = "<enter-your-objectstorage-namespsace-here>"  # e.g. "axk2tfhlrens"
+output_location.namespace_name = "<enter-your-objectstorage-namespace-here>"  # e.g. "axk2tfhlrens"
 output_location.bucket_name = "<enter-your-bucket-name-here>"  # e.g "output"
 output_location.prefix = "<enter-your-prefix-here>"  # e.g "demo"
 
@@ -138,7 +138,7 @@ output_location.prefix = "<enter-your-prefix-here>"  # e.g "demo"
 create_processor_job_details_key_value_extraction = oci.ai_document.models.CreateProcessorJobDetails(
                                                     display_name=str(uuid.uuid4()),
                                                     compartment_id=COMPARTMENT_ID,
-                                                    input_location=oci.ai_document.models.InlineDocumentContent(data=key_value_extraction_sample_string),
+                                                    input_location=oci.ai_document.models.ObjectStorageLocations(object_locations=[object_location]),
                                                     output_location=output_location,
                                                     processor_config=oci.ai_document.models.GeneralProcessorConfig(features=[key_value_extraction_feature],
                                                                                                                    document_type="INVOICE"))
@@ -157,8 +157,11 @@ print("Getting defaultObject.json from the output_location")
 object_storage_client = oci.object_storage.ObjectStorageClient(config=config)
 get_object_response = object_storage_client.get_object(namespace_name=output_location.namespace_name,
                                                        bucket_name=output_location.bucket_name,
-                                                       object_name="{}/{}/_/results/defaultObject.json".format(
-                                                           output_location.prefix, processor_job.id))
+                                                       object_name="{}/{}/{}_{}/results/{}.json".format(
+                                                           output_location.prefix, processor_job.id,
+                                                           object_location.namespace_name,
+                                                           object_location.bucket_name,
+                                                           object_location.object_name))
 print(str(get_object_response.data.content.decode()))
 ```
 
@@ -296,5 +299,6 @@ Confirm the results by looking at each image.
 You can also take a look at the JSON output in your Oracle Object Storage bucket.
 
 ## Learn More
+* To try other features, you can refer to the full collection of sample python code [here](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/master/ai_services/document_understanding/python)
 
 Congratulations on completing this lab!

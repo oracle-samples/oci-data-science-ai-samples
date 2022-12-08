@@ -16,10 +16,10 @@ We have put together a Postman Collection to help you get started with calling t
 1. Install [POSTMAN](https://www.postman.com/downloads/) to your local computer if you don't already have it. Once installed, run it.
 
 2. Use this [link](https://www.postman.com/oracledevs/workspace/oracle-cloud-infrastructure-rest-apis/overview) to download the **Document Understanding API Collection**. The link opens Postman on the web. Select **Collections** on the left side of the screen. Hover over *Document Understanding Service API* and click the 3 dots to open the popup menu. Select **Export** to export the collection file and save it to your local computer.
-  ![](./images/documentcollection.png)
+  ![](./images/documentcollectionscreen.png)
 
 3. Use this [link](https://www.postman.com/oracledevs/workspace/oracle-cloud-infrastructure-rest-apis/environment/29850-eab82db8-e9a1-4200-9f39-de10b4a0f371) to download the **OCI Credentials Environment**. The link opens Postman on the web. Select **Environmments** on the left side of the screen then select **OCI Credentials**. One the right side of the screen find the 3 dots and click it to open a popup menu. On the menu click **Export** to export the credentials file and save it to your local computer.
-  ![](./images/postman-exportoci.png)
+  ![](./images/postman-exportoci-credentials.png)
 
 ## **TASK 2:** Set up your OCI credentials
 
@@ -31,17 +31,17 @@ We have put together a Postman Collection to help you get started with calling t
 3. Set OCI Credentials as the active environment by **clicking the check** next to *OCI Credentials*
   ![](./images/postman-activateoci.png)
 
-Now we will set the variables in the OCI Credentials in your local POSTMAN and you'll obtain the needed values from your OCI tenancy.
+4. Now we will set the variables in the OCI Credentials in your local POSTMAN and you'll obtain the needed values from your OCI tenancy.
 
-1. Open the newly imported environment in POSTMAN: OCI Credentials. You'll see it contains multiple variables with empty values. We need to set 6 of those variables.
+Open the newly imported environment in POSTMAN: OCI Credentials. You'll see it contains multiple variables with empty values. We need to set 6 of those variables.
 ![](./images/postman-ocicredentialsblank.png)
 
-#### tenancy_ocid ####
+  #### a. tenancy_ocid ####
 
-1. To get the **tenancy_ocid**, open the OCI Console, click the **Profile** icon in the upper right corner, then select **Tenancy: *name***
-  ![](./images/selecttenancy.png " ")
+  1. To get the **tenancy_ocid**, open the OCI Console, click the **Profile** icon in the upper right corner, then select **Tenancy: *name***
+    ![](./images/selecttenancy.png " ")
 
-2. Copy the **OCID** on this page and add it to your Postman OCI Credentials in the **tenancy_ocid CURRENT VALUE** field.
+  2. Copy the **OCID** on this page and add it to your Postman OCI Credentials in the **tenancy_ocid CURRENT VALUE** field.
 
   ![](./images/tenancy-ocid.png " ")
 
@@ -49,12 +49,12 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 
   ![](./images/postman-tenancy-ocid.png " ")
 
-#### user_ocid ####
-1. To get the **user_ocid**, go back to the OCI Console, click the **Profile** icon, then select **your user name**
+#### b. user_ocid ####
+  1. To get the **user_ocid**, go back to the OCI Console, click the **Profile** icon, then select **your user name**
 
   ![](./images/new-profilename.png " ")
 
-1. The *User Details* page opens. Copy the **OCID** on this page and add it to your Postman OCI Credentials in the **user_ocid CURRENT VALUE** field.
+  2. The *User Details* page opens. Copy the **OCID** on this page and add it to your Postman OCI Credentials in the **user_ocid CURRENT VALUE** field.
 
   ![](./images/user-ocid.png " ")
 
@@ -62,34 +62,34 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 
   ![](./images/postman-user-ocid.png " ")
 
-#### fingerprint & private_key ####
+#### c. fingerprint & private_key ####
 
-1. Open the OCI Console, click the **Profile** icon, then select **your user name**.
+  1. Open the OCI Console, click the **Profile** icon, then select **your user name**.
 
   ![](./images/new-profilename.png " ")
 
-2. The User Details page opens. Under Resources, on the lower left side of the page, select **API Keys**
+  2. The User Details page opens. Under Resources, on the lower left side of the page, select **API Keys**
 
   ![](./images/selectapikeys.png " ")
 
-3. Click the **Add API Key** button
+  3. Click the **Add API Key** button
 
   ![](./images/add-api-key.png " ")
 
-4. The Add API Key dialog box opens. Select option: **Generate API Key Pair**
+  4. The Add API Key dialog box opens. Select option: **Generate API Key Pair**
 
   ![](./images/add-api-key-dialog1.png " ")
 
-5. Click the **Download Private Key** button and save the file to you local computer. Remember the location where you saved the private key file (*username-date*.pem).
+  5. Click the **Download Private Key** button and save the file to you local computer. Remember the location where you saved the private key file (*username-date*.pem).
 
   ![](./images/add-api-key-dialog2.png " ")
 
-6. Click the **Add** button in the *Add API Key* dialog. The *Configuration File Preview* dialog opens.
+  6. Click the **Add** button in the *Add API Key* dialog. The *Configuration File Preview* dialog opens.
 
-7. Click **Close** on the *Configuration File Preview* dialog
+  7. Click **Close** on the *Configuration File Preview* dialog
 
 
-8. Copy the **fingerprint** for the API Key that you just created and add it to the **fingerprint CURRENT VALUE** field of the Postman Environment.
+  8. Copy the **fingerprint** for the API Key that you just created and add it to the **fingerprint CURRENT VALUE** field of the Postman Environment.
 
   ![](./images/add-api-key-fingerprint.png " ")
 
@@ -97,11 +97,11 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 
   ![](./images/postman-fingerprint.png " ")
 
-9. On your local computer, navigate to the **private key file (*username-date*.pem)** that you downloaded when getting the fingerprint. Open it in a text editor, copy it's contents, and paste them into the **private_key CURRENT VALUE** field of the Postman Environment.
+  9. On your local computer, navigate to the **private key file (*username-date*.pem)** that you downloaded when getting the fingerprint. Open it in a text editor, copy it's contents, and paste them into the **private_key CURRENT VALUE** field of the Postman Environment.
 
   ![](./images/postman-privatekey.png " ")
 
-#### region ####
+#### d. region ####
 
 1. In the OCI Console, note the **home region** displayed near the upper right corner of the page (e.g. US East (Ashburn)). Find the corresponding **Region Identifier** displayed in the table below (e.g. us-ashburn-1) and copy and paste it into the **region CURRENT VALUE** field of the Postman Environment. Overwrite the default value if your region is different.
 
@@ -144,12 +144,12 @@ Now we will set the variables in the OCI Credentials in your local POSTMAN and y
 
 The information in the table is found here: https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm
 
-#### compartment_ocid ####
+#### e. compartment_ocid ####
 
 1. Go to the OCI Console and use the hamburger menu to select **Identity & Security**, then, under *Identity*, select **Compartments**.
   ![](./images/i-s-compartments.png " ")
 
-2. The *Compartments* page is displayed and lists all of the compartments. If you are using a new trial tenancy, you will have a root compartment and *ManagedCompartmentForPaaS*. **Click the name of the compartment** **(root)** you configured in Lab 2 to access the OCI Vision service.
+2. The *Compartments* page is displayed and lists all of the compartments. If you are using a new trial tenancy, you will have a root compartment and *ManagedCompartmentForPaaS*. **Click the name of the root compartment** you configured in Lab 2 to access the OCI Document Understanding service.
 
 3. On the *Compartment details* page, click **Copy** next to the compartment OCID.
   ![](./images/compartment-copy.png " ")
@@ -158,19 +158,23 @@ The information in the table is found here: https://docs.oracle.com/en-us/iaas/C
 
   ![](./images/postman-compartment-ocid.png " ")
 
-#### save ####
+#### f. save ####
 
 1. In POSTMAN, click the **Persist All** button to save the Current Value to the Initial Value.
 
+![](./images/persist-button.PNG " ")
+
 2. In POSTMAN, click the **Save** button to save all of the OCI Credentials that you just entered.
+
+![](./images/save-button.PNG " ")
 
 ## **TASK 3:** Import the Document Understanding API collection
 
 1. Import the Document Understanding API Collection file (**DocumentUnderstanding API.postman_collection.json**) into Postman running on your local machine by selecting **Collections** on the left side of the  screen then clicking the **Import** button at the top.
 
-  ![](./images/postman-import.png)
+  ![](./images/postman-importoci1.png)
 
-2. In the *Import* dialog, click the **Upload Files** button and select the json file you exported in the previous step (**DocumentUnderstanding API.postman_collection.json**).
+2. In the *Import* dialog, click the **Upload Files** button and select the json file you exported in Task 1 (**DocumentUnderstanding API.postman_collection.json**).
 
 ## **TASK 4:** Invoke the Processor Job REST API
 
@@ -178,7 +182,7 @@ In this task you'll call the Processor Job REST API.
 
 1. In POSTMAN, select **Collections**, then expand *Document Understanding API* then *actions* then click **processor Jobs**. Then select the **Body** tab under *POST*.
 
-  ![](./images/processorjobapirequest.png " ")
+  ![](./images/persist-button.PNG " ")
 
 2. Replace the contents of the **Body** with the following:
 
@@ -204,7 +208,7 @@ In this task you'll call the Processor Job REST API.
       }
     ]
   },
-  "compartmentId": "ocid1.compartment.oc1..aaaaaaaaxuv2vdvqhjesjfy5ve26m3lk6okhkz7khu4iaqytetc72jwg6kdq",
+  "compartmentId": "{{compartmentId}}"
   "outputLocation": {
     "namespaceName": ##todo
     "bucketName": ##todo
