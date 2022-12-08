@@ -3,7 +3,6 @@ package com.oracle.datalabelingservicesamples.scripts;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -12,9 +11,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableSet;
 import com.oracle.bmc.datalabelingservice.model.Dataset;
 import com.oracle.bmc.datalabelingservice.model.ImageDatasetFormatDetails;
-import com.oracle.bmc.datalabelingservice.model.Label;
 import com.oracle.bmc.datalabelingservice.model.ObjectStorageSourceDetails;
 import com.oracle.bmc.datalabelingservice.model.TextDatasetFormatDetails;
 import com.oracle.bmc.datalabelingservice.requests.GetDatasetRequest;
@@ -35,6 +34,8 @@ import com.oracle.datalabelingservicesamples.requests.ModelTrainingParams;
 import com.oracle.datalabelingservicesamples.tasks.TaskHandler;
 import com.oracle.datalabelingservicesamples.tasks.TaskProvider;
 import com.oracle.datalabelingservicesamples.utils.DataPlaneAPIWrapper;
+import com.oracle.datalabelingservicesamples.utils.InputValidator;
+import com.oracle.pic.commons.util.EntityType;
 import org.apache.commons.collections4.ListUtils;
 
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
@@ -72,21 +73,36 @@ public class BulkAssistedLabelingScript {
     private static AssistedLabelingParams assistedLabelingParams;
     private static final TaskHandler taskHandler = new TaskHandler(new TaskProvider());
     private static final DataPlaneAPIWrapper dataPlaneAPIWrapper = new DataPlaneAPIWrapper();
+    private static final InputValidator inputValidator = new InputValidator();
     private static MlAssistedLabelingStrategy mlAssistedLabelingStrategy = null;
     private static ModelTrainingWrapper modelTrainingWrapper = null;
     static List<String> successRecordIds = Collections.synchronizedList(new ArrayList<String>());
     static List<String> failedRecordIds = Collections.synchronizedList(new ArrayList<String>());
+    private static final Set<String> datasetEntityTypes =
+            ImmutableSet.of(
+                    EntityType.DataLabelingDataset.getName(),
+                    EntityType.DataLabelingDatasetPre.getName(),
+                    EntityType.DataLabelingDatasetDev.getName(),
+                    EntityType.DataLabelingDatasetInt.getName());
+    private static final Set<String> aiServiceModelTypes =
+            ImmutableSet.of(
+                    EntityType.AiVisionModel.getName(),
+                    EntityType.AiLanguageModel.getName());
+    private static final Set<String> aiServiceProjectTypes =
+            ImmutableSet.of(
+                    EntityType.AiVisionProject.getName(),
+                    EntityType.AiLanguageProject.getName());
 
     static {
         executorService = Executors.newFixedThreadPool(Config.INSTANCE.getThreadCount());
         annotationExecutorService = Executors.newFixedThreadPool(Config.INSTANCE.getThreadCount());
     }
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
+    public static void main(String[] args) throws Exception {
         long startTime = System.nanoTime();
         String datasetId = Config.INSTANCE.getDatasetId();
+        validateAssistedLabelingParams();
         initializeAssistedLabelingParams(datasetId);
-        DataPlaneAPIWrapper dpAPIWrapper = new DataPlaneAPIWrapper();
 
         // Initialize parameters required for bulk assisted labeling
         float confidenceScore = parseFloat(Config.INSTANCE.getConfidenceThreshold());
@@ -120,19 +136,17 @@ public class BulkAssistedLabelingScript {
                         .prefix(sourceDetails.getPrefix())
                         .region(Config.INSTANCE.getRegion())
                         .build())
-                .modelTrainingParams(ModelTrainingParams.builder()
-                .modelTrainingProjectId(Config.INSTANCE.getModelTrainingProjectId())
-                .customTrainingEnabled(Config.INSTANCE.getCustomTrainingEnabled().equals("true"))
-                        .build())
                 .build();
 
-        if(Config.INSTANCE.getCustomTrainingEnabled().equalsIgnoreCase("true")){
+        if(Config.INSTANCE.getMlModelType().equalsIgnoreCase("NEW")){
             log.info("Custom model training is enabled, starting the training flow.");
+            validateCustomTrainingParams();
             initializeCustomTrainingParams(assistedLabelingParams);
             try {
                 modelTrainingWrapper.performModelTraining(assistedLabelingParams);
             } catch (Exception e) {
                 log.info("Failed to train model for project Id : {} dataset Id : {}", assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId(), assistedLabelingParams.getDatasetId());
+                throw new Exception("Assisted labeling failed");
             }
         }
 
@@ -143,7 +157,7 @@ public class BulkAssistedLabelingScript {
         List<RecordSummary> existingRecords = null;
         try {
             existingRecords =
-                    dpAPIWrapper.listRecords(
+                    dataPlaneAPIWrapper.listRecords(
                             datasetId,
                             dataset.getCompartmentId(),
                             true);
@@ -248,22 +262,14 @@ public class BulkAssistedLabelingScript {
                 assistedLabelingParams.getAssistedLabelingTimeout());
     }
 
-    private static void initializeAssistedLabelingParams(String datasetId) {
-        /*
-         * Validate Dataset
-         */
-        GetDatasetRequest getDatasetRequest = GetDatasetRequest.builder().datasetId(datasetId).build();
-        GetDatasetResponse datasetResponse = Config.INSTANCE.getDlsCpClient().getDataset(getDatasetRequest);
-        assert datasetResponse.get__httpStatusCode__() == 200 : "Invalid Dataset Id Provided";
-        List<Label> datasetLabelSet = datasetResponse.getDataset().getLabelSet().getItems();
-
-        /*
-         * Validate Input Label Set
-         */
-        Set<String> actualLabels = new HashSet<>();
-        for (Label labelName : datasetLabelSet) {
-            actualLabels.add(labelName.getName());
-        }
+    private static void validateAssistedLabelingParams(){
+        inputValidator.validateRequiredParameter("ML model type", Config.INSTANCE.getMlModelType());
+        inputValidator.validateMlModelType(Config.INSTANCE.getMlModelType());
+        inputValidator.validateRequiredParameter("Labeling Algorithm", Config.INSTANCE.getLabelingAlgorithm());
+        inputValidator.validateLabelingAlgorithm(Config.INSTANCE.getLabelingAlgorithm());
+        inputValidator.validateOptionalParameter("Confidence Threshold", Config.INSTANCE.getConfidenceThreshold());
+        inputValidator.validateConfidenceScoreThreshold(Config.INSTANCE.getConfidenceThreshold());
+        inputValidator.isValidResourceOcid(Config.INSTANCE.getDatasetId(), datasetEntityTypes);
 
         /*
          * Validate custom model id
@@ -273,8 +279,25 @@ public class BulkAssistedLabelingScript {
                 log.error("Custom model ID cannot be empty when ML model type is custom");
                 throw new InvalidParameterException("Custom model ID cannot be empty");
             }
+            inputValidator.isValidResourceOcid(Config.INSTANCE.getCustomModelId(), aiServiceModelTypes);
         }
+    }
 
+    private static void validateCustomTrainingParams(){
+        // TODO Training dataset ids could be dls or some other input
+        inputValidator.isValidResourceOcid(Config.INSTANCE.getTrainingDatasetId(), datasetEntityTypes);
+        if(!Config.INSTANCE.getModelTrainingProjectId().isEmpty()) {
+            inputValidator.isValidResourceOcid(Config.INSTANCE.getModelTrainingProjectId(), aiServiceProjectTypes);
+        }
+    }
+
+    private static void initializeAssistedLabelingParams(String datasetId) {
+        /*
+         * Get Dataset
+         */
+        GetDatasetRequest getDatasetRequest = GetDatasetRequest.builder().datasetId(datasetId).build();
+        GetDatasetResponse datasetResponse = Config.INSTANCE.getDlsCpClient().getDataset(getDatasetRequest);
+        assert datasetResponse.get__httpStatusCode__() == 200 : "Invalid Dataset Id Provided";
         dataset = datasetResponse.getDataset();
 
         /*
@@ -289,7 +312,7 @@ public class BulkAssistedLabelingScript {
         if(dataset.getDatasetFormatDetails() instanceof ImageDatasetFormatDetails) {
             if (dataset.getAnnotationFormat().equals("SINGLE_LABEL") || dataset.getAnnotationFormat().equals("MULTI_LABEL")) {
                 mlAssistedLabelingStrategy = new MlAssistedImageClassification();
-            } else if (dataset.getAnnotationFormat().equals("OBJECT_DETECTION")) {
+            } else if (dataset.getAnnotationFormat().equals("BOUNDING_BOX")) {
                 mlAssistedLabelingStrategy = new MlAssistedObjectDetection();
             }
             else{
@@ -317,15 +340,16 @@ public class BulkAssistedLabelingScript {
 
     private static void initializeCustomTrainingParams(AssistedLabelingParams assistedLabelingParams) {
 
+        String modelTrainingType = null;
         /*
          * initialise model training wrapper
          */
         if(dataset.getDatasetFormatDetails() instanceof ImageDatasetFormatDetails) {
             modelTrainingWrapper = new ModelTrainingVisionWrapper();
             if (dataset.getAnnotationFormat().equals("SINGLE_LABEL") || dataset.getAnnotationFormat().equals("MULTI_LABEL")) {
-                assistedLabelingParams.getModelTrainingParams().setModelTrainingType("IMAGE_CLASSIFICATION");
-            } else if (dataset.getAnnotationFormat().equals("OBJECT_DETECTION")) {
-                assistedLabelingParams.getModelTrainingParams().setModelTrainingType("OBJECT_DETECTION");
+                modelTrainingType = "IMAGE_CLASSIFICATION";
+            } else if (dataset.getAnnotationFormat().equals("BOUNDING_BOX")) {
+                modelTrainingType = "OBJECT_DETECTION";
             }
             else{
                 log.error("Invalid annotation format for model training in vision");
@@ -335,10 +359,10 @@ public class BulkAssistedLabelingScript {
         else if(dataset.getDatasetFormatDetails() instanceof TextDatasetFormatDetails){
             modelTrainingWrapper = new ModelTrainingLanguageWrapper();
             if(dataset.getAnnotationFormat().equals("SINGLE_LABEL")||dataset.getAnnotationFormat().equals("MULTI_LABEL")) {
-                assistedLabelingParams.getModelTrainingParams().setModelTrainingType("TEXT_CLASSIFICATION");
+                modelTrainingType = "TEXT_CLASSIFICATION";
             }
             else if(dataset.getAnnotationFormat().equals("ENTITY_EXTRACTION")){
-                assistedLabelingParams.getModelTrainingParams().setModelTrainingType("NAMED_ENTITY_RECOGNITION");
+                modelTrainingType = "NAMED_ENTITY_RECOGNITION";
             }
             else{
                 log.error("Invalid annotation format for model training in language");
@@ -349,5 +373,13 @@ public class BulkAssistedLabelingScript {
             log.error("Invalid dataset format type for ML assisted labeling");
             throw new InvalidParameterException("Invalid dataset format type for ML assisted labeling");
         }
+
+        assistedLabelingParams.setModelTrainingParams(
+                ModelTrainingParams.builder()
+                        .modelTrainingType(modelTrainingType)
+                        .modelTrainingProjectId(Config.INSTANCE.getModelTrainingProjectId())
+                        .customTrainingEnabled(Config.INSTANCE.getMlModelType().equals("NEW"))
+                        .trainingDatasetId(Config.INSTANCE.getTrainingDatasetId())
+                        .build());
     }
 }

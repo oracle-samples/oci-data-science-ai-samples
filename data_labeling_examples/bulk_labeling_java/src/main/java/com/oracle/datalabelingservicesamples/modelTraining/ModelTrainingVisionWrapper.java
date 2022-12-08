@@ -23,6 +23,7 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
         log.info("Starting Custom model training using input dataset: {}", assistedLabelingParams.getDatasetId());
 //      If project already exists, use the same ID, otherwise create a new project
 
+        // TODO validation function for model training params
         if(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId().isEmpty()) {
             try {
                 /* Create a request and dependent object(s). */
@@ -52,12 +53,12 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
                     .displayName("test-model")
                     .description("Test custom model training")
 //                .modelVersion("EXAMPLE-modelVersion-Value") Going with default value
-                    .modelType(Model.ModelType.valueOf(assistedLabelingParams.getModelTrainingParams().getModelTrainingType()))
+                    .modelType(Model.ModelType.create(assistedLabelingParams.getModelTrainingParams().getModelTrainingType()))
                     .compartmentId(assistedLabelingParams.getCompartmentId())
                     .isQuickMode(true)
-                    .maxTrainingDurationInHours(1757.9204)
+                    // TODO validate training dataset id
                     .trainingDataset(DataScienceLabelingDataset.builder()
-                            .datasetId(assistedLabelingParams.getDatasetId()).build())
+                            .datasetId(assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId()).build())
                     .projectId(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId())
                     .freeformTags(new HashMap<String, String>() {
                         {
@@ -69,7 +70,8 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
             CreateModelRequest createModelRequest = CreateModelRequest.builder()
                     .createModelDetails(createModelDetails)
                     .opcRetryToken("EXAMPLE-opcRetryToken-Value")
-                    .opcRequestId("BulkAssistedLabeling").build();
+                    .opcRequestId("BulkAssistedLabeling")
+                    .build();
 
             /* Send request to the Client */
             CreateModelResponse modelResponse = Config.INSTANCE.getAiVisionClient().createModel(createModelRequest);
@@ -78,6 +80,7 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
         }
         catch (Exception e){
             log.error("Failed to train model in vision service", e);
+            throw new Exception("Assisted labeling failed", e);
         }
     }
 }

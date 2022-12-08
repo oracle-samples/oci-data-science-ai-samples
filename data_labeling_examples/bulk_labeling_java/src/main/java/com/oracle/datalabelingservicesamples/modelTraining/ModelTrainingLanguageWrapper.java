@@ -3,6 +3,9 @@ package com.oracle.datalabelingservicesamples.modelTraining;
 import com.oracle.bmc.ailanguage.model.CreateEndpointDetails;
 import com.oracle.bmc.ailanguage.model.CreateModelDetails;
 import com.oracle.bmc.ailanguage.model.DataScienceLabelingDataset;
+import com.oracle.bmc.ailanguage.model.ModelDetails;
+import com.oracle.bmc.ailanguage.model.NamedEntityRecognitionModelDetails;
+import com.oracle.bmc.ailanguage.model.TextClassificationModelDetails;
 import com.oracle.bmc.ailanguage.requests.CreateEndpointRequest;
 import com.oracle.bmc.ailanguage.requests.CreateModelRequest;
 import com.oracle.bmc.ailanguage.requests.CreateProjectRequest;
@@ -47,14 +50,29 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
         }
 
         try {
+            ModelDetails modelDetails;
+            switch (assistedLabelingParams.getModelTrainingParams().getModelTrainingType()){
+                case "TEXT_CLASSIFICATION":
+                    modelDetails = TextClassificationModelDetails.builder()
+                                    .build();
+                    break;
+                case "NAMED_ENTITY_RECOGNITION":
+                    modelDetails = NamedEntityRecognitionModelDetails.builder()
+                            .build();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + assistedLabelingParams.getModelTrainingParams().getModelTrainingType());
+            }
+
             /* Create a request and dependent object(s). */
             CreateModelDetails createModelDetails = CreateModelDetails.builder()
                     .displayName("test-model")
                     .description("Test custom model training")
                     .compartmentId(assistedLabelingParams.getCompartmentId())
+                    .modelDetails(modelDetails)
   //                .modelVersion("EXAMPLE-modelVersion-Value") Going with default value
                     .trainingDataset(DataScienceLabelingDataset.builder()
-                            .datasetId(assistedLabelingParams.getDatasetId()).build())
+                            .datasetId(assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId()).build())
                     .projectId(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId())
                     .freeformTags(new HashMap<String, String>() {
                         {

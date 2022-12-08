@@ -17,8 +17,9 @@ import lombok.ToString;
 @ToString
 public class ModelTrainingParams {
 
-    //     Custom model training related metrics
+    // Custom model training related metrics
     private boolean customTrainingEnabled;
     private String modelTrainingType;
     private String modelTrainingProjectId;
+    private String trainingDatasetId;
 }

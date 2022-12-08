@@ -53,6 +53,7 @@ public enum Config {
 	private String confidenceThreshold;
 	private String customTrainingEnabled;
 	private String modelTrainingProjectId;
+	private String trainingDatasetId;
 
 	private List<String> labels;
 	private Map<String, List<String>> customLabels;
@@ -106,6 +107,9 @@ public enum Config {
 			customTrainingEnabled = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CUSTOM_TRAINING_ENABLED))
 					? config.getProperty(DataLabelingConstants.CUSTOM_TRAINING_ENABLED)
 					: System.getProperty(DataLabelingConstants.CUSTOM_TRAINING_ENABLED);
+			trainingDatasetId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.TRAINING_DATASET_ID))
+					? config.getProperty(DataLabelingConstants.TRAINING_DATASET_ID)
+					: System.getProperty(DataLabelingConstants.TRAINING_DATASET_ID);
 			String threadConfig = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.THREAD_COUNT))
 					? config.getProperty(DataLabelingConstants.THREAD_COUNT)
 					: System.getProperty(DataLabelingConstants.THREAD_COUNT);
