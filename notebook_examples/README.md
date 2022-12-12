@@ -237,6 +237,20 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
+### - Introduction to Model Version Set
+#### [`model_version_set.ipynb`](model_version_set.ipynb)
+
+ 
+A model version set is a way to track the relationships between models. As a container, the model version set takes a collection of models. Those models are assigned a sequential version number based on the order they are entered into the model version set.
+
+This notebook was developed on the conda pack with slug: *dbexp\_p38\_cpu\_v1*
+
+ 
+`model`  `model experiments`  `model version set`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### - Model Evaluation with ADSEvaluator
 #### [`model_evaluation.ipynb`](model_evaluation.ipynb)
 
