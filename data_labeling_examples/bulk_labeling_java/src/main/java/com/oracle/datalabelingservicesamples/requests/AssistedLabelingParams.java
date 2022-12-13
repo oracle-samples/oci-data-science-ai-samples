@@ -1,7 +1,6 @@
 package com.oracle.datalabelingservicesamples.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.oracle.bmc.aivision.model.Model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +28,7 @@ public class AssistedLabelingParams {
     private int assistedLabelingTimeout;
     private String annotationFormat;
     private float confidenceThreshold;
+    private SnapshotDatasetParams snapshotDatasetParams;
     private ModelTrainingParams modelTrainingParams;
     // Vision custom prediction required model OCID
     private String customModelId;
