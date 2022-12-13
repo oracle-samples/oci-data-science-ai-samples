@@ -1,5 +1,13 @@
 package com.oracle.datalabelingservicesamples.utils;
 
+import com.oracle.bmc.datalabelingservice.model.ExportFormat;
+import com.oracle.bmc.datalabelingservice.model.ObjectStorageSnapshotExportDetails;
+import com.oracle.bmc.datalabelingservice.model.OperationStatus;
+import com.oracle.bmc.datalabelingservice.model.SnapshotDatasetDetails;
+import com.oracle.bmc.datalabelingservice.model.WorkRequest;
+import com.oracle.bmc.datalabelingservice.model.WorkRequestResource;
+import com.oracle.bmc.datalabelingservice.requests.SnapshotDatasetRequest;
+import com.oracle.bmc.datalabelingservice.responses.SnapshotDatasetResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.Annotation;
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
@@ -9,7 +17,10 @@ import com.oracle.bmc.datalabelingservicedataplane.responses.CreateAnnotationRes
 import com.oracle.bmc.datalabelingservicedataplane.responses.ListRecordsResponse;
 import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
+import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
+import com.oracle.datalabelingservicesamples.requests.SnapshotDatasetParams;
+import com.oracle.datalabelingservicesamples.workRequests.DlsWorkRequestPollService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,7 +29,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class DataPlaneAPIWrapper {
+public class DlsApiWrapper {
+
+    DlsWorkRequestPollService dlsWorkRequestPollService = new DlsWorkRequestPollService();
+
+
     public List<RecordSummary> listRecords(
             String datasetId,
             String compartmentId,
@@ -91,6 +106,67 @@ public class DataPlaneAPIWrapper {
                     createAnnotationDetails.getRecordId(),
                     e);
             throw e;
+        }
+    }
+
+    public void createDatasetSnapshot(AssistedLabelingParams assistedLabelingParams) throws Exception{
+        log.info("Creating snapshot of training dataset in DLS service");
+
+        ExportFormat exportFormat = ExportFormat.builder()
+                .name(ExportFormat.Name.Jsonl)
+                .build();
+
+        ObjectStorageSnapshotExportDetails snapshotExportDetails =
+                ObjectStorageSnapshotExportDetails.builder()
+                        .namespace("idgszs0xipmn")
+                        .bucket("TextBucket")
+                        .prefix("/")
+                        .build();
+
+
+        SnapshotDatasetDetails snapshotDatasetDetails = SnapshotDatasetDetails.builder()
+                .exportDetails(snapshotExportDetails)
+                .areAnnotationsIncluded(true)
+                .areUnannotatedRecordsIncluded(false)
+                .exportFormat(exportFormat)
+                .build();
+
+        SnapshotDatasetRequest snapshotDatasetRequest = SnapshotDatasetRequest.builder()
+                .datasetId(assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId())
+                .snapshotDatasetDetails(snapshotDatasetDetails)
+                .build();
+
+        SnapshotDatasetParams snapshotDatasetParams =
+                SnapshotDatasetParams.builder().build();
+
+        assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
+
+        try{
+            SnapshotDatasetResponse snapshotDatasetResponse = Config.INSTANCE.getDlsCpClient().snapshotDataset(snapshotDatasetRequest);
+            WorkRequest workRequest = dlsWorkRequestPollService
+                    .pollDlsWorkRequestStatus(snapshotDatasetResponse.getOpcWorkRequestId());
+
+            log.info("Snapshot Work Request Id {} ,  Work request status: {}", workRequest.getId(),
+                    workRequest.getStatus().getValue());
+
+            if (!workRequest.getStatus().equals(OperationStatus.Succeeded)) {
+                throw new Exception("Snapshot operation failed, cannot proceed with training");
+            }
+
+//            TODO - Get the snapshot object name and pass it on to the model training flow
+
+            if(!workRequest.getResources().isEmpty()){
+                for(WorkRequestResource workRequestResource: workRequest.getResources()) {
+                    String snapshotFilePath = workRequestResource.getEntityUri();
+                    String snapshotFileName = snapshotFilePath.substring(snapshotFilePath.lastIndexOf("/") + 1);
+                    log.info("Snapshot file name is : {} ", snapshotFileName);
+                    assistedLabelingParams.getSnapshotDatasetParams().setSnapshotObjectName(snapshotFileName);
+                }
+            }
+
+        } catch (Exception e){
+            log.error("Snapshot dataset operation failed", e);
+            throw new Exception("Snapshot operation failed, cannot proceed with training");
         }
     }
 }

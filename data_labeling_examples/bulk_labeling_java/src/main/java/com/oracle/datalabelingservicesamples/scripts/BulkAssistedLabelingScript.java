@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -33,7 +32,7 @@ import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.requests.ModelTrainingParams;
 import com.oracle.datalabelingservicesamples.tasks.TaskHandler;
 import com.oracle.datalabelingservicesamples.tasks.TaskProvider;
-import com.oracle.datalabelingservicesamples.utils.DataPlaneAPIWrapper;
+import com.oracle.datalabelingservicesamples.utils.DlsApiWrapper;
 import com.oracle.datalabelingservicesamples.utils.InputValidator;
 import com.oracle.pic.commons.util.EntityType;
 import org.apache.commons.collections4.ListUtils;
@@ -72,7 +71,7 @@ public class BulkAssistedLabelingScript {
     static Dataset dataset;
     private static AssistedLabelingParams assistedLabelingParams;
     private static final TaskHandler taskHandler = new TaskHandler(new TaskProvider());
-    private static final DataPlaneAPIWrapper dataPlaneAPIWrapper = new DataPlaneAPIWrapper();
+    private static final DlsApiWrapper dlsApiWrapper = new DlsApiWrapper();
     private static final InputValidator inputValidator = new InputValidator();
     private static MlAssistedLabelingStrategy mlAssistedLabelingStrategy = null;
     private static ModelTrainingWrapper modelTrainingWrapper = null;
@@ -157,7 +156,7 @@ public class BulkAssistedLabelingScript {
         List<RecordSummary> existingRecords = null;
         try {
             existingRecords =
-                    dataPlaneAPIWrapper.listRecords(
+                    dlsApiWrapper.listRecords(
                             datasetId,
                             dataset.getCompartmentId(),
                             true);
@@ -238,7 +237,7 @@ public class BulkAssistedLabelingScript {
         List<Future<Annotation>> createAnnotationTasks =
                 taskHandler.getCreateAnnotationTasks(
                         createAnnotationDetailsList,
-                        dataPlaneAPIWrapper,
+                        dlsApiWrapper,
                         "opcRequestId",
                         annotationExecutorService);
         taskHandler.waitForTasks(
