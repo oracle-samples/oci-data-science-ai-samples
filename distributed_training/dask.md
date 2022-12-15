@@ -1,9 +1,9 @@
 # Developer Guide
 
-- `OCI` = Oracle Cloud Infrastructure
-- `DT` = Distributed Training
-- `ADS` = Oracle Accelerated Data Science Library
-- `OCIR` = Oracle Cloud Infrastructure Registry
+- `OCI` = [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/home.htm)
+- `DT` = [Distributed Training](../distributed_training/README.md)
+- `ADS` = [Oracle Accelerated Data Science Library](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html)
+- `OCIR` = [Oracle Cloud Infrastructure Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/home.htm#top)
 
 ## Steps to run Distributed Dask
 
@@ -145,6 +145,15 @@ spec:
 ```
 
 **Note**: make sure that the `workDir` points to your object storage bucket at OCI.
+
+For `flex shapes` use following in the `train.yaml` file
+
+```yaml
+shapeConfigDetails:
+    memoryInGBs: 22
+    ocpus: 2
+shapeName: VM.Standard.E3.Flex
+```
 
 ### 3. Local Testing
 

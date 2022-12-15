@@ -66,39 +66,45 @@ ls
 exit
 ```
 
-## TAG & PUSH
+## OCIR Login
 
-:exclamation:Build the image with the `type=remote` option before tagging and pushing.
-
-Tag the image to the location of your Oracle Cloud Container Registry (OCIR) in Oracle Cloud and push it. You may need to `docker login` to the Oracle Cloud OCIR first, if you haven't done so before been able to push the image. To login you have to use your `Auth Token` that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once!
+You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before been able to push the image. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
 
 ```bash
 docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
 ```
 
-Tag the container to point to the location of the OCIR you would push it later:
+If `your tenancy` is **federated** with Oracle Identity Cloud Service, use the format `<tenancy-namespace>/oracleidentitycloudservice/<username>`
+
+## Tag & Push
+
+:exclamation:Build the image with the `type=remote` option before tagging and pushing.
+
+Tag the container to the location of the OCIR you would push it later.
 
 ```bash
-docker tag <tag>:<version> <region>.ocir.io/<tenancy>/<tag>:<version>
+docker tag <tag>:<version> <region>.ocir.io/<namespace>/<tag>:<version>
 ```
+
+**Replace** the `<region>`, `<namespace>`, `<tag>` and `<version>` with yours.
 
 Example:
 
 ```bash
-docker tag byoc:latest iad.ocir.io/bigdatadatasciencelarge/byoc:1.0
+docker tag byoc:latest iad.ocir.io/datadatascience/byoc:1.0
 ```
 
 Then push the container to the tagged location
 
 ```bash
-docker push iad.ocir.io/bigdatadatasciencelarge/byoc:1.0
+docker push iad.ocir.io/datadatascience/byoc:1.0
 ```
 
 ## Run as a JOB
 
 Create a job and use following job environment variable, poiting to the location of the container image in your OCIR.
 
-CONTAINER_CUSTOM_IMAGE=iad.ocir.io/bigdatadatasciencelarge/byoc:1.0
+`CONTAINER_CUSTOM_IMAGE=iad.ocir.io/datadatascience/byoc:1.0`
 
 :exclamation:Make sure Jobs has a policy for the resource principal allowing to read the Oracle Container Registry from the compartment where the image was stored
 
@@ -108,5 +114,5 @@ CONTAINER_CUSTOM_IMAGE=iad.ocir.io/bigdatadatasciencelarge/byoc:1.0
 
 Instead of hardcoding the ENTRYPOINT and the CMD in the Dockerfile, you can also pass those using following environment variables:
 
-- CONTAINER_ENTRYPOINT - the container image entrypoints as a list of strings: `"ls", "-l"`
-- CONTAINER_CMD - the container run CMD as a list of strings: `"ls", "-l", "-a", "-h"`
+- `CONTAINER_ENTRYPOINT` - the container image entrypoints as a list of strings: `"ls", "-l"`
+- `CONTAINER_CMD` - the container run CMD as a list of strings: `"ls", "-l", "-a", "-h"`
