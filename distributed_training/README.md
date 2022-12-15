@@ -53,17 +53,23 @@ If you're just trying out Oracle Cloud Infrastructure Data Science Distributed T
 
 1. Create a [Dynamic Group](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) in [your cloud tenancy](https://cloud.oracle.com/identity/dynamicgroups) with the following matching rules:
 &nbsp;
-    > all { resource.type = 'datasciencenotebooksession' }
-    > all { resource.type = 'datasciencejobrun' }
-    > all { resource.type = 'datasciencemodeldeployment' }
+
+    ```bash
+    all { resource.type = 'datasciencenotebooksession' }
+    all { resource.type = 'datasciencejobrun' }
+    all { resource.type = 'datasciencemodeldeployment' }
+    ```
 
 2. Create a [policy](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm) in [your root compartment](https://cloud.oracle.com/identity/policies) with the following statements:
 &nbsp;
-    > allow service datascience to use virtual-network-family in tenancy
-    > allow dynamic-group `{your-dynamic-group-name}` to manage data-science-family in tenancy
-    > allow dynamic-group `{your-dynamic-group-name}` to manage all-resources in tenancy
 
-    **Replace** `{your-dynamic-group-name}` with the name of your dynamic group!
+    ```xml
+    allow service datascience to use virtual-network-family in tenancy
+    allow dynamic-group <your-dynamic-group-name> to manage data-science-family in tenancy
+    allow dynamic-group <your-dynamic-group-name> to manage all-resources in tenancy
+    ```
+
+    **Replace** `<your-dynamic-group-name>` with the name of your dynamic group!
     &nbsp;
 3. Create new users you need and add them to [your Administrators Group](https://cloud.oracle.com/identity/groups)
 

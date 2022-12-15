@@ -54,19 +54,26 @@ If you're just trying out Oracle Cloud Infrastructure Data Science or doing a pr
 
 1. Create a [Dynamic Group](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) in [your cloud tenancy](https://cloud.oracle.com/identity/dynamicgroups) with the following matching rules:
 &nbsp;
-    - all { resource.type = 'datasciencenotebooksession' }
-    - all { resource.type = 'datasciencejobrun' }
-    - all { resource.type = 'datasciencemodeldeployment' }
+
+    ```bash
+    all { resource.type = 'datasciencenotebooksession' }
+    all { resource.type = 'datasciencejobrun' }
+    all { resource.type = 'datasciencemodeldeployment' }
+    ```
 
 2. Create a [policy](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm) in [your root compartment](https://cloud.oracle.com/identity/policies) with the following statements:
 &nbsp;
-    - allow service datascience to use virtual-network-family in tenancy
-    - allow dynamic-group `{your-dynamic-group-name}` to manage data-science-family in tenancy
-    - allow dynamic-group `{your-dynamic-group-name}` to manage all-resources in tenancy
 
-    **Replace** `{your-dynamic-group-name}` with the name of your dynamic group!
+    ```xml
+    allow service datascience to use virtual-network-family in tenancy
+    allow dynamic-group <your-dynamic-group-name> to manage data-science-family in tenancy
+    allow dynamic-group <your-dynamic-group-name> to manage all-resources in tenancy
+    ```
+
     &nbsp;
-3. Create new users you need and add them to [your Administrators Group](https://cloud.oracle.com/identity/groups)
+    **Replace** `<your-dynamic-group-name>` with the name of your dynamic group!
+    &nbsp;
+3. If you create new users add them to your [Administrators Group](https://cloud.oracle.com/identity/groups)
 
 ### If You're Past the Proof-of-Concept Phase
 
@@ -80,7 +87,7 @@ If you're past the proof-of-concept phase and want to restrict access to your re
 
 ## Your First Job
 
-Let's create simple hello job example and run it in Oracle Cloud Infrastructure Data Science Jobs Service.
+Let's create simple hello world job and run it on Oracle Cloud Infrastructure Data Science Jobs Service.
 
 ### Step 1 - prepare sample code
 
@@ -99,13 +106,13 @@ print("Job Done.")
 Login with your Oracle Cloud account then:
 
 - go to the Data Science Service
-- create on the button `Create Project` and create a new project
+- click on the button `Create Project` and create a new project
 - select the new project
 - under `Resources` go to `Jobs`
 - click on the `Create job` button
-- under `Upload job artifact` click on `select a file` and select the file `hello_world_job.py` on your computer
-- under `Logging` click on the `Select` button, make sure that `Enable logging` is selected and choose your `Log group` from the Drop-Down (if no Log Group appears, you have to create one!)
-- make sure that the `Enable automatic log creation` is selected and click on `Select` button
+- under `Upload job artifact` click on `select a file` link and select the file `hello_world_job.py` on your computer
+- in the `Logging` section click on the `Select` button, make sure that `Enable logging` is selected and choose your `Log group` from the Drop-Down (if no Log Group appears, you have to create one!)
+- make sure that the option `Enable automatic log creation` is selected and click on `Select` button
 - set the `Storage` to be at least 50GB
 - leave the `Default Networking` configuration
 - click on `Create` to create the job
@@ -117,4 +124,4 @@ Login with your Oracle Cloud account then:
 - there is no need to override the job configuration, leave everything as-is
 - click on the `Start` button
 
-The job will automaticall provison and execute your code. You can click on the Job Run that will be created and monitor the progress. Under the `Logging details` of the Job Run a `Log` will be created, you can click on the link to view the prints from your code in the OCI Logging Service.
+The job will automatically provison and execute your code. You can click on the Job Run that will be created and monitor the progress. Under the `Logging details` of the Job Run a `Log` will be created, you can click on the link to view the prints from your code in the OCI Logging Service.
