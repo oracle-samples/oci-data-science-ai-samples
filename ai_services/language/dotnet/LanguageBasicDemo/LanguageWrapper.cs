@@ -12,10 +12,6 @@ namespace LanguageBasicDemo
     {
         private readonly AIServiceLanguageClient client;
 
-        private static readonly int maxRecordsInBatch = 100;
-        private static readonly int maxCharactersInBatch = 20000;
-        private static readonly int maxCharactersInRecord = 5000;
-
         public LanguageWrapper()
         {
             // Create a default authentication provider that uses the DEFAULT
@@ -57,20 +53,57 @@ namespace LanguageBasicDemo
             return documentsValue[0].Languages[0];
         }
 
+        public async Task<string> TranslateTextAsync(string text)
+        {
+            // Create a request and dependent object(s).
+            var batchDetails = new BatchLanguageTranslationDetails
+            {
+                Documents = new List<TextDocument>
+                {
+                    new TextDocument
+                    {
+                        Key = "doc-1",
+                        Text = text,
+                        LanguageCode = "en"
+                    }
+                },
+                
+                TargetLanguageCode = "es"
+            };
+
+            var request = new BatchLanguageTranslationRequest
+            {
+                BatchLanguageTranslationDetails = batchDetails,
+                OpcRequestId = "394ZXI6MCFAHTJX1ZFSX<unique_ID>"
+            };
+
+            var response = await client.BatchLanguageTranslation(request);
+
+            // Retrieve value from the response.
+            var documentsValue = response.BatchLanguageTranslationResult.Documents;
+
+            return documentsValue[0].TranslatedText;
+        }
+
+        private List<TextDocument> TextDocumentListFromString(string text, string languageCode)
+        {
+            return new List<TextDocument>
+                {
+                    new TextDocument
+                    {
+                        Key = "doc-1",
+                        Text = text,
+                        LanguageCode = languageCode
+                    }
+                };
+        }
 
         public async Task<List<KeyPhrase>> GetKeyPhrasesAsync(string text)
         {
             // Create a request and dependent object(s).
             var batchDetails = new BatchDetectLanguageKeyPhrasesDetails
             {
-                Documents = new List<KeyPhraseDocument>
-                {
-                    new KeyPhraseDocument
-                    {
-                        Key = "doc-1",
-                        Text = text
-                    }
-                }
+                Documents = TextDocumentListFromString(text, "en")
             };
 
             var request = new BatchDetectLanguageKeyPhrasesRequest
@@ -92,14 +125,7 @@ namespace LanguageBasicDemo
             // Create a request and dependent object(s).
             var batchDetails = new BatchDetectLanguageTextClassificationDetails
             {
-                Documents = new List<TextClassificationDocument>
-                {
-                    new TextClassificationDocument
-                    {
-                        Key = "doc-1",
-                        Text = text
-                    }
-                }
+                Documents = TextDocumentListFromString(text, "en")
             };
 
             var request = new BatchDetectLanguageTextClassificationRequest
@@ -121,14 +147,7 @@ namespace LanguageBasicDemo
             // Create a request and dependent object(s).
             var batchDetails = new BatchDetectLanguageEntitiesDetails
             {
-                Documents = new List<EntityDocument>
-                {
-                    new EntityDocument
-                    {
-                        Key = "doc-1",
-                        Text = text
-                    }
-                }
+                Documents = TextDocumentListFromString(text, "en")
             };
 
             var request = new BatchDetectLanguageEntitiesRequest
@@ -145,20 +164,12 @@ namespace LanguageBasicDemo
             return documentsValue[0].Entities;
         }
 
-
         public async Task<SentimentDocumentResult> GetSentimentAsync(string text)
         {
             // Create a request and dependent object(s).
             var batchDetails = new BatchDetectLanguageSentimentsDetails
             {
-                Documents = new List<SentimentsDocument>
-                {
-                    new SentimentsDocument
-                    {
-                        Key = "doc-1",
-                        Text = text
-                    }
-                }
+                Documents = TextDocumentListFromString(text, "en")
             };
 
             var request = new BatchDetectLanguageSentimentsRequest
@@ -170,7 +181,6 @@ namespace LanguageBasicDemo
                     BatchDetectLanguageSentimentsRequest.LevelEnum.Sentence, 
                     BatchDetectLanguageSentimentsRequest.LevelEnum.Aspect
                 }
-
             };
 
             var response = await client.BatchDetectLanguageSentiments(request);
