@@ -119,7 +119,7 @@ public class DlsApiWrapper {
         ObjectStorageSnapshotExportDetails snapshotExportDetails =
                 ObjectStorageSnapshotExportDetails.builder()
                         .namespace("idgszs0xipmn")
-                        .bucket("TextBucket")
+                        .bucket("TestBucket1")
                         .prefix("/")
                         .build();
 

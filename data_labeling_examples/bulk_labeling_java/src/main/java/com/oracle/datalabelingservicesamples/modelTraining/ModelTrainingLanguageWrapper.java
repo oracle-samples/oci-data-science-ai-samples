@@ -19,6 +19,7 @@ import com.oracle.bmc.ailanguage.responses.CreateModelResponse;
 import com.oracle.bmc.ailanguage.responses.CreateProjectResponse;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
+import com.oracle.datalabelingservicesamples.requests.SnapshotDatasetParams;
 import com.oracle.datalabelingservicesamples.utils.DlsApiWrapper;
 import com.oracle.datalabelingservicesamples.workRequests.LanguageWorkRequestPollService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,13 +37,18 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
     public void performModelTraining(AssistedLabelingParams assistedLabelingParams) throws Exception {
         log.info("Starting Custom model training using input dataset: {}", assistedLabelingParams.getDatasetId());
 //      If project already exists, use the same ID, otherwise create a new project
-
+//
 //        if(assistedLabelingParams.getSnapshotDatasetParams() == null){
 //            log.info("Snapshot file has not been provided, generating new snapshot using training dataset Id : {}", assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId());
 //            dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
 //        }
 
-        assistedLabelingParams.getSnapshotDatasetParams().setSnapshotObjectName("Test_al_utility4_1670928519727.jsonl");
+        SnapshotDatasetParams snapshotDatasetParams =
+                SnapshotDatasetParams.builder().build();
+
+        assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
+
+        assistedLabelingParams.getSnapshotDatasetParams().setSnapshotObjectName("records_1671099337777.jsonl");
 
         if(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId().isEmpty()) {
             try {
@@ -75,11 +81,13 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             }
         }
 
+        ModelDetails modelDetails;
         try {
-            ModelDetails modelDetails;
             switch (assistedLabelingParams.getModelTrainingParams().getModelTrainingType()){
                 case "TEXT_CLASSIFICATION":
                     modelDetails = TextClassificationModelDetails.builder()
+                            .classificationMode(ClassificationMultiLabelModeDetails.builder()
+                                    .build())
                                     .build();
                     break;
                 case "NAMED_ENTITY_RECOGNITION":
@@ -92,7 +100,7 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
 
             LocationDetails locationDetails = ObjectListDataset.builder()
                     .namespaceName("idgszs0xipmn")
-                    .bucketName("TextBucket")
+                    .bucketName("TestBucket1")
                     .objectNames(Collections.singletonList(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotObjectName()))
                     .build();
 
@@ -117,7 +125,8 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             CreateModelRequest createModelRequest = CreateModelRequest.builder()
                     .createModelDetails(createModelDetails)
                     .opcRetryToken("EXAMPLE-opcRetryToken-Value")
-                    .opcRequestId("BulkAssistedLabeling").build();
+//                    .opcRequestId("BulkAssistedLabeling")
+                    .build();
 
             /* Send request to the Client */
             CreateModelResponse modelResponse = Config.INSTANCE.getAiLanguageClient().createModel(createModelRequest);
@@ -153,7 +162,7 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             }
         }
         catch (Exception e){
-            log.error("Failed to train model in vision service", e);
+            log.error("Failed to train model in language service", e);
         }
     }
 }
