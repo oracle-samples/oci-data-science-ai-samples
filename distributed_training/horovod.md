@@ -491,13 +491,15 @@ Also, while updating `conda-<pytorch|tensorflow>-<cpu|gpu>.yaml` do not remove t
 
 ### Building the container image
 
-Update the TAG and the IMAGE_NAME as per your needs, notice the `$IMAGE_NAME` is the location you would like to push the container image in OCIR.
+Set the TAG and the IMAGE_NAME as per your needs. `IMAGE_NAME` refers to your Oracle Cloud Container Registry you created in the [Getting Stared Guide](README.md). `MOUNT_FOLDER_PATH` is the root directory of your project code, but you can use `.` in case you executed all of the `ads opctl run` commands directly from your root project folder.
 
 ```bash
-export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
+export IMAGE_NAME=<region>.ocir.io/<namespace>/<repository-name>
 export TAG=latest
 export MOUNT_FOLDER_PATH=.
 ```
+
+**Replace** the `<region>` with the name of the region where you created your repository and you will run your code, for example `iad` for Ashburn. **Replace** the `<namespace>` with the namespace you see in your Oracle Cloud Container Registry, when you created your repository. **Replace** the `<repository-name>` with the name of the repository you used to create it.
 
 Buld the container image.
 

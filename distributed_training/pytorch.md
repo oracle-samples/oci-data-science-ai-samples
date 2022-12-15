@@ -316,13 +316,15 @@ The required python dependencies are provided inside `oci_dist_training_artifact
 
 Also, while updating `environment.yaml` do not remove the existing libraries.
 
-Set the TAG and IMAGE_NAME as environment variables based on your needs.
+Set the TAG and the IMAGE_NAME as per your needs. `IMAGE_NAME` refers to your Oracle Cloud Container Registry you created in the [Getting Stared Guide](README.md). `MOUNT_FOLDER_PATH` is the root directory of your project code, but you can use `.` in case you executed all of the `ads opctl run` commands directly from your root project folder.
 
 ```bash
-export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
+export IMAGE_NAME=<region>.ocir.io/<namespace>/<repository-name>
 export TAG=latest
 export MOUNT_FOLDER_PATH=.
 ```
+
+**Replace** the `<region>` with the name of the region where you created your repository and you will run your code, for example `iad` for Ashburn. **Replace** the `<namespace>` with the namespace you see in your Oracle Cloud Container Registry, when you created your repository. **Replace** the `<repository-name>` with the name of the repository you used to create it.
 
 Build the docker image.
 
