@@ -147,6 +147,20 @@ See also [Object Storage Policies](https://docs.oracle.com/en-us/iaas/Content/Id
 
 Configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) to be able to run and test your code locally and monitor the logs.
 
+The OCI AI Auth Token is used for the OCI CLI and Python SDK, To do so, follow the guidance from the online documentation: <https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm>
+
+At the high level the instructions are:
+
+- (1) login into your Oracle Cloud
+- (2) select your account from the top right dropdown menu
+- (3) generate a new API Auth Key
+- (4) download the private key and store it into your `./oci` folder
+- (5) copy the suggested configuration and store it into your home directy `.oci/config` file
+- (6) change the `./oci/config` with the suggested configuration in (5) and point to your private key
+- (7) test the SDK or CLI
+
+Follow the instructions provided above for more detailed explanations.
+
 ### 5. Install Desktop Container Management
 
 ADS OPCTL Distributed Training CLI require a desktop tool to build, run, launch and push the containers. We support:
