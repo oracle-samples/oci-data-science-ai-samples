@@ -154,9 +154,9 @@ At the high level the instructions are:
 - (1) login into your Oracle Cloud
 - (2) select your account from the top right dropdown menu
 - (3) generate a new API Auth Key
-- (4) download the private key and store it into your `./oci` folder
-- (5) copy the suggested configuration and store it into your home directy `.oci/config` file
-- (6) change the `./oci/config` with the suggested configuration in (5) and point to your private key
+- (4) download the private key and store it into your `$HOME/.oci` folder
+- (5) copy the suggested configuration and store it into your home directy `$HOME/.oci/config` file
+- (6) change the `$HOME/.oci/config` with the suggested configuration in (5) and point to your private key
 - (7) test the SDK or CLI
 
 Follow the instructions provided above for more detailed explanations.
