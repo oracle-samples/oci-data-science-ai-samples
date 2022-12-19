@@ -1,9 +1,9 @@
 # Developer Guide
 
-- `OCI` = Oracle Cloud Infrastructure
-- `DT` = Distributed Training
-- `ADS` = Oracle Accelerated Data Science Library
-- `OCIR` = Oracle Cloud Infrastructure Registry
+- `OCI` = [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/home.htm)
+- `DT` = [Distributed Training](../distributed_training/README.md)
+- `ADS` = [Oracle Accelerated Data Science Library](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html)
+- `OCIR` = [Oracle Cloud Infrastructure Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/home.htm#top)
 
 ## Steps to run Distributed Tensorflow
 
@@ -11,13 +11,9 @@ All the container image related artifacts are located under  `oci_dist_training_
 
 ### Prerequisite
 
-You need to install [ads opctl](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#).
+This guide uses `ads[opctl]` for creating and running distributed training jobs. Make sure that you follow the [Getting Started Guide](README.md) first.
 
-```bash
-python3 -m pip install oracle-ads[opctl]
-```
-
-This guide uses `ads opctl` for creating distributed training jobs. Refer our [distributed training guide](distributed_training_cmd.md) for supported commands and options for distributed training.
+Refer our [distributed training guide](distributed_training_cmd.md) for supported commands and options for distributed training.
 
 ### Prepare the Project
 
@@ -30,13 +26,13 @@ mkdir dt-tf
 cd dt-tf
 ```
 
-Initialize the Tensorflow distributed training project.
+Initialize the Tensorflow distributed training project in the folder.
 
 ```bash
 ads opctl distributed-training init --framework tensorflow
 ```
 
-> You can also initialize existing project.
+You can also initialize existing projects.
 
 ### Setup Sample Code
 
@@ -218,17 +214,19 @@ model.save(model_dir, save_format='tf')
 </details>
 &nbsp;
 
-> All the files from your root project directory will be copied to the `/code` folder inside container image.
+All the files from your root project directory will be copied to the `/code` folder inside container image.
 
 ### Build the Container Image
 
-Set the TAG and the IMAGE_NAME as per your needs. `IMAGE_NAME` refers to your Oracle Cloud Container Registry. `MOUNT_FOLDER_PATH` is the root directory of your project code, but you can use `.` in case you executed all of the `ads opctl run` commands directly from your root project folder.
+Set the TAG and the IMAGE_NAME as per your needs. `IMAGE_NAME` refers to your Oracle Cloud Container Registry you created in the [Getting Stared Guide](README.md). `MOUNT_FOLDER_PATH` is the root directory of your project code, but you can use `.` in case you executed all of the `ads opctl run` commands directly from your root project folder.
 
 ```bash
-export IMAGE_NAME=<region.ocir.io/my-tenancy/image-name>
+export IMAGE_NAME=<region>.ocir.io/<namespace>/<repository-name>
 export TAG=latest
 export MOUNT_FOLDER_PATH=.
 ```
+
+**Replace** the `<region>` with the name of the region where you created your repository and you will run your code, for example `iad` for Ashburn. **Replace** the `<namespace>` with the namespace you see in your Oracle Cloud Container Registry, when you created your repository. **Replace** the `<repository-name>` with the name of the repository you used to create it.
 
 Build the container image.
 
@@ -240,26 +238,24 @@ ads opctl distributed-training build-image \
   -s $MOUNT_FOLDER_PATH
 ```
 
-> If you are behind proxy, `ads opctl` will **automatically** use your proxy settings (defined via `no_proxy`, `http_proxy` and `https_proxy`).
+> If you work behind proxy, `ads opctl` will **automatically** use your proxy settings (defined via `no_proxy`, `http_proxy` and `https_proxy`).
 
 Note that whenever you change the code, you have to build, tag and push the image to Oracle Cloud Container Registry. This is automatically done with the `ads opctl run` command.
 
-> The python dependencies are set inside the conda environment file:
+> The python dependencies are set inside the conda environment file. If your code requires additional dependency, update this file:
 `oci_dist_training_artifacts/tensorflow/v1/environments.yaml`.
-
-*If your code requires additional dependency, update this file.*
-
+>
 > While updating `environments.yaml` do not remove the existing libraries. You can append to the list.
 
 ### Define your cluster
 
-To run the distributed training, you have to define your multi-node cluster setup in your train yaml file.
+To run the distributed training, you have to define your multi-node cluster in your `train.yaml` file.
 
 In the example below, we bring up 1 worker node and 1 chief-worker node. The training code to run is `train.py`. All your training code is assumed to be located inside `/code` directory within the container, which the `ads opctl run` command should do by default.
 
 Additionally, you can also put any data files inside the `/code` directory (and pass on the location ex `'/code/data/**'` as an argument to your training script using the `runtime->spec->args` property as shown below).
 
-Save the following `train.yaml` file in your root project directory, as modify the infrastructure, cluster and runtime section with your settings.
+Save the following `train.yaml` file in your root project directory, and modify the infrastructure, cluster and runtime section with your settings.
 
 ```yaml
 kind: distributed
@@ -313,6 +309,15 @@ spec:
 
 **Note** that you have to setup the `workDir` property to point to your object storage bucket, that will be used to synchronize the cluster. Additionally the `WORKSPACE` and the `WORKSPACE_PREFIX` have to be set as well to point to object storage folder within the `workDir` that will be used to sync the logs. If those folders does not exist, our utility service will create them automatically, as long as the `manage` policy was configured for the job runs resource principal, as shown in the getting started guide.
 
+For `flex shapes` use following in the `train.yaml` file
+
+```yaml
+shapeConfigDetails:
+    memoryInGBs: 22
+    ocpus: 2
+shapeName: VM.Standard.E3.Flex
+```
+
 **Your project structure should look like this:**
 
 ```ini
@@ -361,7 +366,7 @@ oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
 > The training script location (entrypoint) and associated args will be picked up from the `train.yaml` file.
 > For detailed explanation of local run, refer this [distributed training cmd guide](distributed_training_cmd.md)
 
-#### b. Test locally with `docker-compose`
+#### b. Test locally with `docker-compose` (optional)
 
 You can also test locally in a clustered manner using docker-compose. Create `docker-compose.yml` file in your root project folder and copy the following content:
 
@@ -476,7 +481,7 @@ To disable this feature, change `SYNC_ARTIFACTS` to `0`. Use `OCI__SYNC_DIR` env
 >**Example:**
 >`tf.keras.callbacks.ModelCheckpoint(os.path.join(os.environ.get("OCI__SYNC_DIR"),"ckpts",'checkpoint-{epoch}.h5'))`
 
-### Other Tensorflow Strategies supported
+### Other Tensorflow Strategies Supported
 
 Tensorflow has two multi-worker strategies: `MultiWorkerMirroredStrategy` and `ParameterServerStrategy`. Following shows changes that you would need to do to run `ParameterServerStrategy` workload.
 
@@ -608,7 +613,7 @@ model.fit(dataset, epochs=5, steps_per_epoch=20, callbacks=callbacks)
 
 The only difference here is that the parameter server `train.yaml` also needs to have `ps` worker-pool. This will create dedicated instance(s) for Tensorflow Parameter Server.
 
-Use the following `train.yaml`:
+Use the following `train.yaml` for ParameterServerStrategy.
 
 <details>
 <summary>ParameterServerStrategy <b>train.yaml</b> <= click to open and copy</summary>
@@ -667,10 +672,18 @@ spec:
 </details>
 &nbsp;
 
+For `flex shapes` use following in the `train.yaml` file
+
+```yaml
+shapeConfigDetails:
+    memoryInGBs: 22
+    ocpus: 2
+shapeName: VM.Standard.E3.Flex
+```
+
 #### c. Test locally with stand-alone run. (Recommended)
 
-For local test use again the `-b local` flag. Further when you need to run this workload on odsc jobs, simply use ```-b job```
-flag instead (default).
+For local test use again the `-b local` flag. Further when you need to run this workload on odsc jobs, simply use `-b job` flag instead (default).
 
 ```bash
 ads opctl run \
@@ -678,18 +691,20 @@ ads opctl run \
         -b local
 ```
 
+Again, if your code requires to use any OCI services (like object storage etc.), you need to mount your OCI SDK Keys from your local host machine onto the container. This is already done for you assuming the typical location of oci keys `~/.oci`. You can modify it though, in-case you have keys at a different location. To do so you have to change the location in the `config.ini` file.
+
+```ini
+oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
+```
+
+#### d. Run the distributed training on Oracle Cloud
+
 When you ready to run this workload on OCI Data Science Jobs, simply use `-b job` flag instead (default).
 
 ```bash
 ads opctl run \
         -f train.yaml \
         -b job
-```
-
-Again, if your code requires to use any OCI services (like object storage etc.), you need to mount your OCI SDK Keys from your local host machine onto the container. This is already done for you assuming the typical location of oci keys `~/.oci`. You can modify it though, in-case you have keys at a different location. To do so you have to change the location in the ```config.ini``` file.
-
-```ini
-oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
 ```
 
 > The training script location (entrypoint) and associated args will be picked up from the runtime `train.yaml`.
