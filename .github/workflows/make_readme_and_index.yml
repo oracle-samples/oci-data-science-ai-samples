@@ -1,0 +1,23 @@
+name: Make README.md and index.json
+on:
+  # Triggers the workflow on push or pull request events or manually
+  push:
+    paths:
+      - "**.ipynb"
+      - "notebook_examples/make_readme.py"
+  pull_request:
+    paths: |
+      - "**.ipynb"
+      - "notebook_examples/make_readme.py"
+  # Allows mannual triggering
+  workflow_dispatch:
+jobs:
+  make-readme-and-index:
+    runs-on: ubuntu-latest
+    name: make readme.md and index.js job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run python script
+        id: make_readme_and_index
+        uses: ./

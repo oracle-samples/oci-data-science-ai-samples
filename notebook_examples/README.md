@@ -10,7 +10,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Topics
-<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen"> <img src="https://img.shields.io/badge/train model-6-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous driving-1-brightgreen"> <img src="https://img.shields.io/badge/tensorflow-1-brightgreen"> <img src="https://img.shields.io/badge/authentication-1-brightgreen"> <img src="https://img.shields.io/badge/api keys-1-brightgreen"> <img src="https://img.shields.io/badge/iam-1-brightgreen"> <img src="https://img.shields.io/badge/access management-1-brightgreen"> <img src="https://img.shields.io/badge/caltech-1-brightgreen"> <img src="https://img.shields.io/badge/pedestrian detection-1-brightgreen"> <img src="https://img.shields.io/badge/dcat-1-brightgreen"> <img src="https://img.shields.io/badge/pytorch-1-brightgreen"> <img src="https://img.shields.io/badge/model evaluation-1-brightgreen"> <img src="https://img.shields.io/badge/binary classification-1-brightgreen"> <img src="https://img.shields.io/badge/regression-1-brightgreen"> 
+<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen"> <img src="https://img.shields.io/badge/train model-6-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/object annotation-1-brightgreen"> <img src="https://img.shields.io/badge/genome visualization-1-brightgreen"> <img src="https://img.shields.io/badge/language services-1-brightgreen"> <img src="https://img.shields.io/badge/string manipulation-1-brightgreen"> <img src="https://img.shields.io/badge/regex-1-brightgreen"> <img src="https://img.shields.io/badge/regular expression-1-brightgreen"> <img src="https://img.shields.io/badge/natural language processing-1-brightgreen"> <img src="https://img.shields.io/badge/NLP-1-brightgreen"> <img src="https://img.shields.io/badge/part of speech tagging-1-brightgreen"> <img src="https://img.shields.io/badge/named entity recognition-1-brightgreen"> <img src="https://img.shields.io/badge/sentiment analysis-1-brightgreen"> <img src="https://img.shields.io/badge/custom plugins-1-brightgreen"> <img src="https://img.shields.io/badge/rapids-1-brightgreen"> 
 
 ## Notebooks
 ### - API Keys
@@ -307,6 +307,20 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
+### - PySpark
+#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
+
+ 
+Develop local PySpark applications and work with remote clusters using Data Flow.
+
+This notebook was developed on the conda pack with slug: *pyspark24\_p37\_cpu\_v3*
+
+ 
+`pyspark`  `data flow`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### - Spark NLP within Oracle Cloud Infrastructure Data Flow Studio
 #### [`pyspark-data_flow_studio-spark_nlp.ipynb`](pyspark-data_flow_studio-spark_nlp.ipynb)
 
@@ -328,20 +342,6 @@ This notebook was developed on the conda pack with slug: *pyspark32\_p38\_cpu\_v
 Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.
 
 This notebook was developed on the conda pack with slug: *pyspark32\_p38\_cpu\_v1*
-
- 
-`pyspark`  `data flow`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
-### - PySpark
-#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
-
- 
-Develop local PySpark applications and work with remote clusters using Data Flow.
-
-This notebook was developed on the conda pack with slug: *pyspark24\_p37\_cpu\_v3*
 
  
 `pyspark`  `data flow`
@@ -433,20 +433,6 @@ This notebook was developed on the conda pack with slug: *nlp\_p37\_cpu\_v2*
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### - Train, Register, and Deploy an XGBoost Model
-#### [`train-register-deploy-xgboost.ipynb`](train-register-deploy-xgboost.ipynb)
-
- 
-Train, register, and deploy an XGBoost model.
-
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
-
- 
-`xgboost`  `deploy model`  `register model`  `train model`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### - XGBoost with RAPIDS
 #### [`xgboost-with-rapids.ipynb`](xgboost-with-rapids.ipynb)
 
@@ -457,6 +443,20 @@ This notebook was developed on the conda pack with slug: *rapids2110\_p37\_gpu\_
 
  
 `xgboost`  `rapids`  `gpu`  `machine learning`  `classification`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### - Train, Register, and Deploy an XGBoost Model
+#### [`train-register-deploy-xgboost.ipynb`](train-register-deploy-xgboost.ipynb)
+
+ 
+Train, register, and deploy an XGBoost model.
+
+This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+
+ 
+`xgboost`  `deploy model`  `register model`  `train model`
 
 <sub>Universal Permissive License v 1.0</sup>
 
