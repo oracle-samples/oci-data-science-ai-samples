@@ -18,10 +18,3 @@ runs:
       id: make_readme
       run: python make_readme.py
       shell: bash
-    - name: Commit changes
-      uses: EndBug/add-and-commit@v9
-      with:
-        message: auto commit README.md
-        default_author: github_actions
-        committer_name: GitHub Actions
-        committer_email: actions@github.com
