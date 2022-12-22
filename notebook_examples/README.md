@@ -19,7 +19,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  
 Configure and test API key authentication, attach keys to user account through Oracle's identity service, and test access to the API.
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `authentication`  `api keys`  `iam`  `access management`
@@ -75,7 +75,7 @@ This notebook was developed on the conda pack with slug: *pyspark30\_p37\_cpu\_v
  
 Download and process annotated video data of vehicles and pedestrians.
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `caltech`  `pedestrian detection`  `oracle open data`
@@ -117,7 +117,7 @@ This notebook was developed on the conda pack with slug: *nlp\_p37\_cpu\_v2*
  
 Perform common data visualization tasks and explore data with the ADS SDK. Plotting approaches include 3D plots, pie chart, GIS plots, and Seaborn pairplot graphs.
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `data visualization`  `seaborn plot`  `charts`
@@ -145,7 +145,7 @@ This notebook was developed on the conda pack with slug: *pyspark30\_p37\_cpu\_v
  
 Train, register, and deploy a generic model
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `generic model`  `deploy model`  `register model`  `train model`
@@ -159,7 +159,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
  
 Use ADSTuner to optimize an estimator using the scikit-learn API
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `hyperparameter tuning`
@@ -215,7 +215,7 @@ This notebook was developed on the conda pack with slug: *nlp\_p37\_cpu\_v2*
  
 Train, register, and deploy a LightGBM model.
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `lightgbm`  `deploy model`  `register model`  `train model`
@@ -257,7 +257,7 @@ This notebook was developed on the conda pack with slug: *dbexp\_p38\_cpu\_v1*
  
 Train and evaluate different types of models: binary classification using an imbalanced dataset, multi-class classification using a synthetically generated dataset consisting of three equally distributed classes, and a regression using a synthetically generated dataset with positive targets.
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `model evaluation`  `binary classification`  `regression`  `multi-class classification`  `imbalanced dataset`  `synthetic dataset`
@@ -285,7 +285,7 @@ This notebook was developed on the conda pack with slug: *nlp\_p37\_cpu\_v2*
  
 Load visual data, define regions, and visualize objects using metadata to connect structured images to language.
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `object annotation`  `genome visualization`  `oracle open data`
@@ -299,7 +299,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
  
 Create and use ML pipelines through the entire machine learning lifecycle
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `pipelines`  `pipeline step`  `jobs pipeline`
@@ -327,7 +327,7 @@ This notebook was developed on the conda pack with slug: *pyspark32\_p38\_cpu\_v
  
 Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.
 
-This notebook was developed on the conda pack with slug: *pyspark32\_p38\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *pyspark32\_p38\_cpu\_v2*
 
  
 `pyspark`  `data flow`
@@ -355,7 +355,7 @@ This notebook was developed on the conda pack with slug: *pyspark24\_p37\_cpu\_v
  
 Train, register, and deploy a PyTorch model.
 
-This notebook was developed on the conda pack with slug: *pytorch110\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *pytorch110\_p38\_cpu\_v1*
 
  
 `pytorch`  `deploy model`  `register model`  `train model`
@@ -369,7 +369,7 @@ This notebook was developed on the conda pack with slug: *pytorch110\_p37\_cpu\_
  
 Train, register, and deploy an scikit-learn model.
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `scikit-learn`  `deploy model`  `register model`  `train model`
@@ -383,7 +383,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
  
 Use SQL Magic commands to work with a database within a Jupytyer notebook. This notebook shows how to to use both line and cell magics.
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `sql magic`  `autonomous database`
@@ -411,7 +411,7 @@ This notebook was developed on the conda pack with slug: *dataexpl\_p37\_cpu\_v3
  
 Train, register, and deploy a TensorFlow model.
 
-This notebook was developed on the conda pack with slug: *tensorflow27\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *tensorflow28\_p38\_cpu\_v1*
 
  
 `tensorflow`  `deploy model`  `register model`  `train model`
@@ -439,7 +439,7 @@ This notebook was developed on the conda pack with slug: *nlp\_p37\_cpu\_v2*
  
 Train, register, and deploy an XGBoost model.
 
-This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v1*
+This notebook was developed on the conda pack with slug: *generalml\_p38\_cpu\_v1*
 
  
 `xgboost`  `deploy model`  `register model`  `train model`
@@ -451,7 +451,7 @@ This notebook was developed on the conda pack with slug: *generalml\_p37\_cpu\_v
 #### [`xgboost-with-rapids.ipynb`](xgboost-with-rapids.ipynb)
 
  
-Compare training time between CPU and GPU trained models using XGBoost.
+Compare training time between CPU and GPU trained models using XGBoost
 
 This notebook was developed on the conda pack with slug: *rapids2110\_p37\_gpu\_v1*
 
