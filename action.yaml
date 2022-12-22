@@ -1,0 +1,27 @@
+name: "Make README.md"
+description: "Makes README.md on push or pull request events or when manually triggered"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.8"
+    - name: Install dependencies
+      run: |
+        pip install glob2
+        pip install tqdm
+        pip install nbformat
+      shell: bash
+    - name: Make README.md
+      working-directory: ./notebook_examples
+      id: make_readme
+      run: python make_readme.py
+      shell: bash
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: auto commit README.md
+        default_author: github_actions
+        committer_name: GitHub Actions
+        committer_email: actions@github.com
