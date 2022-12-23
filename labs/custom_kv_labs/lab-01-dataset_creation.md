@@ -65,4 +65,4 @@ In this lab you have learnt how to create a dataset and how to annotate the docu
 
 You may now **proceed to the next lab**.
 
-[Proceed to the next section](#next).
+[Proceed to the next section](./custom_kv_labs/lab-02-model_training.md).

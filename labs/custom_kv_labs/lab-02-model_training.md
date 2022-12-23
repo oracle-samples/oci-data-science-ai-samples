@@ -46,4 +46,4 @@ In this lab you have learnt how to create and train a custom key value detection
 
 You may now **proceed to the next lab**.
 
-[Proceed to the next section](#next).
+[Proceed to the next section](./custom_kv_labs/lab-03-console.md).

@@ -1,7 +1,7 @@
 # Lab 0: Introduction
 
 ### Objectives
-In this session, we will go through the end to end steps of creating a custom key-value extraction model with OCI Document Understanding. We will mainly:
+In this workshop, we will go through the end to end steps of creating a custom key-value extraction model with OCI Document Understanding. We will mainly:
 
 * Learn how to train an KeyValue detection model through the OCI console
 * Learn how to use REST API to communicate with our document service endpoints.
@@ -73,4 +73,4 @@ In this lab you have learnt how to set up your OCI Document Understanding polici
 
 You may now **proceed to the next lab**.
 
-[Proceed to the next section](#next).
+[Proceed to the next section](./custom_kv_labs/lab-01-dataset_creation.md).

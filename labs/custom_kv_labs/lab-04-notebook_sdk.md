@@ -106,4 +106,4 @@ In this lab you have learnt how to access the key value detection model through 
 
 You may now **proceed to the next lab**.
 
-[Proceed to the next section](#next).
+[Proceed to the next section](./custom_kv_labs/lab-05-postman.md).
