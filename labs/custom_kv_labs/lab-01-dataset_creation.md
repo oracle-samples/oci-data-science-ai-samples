@@ -18,9 +18,9 @@ In this workshop, you will:
 You will be creating a custom key value detection model for this session with documents from the [data folder](./data).
 
 Create a new dataset with the following guidelines
-1. Navigate to **Data Labeling Page** on OCI Console
+### 1. Navigate to **Data Labeling Page** on OCI Console
 
- ![](./images/dataset1.PNG)
+![](./images/dataset1.PNG)
 
 * On the Data Labeling Page, select **"Datasets"** on the left navigation menu and click on **"Create dataset"**
 ![](./images/dataset2.PNG)
