@@ -16,9 +16,9 @@ In this workshop, you will:
 * Once the model is active, select **"Analyze"** under _Resources_ header on the left hand side of the console
 * Click on **"Select to change output location"** to give output location. From the dropdown list give the compartment.
 * Select UsabilityTest bucket under Output object storage location. Give a prefix, where the output documents have to stored
-![](./images/console1.PNG)
+![](./images/console1.png)
 * Once the output location is given, call your model by uploading the document from local
-![](./images/console2.PNG)
+![](./images/console2.png)
 
 ## **Summary**
 

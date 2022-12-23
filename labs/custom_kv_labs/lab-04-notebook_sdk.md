@@ -43,33 +43,33 @@ Before you can start using Data Science, your tenancy administrator should set u
 ## Task 1: Navigate to the Data Science Notebook Session
 
 * Using the Burger Menu on the top left corner, navigate to _Analytics and AI menu_ and click it, and then select **"Data Science item"** under _Machine Learning_. 
-![](./images/notebook1.PNG)
+![](./images/notebook1.png)
 * Select the Compartment in which want to create your project. 
 * Click **"Create Project"** to create a new project. 
-![](./images/notebook2.PNG)
+![](./images/notebook2.png)
 * Enter name and click **"Create Button"**.
-![](./images/notebook3.PNG)
+![](./images/notebook3.png)
 * Click **"Create Notebook Session"** to create a new Notebook session. 
-![](./images/notebook4.PNG)
+![](./images/notebook4.png)
 * Enter Notebook details: Select a name. Choose Intel Skylake VM.Standard2.2 as the shape. Set block storage to 50 GB. Select the subnet with Internet connectivity. (Select private subnet if you have use VCN Wizard to create VCN)
-![](./images/notebook5.PNG)
+![](./images/notebook5.png)
 * The Notebook Session VM will be created. This might take a few minutes. When created you will see a screen like the following. Open the notebook session that was provisioned.
-![](./images/notebook6.PNG)
+![](./images/notebook6.png)
 
 ## Task 2: Setup API Signing Key and Config File
 
 Generate an API signing key pair
 
 * Open the Profile menu (User menu icon) and click User Settings.
-![](./images/api1.PNG)
+![](./images/api1.png)
 * Navigate to API Key and then Click **"Add API Key"**.
-![](./images/api2.PNG)
+![](./images/api2.png)
 * In the dialog, select **"Generate API Key Pair"**. Click Download Private Key, save the key file and then click Add.
-![](./images/api3.PNG)
+![](./images/api3.png)
 * Copy the values shown on the console.
-![](./images/api4.PNG)
+![](./images/api4.png)
 * Create a config file and paste the values copied. Replace the key_file value with the path of your generated API Key.
-![](./images/api5.PNG)
+![](./images/api5.png)
   The private key and config files will be utilized in the next tasks.
 
   To know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) and [SDK and CLI Configuration File](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm#SDK_and_CLI_Configuration_File)
@@ -88,13 +88,13 @@ Generate an API signing key pair
   ```
   mv <path of the private key> ~/.oci/
   ```
-![](./images/api6.PNG)
+![](./images/api6.png)
 
 
 ## Task 3: Call your model
 
 * Download and upload the file [Key_Value_Detection.ipynb](./custom_kv_labs/notebooks/Key_Value_Detection.ipynb) in the notebook
-![](./images/sdk.PNG)
+![](./images/sdk.png)
 * Open the Notebook that you've just uploaded. Now go through each of the cells and run them one by one. You can click Shift+Enter on each cell to run the code in the cell.
 
 This notebook demonstrate how you can productively use the Key Value Detection Feature of Document service through notebook
