@@ -1,19 +1,19 @@
-# Lab 0: Introduction
+# Lab 0: Configure Document Understanding and Data Science Policies
+
+## Introduction
+
+In this lab, you will use the OCI Console to set up the policies for OCI Document Understanding and Data Science.
+
+Estimated Time: 10 minutes
+
 
 ### Objectives
-In this workshop, we will go through the end to end steps of creating a custom key-value extraction model with OCI Document Understanding. We will mainly:
 
-* Learn how to train an KeyValue detection model through the OCI console
-* Learn how to use REST API to communicate with our document service endpoints.
+In this lab, you will:
 
+* Get familiar with the OCI Console and be able to configure your policies for OCI Document Understanding
 
-### Prerequisites
-
-* Familiarity with Python
-* OCI Paid Account
-* Access to OCI Document Understanding preview SDK (request access here)
-
-## Policy Setup
+## Task: Policy Setup
 Before you start using OCI Document Understanding, OCI policies should be setup for allowing you to access OCI Document Understanding Service. Follow these steps to configure required policies.
 
 ### 1. Navigate to Policies
@@ -66,6 +66,32 @@ Document Understanding Service stores results in your tenancy's object store. Ad
 ```
 allow group <group_in_tenancy> to manage object-family in compartment <output_bucket_located_object_storage_compartment>
 ```
+
+### 7. Policy to grant users Data Science access
+
+Data Science service allow us to create and access Datascience Notebook.
+
+Add the below statement to allow the user group in your tenancy to use data science:
+```
+allow group <data-scientists> to manage data-science-family in tenancy
+```
+where data-scientists represents the name of your user group.
+
+### 8. Policy to grant users Virtual Cloud Network access
+
+The Notebook session will be created inside a subnet, for which we need Virtual Cloud Network that contains a subnet
+
+Add the below statement to allow the user group in your tenancy to use VCN:
+```
+allow group <data-scientists> to use virtual-network-family in tenancy
+```
+
+### 9. Policy to accesss virtual network in data science service
+
+```
+allow service datascience to use virtual-network-family in tenancy
+```
+
 ## **Summary**
 
 Congratulations! </br>

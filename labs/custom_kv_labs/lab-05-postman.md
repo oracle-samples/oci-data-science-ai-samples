@@ -19,15 +19,23 @@ In this workshop, you will:
 
 ## TASK 1: Setting Up Postman for OCI Document Service REST APIs
 
-* Visit the OCI Postman workspace and login with your credentials.
+* Visit the [OCI Postman workspace](https://www.postman.com/oracledevs/workspace/oracle-cloud-infrastructure-rest-apis/api/79bbefd7-4bba-4370-b741-3724bf3c9325) and login with your credentials.
 * Fork the Document Understanding API collection in your workspace by navigating to Document Understanding API collection and clicking the **"Fork"** option.
+
 ![](./images/postman1.png)
+
 * Enter name to identify forked Document Understanding API collection, select the workspace you want to fork the collection to and click **"Fork Collection"**.
+
 ![](./images/postman2.png)
+
 * Fork the OCI Credentials Environment in your workspace by navigating to Environments and clicking the **"Fork"** option.
+
 ![](./images/postman3.png)
+
 * Enter name to identify forked OCI credentials environment, select the workspace you want to fork the collection to and click **"Fork Collection"**.
+
 ![](./images/postman4.png)
+
 * Navigate to your workspace and open newly forked environment (OCI Credentials), and set the variables tenancyId, authUserId, keyFingerprint and private Key. These are same that are found in the .oci file you created in the Lab 4 (Task 2). Make sure to set both Initial Value and Current Value of the variables(set both as the same value).Click the Save button to commit your changes to the environment.
 ![](./images/postman5.png)
 
@@ -35,13 +43,19 @@ In this workshop, you will:
 ## TASK 2: Invoke Document Understanding OCI REST APIs
 
 * Navigate to **"Create a processor job for document analysis"** section under _"processor Jobs"_
+
 ![](./images/request1.png)
+
 * Update the base url with "https://document.aiservice.{region}.oci.oraclecloud.com/20221109" and region being the one in which model is created.
 
   (sample url: https://document.aiservice.us-ashburn-1.oci.oraclecloud.com/20221109/processorJobs)
+
 ![](./images/request2.png)
+
 * Navigate to **"raw"** under _"body"_ section to enter the payload for request. Change the format to _"JSON"_
+
 ![](./images/request3.png)
+
 * Edit the payload given below according to your model ID, data(in inputLocation), outputLocation and compartment ID
 
   (Note: data should be base64 encoded)
@@ -70,7 +84,9 @@ In this workshop, you will:
   ```
 
 * Enter the payload in the postman and click on send. In the response **"lifecycleState"** should be in <code>SUCCEEDED</code> state.
+
 ![](./images/request4.png)
+
 * The output JSON file can be found in the output location specified by user
 
 ## **Summary**
