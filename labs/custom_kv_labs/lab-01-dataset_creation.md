@@ -18,7 +18,7 @@ In this workshop, you will:
 You will be creating a custom key value detection model for this session with documents from the [data folder](./data).
 
 Create a new dataset with the following guidelines
-* Navigate to **Data Labeling Page** on OCI Console
+1. Navigate to **Data Labeling Page** on OCI Console
 
  ![](./images/dataset1.PNG)
 
