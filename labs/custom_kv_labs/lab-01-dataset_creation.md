@@ -20,10 +20,10 @@ You will be creating a custom key value detection model for this session with do
 Create a new dataset with the following guidelines
 ### 1. Navigate to **Data Labeling Page** on OCI Console
 
-![](./images/dataset1.PNG)
+![](./images/dataset1.png)
 
 * On the Data Labeling Page, select **"Datasets"** on the left navigation menu and click on **"Create dataset"**
-![](./images/dataset2.PNG)
+![](./images/dataset2.png)
 * Name it _“Test_YourName”_
 * This will be a key-value detection dataset
 ![](./images/dataset3.PNG)
