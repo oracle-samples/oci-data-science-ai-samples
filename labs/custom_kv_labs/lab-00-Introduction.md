@@ -73,4 +73,4 @@ In this lab you have learnt how to set up your OCI Document Understanding polici
 
 You may now **proceed to the next lab**.
 
-[Proceed to the next section](./custom_kv_labs/lab-01-dataset_creation.md).
+[Proceed to the next section](./lab-01-dataset_creation.md).

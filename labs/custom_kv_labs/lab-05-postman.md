@@ -20,13 +20,13 @@ In this workshop, you will:
 ## TASK 1: Setting Up Postman for OCI Document Service REST APIs
 
 * Visit the OCI Postman workspace and login with your credentials.
-* Fork the Document Understanding API collection in your workspace by navigating to Document Understanding API collection and clicking the "Fork" option.
+* Fork the Document Understanding API collection in your workspace by navigating to Document Understanding API collection and clicking the **"Fork"** option.
 ![](./custom_kv_labs/images/postman1.PNG)
-* Enter name to identify forked Document Understanding API collection, select the workspace you want to fork the collection to and click "Fork Collection".
+* Enter name to identify forked Document Understanding API collection, select the workspace you want to fork the collection to and click **"Fork Collection"**.
 ![](./custom_kv_labs/images/postman2.PNG)
-* Fork the OCI Credentials Environment in your workspace by navigating to Environments and clicking the "Fork" option.
+* Fork the OCI Credentials Environment in your workspace by navigating to Environments and clicking the **"Fork"** option.
 ![](./custom_kv_labs/images/postman3.PNG)
-* Enter name to identify forked OCI credentials environment, select the workspace you want to fork the collection to and click "Fork Collection".
+* Enter name to identify forked OCI credentials environment, select the workspace you want to fork the collection to and click **"Fork Collection"**.
 ![](./custom_kv_labs/images/postman4.PNG)
 * Navigate to your workspace and open newly forked environment (OCI Credentials), and set the variables tenancyId, authUserId, keyFingerprint and private Key. These are same that are found in the .oci file you created in the Lab 4 (Task 2). Make sure to set both Initial Value and Current Value of the variables(set both as the same value).Click the Save button to commit your changes to the environment.
 ![](./custom_kv_labs/images/postman5.PNG)
@@ -34,13 +34,13 @@ In this workshop, you will:
 
 ## TASK 2: Invoke Document Understanding OCI REST APIs
 
-* Navigate to "Create a processor job for document analysis" section under "processor Jobs"
+* Navigate to **"Create a processor job for document analysis"** section under _"processor Jobs"_
 ![](./custom_kv_labs/images/request1.PNG)
 * Update the base url with "https://document.aiservice.{region}.oci.oraclecloud.com/20221109" and region being the one in which model is created.
 
   (sample url: https://document.aiservice.us-ashburn-1.oci.oraclecloud.com/20221109/processorJobs)
 ![](./custom_kv_labs/images/request2.PNG)
-* Navigate to "raw" under "body" section to enter the payload for request. Change the format to "JSON"
+* Navigate to **"raw"** under _"body"_ section to enter the payload for request. Change the format to _"JSON"_
 ![](./custom_kv_labs/images/request3.PNG)
 * Edit the payload given below according to your model ID, data(in inputLocation), outputLocation and compartment ID
 
@@ -69,6 +69,24 @@ In this workshop, you will:
   }
   ```
 
-* Enter the payload in the postman and click on send. In the response "lifecycleState" should be in SUCCEEDED state.
+* Enter the payload in the postman and click on send. In the response **"lifecycleState"** should be in <code>SUCCEEDED</code> state.
 ![](./custom_kv_labs/images/request4.PNG)
 * The output JSON file can be found in the output location specified by user
+
+## **Summary**
+
+Congratulations! </br>
+In this lab you have learnt how to invoke the model through postman.
+
+Hurray!! You have successfully completed this workshop. In this workshop you had learnt:
+* To create and label a dataset
+* To create and train a model in OCI console
+* Call model through different platforms like OCI console, Datascience Notebook(through preview SDK) and Postman
+
+## Stay in Touch!
+
+* Read our blog posts at [https://blogs.oracle.com/ai-and-datascience/](https://blogs.oracle.com/ai-and-datascience/)
+
+* [Watch our tutorials on YouTube](https://www.youtube.com/playlist?list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L).
+
+* Our service documentation is also available at [https://docs.oracle.com/en-us/iaas/data-science/using/data-science.htm](https://docs.oracle.com/en-us/iaas/data-science/using/data-science.htm)

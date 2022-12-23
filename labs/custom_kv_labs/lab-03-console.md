@@ -27,4 +27,4 @@ In this lab you have learnt how to call a trained model through OCI console.
 
 You may now **proceed to the next lab**.
 
-[Proceed to the next section](./custom_kv_labs/lab-04-notebook_sdk.md).
+[Proceed to the next section](./lab-04-notebook_sdk.md).

@@ -19,45 +19,45 @@ You will be creating a custom key value detection model for this session with do
 
 Create a new dataset with the following guidelines
 * Navigate to **Data Labeling Page** on OCI Console
-![](./images/dataset1.PNG)
+![](./custom_kv_labs/images/dataset1.PNG)
 * On the Data Labeling Page, select **"Datasets"** on the left navigation menu and click on **"Create dataset"**
-![](./images/dataset2.PNG)
+![](./custom_kv_labs/images/dataset2.PNG)
 * Name it _“Test_YourName”_
 * This will be a key-value detection dataset
-![](./images/dataset3.PNG)
+![](./custom_kv_labs/images/dataset3.PNG)
 * Choose to upload these documents as local files
-![](./images/dataset4.PNG)
+![](./custom_kv_labs/images/dataset4.PNG)
 * Save this dataset under the bucket UsabilityTest
-![](./images/dataset5.PNG)
+![](./custom_kv_labs/images/dataset5.PNG)
 * Upload the files that are downloaded above
-![](./images/dataset6.PNG)
+![](./custom_kv_labs/images/dataset6.PNG)
 * You want to detect the values for **"Recipient" "Carrier Name" "Shipping ID"** and **"Trailer Number"** from these sample documents
-![](./images/dataset7.PNG)
+![](./custom_kv_labs/images/dataset7.PNG)
 * Review and click on **"Create"**
-![](./images/dataset8.PNG)
+![](./custom_kv_labs/images/dataset8.PNG)
 ## **Task 2:** Label the documents in your Dataset
 
 Now that your dataset is generated, begin labeling your dataset. Click on the name of the document to annotate it.
 
 * Start labeling all the labels
-![](./images/label1.PNG)
+![](./custom_kv_labs/images/label1.PNG)
   * Recipient
-![](./images/label2.PNG)
+![](./custom_kv_labs/images/label2.PNG)
   * Carrier Name
-![](./images/label3.PNG)
+![](./custom_kv_labs/images/label3.PNG)
   * Shipping ID
-![](./images/label4.PNG)
+![](./custom_kv_labs/images/label4.PNG)
   * Trailer Number
 ![](./images/label5.PNG)
 * Annotate all 6 documents
-![](./images/label6.PNG)
-![](./images/label7.PNG)
-![](./images/label8.PNG)
-![](./images/label9.PNG)
-![](./images/label10.PNG)
-![](./images/label11.PNG)
+![](./custom_kv_labs/images/label6.PNG)
+![](./custom_kv_labs/images/label7.PNG)
+![](./custom_kv_labs/images/label8.PNG)
+![](./custom_kv_labs/images/label9.PNG)
+![](./custom_kv_labs/images/label10.PNG)
+![](./custom_kv_labsimages/label11.PNG)
 * You can check the labelled values by clicking on Ⓢ icon
-![](./images/label12.PNG)
+![](./custom_kv_labs/images/label12.PNG)
 ## **Summary**
 
 Congratulations! </br>
@@ -65,4 +65,4 @@ In this lab you have learnt how to create a dataset and how to annotate the docu
 
 You may now **proceed to the next lab**.
 
-[Proceed to the next section](./custom_kv_labs/lab-02-model_training.md).
+[Proceed to the next section](./lab-02-model_training.md).
