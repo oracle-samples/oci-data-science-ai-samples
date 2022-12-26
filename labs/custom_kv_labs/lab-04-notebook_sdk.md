@@ -1,7 +1,7 @@
 # Lab 4: Call your model using the SDK in DataScience Notebook
 ## Introduction
 
-In this lab, you will call the Key Value Detection model through OCI preview SDK within a DataScience notebook.
+In this lab, you will call the Key Value Extraction model through OCI preview SDK within a DataScience notebook.
 
 Estimated Time: 40 minutes
 
@@ -106,12 +106,16 @@ Generate an API signing key pair
 
 * Open the Notebook that you've just uploaded. Now go through each of the cells and run them one by one. You can click Shift+Enter on each cell to run the code in the cell.
 
-This notebook demonstrate how you can productively use the Key Value Detection Feature of Document service through notebook
+* After running all the cells in order, the final cell should display the output similar to below one
+
+![](./images/sdk1.png)
+
+This notebook demonstrate how you can productively use the Key Value Extraction Feature of Document service through notebook
 
 ## **Summary**
 
 Congratulations! </br>
-In this lab you have learnt how to access the key value detection model through OCI preview SDK.
+In this lab you have learnt how to access the key value extraction model through OCI preview SDK.
 
 You may now **proceed to the next lab**.
 

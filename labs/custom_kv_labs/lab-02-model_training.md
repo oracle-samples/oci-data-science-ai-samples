@@ -1,9 +1,9 @@
-# Lab 2: Train a custom key value extraction model in OCI Document Understanding
+# Lab 2: Train a Custom Key Value Extraction model in OCI Document Understanding
 ## Introduction
 
 In this lab, you will use the OCI Console to create and train a model in OCI Document Understanding.
 
-Estimated Time: 60 minutes
+Estimated Time: 10 minutes
 
 
 ### Objectives
@@ -11,7 +11,7 @@ Estimated Time: 60 minutes
 In this workshop, you will:
 
 * Get to know how to create a Project 
-* Learn to create and train a Key Value Detection model
+* Learn to create and train a Key Value extraction model
 
 ## Task 1: Create a Project 
 
@@ -30,7 +30,7 @@ A Project is a way to organize multiple models in the same workspace. It is the 
 ![](./images/project3.png)
 
 
-Task 2: Train a new custom model
+## Task 2: Train a new custom model
 
 Now that you’ve created a project, go back to the Project details page to create your custom model with the following guidelines:
 
@@ -38,14 +38,16 @@ Now that you’ve created a project, go back to the Project details page to crea
 
 ![](./images/model1.png)
 
-* Train a key value detection model
+* Train a key value extraction model
 * For Training Dataset:
   * If Lab 1 is not done: select **"Create a New Dataset"**. This will drive you to OCI Data Labeling service, where you can follow [Lab 1](./lab-01-dataset_creation.md) to create a dataset.
   * If Lab 1 is done: select **"Choose existing dataset"**. Give "Data Labelling Service" as data source and from the dropdown list select the dataset created in Lab 1.
 
 ![](./images/model2.png)
 
-* In the _"train model"_ step, Use any name for the custom model you want, optionally add a description of it, and specify a training duration. 
+* In the _"train model"_ step, Use any name for the custom model you want(for e.g: Test_XYZ)
+* Add a description of the model(optional)
+* Select **"Recommended training"** in the training duration section. 
 
 ![](./images/model3.png)
 
@@ -54,7 +56,7 @@ Now that you’ve created a project, go back to the Project details page to crea
 ## **Summary**
 
 Congratulations! </br>
-In this lab you have learnt how to create and train a custom key value detection model.
+In this lab you have learnt how to create and train a custom key value extraction model.
 
 You may now **proceed to the next lab**.
 

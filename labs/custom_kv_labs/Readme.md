@@ -1,10 +1,10 @@
-# Custom Key_Value Detection Workshop
+# Custom Key-Value Extraction Workshop
 
 ### Objectives
 
 In this workshop, we will go through the end to end steps of creating a custom key-value extraction model with OCI Document Understanding. We will mainly:
 
-* Learn how to train an KeyValue detection model through the OCI console
+* Learn how to train an KeyValue extraction model through the OCI console
 * Learn how to use OCI console, OCI preview SDK and REST API to communicate with our document service endpoints.
 
 
@@ -14,7 +14,7 @@ In this workshop, we will go through the end to end steps of creating a custom k
 * OCI Paid Account
 * Access to OCI Document Understanding preview SDK (request access here)
 
-The purpose of this workshop was to give you an overview of the Key Value Detection service without going into the details and more advanced scenarios.
+The purpose of this workshop is to give you an overview of the Key Value Extraction service without going into the details and more advanced scenarios.
 
 Follow the lab order below. It should take about 2.5-3 hours to complete the entire workshop. 
 
@@ -28,7 +28,7 @@ In [Lab 0](./lab-00-policies.md) you add all the policies required for future la
 
 ## Lab 2: Train a custom key value extraction model in OCI Document Understanding
 
-In [Lab 2](./lab-02-model_training.md) you learn how to train a key value detection model under Document Understanding Service in OCI console
+In [Lab 2](./lab-02-model_training.md) you learn how to train a key value extraction model under Document Understanding Service in OCI console
 
 ## Lab 3: Call your model in the OCI Console
 

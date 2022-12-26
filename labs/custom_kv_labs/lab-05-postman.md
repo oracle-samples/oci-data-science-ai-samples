@@ -1,7 +1,7 @@
 # Lab 5: Call your model through REST API using Postman
 ## Introduction
 
-In this lab, we will use Document Services in Postman.
+In this lab, we will use Document Understanding Services in Postman.
 
 Estimated Time: 15 minutes
 
@@ -24,7 +24,7 @@ In this workshop, you will:
 
 ![](./images/postman1.png)
 
-* Enter name to identify forked Document Understanding API collection, select the workspace you want to fork the collection to and click **"Fork Collection"**.
+* Enter a name to identify the forked Document Understanding API collection, select the workspace you want to fork the collection to, and click **"Fork Collection"**.
 
 ![](./images/postman2.png)
 
@@ -32,11 +32,13 @@ In this workshop, you will:
 
 ![](./images/postman3.png)
 
-* Enter name to identify forked OCI credentials environment, select the workspace you want to fork the collection to and click **"Fork Collection"**.
+* Enter a name to identify the forked OCI credentials environment, select the workspace you want to fork the collection to and click **"Fork Collection"**.
 
 ![](./images/postman4.png)
 
-* Navigate to your workspace and open newly forked environment (OCI Credentials), and set the variables tenancyId, authUserId, keyFingerprint and private Key. These are same that are found in the .oci file you created in the Lab 4 (Task 2). Make sure to set both Initial Value and Current Value of the variables(set both as the same value).Click the Save button to commit your changes to the environment.
+* Navigate to your workspace and open the newly forked environment (OCI Credentials), and set the variables tenancyId, authUserId, keyFingerprint, and private Key. These are the same va;ue that are found in the .oci file you created in Lab 4 (Task 2). 
+* Make sure to set both Initial Value and Current Value of the variables(set both as the same value).
+* Click the Save button to commit your changes to the environment.
 ![](./images/postman5.png)
 
 
@@ -56,7 +58,7 @@ In this workshop, you will:
 
 ![](./images/request3.png)
 
-* Edit the payload given below according to your model ID, data(in inputLocation), outputLocation and compartment ID
+* Edit the payload given below according to your model ID, data(in inputLocation), outputLocation, and compartment ID
 
   (Note: data should be base64 encoded)
   ```
@@ -79,25 +81,33 @@ In this workshop, you will:
       "namespaceName": <namespace under which model exists>,
       "prefix": "prefix"
     },
-    "compartmentId": <ID of compartment where the model is created>
+    "compartmentId": <ID of the compartment where the model is created>
   }
   ```
 
-* Enter the payload in the postman and click on send. In the response **"lifecycleState"** should be in <code>SUCCEEDED</code> state.
+* Enter the payload in the postman and click on "send". 
+* We will get the response with the request details and Processor job details. In the response **"lifecycleState"** should be in <code>SUCCEEDED</code> state.
 
 ![](./images/request4.png)
 
-* The output JSON file can be found in the output location specified by user
+* The output JSON file can be found in the "outputLocation" specified by the user. 
+* Navigate to the bucket mentioned in the ouputLocation and click on Objects under Resources section. 
+* You will find the output file similar to the one shown below in the following path: "prefix/{Processorjob_ID}/_/results/defaultObject.json". 
+  (Note: Processorjob_ID can be found denoted as "id" in the response obtained in the previous step)
+
+![](./images/request5.png)
+
+* Sample Output JSON file: [defaultObject.json](./defaultObject.json)
 
 ## **Summary**
 
 Congratulations! </br>
-In this lab you have learnt how to invoke the model through postman.
+In this lab, you have learnt how to invoke the model through postman.
 
 Hurray!! You have successfully completed this workshop. In this workshop you had learnt:
 * To create and label a dataset
 * To create and train a model in OCI console
-* Call model through different platforms like OCI console, Datascience Notebook(through preview SDK) and Postman
+* Call model through different platforms like OCI console, Datascience Notebook(through preview SDK), and Postman
 
 ## Stay in Touch!
 

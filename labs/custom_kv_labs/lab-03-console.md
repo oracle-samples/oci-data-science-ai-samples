@@ -10,7 +10,7 @@ Estimated Time: 10 minutes
 
 In this workshop, you will:
 
-* Get to know how to call the key value detection model created in [previous lab](./lab-02-model_training.md)
+* Get to know how to call the key value extraction model created in [previous lab](./lab-02-model_training.md)
 
 ## Task: Invoke model through OCI console
 * Once the model is active, select **"Analyze"** under _Resources_ header on the left hand side of the console

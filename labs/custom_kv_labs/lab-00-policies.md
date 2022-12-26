@@ -1,4 +1,4 @@
-# Lab 0: Configure Document Understanding and Data Science Policies
+# Lab 0: Configure Document Understanding and Data Labeling Service Policies
 
 ## Introduction
 
@@ -14,7 +14,8 @@ In this lab, you will:
 * Get familiar with the OCI Console and be able to configure your policies for OCI Document Understanding
 
 ## Task: Policy Setup
-Before you start using OCI Document Understanding, OCI policies should be setup for allowing you to access OCI Document Understanding Service. Follow these steps to configure required policies.
+Before you start using OCI Document Understanding, OCI policies should be setup for allowing you to access OCI Document Understanding Service. Follow these steps to configure the required policies.
+(Note: Make sure you create the policies in the tenancy you are using to create remaining operations)
 
 ### 1. Navigate to Policies
 Log into OCI Cloud Console. Using the Burger Menu on the top left corner, navigate to Identity & Security and click it, and then select Policies item under Identity.
@@ -33,7 +34,7 @@ Configure as shown below:
 
 ![](./images/policy3.PNG)
 
-### 4. Create Policy to grant users Document APIs access (Required)
+### 4. Create a Policy to grant users Document APIs access (Required)
 
 Add the below statement to allow all the users in your tenancy to use document understanding:
 ```
@@ -44,46 +45,46 @@ allow any-user to manage ai-service-document-family in tenancy
 
 If you want to limit access to a user group, create a policy with the below statement:
 ```
-<copy>allow group <group-name> to use ai-service-document-family in tenancy</copy>
+allow group <group-name> to use ai-service-document-family in tenancy
 ```
+where "group-name" is the name of the user group that is created for some specific users in the "Identity & Security->Groups" section in OCI console.
 
 ### 5. Policy to access input document files in object storage (Recommended)
 
 If your want to analyze documents stored in your tenancy's object storage bucket, add the below statement to grant object storage access permissions to the group:
 ```
-allow group <group_in_tenancy> to use object-family in tenancy
+allow group <group-name> to use object-family in tenancy
 ```
     
 If you want to restrict access to a specific compartment, you can use the following policy instead: 
 ```
-allow group <group_in_tenancy> to use object-family in compartment <input_bucket_located_object_storage_compartment>
+allow group <group-name> to use object-family in compartment <input-bucket-located-object-storage-compartment>
 ```
 
 ### 6. Policy to access output location in object storage (Required)
 
-Document Understanding Service stores results in your tenancy's object store. Add the following policy to grant object storage access permissions to the user group who requested the analysis to documents:
+Document Understanding Service stores results in your tenancy's object store. Add the following policy to grant object storage access permissions to the user group who requested the analysis of documents:
 
 ```
-allow group <group_in_tenancy> to manage object-family in compartment <output_bucket_located_object_storage_compartment>
+allow group <group-name> to manage object-family in compartment <output-bucket-located-object-storage-compartment>
 ```
 
-### 7. Policy to grant users Data Science access
+### 7. Policy to grant users access to Data Science
 
-Data Science service allow us to create and access Datascience Notebook.
+Data Science service allows us to create and access Datascience Notebook.
 
 Add the below statement to allow the user group in your tenancy to use data science:
 ```
-allow group <data-scientists> to manage data-science-family in tenancy
+allow group <grp-name> to manage data-science-family in tenancy
 ```
-where data-scientists represents the name of your user group.
 
-### 8. Policy to grant users Virtual Cloud Network access
+### 8. Policy to grant users access to Virtual Cloud Network
 
 The Notebook session will be created inside a subnet, for which we need Virtual Cloud Network that contains a subnet
 
 Add the below statement to allow the user group in your tenancy to use VCN:
 ```
-allow group <data-scientists> to use virtual-network-family in tenancy
+allow group <grp-name> to use virtual-network-family in tenancy
 ```
 
 ### 9. Policy to accesss virtual network in data science service
