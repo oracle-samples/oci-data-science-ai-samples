@@ -100,7 +100,7 @@ Generate an API signing key pair
 
 ## Task 3: Call your model
 
-* Download and upload the file [Key_Value_Detection.ipynb](./notebooks/Key_Value_Detection.ipynb) in the notebook.
+* Download and upload the file [Key_Value_Extraction.ipynb](./notebooks/Key_Value_Extraction.ipynb) in the notebook.
 
 ![](./images/sdk.png)
 
