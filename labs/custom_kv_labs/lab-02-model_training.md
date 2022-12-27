@@ -25,7 +25,7 @@ A Project is a way to organize multiple models in the same workspace. It is the 
 
 ![](./images/project2.png)
 
-* Provide any name to your project(e.g: Usability_XYZ). Once the details are entered click the Create Button. If the project is successfully created it will show up in the projects panel.  
+* Provide any name to your project(for e.g: Usability_YourName). Once the details are entered click the Create Button. If the project is successfully created it will show up in the projects panel.  
 
 ![](./images/project3.png)
 
@@ -45,7 +45,7 @@ Now that you’ve created a project, go back to the Project details page to crea
 
 ![](./images/model2.png)
 
-* In the _"train model"_ step, Use any name for the custom model you want(for e.g: Test_XYZ).
+* In the _"train model"_ step, Use any name for the custom model you want(for e.g: Test_YourName).
 * Add a description of the model(optional).
 * Select **"Recommended training"** in the training duration section. 
 

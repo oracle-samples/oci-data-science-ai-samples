@@ -47,7 +47,7 @@ Create a new dataset with the following guidelines:
 
 ![](./images/dataset2.png)
 
-* Under the name section, provide any name to your dataset(For example: "Test_XYZ").
+* Under the name section, provide any name to your dataset(For e.g: "Test_YourName").
 * This will be a key-value extraction dataset.
 
 ![](./images/dataset3.png)
@@ -65,7 +65,7 @@ Create a new dataset with the following guidelines:
 
 ![](./images/dataset6.png)
 
-* We want to extract the values for **"Recipient" "Carrier Name" "Shipping ID"** and **"Trailer Number"** from the given sample documents(You can give labels depending on the type of data you use to create the dataset).
+* We want to extract the values for **"Recipient", "Carrier Name", "Shipping ID",** and **"Trailer Number"** from the given sample documents(You can give labels depending on the type of data you use to create the dataset).
 
 ![](./images/dataset7.png)
 
