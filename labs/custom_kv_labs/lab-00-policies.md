@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In this lab, you will use the OCI Console to set up the policies for OCI Document Understanding and Data Science.
+In this lab, you will use the OCI Console to set up the policies for OCI Document Understanding and Data Labelling Service.
 
 Estimated Time: 10 minutes
 
@@ -11,11 +11,11 @@ Estimated Time: 10 minutes
 
 In this lab, you will:
 
-* Get familiar with the OCI Console and be able to configure your policies for OCI Document Understanding
+* Get familiar with the OCI Console and be able to configure your policies required for this workshop.
 
 ## Task: Policy Setup
-Before you start using OCI Document Understanding, OCI policies should be setup for allowing you to access OCI Document Understanding Service. Follow these steps to configure the required policies.
-(Note: Make sure you create the policies in the tenancy you are using to create remaining operations)
+Follow these steps to configure the required policies:
+ (Note: Make sure you create the policies in the tenancy you are using for remaining tasks of this workshop)
 
 ### 1. Navigate to Policies
 Log into OCI Cloud Console. Using the Burger Menu on the top left corner, navigate to Identity & Security and click it, and then select Policies item under Identity.
@@ -24,7 +24,7 @@ Log into OCI Cloud Console. Using the Burger Menu on the top left corner, naviga
 
 ### 2. Create Policy
 
-Click Create Policy
+Click Create Policy.
 
 ![](./images/policy2.png)
 
@@ -34,7 +34,7 @@ Configure as shown below:
 
 ![](./images/policy3.PNG)
 
-### 4. Create a Policy to grant users Document APIs access (Required)
+### 4. Create a Policy to grant users Document APIs access
 
 Add the below statement to allow all the users in your tenancy to use document understanding:
 ```
@@ -49,9 +49,9 @@ allow group <group-name> to use ai-service-document-family in tenancy
 ```
 where "group-name" is the name of the user group that is created for some specific users in the "Identity & Security->Groups" section in OCI console.
 
-### 5. Policy to access input document files in object storage (Recommended)
+### 5. Policy to access input document files in object storage
 
-If your want to analyze documents stored in your tenancy's object storage bucket, add the below statement to grant object storage access permissions to the group:
+If you want to analyze documents stored in your tenancy's object storage bucket, add the below statement to grant object storage access permissions to the group:
 ```
 allow group <group-name> to use object-family in tenancy
 ```
@@ -61,7 +61,7 @@ If you want to restrict access to a specific compartment, you can use the follow
 allow group <group-name> to use object-family in compartment <input-bucket-located-object-storage-compartment>
 ```
 
-### 6. Policy to access output location in object storage (Required)
+### 6. Policy to access output location in object storage
 
 Document Understanding Service stores results in your tenancy's object store. Add the following policy to grant object storage access permissions to the user group who requested the analysis of documents:
 
@@ -75,19 +75,19 @@ Data Science service allows us to create and access Datascience Notebook.
 
 Add the below statement to allow the user group in your tenancy to use data science:
 ```
-allow group <grp-name> to manage data-science-family in tenancy
+allow group <group-name> to manage data-science-family in tenancy
 ```
 
 ### 8. Policy to grant users access to Virtual Cloud Network
 
-The Notebook session will be created inside a subnet, for which we need Virtual Cloud Network that contains a subnet
+The Notebook session will be created inside a subnet, for which we need a Virtual Cloud Network that contains a subnet.
 
 Add the below statement to allow the user group in your tenancy to use VCN:
 ```
-allow group <grp-name> to use virtual-network-family in tenancy
+allow group <group-name> to use virtual-network-family in tenancy
 ```
 
-### 9. Policy to accesss virtual network in data science service
+### 9. Policy to access virtual network in data science service
 
 ```
 allow service datascience to use virtual-network-family in tenancy
@@ -96,7 +96,7 @@ allow service datascience to use virtual-network-family in tenancy
 ## **Summary**
 
 Congratulations! </br>
-In this lab you have learnt how to set up your OCI Document Understanding policies.
+In this lab, you have learnt how to set up your OCI Document Understanding policies.
 
 You may now **proceed to the next lab**.
 

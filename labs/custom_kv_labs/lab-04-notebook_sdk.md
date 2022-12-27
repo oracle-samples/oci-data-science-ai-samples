@@ -10,16 +10,16 @@ Estimated Time: 40 minutes
 
 In this lab, you will:
 
-* Get to know how to create a Datascience notebook in OCI console
-* Learn to setup API Signing Key and Config File
-* Call the model in notebook through OCI preview SDK
+* Get to know how to create a Datascience notebook in the OCI console.
+* Learn to setup API Signing Key and Config File.
+* Call the model in the notebook through OCI preview SDK.
 
 ### Prerequisites
 
 Before you can start using Data Science, your tenancy administrator should set up the following networking, dynamic group.
 * Create a VCN and subnets using Virtual Cloud Networks > Start VCN Wizard > VCN with Internet Connectivity option. The Networking Quickstart option automatically creates the necessary private subnet with a NAT gateway.
 * Create a dynamic group with the following matching rule: ALL { resource.type = 'datasciencenotebooksession' }
-  * Create Dynamic Group Policy in the root compartment with the following statement:
+  * Create a Dynamic Group Policy in the root compartment with the following statement:
   ```
   allow dynamic-group <dynamic-group> to manage data-science-family in tenancy
   ```
@@ -44,7 +44,7 @@ Before you can start using Data Science, your tenancy administrator should set u
 
 ![](./images/notebook4.png)
 
-* Enter Notebook details: Select a name. Choose Intel Skylake VM.Standard2.2 as the shape. Set block storage to 50 GB. Select the subnet with Internet connectivity. (Select private subnet if you have use VCN Wizard to create VCN)
+* Enter Notebook details: Select a name. Choose Intel Skylake VM.Standard2.2 as the shape. Set block storage to 50 GB. Select the subnet with Internet connectivity. (Select private subnet if you have used VCN Wizard to create VCN)
 
 ![](./images/notebook5.png)
 
@@ -64,7 +64,7 @@ Generate an API signing key pair
 
 ![](./images/api2.png)
 
-* In the dialog, select **"Generate API Key Pair"**. Click Download Private Key, save the key file and then click Add.
+* In the dialog, select **"Generate API Key Pair"**. Click Download Private Key, save the key file, and then click Add.
 
 ![](./images/api3.png)
 
@@ -78,7 +78,7 @@ Generate an API signing key pair
 
   The private key and config files will be utilized in the next tasks.
 
-  To know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) and [SDK and CLI Configuration File](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm#SDK_and_CLI_Configuration_File)
+  To know more visit [Generating API KEY](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm) and [SDK and CLI Configuration File](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm#SDK_and_CLI_Configuration_File).
 
 * Open the Notebook session you created in Task 1. Open the Terminal by clicking the Terminal icon in the Launcher Tab.
 * In the terminal, create a .oci directory in the Data Science notebook session.
@@ -100,22 +100,22 @@ Generate an API signing key pair
 
 ## Task 3: Call your model
 
-* Download and upload the file [Key_Value_Detection.ipynb](./notebooks/Key_Value_Detection.ipynb) in the notebook
+* Download and upload the file [Key_Value_Detection.ipynb](./notebooks/Key_Value_Detection.ipynb) in the notebook.
 
 ![](./images/sdk.png)
 
 * Open the Notebook that you've just uploaded. Now go through each of the cells and run them one by one. You can click Shift+Enter on each cell to run the code in the cell.
 
-* After running all the cells in order, the final cell should display the output similar to below one
+* After running all the cells in order, the final cell should display an output similar to the below one.
 
 ![](./images/sdk1.png)
 
-This notebook demonstrate how you can productively use the Key Value Extraction Feature of Document service through notebook
+This notebook demonstrates how you can productively use the Key Value Extraction Feature of Document service through the notebook.
 
 ## **Summary**
 
 Congratulations! </br>
-In this lab you have learnt how to access the key value extraction model through OCI preview SDK.
+In this lab, you have learnt how to access the key value extraction model through OCI preview SDK.
 
 You may now **proceed to the next lab**.
 
