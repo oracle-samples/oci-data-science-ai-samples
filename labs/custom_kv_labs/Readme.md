@@ -10,9 +10,9 @@ In this workshop, we will go through the end to end steps of creating a custom k
 
 ### Prerequisites
 
-* Familiarity with Python.
-* OCI Paid Account.
-* Access to OCI Document Understanding preview SDK (request access here).
+* Familiarity with Python
+* OCI Paid Account
+* Access to OCI Document Understanding preview SDK (request access here)
 
 The purpose of this workshop is to give you an overview of the Key Value Extraction service without going into the details and more advanced scenarios.
 
