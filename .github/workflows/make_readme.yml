@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Make README.md
         uses: ./actions/make_readme
-      - name: Commit, push and create a PR if there ara changes in README.md
+      - name: Commit, push and create a PR if there are changes in README.md
         uses: ./actions/create_pr_action
         with:
           # Optional. A branch name to create a PR from. Defaults to "updated_by_github_action"
