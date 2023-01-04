@@ -1,5 +1,4 @@
-
-name: Make README.md
+name: Update README.md and create a PR
 on:
   # Triggers the workflow on push or pull request events
   push:
@@ -13,12 +12,25 @@ on:
   # Allows mannual triggering
   workflow_dispatch:
 jobs:
-  make-readme-and-index:
+  make-and-commit-readme-file:
     runs-on: ubuntu-latest
-    name: make readme.md
+    name: update readme.md and create a pr
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Run python script
-        id: make_readme
-        uses: ./
+      - name: Make README.md
+        uses: ./actions/make_readme
+      - name: Commit, push and create a PR if there ara changes in README.md
+        uses: ./actions/create_pr_action
+        with:
+          # Optional. A branch name to create a PR from. Defaults to "updated_by_github_action"
+          branch_name: auto_update_readme
+          # Optional. PR title. Defaults to "Updates made by GitHub action"
+          pr_title: README.md auto update
+          # Optional. PR body value. Defaults to "Updates made by GitHub action"
+          pr_body: README.md has been auto updated by GitHub action
+          # Optional. Commit message for the created commit. Defaults to "Auto commit changes"
+          commit_message: Auto commit README.md
+          # Optional. Select the files to check for updates. Defaults to '.'
+          # In this case we are interested only in changes in notebook_examples/README.md
+          file_pattern: :/notebook_examples/README.md
