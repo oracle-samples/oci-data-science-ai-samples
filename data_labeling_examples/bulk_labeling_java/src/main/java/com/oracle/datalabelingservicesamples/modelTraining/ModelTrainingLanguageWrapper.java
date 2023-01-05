@@ -4,6 +4,7 @@ import com.oracle.bmc.ailanguage.model.ClassificationMultiLabelModeDetails;
 import com.oracle.bmc.ailanguage.model.ClassificationType;
 import com.oracle.bmc.ailanguage.model.CreateEndpointDetails;
 import com.oracle.bmc.ailanguage.model.CreateModelDetails;
+import com.oracle.bmc.ailanguage.model.DataScienceLabelingDataset;
 import com.oracle.bmc.ailanguage.model.LocationDetails;
 import com.oracle.bmc.ailanguage.model.ModelDetails;
 import com.oracle.bmc.ailanguage.model.NamedEntityRecognitionModelDetails;
@@ -37,18 +38,18 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
     public void performModelTraining(AssistedLabelingParams assistedLabelingParams) throws Exception {
         log.info("Starting Custom model training using input dataset: {}", assistedLabelingParams.getDatasetId());
 //      If project already exists, use the same ID, otherwise create a new project
+
+        if(assistedLabelingParams.getSnapshotDatasetParams() == null){
+            log.info("Snapshot file has not been provided, generating new snapshot using training dataset Id : {}", assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId());
+            dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
+        }
+
+//        SnapshotDatasetParams snapshotDatasetParams =
+//                SnapshotDatasetParams.builder().build();
 //
-//        if(assistedLabelingParams.getSnapshotDatasetParams() == null){
-//            log.info("Snapshot file has not been provided, generating new snapshot using training dataset Id : {}", assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId());
-//            dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
-//        }
-
-        SnapshotDatasetParams snapshotDatasetParams =
-                SnapshotDatasetParams.builder().build();
-
-        assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
-
-        assistedLabelingParams.getSnapshotDatasetParams().setSnapshotObjectName("records_1671099337777.jsonl");
+//        assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
+//
+//        assistedLabelingParams.getSnapshotDatasetParams().setSnapshotObjectName("");
 
         if(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId().isEmpty()) {
             try {
@@ -111,9 +112,14 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
                     .compartmentId(assistedLabelingParams.getCompartmentId())
                     .modelDetails(modelDetails)
   //                .modelVersion("EXAMPLE-modelVersion-Value") Going with default value
-                    .trainingDataset(ObjectStorageDataset.builder()
-                            .locationDetails(locationDetails)
-                            .build())
+//                    .trainingDataset(ObjectStorageDataset.builder()
+//                            .locationDetails(locationDetails)
+//                            .build())
+                    .trainingDataset(
+                            DataScienceLabelingDataset.builder()
+                            .datasetId(assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId())
+                            .build()
+                    )
                     .projectId(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId())
                     .freeformTags(new HashMap<String, String>() {
                         {

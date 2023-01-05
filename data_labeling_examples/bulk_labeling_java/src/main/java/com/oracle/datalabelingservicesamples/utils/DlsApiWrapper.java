@@ -113,7 +113,7 @@ public class DlsApiWrapper {
         log.info("Creating snapshot of training dataset in DLS service");
 
         ExportFormat exportFormat = ExportFormat.builder()
-                .name(ExportFormat.Name.Jsonl)
+                .name(ExportFormat.Name.JsonlCompactPlusContent)
                 .build();
 
         ObjectStorageSnapshotExportDetails snapshotExportDetails =
