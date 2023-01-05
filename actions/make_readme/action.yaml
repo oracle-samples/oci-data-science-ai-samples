@@ -1,5 +1,5 @@
 name: "Make README.md"
-description: "Makes README.md on push or pull request events or when manually triggered"
+description: "Make README.md"
 runs:
   using: "composite"
   steps:
