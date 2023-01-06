@@ -25,7 +25,7 @@ Natively Jobs support Python and Shell scripts, but you could also Bring Your Ow
 The repository contains set of folders for the programing languages we currently provide samples. Each folder contains codes of how to use the client OCI SDK, for example:
 
 - `cli`, `node`,`python`,`shell`, `ts+js` the programing language client SDK samples
-  
+
 Depending on the programing language, like for example Python, we provide also sample Jobs in the sub folders.
 
 - `sdk` Oracle Cloud SDK Jobs API implementation samples
@@ -37,6 +37,7 @@ This repository provides following samples:
 
 - `byoc` - Bring Your Own Container guide and sample
 - `cli` - Oracle OCI CLI client samples of how to create and run jobs
+- `custom_metrics` - emit custom metrics from your Job Run and query metric values on your local machine
 - `flask_job_monitoring` - a simple application to monitor multiple Job Run logs on your local or compute machine
 - `java` - Java client code implementing utilizing the Oracle Cloud Jobs Java OCI SDK
 - `python` - OCI SDK API sample, as well as actual Job simple samples written in Python
