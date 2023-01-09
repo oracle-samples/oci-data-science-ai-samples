@@ -12,8 +12,7 @@ import yaml
 from ads.common.oci_datascience import OCIDataScienceMixin
 from ads.common.oci_resource import OCIResource
 from ads.jobs import DataScienceJobRun, Job
-from ads.opctl.cmds import run as opctl_run
-from flask import Flask, request, abort, jsonify, render_template
+from flask import Flask, request, abort, jsonify, render_template, make_response, redirect
 
 
 # Load config
@@ -46,6 +45,10 @@ if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
     logger.info(f"Using OCI API Key profile: {OCI_KEY_PROFILE_NAME}")
 # Flask templates location
 app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), "templates"))
+
+
+def abort_with_json_error(code, message):
+    abort(make_response(jsonify(error=message), code))
 
 
 def instance_principal_available():
@@ -109,16 +112,16 @@ else:
 
 def check_ocid(ocid):
     if not re.match(r'ocid[0-9].[a-z]+.oc[0-9].[a-z]{3}.[a-z0-9]+', ocid):
-        abort(404, f"Invalid OCID: {ocid}")
+        abort_with_json_error(404, f"Invalid OCID: {ocid}")
 
 def check_project_id(project_id):
     if not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
-        abort(404, f"Invalid Project OCID: {project_id}")
+        abort_with_json_error(404, f"Invalid Project OCID: {project_id}")
 
 
 def check_compartment_id(compartment_id):
     if not re.match(r'ocid[0-9].compartment.oc[0-9]..[a-z0-9]+', compartment_id):
-        abort(404, f"Invalid Compartment OCID: {compartment_id}")
+        abort_with_json_error(404, f"Invalid Compartment OCID: {compartment_id}")
 
 
 def check_compartment_project(compartment_id, project_id):
@@ -143,8 +146,24 @@ def check_endpoint():
 def check_limit():
     limit = request.args.get("limit", 10)
     if isinstance(limit, str) and not limit.isdigit():
-        abort(400, "limit parameter must be an integer.")
+        abort_with_json_error(400, "limit parameter must be an integer.")
     return limit
+
+def list_all_sub_compartments(client: oci.identity.IdentityClient, compartment_id):
+    compartments = oci.pagination.list_call_get_all_results(
+        client.list_compartments,
+        compartment_id=compartment_id,
+        compartment_id_in_subtree=True,
+        access_level="ANY"
+    ).data
+    return compartments
+
+def list_all_child_compartments(client: oci.identity.IdentityClient, compartment_id):
+    compartments = oci.pagination.list_call_get_all_results(
+        client.list_compartments,
+        compartment_id=compartment_id,
+    ).data
+    return compartments
 
 def init_components(compartment_id, project_id):
     limit = request.args.get("limit", 10)
@@ -164,19 +183,29 @@ def init_components(compartment_id, project_id):
     else:
         tenancy_id = auth["signer"].tenancy_id
     logger.debug(f"Tenancy ID: {tenancy_id}")
+    client = oci.identity.IdentityClient(**auth)
+    compartments = []
+    # User may not have permissions to list compartment.
     try:
-        client = oci.identity.IdentityClient(**auth)
-        compartments = oci.pagination.list_call_get_all_results(
-            client.list_compartments,
-            compartment_id=tenancy_id,
-            compartment_id_in_subtree=True,
-            access_level="ANY"
-        ).data
+        compartments.extend(list_all_sub_compartments(client, compartment_id=tenancy_id))
+    except Exception as ex:
+        traceback.print_exc()
+        logger.error("ERROR: Unable to list all sub compartment in tenancy %s.", tenancy_id)
+        try:
+            compartments.append(list_all_child_compartments(client, compartment_id=tenancy_id))
+        except Exception as ex:
+            traceback.print_exc()
+            logger.error("ERROR: Unable to list all child compartment in tenancy %s.", tenancy_id)
+    try:
         root_compartment = client.get_compartment(tenancy_id).data
         compartments.insert(0, root_compartment)
     except Exception as ex:
         traceback.print_exc()
-        abort(400, str(ex))
+        logger.error("ERROR: Unable to get details of the root compartment %s.", tenancy_id)
+        compartments.insert(0, oci.identity.models.Compartment(
+            id=tenancy_id,
+            name=" ** Root - Name N/A **"
+        ))
     context = dict(
         compartment_id=compartment_id,
         project_id=project_id,
@@ -192,7 +221,7 @@ def init_components(compartment_id, project_id):
 @app.route("/<compartment_id>/<project_id>")
 def job_monitor(compartment_id=None, project_id=None):
     if project_id == "favicon.ico":
-        abort(404)
+        return redirect("https://www.oracle.com/favicon.ico")
 
     context = init_components(compartment_id, project_id)
     return render_template(
@@ -361,6 +390,16 @@ def load_yaml(filename=None):
 
 @app.route("/run", methods=["POST"])
 def run():
+    auth = get_authentication()
+    # The following config check is added for security reason.
+    # When the app is started with resource principal or instance principal,
+    # this will restrict the app to only monitor job runs and status.
+    # Without the following restriction, anyone have access to the website could use it to run large workflow.
+    if not auth["config"]:
+        abort_with_json_error(
+            403,
+            "Starting a workflow is only available when you launch the app locally with OCI API key."
+        )
     try:
         workflow = yaml.safe_load(urllib.parse.unquote(request.data[5:].decode()))
 
@@ -372,6 +411,8 @@ def run():
             logger.info(f"Created Job Run: {job_run.id}")
             job_id = job.id
         else:
+            # Running an opctl workflow require additional dependencies for ADS
+            from ads.opctl.cmds import run as opctl_run
             info = opctl_run(workflow)
             job_id = info[0].id
 
@@ -380,6 +421,4 @@ def run():
         })
     except Exception as ex:
         traceback.print_exc()
-        abort(400, str(ex))
-
-
+        abort_with_json_error(500, str(ex))

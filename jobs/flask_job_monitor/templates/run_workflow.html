@@ -51,7 +51,7 @@
 
         function initEditor() {
           return monaco.editor.create(document.getElementById('container'), {
-            value: 'kind: job\nspec:\n',
+            value: 'kind: job\nspec:\n  infrastructure:\n    type: dataScienceJob\n',
             language: 'yaml',
             theme: 'vs-dark',
             automaticLayout: true
@@ -87,7 +87,7 @@
               var workflow = jsyaml.load(editor.getValue());
               toastMessage("Creating Workflow ...", workflow.kind + " - " + workflow.spec.infrastructure.type);
             } catch (err) {
-              console.log(err);
+              toastMessage(err);
               return;
             }
 
@@ -96,8 +96,8 @@
               contentType: "application/json",
               url: "/run",
               data: { yaml: editor.getValue() },
-            }).fail(function() {
-              toastMessage("Error Occurred", "Your workflow may not be started correctly.");
+            }).fail(function(data) {
+              toastMessage("Error", data.responseJSON.error);
             }).done(function(data) {
               toastMessage(
                 "Job Created",
@@ -106,10 +106,6 @@
             });
           });
         })
-
-
-
-
       </script>
     </div>
   </div>
