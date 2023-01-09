@@ -1,0 +1,72 @@
+name: "Commit, push and create pull-request"
+description: "Commit, push and create pull-request if there are changes"
+
+inputs:
+  branch_name:
+    description: A branch name
+    required: false
+    default: updated_by_github_action
+  pr_title:
+    description: PR title
+    required: false
+    default: Updates made by GitHub action
+  pr_body:
+    description: PR body
+    required: false
+    default: Updates made by GitHub action
+  commit_message:
+    description: Commit message
+    required: false
+    default: Auto commit changes
+  author:
+    description: Value used for the commit author. Defaults to the github-actions[bot].
+    required: false
+    default: "github-actions[bot]"
+  author_email:
+    description: Email address used for the commit user. Defaults to the 'github-actions[bot]@users.noreply.github.com'
+    required: false
+    default: "github-actions[bot]@users.noreply.github.com"
+  file_pattern:
+    description: File pattern used for `git add`. For example `src/*.js`
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setting git user
+      run: |
+        echo "Setting git user to ${{ inputs.author }} and email to ${{ inputs.author_email }}"
+        git config user.email ${{ inputs.author_email }}
+        git config user.name ${{ inputs.author }}
+      shell: bash
+    - name: Staging changes
+      id: staging_changes
+      run: |
+        echo "Staging changes matching the pattern ${{ inputs.file_pattern }} if such exist."
+        git add '${{ inputs.file_pattern }}'
+        CHANGED_FILES=$(git diff --cached --name-only)
+        if [[ -z $CHANGED_FILES ]]; then
+          echo "There are no changes to stage."
+          echo "CHANGED_FILES=false" >> $GITHUB_OUTPUT
+        else 
+          echo "Following files changes has been staged:"
+          echo "$CHANGED_FILES"
+          echo "CHANGED_FILES=true" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+    - name: Commit, push and create pull-request
+      if: steps.staging_changes.outputs.CHANGED_FILES == 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        echo "Commiting, pushing and creating a PR"
+        echo "Checking out to the branch named ${{ inputs.branch_name }}"
+        git checkout -b '${{ inputs.branch_name }}'
+        echo "Committing with a message: ${{ inputs.commit_message }}"
+        git commit -m '${{ inputs.commit_message }}'
+        echo "Pushing"
+        git push --set-upstream origin '${{ inputs.branch_name }}'
+        echo "Creating a PR"
+        gh pr create --title '${{ inputs.pr_title }}' --body '${{ inputs.pr_body }}'
+      shell: bash
