@@ -80,6 +80,12 @@ function updateLogs(ocid, outputDiv, stopped) {
       setTimeout(function () {
         updateLogs(ocid, outputDiv, true);
       }, LOG_CHECKING_INTERVAL);
+      setTimeout(function () {
+        updateLogs(ocid, outputDiv, true);
+      }, LOG_CHECKING_INTERVAL * 2);
+      setTimeout(function () {
+        updateLogs(ocid, outputDiv, true);
+      }, LOG_CHECKING_INTERVAL * 3);
     }
   })
 }
