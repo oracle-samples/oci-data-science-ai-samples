@@ -62,11 +62,11 @@ runs:
       run: |
         echo "Commiting, pushing and creating a PR"
         echo "Checking out to the branch named ${{ inputs.branch_name }}"
-        git checkout -b '${{ inputs.branch_name }}'
+        git checkout -b $(date +'${{ inputs.branch_name }}'_%Y%m%d%H%M%S)
         echo "Committing with a message: ${{ inputs.commit_message }}"
         git commit -m '${{ inputs.commit_message }}'
         echo "Pushing"
-        git push --set-upstream origin '${{ inputs.branch_name }}'
+        git push --set-upstream origin $(date +'${{ inputs.branch_name }}'_%Y%m%d%H%M%S)
         echo "Creating a PR"
         gh pr create --title '${{ inputs.pr_title }}' --body '${{ inputs.pr_body }}'
       shell: bash

@@ -2,10 +2,14 @@ name: Update README.md and create a PR
 on:
   # Triggers the workflow on push or pull request events
   push:
+    branches:
+      - master
     paths:
       - "notebook_examples/*.ipynb"
       - "notebook_examples/make_readme.py"
   pull_request:
+    branches:
+      - master
     paths: |
       - "notebook_examples/*.ipynb"
       - "notebook_examples/make_readme.py"
