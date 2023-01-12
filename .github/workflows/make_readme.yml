@@ -21,7 +21,7 @@ jobs:
     name: update readme.md and create a pr
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Make README.md
         uses: ./actions/make_readme
       - name: Commit, push and create a PR if there are changes in README.md
