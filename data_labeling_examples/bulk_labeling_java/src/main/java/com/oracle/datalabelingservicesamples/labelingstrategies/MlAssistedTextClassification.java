@@ -38,7 +38,7 @@ public class MlAssistedTextClassification implements MlAssistedLabelingStrategy 
             String documentText = "";
             try {
                 documentText = IOUtils.toString(recordContentResponse.getInputStream(), "UTF-8");
-                log.info("record content info : {}", documentText);
+                log.debug("record content info : {}", documentText);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -43,7 +43,7 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
         List<ImageFeature> imageJobFeatureList = new ArrayList<>();
         imageJobFeatureList.add(
                 ImageClassificationFeature.builder()
-                        .maxResults(5)
+                        .maxResults(10)
                         .modelId(assistedLabelingParams.getCustomModelId())
                         .build());
 
@@ -87,10 +87,9 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
         try {
             jobID = Config.INSTANCE.getAiVisionClient().createImageJob(createImageJobRequest).getImageJob().getId();
             getImageJobRequest = GetImageJobRequest.builder().imageJobId(jobID).build();
-
-            log.info("jobID {}", jobID);
+            log.info("Vision JobId {}", jobID);
         } catch (Exception ex) {
-            log.error("Error is {}", ex.getMessage());
+            log.error("Error occurred during vision job {}", ex.getMessage());
             throw new Exception(ex);
         }
 
@@ -107,10 +106,10 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
         if (jobStatus.equals(ImageJob.LifecycleState.Succeeded)) {
             location =
                     Config.INSTANCE.getAiVisionClient().getImageJob(getImageJobRequest).getImageJob().getOutputLocation();
-            log.info("Vision call succeeded {}", location.getBucketName());
+            log.info("Vision service job succeeded {}", location.getBucketName());
 
         } else {
-            log.error("jobStatus {}", jobStatus.getValue());
+            log.error("Vision job status {}", jobStatus.getValue());
             throw new Exception("Vision call didn't succeed");
         }
         //
@@ -145,7 +144,7 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
                         new ObjectMapper()
                                 .readValue(
                                         objectDetails.getContentString(), AnalyzeImageResult.class);
-                log.debug("results from vision :{}",analyzeImageResult.getLabels());
+                log.debug("Labels predicted by the vision model :{}",analyzeImageResult.getLabels());
                 if (analyzeImageResult.getLabels() != null) {
                     List<Entity> entities =
                             mapToDLSEntities(
@@ -164,7 +163,7 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
                     }
                 }
             } catch (Exception e) {
-                log.info("exception occurred in wrapper");
+                log.info("Error occurred in vision wrapper");
                 throw e;
             }
         }return createAnnotationDetails;
@@ -175,8 +174,6 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
         List<Entity> imageClassificationEntities = new ArrayList<>();
         List<Label> labels = new ArrayList<>();
         for (com.oracle.bmc.aivision.model.Label visionLabel : visionLabels) {
-            log.info("label from vision {}", visionLabel.getName());
-
             if (dlsLabels.contains(visionLabel.getName())
                     && visionLabel.getConfidence() >= confidenceThreshold) {
                 labels.add(
@@ -232,7 +229,7 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
             GetObjectResponse response = Config.INSTANCE.getObjectStorageClient().getObject(requestBuilder.build());
             int statusCode = response.get__httpStatusCode__();
             if (statusCode != 200 && statusCode != 304 && statusCode != 206) {
-                log.error("received response {}", response);
+                log.error("Object storage response {}", response);
                 throw new Exception("Object storage access failed with status code "+statusCode);
             }
 
@@ -254,7 +251,7 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
         } catch (BmcException e) {
             log.error("BmcException occurred while accessing ObjectStorage bucket.", e);
         } catch (Exception e) {
-            log.error("exception occurred while accessing ObjectStorage bucket.", e);
+            log.error("Exception occurred while accessing ObjectStorage bucket.", e);
         }
         return null;
     }

@@ -40,7 +40,7 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
             String documentText = "";
             try {
                 documentText = IOUtils.toString(recordContentResponse.getInputStream(), "UTF-8");
-                log.info("record content info : {}", documentText);
+                log.debug("record content info : {}", documentText);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -103,7 +103,7 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
                     createAnnotationDetails.add(
                             new CreateAnnotationDetails(
                                     document.getKey(),
-                                    "assistedLabelingParams.getCompartmentId()",
+                                    assistedLabelingParams.getCompartmentId(),
                                     entities,
                                     null,
                                     null));
@@ -120,7 +120,6 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
         List<Entity> entityList = new ArrayList<>();
         for (HierarchicalEntity entity : entities) {
             List<Label> languageLabels = new ArrayList<>();
-            log.info("label from language {}", entity.getType());
             if (dlsLabels.contains(entity.getType())
                     && entity.getScore() >= confidenceThreshold) {
                 languageLabels.add(
