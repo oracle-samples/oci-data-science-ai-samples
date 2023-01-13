@@ -93,7 +93,7 @@ public class MLJobs {
 
         Map<String, String> envVariables = new HashMap<String, String>();
         envVariables.put("CONDA_ENV_TYPE", "service");
-        envVariables.put("CONDA_ENV_SLUG", "mlcpuv1");
+        envVariables.put("CONDA_ENV_SLUG", "generalml_p38_cpu_v1");
 
         CreateJobDetails jobRequestDetails = CreateJobDetails.builder()
                 .displayName(jobName)
@@ -122,7 +122,7 @@ public class MLJobs {
 
         Map<String, String> envVariables = new HashMap<String, String>();
         envVariables.put("CONDA_ENV_TYPE", "service");
-        envVariables.put("CONDA_ENV_SLUG", "mlcpuv1");
+        envVariables.put("CONDA_ENV_SLUG", "generalml_p38_cpu_v1");
 
         CreateJobDetails jobRequestDetails = CreateJobDetails.builder()
                 .displayName(jobName)
@@ -235,7 +235,7 @@ public class MLJobs {
                                              String jobRunName) {
         Map<String, String> envVariables = new HashMap<String, String>();
         envVariables.put("CONDA_ENV_TYPE", "service");
-        envVariables.put("CONDA_ENV_SLUG", "mlcpuv1");
+        envVariables.put("CONDA_ENV_SLUG", "generalml_p38_cpu_v1");
 
 
         CreateJobRunRequest createJobRunRequest =

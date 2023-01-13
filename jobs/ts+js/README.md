@@ -4,7 +4,7 @@ The OCI SDK supports the JavaScript langauge. This code shows how to use it.
 
 ## Install
 
-To be able to run the sample you have to have NodeJS installed on your environment. We recommend using NVM (Linux and MacOS), in case you want maintain several versions at the same time.
+To be able to run the sample you have to have NodeJS installed on your environment. We recommend using NVM (Linux and MacOS), in case you would like to maintain several versions at the same time.
 
 - [NVM](https://github.com/nvm-sh/nvm)
 
@@ -12,12 +12,12 @@ To be able to run the sample you have to have NodeJS installed on your environme
 
 The Node and NPM versions used to test the code:
 
-- Node - v14.18.1
-- NPM - 8.1.1
+- Node >= v14.18.1
+- NPM >= 8.1.1
 
 ### Oracle Cloud Infrastructure SDK for TypeScript and JavaScript
 
-You have to install the latest version in order to test this code. 
+You have to install the latest version in order to test this code.
 
 - [oci-typescript-sdk](https://github.com/oracle/oci-typescript-sdk)
 
@@ -27,7 +27,7 @@ To install the Oracle OCI Node SDK
 npm install oci-sdk --save
 ```
 
-### Run 
+### Run
 
 Set your environment variables:
 
@@ -52,4 +52,3 @@ Run the client to test Job creation and Job Run.
 ```bash
 node client.js
 ```
-

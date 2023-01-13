@@ -1,7 +1,7 @@
 {
   "name": "jobs",
-  "version": "1.0.0",
-  "description": "Jobs client TypeScript&JavaScript SDK Samples",
+  "version": "1.0.1",
+  "description": "Jobs Client TypeScript&JavaScript SDK Samples",
   "main": "client.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "moment": "^2.29.1",
-    "oci-sdk": "^2.12.0"
+    "oci-sdk": "^2.50.1"
   }
 }
