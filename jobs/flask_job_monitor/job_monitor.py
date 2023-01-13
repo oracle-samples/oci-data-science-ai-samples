@@ -114,6 +114,7 @@ def check_ocid(ocid):
     if not re.match(r'ocid[0-9].[a-z]+.oc[0-9].[a-z]{3}.[a-z0-9]+', ocid):
         abort_with_json_error(404, f"Invalid OCID: {ocid}")
 
+
 def check_project_id(project_id):
     if not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
         abort_with_json_error(404, f"Invalid Project OCID: {project_id}")
@@ -122,6 +123,12 @@ def check_project_id(project_id):
 def check_compartment_id(compartment_id):
     if not re.match(r'ocid[0-9].compartment.oc[0-9]..[a-z0-9]+', compartment_id):
         abort_with_json_error(404, f"Invalid Compartment OCID: {compartment_id}")
+
+
+def is_valid_ocid(resource_type, ocid):
+    if re.match(r'ocid[0-9].' + resource_type + r'.oc[0-9].[a-z]{3}.[a-z0-9]+', ocid):
+        return True
+    return False
 
 
 def check_compartment_project(compartment_id, project_id):
@@ -135,6 +142,7 @@ def check_compartment_project(compartment_id, project_id):
     check_compartment_id(compartment_id)
     return compartment_id, project_id
 
+
 def check_endpoint():
     endpoint = request.args.get("endpoint")
     if endpoint:
@@ -143,11 +151,13 @@ def check_endpoint():
         OCIDataScienceMixin.kwargs = None
     return endpoint
 
+
 def check_limit():
     limit = request.args.get("limit", 10)
     if isinstance(limit, str) and not limit.isdigit():
         abort_with_json_error(400, "limit parameter must be an integer.")
     return limit
+
 
 def list_all_sub_compartments(client: oci.identity.IdentityClient, compartment_id):
     compartments = oci.pagination.list_call_get_all_results(
@@ -158,12 +168,14 @@ def list_all_sub_compartments(client: oci.identity.IdentityClient, compartment_i
     ).data
     return compartments
 
+
 def list_all_child_compartments(client: oci.identity.IdentityClient, compartment_id):
     compartments = oci.pagination.list_call_get_all_results(
         client.list_compartments,
         compartment_id=compartment_id,
     ).data
     return compartments
+
 
 def init_components(compartment_id, project_id):
     limit = request.args.get("limit", 10)
@@ -282,6 +294,7 @@ def list_job_runs(job_id):
         "runs": run_list
     })
 
+
 @app.route("/projects/<compartment_id>")
 def list_projects(compartment_id):
     endpoint = check_endpoint()
@@ -338,18 +351,28 @@ def get_logs(job_run_ocid):
     return jsonify(context)
 
 
-@app.route("/delete/<job_ocid>")
-def delete_job(job_ocid):
+@app.route("/delete/<ocid>")
+def delete_job(ocid):
     check_endpoint()
-    job = Job.from_datascience_job(job_ocid)
-    try:
-        job.delete()
-        error = None
-    except oci.exceptions.ServiceError as ex:
-        error = ex.message
-    logger.info(f"Deleted Job: {job_ocid}")
+    if is_valid_ocid("datasciencejob", ocid):
+        job = Job.from_datascience_job(ocid)
+        try:
+            job.delete()
+            error = None
+        except oci.exceptions.ServiceError as ex:
+            error = ex.message
+        logger.info(f"Deleted Job: {ocid}")
+    elif is_valid_ocid("datasciencejobrun", ocid):
+        run = DataScienceJobRun.from_ocid(ocid)
+        try:
+            run.delete()
+            error = None
+        except oci.exceptions.ServiceError as ex:
+            error = ex.message
+        logger.info(f"Deleted Job Run: {ocid}")
+
     return jsonify({
-        "ocid": job_ocid,
+        "ocid": ocid,
         "error": error
     })
 
@@ -385,7 +408,6 @@ def load_yaml(filename=None):
         "filename": filename,
         "content": content
     })
-
 
 
 @app.route("/run", methods=["POST"])
