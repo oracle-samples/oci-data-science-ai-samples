@@ -413,7 +413,18 @@ def run():
         else:
             # Running an opctl workflow require additional dependencies for ADS
             from ads.opctl.cmds import run as opctl_run
-            info = opctl_run(workflow)
+            kwargs = {}
+            kwargs["tag"] = None
+            kwargs["registry"] = None
+            kwargs["dockerfile"] = None
+            kwargs["source_folder"] = None
+            kwargs["nobuild"] = 1
+            kwargs["backend"] = None
+            kwargs["auto_increment"] = None
+            kwargs["nopush"] = 1
+            kwargs["dry_run"] = None
+            kwargs["job_info"] = None
+            info = opctl_run(workflow, **kwargs)
             job_id = info[0].id
 
         return jsonify({
