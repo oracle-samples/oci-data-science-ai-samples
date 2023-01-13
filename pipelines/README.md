@@ -14,6 +14,8 @@ Using pipelines, you can:
 - Execute the pipeline, set parameters for each run.
 - Monitor the execution of the pipeline and review logs outputted from the steps
 
+Product documentation can be found [here](https://surl.us.oracle.com/oci-data-science-docs-ml-pipelines).
+
 ## Available Samples 
 
 ### Simple pipeline with data sharing between steps
