@@ -2,10 +2,14 @@ name: Update README.md and create a PR
 on:
   # Triggers the workflow on push or pull request events
   push:
+    branches:
+      - master
     paths:
       - "notebook_examples/*.ipynb"
       - "notebook_examples/make_readme.py"
   pull_request:
+    branches:
+      - master
     paths: |
       - "notebook_examples/*.ipynb"
       - "notebook_examples/make_readme.py"
@@ -17,7 +21,7 @@ jobs:
     name: update readme.md and create a pr
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Make README.md
         uses: ./actions/make_readme
       - name: Commit, push and create a PR if there are changes in README.md
