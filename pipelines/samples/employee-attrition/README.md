@@ -12,7 +12,7 @@ The pipeline has the following steps:
     1. Evaluate the models, choose the best model based on Area Under Curve (AUC) metric and deploy the best model
 
 ## How to use
-Open the [employee-attrition-pipeline-ads.ipynb](/workspaces/oci-data-science-ai-samples/pipelines/samples/employee-attrition/employee-attrition-pipeline-ads.ipynb) notebook and run it.
+Open the [employee-attrition-pipeline-ads.ipynb](./employee-attrition-pipeline-ads.ipynb) notebook and run it.
 
 Make sure you define the permissions in your tenancy properly.
 
