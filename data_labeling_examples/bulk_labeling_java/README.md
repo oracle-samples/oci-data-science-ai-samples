@@ -47,25 +47,29 @@ Result of CUSTOM_LABELS_MATCH algorithm:
     dog/dog2.png will be labeled with dog and pup labels
 ```
 
-3. **BulkAssistedLabelingScript**: This script takes object storage path as input along with the labeling algorithm as ML_ASSISTED_LABELING. Only root level path is supported. Multiple labels can also be assigned to a given path. The labeling algorithm for this case is CUSTOM_LABELS_MATCH.
+3. **BulkAssistedLabelingScript**: This script takes datasetId as input along with the labeling algorithm as ML_ASSISTED_LABELING. There are 3 different ways to use this script - 
+    1. Use the pretrained model offered by the ai service to auto label records
+    2. Provide the OCID of the custom ML model that you have trained separately using OCI ai services to auto label records
+    3. Provide the training dataset so that the script can invoke model training internally and then auto label records
 
 ```
 Consider a dataset with the following dataset labels - 
 {Dog, Cat, Animal}
-If these labels are identified by the machine learning model (either pretrained/custom), then annotations will 
-automatically be created.
+Let us consider picture of a cat - 
+If the machine learning model suggests 4 labels -> {Cat, Carnivore, Animal, Mammal} for this image, only the labels that 
+are provided in the DLS dataset details will be considered. 
+i.e, Expected output is the image gets labeled as a {Cat, Animal} once the script executes.
 
 Conditions - 
 
-1. For a label from ML prediction response to be converted to annotation, it has to be part of the DLS dataset label set.
-2. The label comparison is case sensitive - Provide the label names in intial case i.e first letter of each word is capitalised 
-Eg: Dog, Wildlife, Pet Animal etc.
 3. Ensure that the following assisted labeling specific params are set in config.properties file - 
 
-    LABELING_ALGORITHM (Required)
+    LABELING_ALGORITHM=ML_ASSISTED_LABELING (Required)
     ML_MODEL_TYPE (Required)
-    PREDICTION_CONFIDENCE_THRESHOLD (Optional, default is 0.7)
-    CUSTOM_MODEL_ID (Optional, default is null)
+    CONFIDENCE_THRESHOLD (Optional, default is 0.7)
+    CUSTOM_MODEL_ID (Required for using custom model, default is null)
+    MODEL_TRAINING_PROJECT_ID (Required for training a new model)
+    TRAINING_DATASET_ID (Required for training a new model)
     
 ```
 

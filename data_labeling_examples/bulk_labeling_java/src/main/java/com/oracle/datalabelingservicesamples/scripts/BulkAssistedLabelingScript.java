@@ -1,5 +1,7 @@
 package com.oracle.datalabelingservicesamples.scripts;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -191,7 +193,8 @@ public class BulkAssistedLabelingScript {
             log.info("Successfully Annotated {} record Ids", successRecordIds.size());
             log.info("Create annotation failed for record Ids {}", failedRecordIds);
 
-            log.info("Deleting downstream response files from object storage: {}", );
+            // TODO - delete the object storage files once labeling is complete
+            log.info("Deleting downstream response files from object storage path :{}","something here");
             long elapsedTime = System.nanoTime() - startTime;
             log.info("Time Taken for datasetId {} is {} seconds", datasetId, elapsedTime / 1_000_000_000);
         } catch (Exception e) {
