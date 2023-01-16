@@ -143,10 +143,11 @@ public class MlAssistedObjectDetection implements MlAssistedLabelingStrategy {
                                 Optional.ofNullable(null),
                                 Optional.ofNullable(null),
                                 Optional.empty());
+                String objectDetailsContextModified = objectDetails.getContentString().replace("\"detectedFaces\":[],", "");
                 AnalyzeImageResult analyzeImageResult =
                         new ObjectMapper()
                                 .readValue(
-                                        objectDetails.getContentString(), AnalyzeImageResult.class);
+                                        objectDetailsContextModified, AnalyzeImageResult.class);
                 if (analyzeImageResult.getImageObjects() != null) {
                     List<Entity> entities =
                             mapToDLSEntities(

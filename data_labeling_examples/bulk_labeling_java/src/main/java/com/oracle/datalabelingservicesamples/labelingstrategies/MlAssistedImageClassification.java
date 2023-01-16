@@ -140,10 +140,11 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
                                 Optional.ofNullable(null),
                                 Optional.ofNullable(null),
                                 Optional.empty());
+                String objectDetailsContextModified = objectDetails.getContentString().replace("\"detectedFaces\":[],", "");
                 AnalyzeImageResult analyzeImageResult =
                         new ObjectMapper()
                                 .readValue(
-                                        objectDetails.getContentString(), AnalyzeImageResult.class);
+                                        objectDetailsContextModified, AnalyzeImageResult.class);
                 log.debug("Labels predicted by the vision model :{}",analyzeImageResult.getLabels());
                 if (analyzeImageResult.getLabels() != null) {
                     List<Entity> entities =

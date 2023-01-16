@@ -44,12 +44,10 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
         }
 
-//        SnapshotDatasetParams snapshotDatasetParams =
-//                SnapshotDatasetParams.builder().build();
-//
-//        assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
-//
-//        assistedLabelingParams.getSnapshotDatasetParams().setSnapshotObjectName("");
+        SnapshotDatasetParams snapshotDatasetParams =
+                SnapshotDatasetParams.builder().build();
+
+        assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
 
         if(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId().isEmpty()) {
             try {
@@ -111,15 +109,9 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
                     .description("Test custom model training")
                     .compartmentId(assistedLabelingParams.getCompartmentId())
                     .modelDetails(modelDetails)
-  //                .modelVersion("EXAMPLE-modelVersion-Value") Going with default value
-//                    .trainingDataset(ObjectStorageDataset.builder()
-//                            .locationDetails(locationDetails)
-//                            .build())
-                    .trainingDataset(
-                            DataScienceLabelingDataset.builder()
-                            .datasetId(assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId())
-                            .build()
-                    )
+                    .trainingDataset(ObjectStorageDataset.builder()
+                            .locationDetails(locationDetails)
+                            .build())
                     .projectId(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId())
                     .freeformTags(new HashMap<String, String>() {
                         {

@@ -10,7 +10,7 @@
 		Labeling Service
 	</description>
 	<properties>
-		<oci-java-sdk-version>3.1.0</oci-java-sdk-version>
+		<oci-java-sdk-version>3.2.0</oci-java-sdk-version>
 
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>

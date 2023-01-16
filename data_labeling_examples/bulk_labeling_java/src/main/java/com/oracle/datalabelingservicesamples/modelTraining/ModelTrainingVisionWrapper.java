@@ -28,10 +28,8 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
 
         log.info("Model training params are : {}", assistedLabelingParams.getModelTrainingParams());
 
-        if(assistedLabelingParams.getSnapshotDatasetParams() == null){
-            log.info("Snapshot file has not been provided, generating new snapshot using training dataset Id : {}", assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId());
-            dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
-        }
+        log.info("Snapshot file has not been provided, generating new snapshot using training dataset Id : {}", assistedLabelingParams.getSnapshotDatasetParams().getSnapshotDatasetId());
+        dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
 
 //      If project already exists, use the same ID, otherwise create a new project
 
@@ -71,19 +69,14 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
             CreateModelDetails createModelDetails = CreateModelDetails.builder()
                     .displayName("test-model")
                     .description("Test custom model training")
-//                .modelVersion("EXAMPLE-modelVersion-Value") Going with default value
                     .modelType(Model.ModelType.create(assistedLabelingParams.getModelTrainingParams().getModelTrainingType()))
                     .compartmentId(assistedLabelingParams.getCompartmentId())
                     .isQuickMode(true)
-                    // TODO validate training dataset id
-//                    .trainingDataset(DataScienceLabelingDataset.builder()
-//                            .datasetId(assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId()).build())
                     .trainingDataset(
                             ObjectStorageDataset.builder()
-                    .namespaceName("idgszs0xipmn")
-                    .bucketName("al_custom_model_images")
-//                    .objectName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotObjectName())
-                    .objectName("AL_CM_1_1665647711978.jsonl")
+                    .namespaceName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getNamespace())
+                    .bucketName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getBucketName())
+                    .objectName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotObjectName())
                     .build())
                     .projectId(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId())
                     .freeformTags(new HashMap<String, String>() {

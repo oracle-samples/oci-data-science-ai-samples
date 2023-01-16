@@ -66,7 +66,7 @@ Conditions -
 
     LABELING_ALGORITHM=ML_ASSISTED_LABELING (Required)
     ML_MODEL_TYPE (Required)
-    CONFIDENCE_THRESHOLD (Optional, default is 0.7)
+    CONFIDENCE_THRESHOLD (Required, default is 0.7)
     CUSTOM_MODEL_ID (Required for using custom model, default is null)
     MODEL_TRAINING_PROJECT_ID (Required for training a new model)
     TRAINING_DATASET_ID (Required for training a new model)
@@ -131,6 +131,26 @@ java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=ht
 ```
 8. Run the below command to bulk label by "ML_ASSISTED_LABELING" labeling algorithm.
 
+Before you run the command, please understand the limitations of this utility.
+1. If you choose a pretrained model to predict labels on the records, the DLS dataset labels should be a part of the supported categories for the auto labeling to provide results.
+
+Supported labels for vision use cases are identifying scene-based features and common objects in an image.
+
+Supported list of labels for language use cases can be found below - 
+Pretrained model type  Supported labels 
+Text Classifcation     https://docs.oracle.com/en-us/iaas/language/using/pretrain-models.htm#text-class
+Named Entity Recognition https://docs.oracle.com/en-us/iaas/language/using/pretrain-models.htm#ner
+
+2. If you choose to provide a custom model OCID, the predictions will depend on the trained model's quality. 
+
+3. If you choose to train a new custom model using the utility, it always uses "quick training" - This option produces a model that is not fully optimized but is available in about an hour. 
+If you are interested in using "recommended training" which can take upto 24 hours, please finish the training independently using the ai service console/SDK 
+and use (ML_MODEL_TYPE=CUSTOM) to plug in the custom model OCID for auto labeling.
+
+Known issues - 
+
+Language service text classification returns the dominant category to which a particular text belongs. So, auto labeling is not supported for multilabel text classification usecase.
+
 ```
 java -DCONFIG_FILE_PATH='~/.oci/config' 
 -DCONFIG_PROFILE=DEFAULT 
@@ -180,11 +200,20 @@ CUSTOM_LABELS={ "dog/": ["dog","pup"], "cat/": ["cat", "kitten"] }
 
 REGION=us-phoenix-1
 
-#Machine learning model type for assisted labeling, choices are PRETRAINED and CUSTOM
+## All the following inputs are only for ML_ASSISTED_LABELING algorithm :
+
+# ML model type for assisted labeling, choices are PRETRAINED, CUSTOM and NEW
 ML_MODEL_TYPE=PRETRAINED
 
-#Minimum confidence score for a label predicted by the Machine learning model to be used to create annotation
-PREDICTION_CONFIDENCE_THRESHOLD=0.7
+# Optional parameters for ML_MODEL_TYPE=CUSTOM :
+# ML model OCID for any vision/language trained model
+CUSTOM_MODEL_ID=
 
-#The OCID of the custom machine learning model trained in Vision or Language service for assisted labeling
-CUSTOM_MODEL_ID=ocid1.aivisionmodel.oc1.phx.amaaaaaaniob46iazrkx6ir57egwpbcmfstr6lgwxzle4tw7qkkkoilmuita
+# Optional parameters for ML_MODEL_TYPE=NEW :
+
+# ML project OCID from vision/language service to create the model. If not provided, a new project is created
+MODEL_TRAINING_PROJECT_ID=
+
+# DLS dataset OCID with labeled records to be used as initial training data for creating custom model
+TRAINING_DATASET_ID=
+

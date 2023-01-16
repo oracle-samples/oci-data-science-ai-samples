@@ -19,7 +19,6 @@ import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
-import com.oracle.datalabelingservicesamples.requests.SnapshotDatasetParams;
 import com.oracle.datalabelingservicesamples.workRequests.DlsWorkRequestPollService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -112,14 +111,11 @@ public class DlsApiWrapper {
     public void createDatasetSnapshot(AssistedLabelingParams assistedLabelingParams) throws Exception{
         log.info("Creating snapshot of training dataset in DLS service");
 
-        ExportFormat exportFormat = ExportFormat.builder()
-                .name(ExportFormat.Name.JsonlCompactPlusContent)
-                .build();
-
+        // TODO pass the namespace and bucket from the training dataset details
         ObjectStorageSnapshotExportDetails snapshotExportDetails =
                 ObjectStorageSnapshotExportDetails.builder()
-                        .namespace("idgszs0xipmn")
-                        .bucket("TestBucket1")
+                        .namespace(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getNamespace())
+                        .bucket(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getBucketName())
                         .prefix("/")
                         .build();
 
@@ -128,18 +124,12 @@ public class DlsApiWrapper {
                 .exportDetails(snapshotExportDetails)
                 .areAnnotationsIncluded(true)
                 .areUnannotatedRecordsIncluded(false)
-                .exportFormat(exportFormat)
+                .exportFormat(assistedLabelingParams.getSnapshotDatasetParams().getExportFormat())
                 .build();
 
         SnapshotDatasetRequest snapshotDatasetRequest = SnapshotDatasetRequest.builder()
-                .datasetId(assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId())
                 .snapshotDatasetDetails(snapshotDatasetDetails)
                 .build();
-
-        SnapshotDatasetParams snapshotDatasetParams =
-                SnapshotDatasetParams.builder().build();
-
-        assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
 
         try{
             SnapshotDatasetResponse snapshotDatasetResponse = Config.INSTANCE.getDlsCpClient().snapshotDataset(snapshotDatasetRequest);

@@ -1,7 +1,5 @@
 package com.oracle.datalabelingservicesamples.scripts;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +12,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 import com.oracle.bmc.datalabelingservice.model.Dataset;
+import com.oracle.bmc.datalabelingservice.model.ExportFormat;
 import com.oracle.bmc.datalabelingservice.model.ImageDatasetFormatDetails;
 import com.oracle.bmc.datalabelingservice.model.ObjectStorageSourceDetails;
 import com.oracle.bmc.datalabelingservice.model.TextDatasetFormatDetails;
@@ -32,6 +31,7 @@ import com.oracle.datalabelingservicesamples.modelTraining.ModelTrainingWrapper;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.requests.ModelTrainingParams;
+import com.oracle.datalabelingservicesamples.requests.SnapshotDatasetParams;
 import com.oracle.datalabelingservicesamples.tasks.TaskHandler;
 import com.oracle.datalabelingservicesamples.tasks.TaskProvider;
 import com.oracle.datalabelingservicesamples.utils.DlsApiWrapper;
@@ -194,7 +194,6 @@ public class BulkAssistedLabelingScript {
             log.info("Create annotation failed for record Ids {}", failedRecordIds);
 
             // TODO - delete the object storage files once labeling is complete
-            log.info("Deleting downstream response files from object storage path :{}","something here");
             long elapsedTime = System.nanoTime() - startTime;
             log.info("Time Taken for datasetId {} is {} seconds", datasetId, elapsedTime / 1_000_000_000);
         } catch (Exception e) {
@@ -271,9 +270,9 @@ public class BulkAssistedLabelingScript {
         inputValidator.validateMlModelType(Config.INSTANCE.getMlModelType());
         inputValidator.validateRequiredParameter("Labeling Algorithm", Config.INSTANCE.getLabelingAlgorithm());
         inputValidator.validateLabelingAlgorithm(Config.INSTANCE.getLabelingAlgorithm());
-        inputValidator.validateOptionalParameter("Confidence Threshold", Config.INSTANCE.getConfidenceThreshold());
+        inputValidator.validateRequiredParameter("Confidence Threshold", Config.INSTANCE.getConfidenceThreshold());
         inputValidator.validateConfidenceScoreThreshold(Config.INSTANCE.getConfidenceThreshold());
-        inputValidator.isValidResourceOcid(Config.INSTANCE.getDatasetId(), datasetEntityTypes);
+        inputValidator.isValidResourceOcid(Config.INSTANCE.getDatasetId(), datasetEntityTypes, "DLS dataset");
 
         /*
          * Validate custom model id
@@ -283,15 +282,15 @@ public class BulkAssistedLabelingScript {
                 log.error("Custom model ID cannot be empty when ML model type is custom");
                 throw new InvalidParameterException("Custom model ID cannot be empty");
             }
-            inputValidator.isValidResourceOcid(Config.INSTANCE.getCustomModelId(), aiServiceModelTypes);
+            inputValidator.isValidResourceOcid(Config.INSTANCE.getCustomModelId(), aiServiceModelTypes, "custom ML model");
         }
     }
 
     private static void validateCustomTrainingParams(){
         // TODO Training dataset ids could be dls or some other input
-        inputValidator.isValidResourceOcid(Config.INSTANCE.getTrainingDatasetId(), datasetEntityTypes);
+        inputValidator.isValidResourceOcid(Config.INSTANCE.getTrainingDatasetId(), datasetEntityTypes, "training DLS dataset");
         if(!Config.INSTANCE.getModelTrainingProjectId().isEmpty()) {
-            inputValidator.isValidResourceOcid(Config.INSTANCE.getModelTrainingProjectId(), aiServiceProjectTypes);
+            inputValidator.isValidResourceOcid(Config.INSTANCE.getModelTrainingProjectId(), aiServiceProjectTypes, "model training project");
         }
     }
 
@@ -385,5 +384,45 @@ public class BulkAssistedLabelingScript {
                         .customTrainingEnabled(Config.INSTANCE.getMlModelType().equals("NEW"))
                         .trainingDatasetId(Config.INSTANCE.getTrainingDatasetId())
                         .build());
+
+        /*
+         * Get Training Dataset
+         */
+        GetDatasetRequest getDatasetRequest = GetDatasetRequest.builder()
+                .datasetId(assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId())
+                .build();
+        GetDatasetResponse datasetResponse = Config.INSTANCE.getDlsCpClient().getDataset(getDatasetRequest);
+        assert datasetResponse.get__httpStatusCode__() == 200 : "Invalid Dataset Id Provided";
+        Dataset trainingDataset = datasetResponse.getDataset();
+
+        /*
+         * Get Snapshot Dataset bucket details
+         */
+
+        ObjectStorageSourceDetails trainingDatasetSourceDetails =
+                (ObjectStorageSourceDetails) trainingDataset.getDatasetSourceDetails();
+
+        // TODO choose export format based on the annotation format
+//
+//        switch (assistedLabelingParams.getAnnotationFormat()){
+//
+//        }
+        ExportFormat exportFormat = ExportFormat.builder()
+                .name(ExportFormat.Name.JsonlConsolidated)
+                .build();
+
+
+        SnapshotDatasetParams snapshotDatasetParams =
+                SnapshotDatasetParams.builder()
+                        .snapshotBucketDetails(
+                                BucketDetails.builder()
+                                .bucketName(trainingDatasetSourceDetails.getBucket())
+                                .namespace(trainingDatasetSourceDetails.getNamespace())
+                                .build())
+                        .snapshotDatasetId(trainingDataset.getId())
+                        .exportFormat(exportFormat)
+                        .build();
+
+        assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
     }
 }

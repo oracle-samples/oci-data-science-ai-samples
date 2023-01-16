@@ -1,6 +1,7 @@
 package com.oracle.datalabelingservicesamples.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.oracle.bmc.datalabelingservice.model.ExportFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,8 +18,8 @@ import lombok.ToString;
 @ToString
 public class SnapshotDatasetParams {
 
-    private String exportFormat;
-    private BucketDetails bucketDetails;
+    private ExportFormat exportFormat;
+    private BucketDetails snapshotBucketDetails;
     private String snapshotDatasetId;
     private String snapshotObjectName;
 }
