@@ -459,15 +459,40 @@ def run():
         abort_with_json_error(500, str(ex))
 
 
-@app.route("/metrics/<ocid>")
-def get_metrics(ocid):
+def get_custom_metrics_namespace(job_run):
     metric_namespace_env = "METRICS_NAMESPACE"
-    name = "gpu.memory_usage"
-    job_run = DataScienceJobRun.from_ocid(ocid)
     job_envs = job_run.job.runtime.envs
+    return job_envs.get(metric_namespace_env)
+
+
+@app.route("/metrics/<ocid>")
+def list_metrics(ocid):
+    job_run = DataScienceJobRun.from_ocid(ocid)
+    custom_metric_namespace = get_custom_metrics_namespace(job_run)
+    client = oci.monitoring.MonitoringClient(**get_authentication())
+    service_metrics = metric_query.list_job_run_metrics(
+        job_run,
+        "oci_datascience_jobrun",
+        "resourceId",
+        client
+    )
+    custom_metrics = metric_query.list_job_run_metrics(
+        job_run,
+        custom_metric_namespace,
+        metric_query.CUSTOM_METRIC_OCID_DIMENSION,
+        client
+    )
+    return jsonify({
+        "metrics": service_metrics + custom_metrics,
+    })
+
+
+@app.route("/metrics/<name>/<ocid>")
+def get_metrics(name, ocid):
+    job_run = DataScienceJobRun.from_ocid(ocid)
+    metric_namespace = get_custom_metrics_namespace(job_run)
     run_metrics = []
-    if metric_namespace_env in job_envs:
-        metric_namespace = job_envs[metric_namespace_env]
+    if metric_namespace:
         client = oci.monitoring.MonitoringClient(**get_authentication())
         results = metric_query.get_metric_values(
             job_run,

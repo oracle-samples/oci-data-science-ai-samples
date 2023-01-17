@@ -33,7 +33,7 @@ def list_job_run_metrics(job_run: oci.data_science.models.JobRun,
     """
     list_details = oci.monitoring.models.ListMetricsDetails(
         namespace=namespace,
-        # dimension_filters={ocid_dimension: job_run.id}
+        dimension_filters={ocid_dimension: job_run.id}
     )
     metrics = monitoring_client.list_metrics(job_run.compartment_id, list_details).data
     metric_names = []
