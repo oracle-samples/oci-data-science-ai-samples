@@ -1,14 +1,12 @@
-const identity = require("oci-identity");
 const odcs = require("oci-datascience");
 const common = require("oci-common");
-const moment = require('moment');
 const fs = require('fs')
 
 // TODO: Replace these with your tenancy OCIDs!
 const tenancy = {
     projectId: process.env.PROJECT,
     compartmentId: process.env.COMPARTMENT,
-    subnetId: process.env.SUBNET,
+    // subnetId: process.env.SUBNET,
     logGroupId: process.env.LOGGROUP,
     tenancyName: process.env.TENANCY,
     config: process.env.CONFIG
@@ -41,14 +39,15 @@ async function createJob(name, projectId, compartmentId, log_group_id, subnet_id
                 jobType: "DEFAULT",
                 environmentVariables: {
                     CONDA_ENV_TYPE: "service",
-                    CONDA_ENV_SLUG: "dataexpl_p37_cpu_v2"
+                    CONDA_ENV_SLUG: "generalml_p38_cpu_v1"
                 },
             },
             jobInfrastructureConfigurationDetails: {
-                jobInfrastructureType: "STANDALONE",
+                jobInfrastructureType: "ME_STANDALONE", //STANDALONE
                 shapeName: "VM.Standard2.1",
                 blockStorageSizeInGBs: "100",
-                subnetId: subnet_id,
+                // required if jobInfrastructureType: "STANDALONE"
+                // subnetId: subnet_id,
             },
             // not mandatory
             jobLogConfigurationDetails: {
@@ -76,7 +75,7 @@ async function updateJob(jobId, name) {
             displayName: name,
             description: "No mandatory update description",
             jobInfrastructureConfigurationDetails: {
-                jobInfrastructureType: "STANDALONE",
+                jobInfrastructureType: "ME_STANDALONE",
                 shapeName: "VM.Standard2.1",
                 blockStorageSizeInGBs: "101",
             },
@@ -122,15 +121,16 @@ async function headJobArtifact(jobId) {
     return client.headJobArtifact(headJobArtifactRequest);
 }
 
-async function getJobArtifact(jobId) {
-    const getJobArtifactRequest = {
-        jobId: jobId
-    }
-    let filedata = await client.getJobArtifactContent(getJobArtifactRequest);
-    let downloadedFile = fs.createWriteStream('downloaded_artifact.py');
-    filedata.value.pipe(downloadedFile);
-    return "DONE";
-}
+// TODO: Fix for the latest SDK version
+// async function getJobArtifact(jobId) {
+//     const getJobArtifactRequest = {
+//         jobId: jobId
+//     }
+//     let filedata = await client.getJobArtifactContent(getJobArtifactRequest);
+//     let downloadedFile = fs.createWriteStream('downloaded_artifact.py');
+//     filedata.value.pipe(downloadedFile);
+//     return "DONE";
+// }
 
 async function changeJobCompartment(jobId, changeToCompartmentId) {
     const changeJobCompartmentRequest = {
@@ -153,7 +153,7 @@ async function createJobRun(projectId, compartmentId, jobId, name) {
                 jobType: "DEFAULT",
                 environmentVariables: {
                     CONDA_ENV_TYPE: "service",
-                    CONDA_ENV_SLUG: "dataexpl_p37_cpu_v2",
+                    CONDA_ENV_SLUG: "generalml_p38_cpu_v1",
                 }
             },
             jobLogConfigurationOverrideDetails: {
@@ -194,12 +194,12 @@ async function updateJobRuns(jobRunId) {
     const updateJobRunRequest = {
         jobRunId: jobRunId,
         updateJobRunDetails: {
-            displayName: "Job Run Node Update Name",
+            displayName: "Job Run NodeJS Updated Name",
             freeformTags: { key1: "lvp" },
         }
     }
 
-    return client.updateJobRun(updateJobRunRequest);
+    return await client.updateJobRun(updateJobRunRequest);
 }
 
 async function changeJobRunCompartment(jobRunId, changeToCompartmentId) {
@@ -222,17 +222,17 @@ async function cancelJobRun(jobRunId) {
 
 (async () => {
     // current date-time
-    const datetime = moment().format('yyyy-mm-dd:hh:mm:ss');
+    const datetime = Date.now();
 
     const jobShapes = await listJobShapes(tenancy.compartmentId);
     console.log(jobShapes)
 
     const createJobResponse = await createJob(
-        "Node Test " + datetime,
+        "Job NodeJS Test " + datetime,
         tenancy.projectId,
         tenancy.compartmentId,
-        tenancy.logGroupId,
-        tenancy.subnetId
+        tenancy.logGroupId
+        // tenancy.subnetId
     )
     console.log(createJobResponse);
 
@@ -248,14 +248,14 @@ async function cancelJobRun(jobRunId) {
     const listAllJobs = await listJobs(tenancy.projectId, tenancy.compartmentId);
     console.log(listAllJobs);
 
-    console.log("createJobArtifact");    
+    console.log("createJobArtifact");
     const createArtifactResponse = await createJobArtifact(createJobResponse.job.id, "hello_world_job.py");
     console.log(createArtifactResponse);
 
     const headJobArtifactResponse = await headJobArtifact(createJobResponse.job.id);
     console.log(headJobArtifactResponse);
 
-    console.log(await getJobArtifact(createJobResponse.job.id));
+    // console.log(await getJobArtifact(createJobResponse.job.id));
 
     console.log("createJobRun");
     const jobRunRespone = await createJobRun(tenancy.projectId, tenancy.compartmentId, createJobResponse.job.id, "Node Job Run");
@@ -269,12 +269,12 @@ async function cancelJobRun(jobRunId) {
     let listJobRunsResponse = await listJobRuns(createJobResponse.job.id, tenancy.compartmentId);
     console.log(listJobRunsResponse);
 
-    console.log("updateJobRuns");
-    let updateJobRunsResponse = await updateJobRuns(getJobRunResponse.jobRun.id);
-    console.log(updateJobRunsResponse);
+    // console.log("updateJobRuns");
+    // let updateJobRunsResponse = await updateJobRuns(getJobRunResponse.jobRun.id);
+    // console.log(updateJobRunsResponse);
 
     // You can't cancel Job Run in ACCEPTED, CANCELLING, DELETED or NEEDS_ATTENTION state
-    
+
     // console.log("cancelJobRun");
     // let cancelJobRunRequest = await cancelJobRun(getJobRunResponse.jobRun.id);
     // console.log(cancelJobRunRequest);
