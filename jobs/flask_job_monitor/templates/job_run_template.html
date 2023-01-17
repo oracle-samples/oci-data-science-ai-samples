@@ -24,9 +24,15 @@
         <h5>{{ run.name }}</h5>
       </div>
     </div>
-    <div class="card-body" style="height: 500px; overflow: scroll;">
+    <div class="card-body logs" style="height: 500px; overflow: scroll;">
       <pre style="overflow: visible;">Loading Logs...</pre>
     </div>
+    {% if 'METRICS_NAMESPACE' in run.job.runtime.envs %}
+    <div class="card-footer" style="height: 200px">
+      <p>GPU Memory Usage (%)</p>
+      <div><canvas id="metrics-{{ run.id|replace('.', '') }}"></canvas></div>
+    </div>
+    {% endif %}
     <div class="card-footer text-muted">
       {% if run.log_id %}
       <div><a target="_blank"
