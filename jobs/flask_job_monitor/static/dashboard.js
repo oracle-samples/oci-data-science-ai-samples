@@ -236,8 +236,8 @@ function updateMetrics(ocid) {
   const canvasId = "metrics-" + ocid.replaceAll(".", "");
   const ctx = document.getElementById(canvasId);
   if (ctx === null) return;
-
-  $.getJSON("/metrics/gpu.memory_usage/" + ocid, function (data) {
+  const metricName = $(ctx).closest(".job-run-metrics").find(".dropdown-menu .d-none a").data("val");
+  $.getJSON("/metrics/" + metricName + "/" + ocid, function (data) {
     var chart = Chart.getChart(canvasId);
     if (chart === undefined) {
       newChart(ctx, data.timestamps, data.datasets);
@@ -269,6 +269,7 @@ function loadJobRuns(job_ocid) {
     data.runs.reverse().forEach(run => {
       var jobRunSelector = "#" + run.ocid.replaceAll(".", "");
       runDiv = jobRow.find(jobRunSelector);
+      // Add job run panel is one does not exist.
       if (runDiv.length === 0) {
         console.log("Adding job run: " + run.ocid);
         jobRow.prepend(run.html);
@@ -276,6 +277,13 @@ function loadJobRuns(job_ocid) {
         runDiv.find("code").each(function() {
           hljs.highlightElement(this);
         })
+        // Metric dropdown callback
+        $(jobRunSelector + " .job-run-metrics a").click(
+          function(e) {
+            e.preventDefault();
+            metricDropdownClicked(this);
+          }
+        );
 
         // Load logs.
         $(jobRunSelector + " .run-monitor").each(function () {
@@ -315,4 +323,20 @@ function downloadLogs(jobRunId) {
   document.body.appendChild(element);
   element.click();
   document.body.removeChild(element);
+}
+
+function metricDropdownClicked(element) {
+  var metricLink = $(element);
+  var metricDiv = metricLink.closest(".job-run-metrics");
+  metricDiv.find("li").removeClass("d-none");
+  metricLink.parent().addClass("d-none");
+  metricDiv.find("button").text(metricLink.text());
+  const canvasId = metricDiv.find("canvas").attr("id");
+  const ocid = metricDiv.closest(".run-monitor").attr("id");
+  $.getJSON("/metrics/" + metricLink.data("val") + "/" + ocid, function (data) {
+    var chart = Chart.getChart(canvasId);
+    chart.data.labels = data.timestamps;
+    chart.data.datasets = data.datasets;
+    chart.update();
+  });
 }

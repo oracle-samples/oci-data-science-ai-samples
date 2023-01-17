@@ -17,6 +17,12 @@ from ads.jobs import DataScienceJobRun, Job
 from flask import Flask, request, abort, jsonify, render_template, make_response, redirect
 
 
+SERVICE_METRICS_NAMESPACE = "oci_datascience_jobrun"
+SERVICE_METRICS_DIMENSION = "resourceId"
+CUSTOM_METRICS_NAMESPACE_ENV = "METRICS_NAMESPACE"
+CUSTOM_METRICS_DIMENSION = metric_query.CUSTOM_METRIC_OCID_DIMENSION
+
+
 # Load config
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.json")
 if os.path.exists(CONFIG_FILE):
@@ -460,9 +466,8 @@ def run():
 
 
 def get_custom_metrics_namespace(job_run):
-    metric_namespace_env = "METRICS_NAMESPACE"
     job_envs = job_run.job.runtime.envs
-    return job_envs.get(metric_namespace_env)
+    return job_envs.get(CUSTOM_METRICS_NAMESPACE_ENV)
 
 
 @app.route("/metrics/<ocid>")
@@ -472,8 +477,8 @@ def list_metrics(ocid):
     client = oci.monitoring.MonitoringClient(**get_authentication())
     service_metrics = metric_query.list_job_run_metrics(
         job_run,
-        "oci_datascience_jobrun",
-        "resourceId",
+        SERVICE_METRICS_NAMESPACE,
+        SERVICE_METRICS_DIMENSION,
         client
     )
     custom_metrics = metric_query.list_job_run_metrics(
@@ -490,7 +495,12 @@ def list_metrics(ocid):
 @app.route("/metrics/<name>/<ocid>")
 def get_metrics(name, ocid):
     job_run = DataScienceJobRun.from_ocid(ocid)
-    metric_namespace = get_custom_metrics_namespace(job_run)
+    if name.startswith("gpu"):
+        metric_namespace = get_custom_metrics_namespace(job_run)
+        dimension = CUSTOM_METRICS_DIMENSION
+    else:
+        metric_namespace = "oci_datascience_jobrun"
+        dimension = SERVICE_METRICS_DIMENSION
     run_metrics = []
     if metric_namespace:
         client = oci.monitoring.MonitoringClient(**get_authentication())
@@ -498,7 +508,7 @@ def get_metrics(name, ocid):
             job_run,
             name,
             metric_namespace,
-            metric_query.CUSTOM_METRIC_OCID_DIMENSION,
+            dimension,
             client,
             job_run.time_started,
         )
