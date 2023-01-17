@@ -28,6 +28,7 @@ import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import com.oracle.datalabelingservicesamples.requests.ObjectDetails;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.util.ArrayList;
@@ -174,8 +175,10 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
                                          String annotationFormat, float confidenceThreshold) {
         List<Entity> imageClassificationEntities = new ArrayList<>();
         List<Label> labels = new ArrayList<>();
+        List<String> dlsLabelsLowercase = (List<String>) CollectionUtils.collect(dlsLabels,
+                String::toLowerCase);
         for (com.oracle.bmc.aivision.model.Label visionLabel : visionLabels) {
-            if (dlsLabels.contains(visionLabel.getName())
+            if (dlsLabelsLowercase.contains(visionLabel.getName().toLowerCase())
                     && visionLabel.getConfidence() >= confidenceThreshold) {
                 labels.add(
                         Label.builder()

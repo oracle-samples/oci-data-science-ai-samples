@@ -18,6 +18,7 @@ import com.oracle.bmc.datalabelingservicedataplane.responses.GetRecordContentRes
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -38,7 +39,6 @@ public class MlAssistedTextClassification implements MlAssistedLabelingStrategy 
             String documentText = "";
             try {
                 documentText = IOUtils.toString(recordContentResponse.getInputStream(), "UTF-8");
-                log.debug("record content info : {}", documentText);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -115,10 +115,12 @@ public class MlAssistedTextClassification implements MlAssistedLabelingStrategy 
     public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<TextClassification> textClassifications, float confidenceThreshold) {
         List<Entity> entityList = new ArrayList<>();
         List<Label> languageLabels = new ArrayList<>();
+        List<String> dlsLabelsLowercase = (List<String>) CollectionUtils.collect(dlsLabels,
+                String::toLowerCase);
         TextClassification textClassification;
         if(!textClassifications.isEmpty()) {
             textClassification = textClassifications.get(0);
-            if (dlsLabels.contains(textClassification.getLabel())
+            if (dlsLabelsLowercase.contains(textClassification.getLabel().toLowerCase())
                     && textClassification.getScore() >= confidenceThreshold) {
                 languageLabels.add(
                         Label.builder()

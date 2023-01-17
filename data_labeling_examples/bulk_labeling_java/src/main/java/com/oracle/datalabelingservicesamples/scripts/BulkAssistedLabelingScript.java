@@ -327,7 +327,7 @@ public class BulkAssistedLabelingScript {
             }
         }
         else if(dataset.getDatasetFormatDetails() instanceof TextDatasetFormatDetails){
-            if(dataset.getAnnotationFormat().equals("SINGLE_LABEL")||dataset.getAnnotationFormat().equals("MULTI_LABEL")) {
+            if(dataset.getAnnotationFormat().equals("SINGLE_LABEL")) {
                 mlAssistedLabelingStrategy = new MlAssistedTextClassification();
             }
             else if(dataset.getAnnotationFormat().equals("ENTITY_EXTRACTION")){
@@ -364,7 +364,7 @@ public class BulkAssistedLabelingScript {
         }
         else if(dataset.getDatasetFormatDetails() instanceof TextDatasetFormatDetails){
             modelTrainingWrapper = new ModelTrainingLanguageWrapper();
-            if(dataset.getAnnotationFormat().equals("SINGLE_LABEL")||dataset.getAnnotationFormat().equals("MULTI_LABEL")) {
+            if(dataset.getAnnotationFormat().equals("SINGLE_LABEL")) {
                 modelTrainingType = "TEXT_CLASSIFICATION";
             }
             else if(dataset.getAnnotationFormat().equals("ENTITY_EXTRACTION")){
@@ -405,7 +405,6 @@ public class BulkAssistedLabelingScript {
         ObjectStorageSourceDetails trainingDatasetSourceDetails =
                 (ObjectStorageSourceDetails) trainingDataset.getDatasetSourceDetails();
 
-        // TODO choose export format based on the annotation format
         ExportFormat exportFormat = null;
 
         if(trainingDataset.getDatasetFormatDetails() instanceof ImageDatasetFormatDetails) {

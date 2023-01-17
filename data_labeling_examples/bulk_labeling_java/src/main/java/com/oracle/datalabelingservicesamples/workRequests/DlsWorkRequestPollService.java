@@ -54,7 +54,7 @@ public class DlsWorkRequestPollService {
             if (timeElapsed.toMillis() > 1200000) {
                 completionFuture.cancel(true);
             }
-        }, 0, 10, TimeUnit.SECONDS);
+        }, 0, 30, TimeUnit.SECONDS);
         completionFuture.whenComplete((result, thrown) -> {
             if (null != thrown) {
                 log.error("Workrequest polling failed with error ", thrown);

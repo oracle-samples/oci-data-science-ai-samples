@@ -53,7 +53,7 @@ public class LanguageWorkRequestPollService {
             if (timeElapsed.toMillis() > 4800000) {
                 completionFuture.cancel(true);
             }
-        }, 0, 10, TimeUnit.SECONDS);
+        }, 0, 60, TimeUnit.SECONDS);
         completionFuture.whenComplete((result, thrown) -> {
             if (null != thrown) {
                 log.error("Workrequest polling failed with error ", thrown);

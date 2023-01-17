@@ -31,6 +31,7 @@ import com.oracle.datalabelingservicesamples.requests.BucketDetails;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import com.oracle.datalabelingservicesamples.requests.ObjectDetails;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.util.ArrayList;
@@ -174,6 +175,8 @@ public class MlAssistedObjectDetection implements MlAssistedLabelingStrategy {
 
     public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<ImageObject> imageObjects, float confidenceThreshold) {
         List<Entity> imageObjectSelectionEntities = new ArrayList<>();
+        List<String> dlsLabelsLowercase = (List<String>) CollectionUtils.collect(dlsLabels,
+                String::toLowerCase);
         for (ImageObject imageObject : imageObjects) {
             List<NormalizedVertex> normalizedVertices = new ArrayList<>();
             for (com.oracle.bmc.aivision.model.NormalizedVertex normalizedVertexResponse :
@@ -191,7 +194,7 @@ public class MlAssistedObjectDetection implements MlAssistedLabelingStrategy {
             BoundingPolygon boundingPolygon = new BoundingPolygon(normalizedVertices);
             List<Label> labels = new ArrayList<>();
             // TODO - handle case insensitive labels
-            if (dlsLabels.contains(imageObject.getName())
+            if (dlsLabelsLowercase.contains(imageObject.getName().toLowerCase())
                     && imageObject.getConfidence() >= confidenceThreshold) {
                 labels.add(
                         Label.builder()

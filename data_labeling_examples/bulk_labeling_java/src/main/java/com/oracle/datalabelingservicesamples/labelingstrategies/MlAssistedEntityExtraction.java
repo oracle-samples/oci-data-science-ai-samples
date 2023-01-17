@@ -19,6 +19,7 @@ import com.oracle.bmc.datalabelingservicedataplane.responses.GetRecordContentRes
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -40,7 +41,6 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
             String documentText = "";
             try {
                 documentText = IOUtils.toString(recordContentResponse.getInputStream(), "UTF-8");
-                log.debug("record content info : {}", documentText);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -99,7 +99,6 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
                         mapToDLSEntities(
                                 assistedLabelingParams.getDlsDatasetLabels(), document.getEntities(), assistedLabelingParams.getConfidenceThreshold());
                 if (!entities.isEmpty()) {
-                    // TODO - compartment ID
                     createAnnotationDetails.add(
                             new CreateAnnotationDetails(
                                     document.getKey(),
@@ -120,7 +119,9 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
         List<Entity> entityList = new ArrayList<>();
         for (HierarchicalEntity entity : entities) {
             List<Label> languageLabels = new ArrayList<>();
-            if (dlsLabels.contains(entity.getType())
+            List<String> dlsLabelsLowercase = (List<String>) CollectionUtils.collect(dlsLabels,
+                    String::toLowerCase);
+            if (dlsLabelsLowercase.contains(entity.getType().toLowerCase())
                     && entity.getScore() >= confidenceThreshold) {
                 languageLabels.add(
                         Label.builder()

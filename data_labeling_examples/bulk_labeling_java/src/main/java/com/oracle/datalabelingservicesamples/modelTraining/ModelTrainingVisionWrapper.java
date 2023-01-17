@@ -26,8 +26,6 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
     public void performModelTraining(AssistedLabelingParams assistedLabelingParams) throws Exception {
         log.info("Starting Custom model training using input dataset: {}", assistedLabelingParams.getDatasetId());
 
-        log.info("Model training params are : {}", assistedLabelingParams.getModelTrainingParams());
-
         log.info("Generating new snapshot using training dataset Id : {}", assistedLabelingParams.getSnapshotDatasetParams().getSnapshotDatasetId());
         dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
 
