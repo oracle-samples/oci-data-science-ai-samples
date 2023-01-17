@@ -191,19 +191,32 @@ function newChart(ctx, labels, datasets) {
   });
 }
 
+function compareDatasets(ds1, ds2) {
+  if (ds1.length !== ds2.length) return false;
+  for (let i = 0; i < ds1.length; i++) {
+    if (ds1[i].label !== ds2[i].label) return false;
+    if (JSON.stringify(ds1[i].data) !== JSON.stringify(ds2[i].data)) return false;
+  }
+  return true;
+}
+
 
 function mergeChartData(chart, data) {
-  if (chart.data.labels == data.timestamps && chart.data.datasets == data.datasets) return;
+  const existingLabels = JSON.stringify(chart.data.labels);
+  if (existingLabels == JSON.stringify(data.timestamps) && compareDatasets(chart.data.datasets, data.datasets)) return;
   const existingLength = chart.data.labels.length;
-  var addData = true;
-  if (chart.data.labels == data.timestamps.slice(0, existingLength) && chart.data.dataset.length == data.datasets.length) {
+
+  var appendData = true;
+  if (existingLabels == JSON.stringify(data.timestamps.slice(0, existingLength)) && chart.data.datasets.length == data.datasets.length) {
     for (let i = 0; i < chart.data.datasets.length; i++) {
-      if (chart.data.datasets[i].data != data.datasets[i].data.slice(0, existingLength)) addData = false;
+      if (JSON.stringify(chart.data.datasets[i].data) != JSON.stringify(data.datasets[i].data.slice(0, existingLength))) {
+        appendData = false;
+      }
     }
   } else {
-    addData = false;
+    appendData = false;
   }
-  if (addData) {
+  if (appendData) {
     for (let i = existingLength; i < data.timestamps.length; i++) {
       chart.data.labels.push(data.timestamps[i]);
       for (let j = 0; j < chart.data.datasets.length; j++) {
@@ -224,7 +237,7 @@ function updateMetrics(ocid) {
   const ctx = document.getElementById(canvasId);
   if (ctx === null) return;
 
-  $.getJSON("/metrics/" + ocid, function (data) {
+  $.getJSON("/metrics/gpu.memory_usage/" + ocid, function (data) {
     var chart = Chart.getChart(canvasId);
     if (chart === undefined) {
       newChart(ctx, data.timestamps, data.datasets);
