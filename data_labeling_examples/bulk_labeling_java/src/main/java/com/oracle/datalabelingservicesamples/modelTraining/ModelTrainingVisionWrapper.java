@@ -28,7 +28,7 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
 
         log.info("Model training params are : {}", assistedLabelingParams.getModelTrainingParams());
 
-        log.info("Snapshot file has not been provided, generating new snapshot using training dataset Id : {}", assistedLabelingParams.getSnapshotDatasetParams().getSnapshotDatasetId());
+        log.info("Generating new snapshot using training dataset Id : {}", assistedLabelingParams.getSnapshotDatasetParams().getSnapshotDatasetId());
         dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
 
 //      If project already exists, use the same ID, otherwise create a new project
@@ -75,7 +75,7 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
                     .trainingDataset(
                             ObjectStorageDataset.builder()
                     .namespaceName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getNamespace())
-                    .bucketName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getBucketName())
+                    .bucketName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getBucket())
                     .objectName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotObjectName())
                     .build())
                     .projectId(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId())

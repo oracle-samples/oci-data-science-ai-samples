@@ -112,16 +112,9 @@ public class DlsApiWrapper {
         log.info("Creating snapshot of training dataset in DLS service");
 
         // TODO pass the namespace and bucket from the training dataset details
-        ObjectStorageSnapshotExportDetails snapshotExportDetails =
-                ObjectStorageSnapshotExportDetails.builder()
-                        .namespace(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getNamespace())
-                        .bucket(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getBucketName())
-                        .prefix("/")
-                        .build();
-
 
         SnapshotDatasetDetails snapshotDatasetDetails = SnapshotDatasetDetails.builder()
-                .exportDetails(snapshotExportDetails)
+                .exportDetails(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails())
                 .areAnnotationsIncluded(true)
                 .areUnannotatedRecordsIncluded(false)
                 .exportFormat(assistedLabelingParams.getSnapshotDatasetParams().getExportFormat())
@@ -129,6 +122,7 @@ public class DlsApiWrapper {
 
         SnapshotDatasetRequest snapshotDatasetRequest = SnapshotDatasetRequest.builder()
                 .snapshotDatasetDetails(snapshotDatasetDetails)
+                .datasetId(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotDatasetId())
                 .build();
 
         try{

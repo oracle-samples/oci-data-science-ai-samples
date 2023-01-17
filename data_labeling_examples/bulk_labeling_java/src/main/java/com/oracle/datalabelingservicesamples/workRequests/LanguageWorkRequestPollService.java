@@ -9,6 +9,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.oracle.bmc.ailanguage.model.OperationStatus;
+import com.oracle.bmc.ailanguage.model.WorkRequest;
+import com.oracle.bmc.ailanguage.requests.GetWorkRequestRequest;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +31,7 @@ public class LanguageWorkRequestPollService {
     public LanguageWorkRequestPollService() {
     }
 
-    public com.oracle.bmc.ailanguage.model.WorkRequest pollLanguageWorkRequestStatus(String workRequestId) throws Exception {
+    public WorkRequest pollLanguageWorkRequestStatus(String workRequestId) throws Exception {
 
         return pollLanguageWorkrequestForCompletion(workRequestId)
                 .thenApply(workRequest -> getLanguageWorkRequest(workRequestId)).get();
@@ -40,14 +42,15 @@ public class LanguageWorkRequestPollService {
         CompletableFuture<String> completionFuture = new CompletableFuture<>();
         Instant start = Instant.now();
         final ScheduledFuture<?> checkFuture = executor.scheduleAtFixedRate(() -> {
-            com.oracle.bmc.ailanguage.model.OperationStatus operationStatus = getLanguageWorkRequest(workRequestId).getStatus();
-            log.debug("operationStatus of workRequestId {} is :{}", workRequestId, operationStatus);
+            WorkRequest languageWorkRequest = getLanguageWorkRequest(workRequestId);
+            OperationStatus operationStatus = languageWorkRequest.getStatus();
+            log.info("Work request status :{}, percent complete: {}", languageWorkRequest.getStatus(), languageWorkRequest.getPercentComplete());
             if (isTerminalOperationStatus(operationStatus)) {
                 completionFuture.complete(workRequestId);
             }
             Instant end = Instant.now();
             Duration timeElapsed = Duration.between(start, end);
-            if (timeElapsed.toMillis() > 1200000) {
+            if (timeElapsed.toMillis() > 4800000) {
                 completionFuture.cancel(true);
             }
         }, 0, 10, TimeUnit.SECONDS);
@@ -60,9 +63,9 @@ public class LanguageWorkRequestPollService {
         return completionFuture;
     }
 
-    private com.oracle.bmc.ailanguage.model.WorkRequest getLanguageWorkRequest(String opcWorkRequestId) {
-        com.oracle.bmc.ailanguage.requests.GetWorkRequestRequest getWorkRequestRequest =
-                com.oracle.bmc.ailanguage.requests.GetWorkRequestRequest.builder().workRequestId(opcWorkRequestId)
+    private WorkRequest getLanguageWorkRequest(String opcWorkRequestId) {
+        GetWorkRequestRequest getWorkRequestRequest =
+                GetWorkRequestRequest.builder().workRequestId(opcWorkRequestId)
                         .build();
         return Config.INSTANCE.getAiLanguageClient().getWorkRequest(getWorkRequestRequest).getWorkRequest();
 

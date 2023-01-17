@@ -44,14 +44,15 @@ public class VisionWorkRequestPollService {
         CompletableFuture<String> completionFuture = new CompletableFuture<>();
         Instant start = Instant.now();
         final ScheduledFuture<?> checkFuture = executor.scheduleAtFixedRate(() -> {
-            OperationStatus operationStatus = getVisionWorkRequest(workRequestId).getStatus();
-            log.debug("operationStatus of workRequestId {} is :{}", workRequestId, operationStatus);
+            WorkRequest visionWorkRequest = getVisionWorkRequest(workRequestId);
+            OperationStatus operationStatus = visionWorkRequest.getStatus();
+            log.info("Work request status :{}, percent complete: {}", visionWorkRequest.getStatus(), visionWorkRequest.getPercentComplete());
             if (isTerminalOperationStatus(operationStatus)) {
                 completionFuture.complete(workRequestId);
             }
             Instant end = Instant.now();
             Duration timeElapsed = Duration.between(start, end);
-            if (timeElapsed.toMillis() > 1200000) {
+            if (timeElapsed.toMillis() > 4800000) {
                 completionFuture.cancel(true);
             }
         }, 0, 10, TimeUnit.SECONDS);

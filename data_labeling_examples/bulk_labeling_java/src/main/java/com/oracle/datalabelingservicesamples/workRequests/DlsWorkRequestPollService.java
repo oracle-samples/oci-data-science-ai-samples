@@ -43,8 +43,9 @@ public class DlsWorkRequestPollService {
         CompletableFuture<String> completionFuture = new CompletableFuture<>();
         Instant start = Instant.now();
         final ScheduledFuture<?> checkFuture = executor.scheduleAtFixedRate(() -> {
-            OperationStatus operationStatus = getDlsWorkRequest(workRequestId).getStatus();
-            log.debug("operationStatus of workRequestId {} is :{}", workRequestId, operationStatus);
+            WorkRequest dlsWorkRequest = getDlsWorkRequest(workRequestId);
+            OperationStatus operationStatus = dlsWorkRequest.getStatus();
+            log.info("Work request status :{}, percent complete: {}", dlsWorkRequest.getStatus(), dlsWorkRequest.getPercentComplete());
             if (isTerminalOperationStatus(operationStatus)) {
                 completionFuture.complete(workRequestId);
             }

@@ -12,10 +12,13 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 import com.oracle.bmc.datalabelingservice.model.Dataset;
+import com.oracle.bmc.datalabelingservice.model.DelimitedFileTypeMetadata;
 import com.oracle.bmc.datalabelingservice.model.ExportFormat;
 import com.oracle.bmc.datalabelingservice.model.ImageDatasetFormatDetails;
+import com.oracle.bmc.datalabelingservice.model.ObjectStorageSnapshotExportDetails;
 import com.oracle.bmc.datalabelingservice.model.ObjectStorageSourceDetails;
 import com.oracle.bmc.datalabelingservice.model.TextDatasetFormatDetails;
+import com.oracle.bmc.datalabelingservice.model.TextFileTypeMetadata;
 import com.oracle.bmc.datalabelingservice.requests.GetDatasetRequest;
 import com.oracle.bmc.datalabelingservice.responses.GetDatasetResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.Annotation;
@@ -403,21 +406,35 @@ public class BulkAssistedLabelingScript {
                 (ObjectStorageSourceDetails) trainingDataset.getDatasetSourceDetails();
 
         // TODO choose export format based on the annotation format
-//
-//        switch (assistedLabelingParams.getAnnotationFormat()){
-//
-//        }
-        ExportFormat exportFormat = ExportFormat.builder()
-                .name(ExportFormat.Name.JsonlConsolidated)
-                .build();
+        ExportFormat exportFormat = null;
 
+        if(trainingDataset.getDatasetFormatDetails() instanceof ImageDatasetFormatDetails) {
+            exportFormat = ExportFormat.builder()
+                    .name(ExportFormat.Name.JsonlConsolidated)
+                    .build();
+        }
+        else if(trainingDataset.getDatasetFormatDetails() instanceof TextDatasetFormatDetails){
+            TextDatasetFormatDetails trainingDatasetFormatDetails =
+                    (TextDatasetFormatDetails) trainingDataset.getDatasetFormatDetails();
+            if(trainingDatasetFormatDetails.getTextFileTypeMetadata() instanceof DelimitedFileTypeMetadata){
+                exportFormat = ExportFormat.builder()
+                        .name(ExportFormat.Name.JsonlCompactPlusContent)
+                        .build();
+            }
+            else {
+                exportFormat = ExportFormat.builder()
+                        .name(ExportFormat.Name.JsonlConsolidated)
+                        .build();
+            }
+        }
 
         SnapshotDatasetParams snapshotDatasetParams =
                 SnapshotDatasetParams.builder()
                         .snapshotBucketDetails(
-                                BucketDetails.builder()
-                                .bucketName(trainingDatasetSourceDetails.getBucket())
+                                ObjectStorageSnapshotExportDetails.builder()
+                                .bucket(trainingDatasetSourceDetails.getBucket())
                                 .namespace(trainingDatasetSourceDetails.getNamespace())
+                                .prefix(trainingDatasetSourceDetails.getPrefix())
                                 .build())
                         .snapshotDatasetId(trainingDataset.getId())
                         .exportFormat(exportFormat)
