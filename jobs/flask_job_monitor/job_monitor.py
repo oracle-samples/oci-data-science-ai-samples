@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import os
@@ -9,6 +10,7 @@ import ads
 import oci
 import requests
 import yaml
+import metric_query
 from ads.common.oci_datascience import OCIDataScienceMixin
 from ads.common.oci_resource import OCIResource
 from ads.jobs import DataScienceJobRun, Job
@@ -455,3 +457,45 @@ def run():
     except Exception as ex:
         traceback.print_exc()
         abort_with_json_error(500, str(ex))
+
+
+@app.route("/metrics/<ocid>")
+def get_metrics(ocid):
+    metric_namespace_env = "METRICS_NAMESPACE"
+    name = "gpu.memory_usage"
+    job_run = DataScienceJobRun.from_ocid(ocid)
+    job_envs = job_run.job.runtime.envs
+    run_metrics = []
+    if metric_namespace_env in job_envs:
+        metric_namespace = job_envs[metric_namespace_env]
+        client = oci.monitoring.MonitoringClient(**get_authentication())
+        results = metric_query.get_metric_values(
+            job_run,
+            name,
+            metric_namespace,
+            metric_query.CUSTOM_METRIC_OCID_DIMENSION,
+            client,
+            job_run.time_started,
+        )
+        if results:
+            for result in results:
+                run_metrics.append([
+                    {"timestamp": p.timestamp, "value": p.value }
+                    for p in result.aggregated_datapoints
+                ])
+    timestamps = set()
+    datasets = []
+    for metric in run_metrics:
+        timestamps.update([p["timestamp"] for p in metric])
+        datasets.append({p["timestamp"]: p["value"] for p in metric})
+    timestamps = list(timestamps)
+    timestamps.sort()
+    values = []
+    for dataset in datasets:
+        values.append([dataset.get(timestamp) for timestamp in timestamps])
+    datasets = [{"label": f"#{i}", "data": v} for i, v in enumerate(values, start=1)]
+    return jsonify({
+        "metrics": run_metrics,
+        "timestamps": timestamps,
+        "datasets": datasets
+    })

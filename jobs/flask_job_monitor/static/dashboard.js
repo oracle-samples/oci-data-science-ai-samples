@@ -53,6 +53,7 @@ function updateLogs(ocid, outputDiv, stopped) {
     } else {
       statusDetailsText.text(data.status);
     }
+    updateMetrics(ocid);
     // If stopped is set to true, no further update will be performed.
     if (stopped === true) return;
 
@@ -76,7 +77,7 @@ function updateLogs(ocid, outputDiv, stopped) {
         parent.find(".card-header").addClass("bg-danger text-danger bg-opacity-10");
       }
       // When job run is stop, there might be logs still being processed by the OCI logging service
-      // Here we check the logs one last time after some interval hoping we can get all the logs.
+      // Here we check the logs after some intervals hoping we can get all the logs.
       setTimeout(function () {
         updateLogs(ocid, outputDiv, true);
       }, LOG_CHECKING_INTERVAL);
@@ -167,6 +168,72 @@ function loadJobs(compartmentId, projectId) {
   }, JOB_CHECKING_INTERVAL);
 }
 
+
+function newChart(ctx, labels, datasets) {
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        },
+        x: {
+          display: false
+        }
+      }
+    }
+  });
+}
+
+
+function mergeChartData(chart, data) {
+  if (chart.data.labels == data.timestamps && chart.data.datasets == data.datasets) return;
+  const existingLength = chart.data.labels.length;
+  var addData = true;
+  if (chart.data.labels == data.timestamps.slice(0, existingLength) && chart.data.dataset.length == data.datasets.length) {
+    for (let i = 0; i < chart.data.datasets.length; i++) {
+      if (chart.data.datasets[i].data != data.datasets[i].data.slice(0, existingLength)) addData = false;
+    }
+  } else {
+    addData = false;
+  }
+  if (addData) {
+    for (let i = existingLength; i < data.timestamps.length; i++) {
+      chart.data.labels.push(data.timestamps[i]);
+      for (let j = 0; j < chart.data.datasets.length; j++) {
+        chart.data.datasets[j].data.push(data.datasets[j].data[i]);
+      }
+    }
+  } else {
+    chart.data.labels = data.timestamps;
+    chart.data.datasets = data.datasets;
+  }
+
+  chart.update();
+}
+
+
+function updateMetrics(ocid) {
+  const canvasId = "metrics-" + ocid.replaceAll(".", "");
+  const ctx = document.getElementById(canvasId);
+  if (ctx === null) return;
+
+  $.getJSON("/metrics/" + ocid, function (data) {
+    var chart = Chart.getChart(canvasId);
+    if (chart === undefined) {
+      newChart(ctx, data.timestamps, data.datasets);
+    } else {
+      mergeChartData(chart, data);
+    }
+  });
+}
+
 function loadJobRuns(job_ocid) {
   const RUNNING = "running"
   // Avoid running the same function twice
@@ -200,7 +267,7 @@ function loadJobRuns(job_ocid) {
         // Load logs.
         $(jobRunSelector + " .run-monitor").each(function () {
           var ocid = this.id;
-          var outputDiv = $(this).find(".card-body pre");
+          var outputDiv = $(this).find(".card-body.logs pre");
           updateLogs(ocid, outputDiv);
         });
       }
