@@ -11,7 +11,7 @@ You need a dynamic group that includes your job run resources.
 Example matching rule:
 
 ```
-all {resource.type='datasciencejobrun',resource.compartment.id='ocid1.compartment.oc1..aaaaa'}
+all {resource.type='datasciencejobrun'}
 ```
 
 You need a policy that enables resources in this dynamic group to post metrics.
@@ -31,6 +31,11 @@ Example policy:
 ```
 allow group metric_reader_group to read metrics in compartment my_compartment
 ```
+
+On your local machine, you need to install the OCI Python SDK: https://docs.oracle.com/en-us/iaas/tools/python/latest/
+
+On your local machine, you need to setup an API Key: https://docs.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm
+
 
 ## Overview of sample files
 
@@ -70,17 +75,21 @@ Using the console, create a job. See https://docs.oracle.com/iaas/data-science/u
 For the job artifact, use the `build/artifact.tar.gz` file created in the previous step.
 
 You must specify the following environment variables:
-- `METRICS_NAMESPACE` - The namespace you want to store your custom metrics under.
-- `JOB_RUN_ENTRYPOINT` - Set this to `entrypoint.sh`. 
+- `METRICS_NAMESPACE` - The namespace you want to store your custom metrics under. Each metric is associated with a
+                        single namespace. The namespace to search must be provided when querying metrics later.
+- `JOB_RUN_ENTRYPOINT` - Set this to `entrypoint.sh`.
 
 If you select a standard shape or flex shape, the job run will only output a single custom metric named `random`.
 If you select a GPU shape, the job run will emit the `random` metric as well as 4 custom GPU metrics:
   - `gpu.power_draw`
   - `gpu.temperature`
-  - `gpu.gpu_utilization` - NOTE: The service does emit a GPU Utilization metric that averages the utilization of all
-                            GPU cards. With the custom metric, one metric is emitted per card, and the PCI Bus is added
-                            as a metric dimension to distinguish them.
+  - `gpu.gpu_utilization`
   - `gpu.memory_usage`
+
+NOTE: The service does emit a GPU Utilization metric that averages the utilization of all GPU cards. With these custom
+metrics, one metric is emitted per card, and the PCI Bus is added as a metric dimension to distinguish them. When
+querying metrics, the aggregated data points are grouped by their dimensions. You can also include dimensions in your
+MQL queries to filter your results, see https://docs.oracle.com/iaas/Content/Monitoring/Reference/mql.htm#dimension
 
 For networking, if you choose to provide your own subnet, it must support egress to the OCI Monitoring Service, either
 through a Service Gateway or a NAT Gateway.
@@ -175,7 +184,7 @@ custom time ranges. See https://docs.oracle.com/iaas/Content/Monitoring/Tasks/bu
 
 ### Implement the job run entrypoint
 
-The `entrypoint.sh` script in this sample just sleeps after starting the metric submitter. You can replace the `sleep` 
+The `entrypoint.sh` script in this sample just sleeps after starting the metric submitter. You can replace the `sleep`
 call with your own commands, or with calls to your own custom scripts.
 
 If you want to include additional files in your job artifact, just copy them under the `artifact` directory. The
