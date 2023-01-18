@@ -191,7 +191,7 @@ public enum Config {
 	}
 
 	private void initializeObjectStorageClient() {
-		objectStorageClient = new ObjectStorageClient(getProvider());
+		objectStorageClient = new ObjectStorageClient(getConfigFileProvider());
 		objectStorageClient.setEndpoint(objectStorageEndpoint);
 	}
 
