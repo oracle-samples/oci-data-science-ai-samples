@@ -25,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -119,13 +120,16 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
         List<Entity> entityList = new ArrayList<>();
         for (HierarchicalEntity entity : entities) {
             List<Label> languageLabels = new ArrayList<>();
+            dlsLabels = Collections.unmodifiableList(dlsLabels);
             List<String> dlsLabelsLowercase = (List<String>) CollectionUtils.collect(dlsLabels,
                     String::toLowerCase);
+            dlsLabelsLowercase = Collections.unmodifiableList(dlsLabelsLowercase);
             if (dlsLabelsLowercase.contains(entity.getType().toLowerCase())
                     && entity.getScore() >= confidenceThreshold) {
+                int indexOfLabel = dlsLabelsLowercase.indexOf(entity.getType().toLowerCase());
                 languageLabels.add(
                         Label.builder()
-                                .label(entity.getType())
+                                .label(dlsLabels.get(indexOfLabel))
                                 .build());
                 Entity textSelectionEntity =
                         TextSelectionEntity.builder()

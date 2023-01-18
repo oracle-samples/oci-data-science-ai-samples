@@ -23,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -115,16 +116,19 @@ public class MlAssistedTextClassification implements MlAssistedLabelingStrategy 
     public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<TextClassification> textClassifications, float confidenceThreshold) {
         List<Entity> entityList = new ArrayList<>();
         List<Label> languageLabels = new ArrayList<>();
+        dlsLabels = Collections.unmodifiableList(dlsLabels);
         List<String> dlsLabelsLowercase = (List<String>) CollectionUtils.collect(dlsLabels,
                 String::toLowerCase);
+        dlsLabelsLowercase = Collections.unmodifiableList(dlsLabelsLowercase);
         TextClassification textClassification;
         if(!textClassifications.isEmpty()) {
             textClassification = textClassifications.get(0);
             if (dlsLabelsLowercase.contains(textClassification.getLabel().toLowerCase())
                     && textClassification.getScore() >= confidenceThreshold) {
+                int indexOfLabel = dlsLabelsLowercase.indexOf(textClassification.getLabel().toLowerCase());
                 languageLabels.add(
                         Label.builder()
-                                .label(textClassification.getLabel())
+                                .label(dlsLabels.get(indexOfLabel))
                                 .build());
                 Entity genericEntity =
                         GenericEntity.builder()

@@ -3,11 +3,14 @@ package com.oracle.datalabelingservicesamples.scripts;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
@@ -19,9 +22,13 @@ import com.oracle.bmc.datalabelingservice.model.ObjectStorageSnapshotExportDetai
 import com.oracle.bmc.datalabelingservice.model.ObjectStorageSourceDetails;
 import com.oracle.bmc.datalabelingservice.model.TextDatasetFormatDetails;
 import com.oracle.bmc.datalabelingservice.model.TextFileTypeMetadata;
+import com.oracle.bmc.datalabelingservice.model.UpdateDatasetDetails;
 import com.oracle.bmc.datalabelingservice.requests.GetDatasetRequest;
+import com.oracle.bmc.datalabelingservice.requests.UpdateDatasetRequest;
 import com.oracle.bmc.datalabelingservice.responses.GetDatasetResponse;
+import com.oracle.bmc.datalabelingservice.responses.UpdateDatasetResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.Annotation;
+import com.oracle.bmc.datalabelingservicedataplane.requests.UpdateRecordRequest;
 import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedLabelingStrategy;
 import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedEntityExtraction;
@@ -47,6 +54,7 @@ import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
 
 import static java.lang.Float.parseFloat;
@@ -146,6 +154,9 @@ public class BulkAssistedLabelingScript {
             log.info("Custom model training is enabled, starting the training flow.");
             validateCustomTrainingParams();
             initializeCustomTrainingParams(assistedLabelingParams);
+            // Initialising the custom model id/endpoint as empty so that once model training is completed this field can be populated
+            assistedLabelingParams.setCustomModelId("");
+            assistedLabelingParams.setCustomModelEndpoint("");
             try {
                 modelTrainingWrapper.performModelTraining(assistedLabelingParams);
             } catch (Exception e) {
@@ -166,7 +177,7 @@ public class BulkAssistedLabelingScript {
                             dataset.getCompartmentId(),
                             true);
             log.info(
-                    "For dataset {}, found {} existing records.",
+                    "For dataset {}, found {} total records.",
                     datasetId,
                     existingRecords.size());
         } catch (Exception e) {
@@ -182,6 +193,10 @@ public class BulkAssistedLabelingScript {
                                 recordSummary ->
                                         !recordSummary.getIsLabeled())
                         .collect(Collectors.toList());
+        log.info(
+                "For dataset {}, found {} unlabeled records.",
+                datasetId,
+                recordsForAssistedLabelling.size());
 
         // 3. Create batch requests to downstream AI service for predictions
         int maxDownstreamBatchrequest = 8;
@@ -196,6 +211,7 @@ public class BulkAssistedLabelingScript {
             log.info("Successfully Annotated {} record Ids", successRecordIds.size());
             log.info("Create annotation failed for record Ids {}", failedRecordIds);
 
+            updateDatasetWithModelInfo(assistedLabelingParams);
             // TODO - delete the object storage files once labeling is complete
             long elapsedTime = System.nanoTime() - startTime;
             log.info("Time Taken for datasetId {} is {} seconds", datasetId, elapsedTime / 1_000_000_000);
@@ -440,5 +456,47 @@ public class BulkAssistedLabelingScript {
                         .build();
 
         assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
+    }
+
+    private static void updateDatasetWithModelInfo(AssistedLabelingParams assistedLabelingParams){
+
+        /*
+         * Get Dataset
+         */
+        GetDatasetRequest getDatasetRequest = GetDatasetRequest.builder().datasetId(assistedLabelingParams.getDatasetId()).build();
+        GetDatasetResponse datasetResponse = Config.INSTANCE.getDlsCpClient().getDataset(getDatasetRequest);
+        assert datasetResponse.get__httpStatusCode__() == 200 : "Invalid Dataset Id Provided";
+        dataset = datasetResponse.getDataset();
+
+        UpdateDatasetDetails updateDatasetDetails;
+
+        if(dataset.getFreeformTags().containsKey("assistedLabelingOcid")){
+            String updatedFreeformTagValue = dataset.getFreeformTags().merge("assistedLabelingOcid", assistedLabelingParams.getCustomModelId(), (s, s2) -> s+", "+s2);
+            Map<String, String> datasetFreeformTag = dataset.getFreeformTags();
+            datasetFreeformTag.put("assistedLabelingOcid", updatedFreeformTagValue);
+            updateDatasetDetails =
+                    UpdateDatasetDetails.builder()
+                            .freeformTags(datasetFreeformTag)
+                            .build();
+        }
+        else{
+            Map<String, String> datasetFreeformTag = new HashMap<String, String>() {
+                {
+                    put("assistedLabelingOcid", assistedLabelingParams.getCustomModelId());
+                }
+            };
+            updateDatasetDetails =
+                    UpdateDatasetDetails.builder()
+                            .freeformTags(datasetFreeformTag)
+                            .build();
+        }
+
+        UpdateDatasetRequest updateDatasetRequest = UpdateDatasetRequest.builder()
+                .datasetId(assistedLabelingParams.getDatasetId())
+                .updateDatasetDetails(updateDatasetDetails)
+                .build();
+
+        UpdateDatasetResponse updateDatasetResponse = Config.INSTANCE.getDlsCpClient().updateDataset(updateDatasetRequest);
+        log.info("Updated freeform tags :{}", updateDatasetResponse.getDataset().getFreeformTags());
     }
 }

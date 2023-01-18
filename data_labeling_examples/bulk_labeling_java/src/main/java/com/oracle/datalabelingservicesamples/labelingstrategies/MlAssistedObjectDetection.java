@@ -144,11 +144,11 @@ public class MlAssistedObjectDetection implements MlAssistedLabelingStrategy {
                                 Optional.ofNullable(null),
                                 Optional.ofNullable(null),
                                 Optional.empty());
-                String objectDetailsContextModified = objectDetails.getContentString().replace("\"detectedFaces\":[],", "");
+//                String objectDetailsContextModified = objectDetails.getContentString().replace("\"detectedFaces\":[],", "");
                 AnalyzeImageResult analyzeImageResult =
                         new ObjectMapper()
                                 .readValue(
-                                        objectDetailsContextModified, AnalyzeImageResult.class);
+                                        objectDetails.getContentString(), AnalyzeImageResult.class);
                 if (analyzeImageResult.getImageObjects() != null) {
                     List<Entity> entities =
                             mapToDLSEntities(
@@ -175,8 +175,10 @@ public class MlAssistedObjectDetection implements MlAssistedLabelingStrategy {
 
     public List<Entity> mapToDLSEntities(List<String> dlsLabels, List<ImageObject> imageObjects, float confidenceThreshold) {
         List<Entity> imageObjectSelectionEntities = new ArrayList<>();
+        dlsLabels = Collections.unmodifiableList(dlsLabels);
         List<String> dlsLabelsLowercase = (List<String>) CollectionUtils.collect(dlsLabels,
                 String::toLowerCase);
+        dlsLabelsLowercase = Collections.unmodifiableList(dlsLabelsLowercase);
         for (ImageObject imageObject : imageObjects) {
             List<NormalizedVertex> normalizedVertices = new ArrayList<>();
             for (com.oracle.bmc.aivision.model.NormalizedVertex normalizedVertexResponse :
@@ -193,12 +195,12 @@ public class MlAssistedObjectDetection implements MlAssistedLabelingStrategy {
 
             BoundingPolygon boundingPolygon = new BoundingPolygon(normalizedVertices);
             List<Label> labels = new ArrayList<>();
-            // TODO - handle case insensitive labels
             if (dlsLabelsLowercase.contains(imageObject.getName().toLowerCase())
                     && imageObject.getConfidence() >= confidenceThreshold) {
+                int indexOfLabel = dlsLabelsLowercase.indexOf(imageObject.getName().toLowerCase());
                 labels.add(
                         Label.builder()
-                                .label(imageObject.getName())
+                                .label(dlsLabels.get(indexOfLabel))
                                 .build());
                 ImageObjectSelectionEntity imageObjectSelectionEntity =
                         ImageObjectSelectionEntity.builder()

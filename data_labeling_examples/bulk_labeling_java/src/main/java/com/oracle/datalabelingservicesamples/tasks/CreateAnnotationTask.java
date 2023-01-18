@@ -30,8 +30,6 @@ public class CreateAnnotationTask extends Tasks<Annotation> {
                     createAnnotationDetails,
                     Optional.of(opcRequestId));
         } catch (Exception e) {
-            log.error(
-                    "Failed to create Annotation for {}", createAnnotationDetails.getRecordId(), e);
             throw new Exception("Failed to create Annotation for recordId: " + createAnnotationDetails.getRecordId(), e);
         }
     }

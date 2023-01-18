@@ -141,11 +141,11 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
                                 Optional.ofNullable(null),
                                 Optional.ofNullable(null),
                                 Optional.empty());
-                String objectDetailsContextModified = objectDetails.getContentString().replace("\"detectedFaces\":[],", "");
+//                String objectDetailsContextModified = objectDetails.getContentString().replace("\"detectedFaces\":[],", "");
                 AnalyzeImageResult analyzeImageResult =
                         new ObjectMapper()
                                 .readValue(
-                                        objectDetailsContextModified, AnalyzeImageResult.class);
+                                        objectDetails.getContentString(), AnalyzeImageResult.class);
                 log.debug("Labels predicted by the vision model :{}",analyzeImageResult.getLabels());
                 if (analyzeImageResult.getLabels() != null) {
                     List<Entity> entities =
@@ -175,14 +175,17 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
                                          String annotationFormat, float confidenceThreshold) {
         List<Entity> imageClassificationEntities = new ArrayList<>();
         List<Label> labels = new ArrayList<>();
+        dlsLabels = Collections.unmodifiableList(dlsLabels);
         List<String> dlsLabelsLowercase = (List<String>) CollectionUtils.collect(dlsLabels,
                 String::toLowerCase);
+        dlsLabelsLowercase = Collections.unmodifiableList(dlsLabelsLowercase);
         for (com.oracle.bmc.aivision.model.Label visionLabel : visionLabels) {
             if (dlsLabelsLowercase.contains(visionLabel.getName().toLowerCase())
                     && visionLabel.getConfidence() >= confidenceThreshold) {
+                int indexOfLabel = dlsLabelsLowercase.indexOf(visionLabel.getName().toLowerCase());
                 labels.add(
                         Label.builder()
-                                .label(visionLabel.getName())
+                                .label(dlsLabels.get(indexOfLabel))
                                 .build());
             }
         }
@@ -196,10 +199,12 @@ public class MlAssistedImageClassification implements MlAssistedLabelingStrategy
             }
         }
         else if(annotationFormat.equalsIgnoreCase("MULTI_LABEL")){
-            imageClassificationEntity =
-                    GenericEntity.builder()
-                            .labels(labels)
-                            .build();
+            if(!labels.isEmpty()) {
+                imageClassificationEntity =
+                        GenericEntity.builder()
+                                .labels(labels)
+                                .build();
+            }
         }
         imageClassificationEntities.add(imageClassificationEntity);
         return imageClassificationEntities;

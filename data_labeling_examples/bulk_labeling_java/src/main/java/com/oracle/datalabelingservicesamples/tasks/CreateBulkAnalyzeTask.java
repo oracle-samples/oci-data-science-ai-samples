@@ -5,9 +5,13 @@ import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedLabelingStrategy;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
+import com.oracle.pic.commons.exceptions.server.RenderableException;
+import javassist.tools.reflect.CannotCreateException;
 import lombok.extern.slf4j.Slf4j;
 
+import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j
 public class CreateBulkAnalyzeTask extends Tasks<List<CreateAnnotationDetails>> {
