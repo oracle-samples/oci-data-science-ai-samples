@@ -1,5 +1,9 @@
+// The following intervals are in milliseconds
+// Interval for checking new jobs
 const JOB_CHECKING_INTERVAL = 20000;
+// Interval for updating logs of each job run
 const LOG_CHECKING_INTERVAL = 20000;
+// Interval for checking new job runs
 const RUN_CHECKING_INTERVAL = 30000;
 var jobRunChecking = {};
 
@@ -53,6 +57,7 @@ function updateLogs(ocid, outputDiv, stopped) {
     } else {
       statusDetailsText.text(data.status);
     }
+    updateMetrics(ocid);
     // If stopped is set to true, no further update will be performed.
     if (stopped === true) return;
 
@@ -76,7 +81,7 @@ function updateLogs(ocid, outputDiv, stopped) {
         parent.find(".card-header").addClass("bg-danger text-danger bg-opacity-10");
       }
       // When job run is stop, there might be logs still being processed by the OCI logging service
-      // Here we check the logs one last time after some interval hoping we can get all the logs.
+      // Here we check the logs after some intervals hoping we can get all the logs.
       setTimeout(function () {
         updateLogs(ocid, outputDiv, true);
       }, LOG_CHECKING_INTERVAL);
@@ -95,10 +100,10 @@ function setCardStyle(card, borderClass) {
   card.addClass(borderClass);
 }
 
-function deleteJob(ocid) {
+function deleteResource(ocid) {
   var serviceEndpoint = $("#service-endpoint").text();
   $.getJSON("/delete/" + ocid + "?endpoint=" + serviceEndpoint, function (data) {
-    console.log("Deleting " + ocid);
+    console.log("Deleting Job: " + ocid);
     if (data.error === null) {
       $("#" + ocid.replace(/\./g, "")).remove();
     } else {
@@ -167,6 +172,124 @@ function loadJobs(compartmentId, projectId) {
   }, JOB_CHECKING_INTERVAL);
 }
 
+// Create a new chart
+function newChart(ctx, labels, datasets) {
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        },
+        x: {
+          display: false
+        }
+      }
+    }
+  });
+}
+
+// Check if two datasets are containing the same values
+function compareDatasets(ds1, ds2) {
+  if (ds1.length !== ds2.length) return false;
+  for (let i = 0; i < ds1.length; i++) {
+    if (ds1[i].label !== ds2[i].label) return false;
+    if (JSON.stringify(ds1[i].data) !== JSON.stringify(ds2[i].data)) return false;
+  }
+  return true;
+}
+
+// Merge the metric data with the data in the existing chart
+function mergeChartData(chart, data) {
+  const existingLabels = JSON.stringify(chart.data.labels);
+  // Return if labels and datasets are the same
+  if (existingLabels == JSON.stringify(data.timestamps) && compareDatasets(chart.data.datasets, data.datasets)) return;
+  const existingLength = chart.data.labels.length;
+  // Check if we only need to append new data
+  // Appending data will avoid refreshing the entire chart
+  var appendData = true;
+  if (existingLabels == JSON.stringify(data.timestamps.slice(0, existingLength)) && chart.data.datasets.length == data.datasets.length) {
+    for (let i = 0; i < chart.data.datasets.length; i++) {
+      if (JSON.stringify(chart.data.datasets[i].data) != JSON.stringify(data.datasets[i].data.slice(0, existingLength))) {
+        appendData = false;
+      }
+    }
+  } else {
+    appendData = false;
+  }
+  if (appendData) {
+    // Append data
+    for (let i = existingLength; i < data.timestamps.length; i++) {
+      chart.data.labels.push(data.timestamps[i]);
+      for (let j = 0; j < chart.data.datasets.length; j++) {
+        chart.data.datasets[j].data.push(data.datasets[j].data[i]);
+      }
+    }
+  } else {
+    // Replace data
+    // This will refresh the entire chart
+    chart.data.labels = data.timestamps;
+    chart.data.datasets = data.datasets;
+  }
+
+  chart.update();
+}
+
+// Check if there are new metric data and update the metric chart
+function updateMetrics(ocid) {
+  const canvasId = "metrics-" + ocid.replaceAll(".", "");
+  const ctx = document.getElementById(canvasId);
+  if (ctx === null) return;
+  // FInd the name of the metric currently being displayed.
+  const metricName = $(ctx).closest(".job-run-metrics").find(".dropdown-menu .d-none a").data("val");
+  $.getJSON("/metrics/" + metricName + "/" + ocid, function (data) {
+    var chart = Chart.getChart(canvasId);
+    if (chart === undefined) {
+      // Create a new chart
+      // this is called when the panel is initialized for the first time
+      newChart(ctx, data.timestamps, data.datasets);
+    } else {
+      // Update the data for the existing chart
+      mergeChartData(chart, data);
+    }
+  });
+}
+
+// Add the panel for a single job run
+function addJobRun(jobRow, run) {
+  var jobRunSelector = "#" + run.ocid.replaceAll(".", "");
+  runDiv = jobRow.find(jobRunSelector);
+  // Add job run panel if one does not exist.
+  if (runDiv.length === 0) {
+    console.log("Adding job run: " + run.ocid);
+    jobRow.prepend(run.html);
+    runDiv = jobRow.find(jobRunSelector);
+    runDiv.find("code").each(function() {
+      hljs.highlightElement(this);
+    })
+    // Metric dropdown callback
+    $(jobRunSelector + " .job-run-metrics a").click(
+      function(e) {
+        e.preventDefault();
+        metricDropdownClicked(this);
+      }
+    );
+
+    // Load logs.
+    $(jobRunSelector + " .run-monitor").each(function () {
+      var ocid = this.id;
+      var outputDiv = $(this).find(".card-body.logs pre");
+      updateLogs(ocid, outputDiv);
+    });
+  }
+}
+
 function loadJobRuns(job_ocid) {
   const RUNNING = "running"
   // Avoid running the same function twice
@@ -187,23 +310,7 @@ function loadJobRuns(job_ocid) {
     if (jobRow.find(".col-xxl-4").length === 0) jobRow.empty();
     if (data.runs.length === 0) jobRow.text("No Job Run Found.");
     data.runs.reverse().forEach(run => {
-      var jobRunSelector = "#" + run.ocid.replaceAll(".", "");
-      runDiv = jobRow.find(jobRunSelector);
-      if (runDiv.length === 0) {
-        console.log("Adding job run: " + run.ocid);
-        jobRow.prepend(run.html);
-        runDiv = jobRow.find(jobRunSelector);
-        runDiv.find("code").each(function() {
-          hljs.highlightElement(this);
-        })
-
-        // Load logs.
-        $(jobRunSelector + " .run-monitor").each(function () {
-          var ocid = this.id;
-          var outputDiv = $(this).find(".card-body pre");
-          updateLogs(ocid, outputDiv);
-        });
-      }
+      addJobRun(jobRow, run);
     });
   });
 
@@ -214,6 +321,7 @@ function loadJobRuns(job_ocid) {
   }, RUN_CHECKING_INTERVAL);
 }
 
+// Display a toast message
 function toastMessage(title, message, time) {
   var template = $("#toast-template");
   var toastDiv = template.clone();
@@ -225,14 +333,40 @@ function toastMessage(title, message, time) {
   toast.show();
 }
 
+// Download the logs of a job run to a text file.
 function downloadLogs(jobRunId) {
   var logs = $("#" + jobRunId.replaceAll(".", "\\.")).find("pre").text();
   var filename = "logs-" + jobRunId + ".log";
+  // Create a hidden hyperlink with logs embedded
   var element = document.createElement('a');
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(logs));
   element.setAttribute('download', filename);
   element.style.display = 'none';
   document.body.appendChild(element);
+  // Trigger the download
   element.click();
   document.body.removeChild(element);
+}
+
+// The name of the metric being displayed is showed as the text of the menu button.
+// When an item in the job run metrics dropdown is clicked,
+// update the menu and the chart to show the newly selected metric.
+function metricDropdownClicked(element) {
+  var metricLink = $(element);
+  var metricDiv = metricLink.closest(".job-run-metrics");
+  metricDiv.find("li").removeClass("d-none");
+  // Hide the selected metric from the dropdown
+  metricLink.parent().addClass("d-none");
+  // Show the selected metric as the menu button
+  metricDiv.find("button").text(metricLink.text());
+
+  const canvasId = metricDiv.find("canvas").attr("id");
+  const ocid = metricDiv.closest(".run-monitor").attr("id");
+  // Update the metric chart
+  $.getJSON("/metrics/" + metricLink.data("val") + "/" + ocid, function (data) {
+    var chart = Chart.getChart(canvasId);
+    chart.data.labels = data.timestamps;
+    chart.data.datasets = data.datasets;
+    chart.update();
+  });
 }

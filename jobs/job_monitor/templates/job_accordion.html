@@ -3,6 +3,10 @@
     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
       data-bs-target="#{{ job.id|replace('.', '') }}-body">
       {{ job.display_name }}
+      <div data-bs-toggle="collapse" style="display: block; position: absolute; right: 70px;">
+        <i class="text-danger stop-propagation bi-x-lg" title="Delete Job..." data-bs-toggle="modal"
+          data-bs-target="#modal-delete-{{ job.id|replace('.', '') }}"></i>
+      </div>
     </button>
     <div class="d-none job-ocid">{{ job.id }}</div>
     <div class="d-none job-timestamp">{{ job.time_created.timestamp() }}</div>
@@ -15,3 +19,5 @@
     </div>
   </div>
 </div>
+
+{% include 'modal_job_delete.html' %}
