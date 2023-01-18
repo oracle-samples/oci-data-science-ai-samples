@@ -1,5 +1,6 @@
 <div class="col-xxl-4 {{ job.id|replace('.', '') }}" id="{{ run.id|replace('.', '') }}">
   <div class="card run-monitor" id="{{ run.id }}" style="margin-bottom: 25px;">
+
     <div class="card-header">
       <div>
         <div class="float-end" style="font-size: larger">
@@ -24,42 +25,13 @@
         <h5>{{ run.name }}</h5>
       </div>
     </div>
+
     <div class="card-body logs" style="height: 500px; overflow: scroll;">
       <pre style="overflow: visible;">Loading Logs...</pre>
     </div>
     
     <div class="card-footer job-run-metrics" style="height: 200px">
-      <div class="btn-group">
-        {% if 'METRICS_NAMESPACE' in run.job.runtime.envs %}
-        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          GPU Memory (%)
-        </button>
-        {% else %}
-        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          CPU Utilization (%)
-        </button>
-        {% endif %}
-        <ul class="dropdown-menu">
-          {% if 'METRICS_NAMESPACE' in run.job.runtime.envs %}
-          <li><a class="dropdown-item" data-val="CpuUtilization" href="#">CPU Utilization (%)</a></li>
-          <li><a class="dropdown-item" data-val="DiskUtilization" href="#">Disk Utilization (%)</a></li>
-          <li><a class="dropdown-item" data-val="MemoryUtilization" href="#">Memory Utilization (%)</a></li>
-          <li><a class="dropdown-item" data-val="NetworkBytesIn" href="#">Network Bytes In</a></li>
-          <li><a class="dropdown-item" data-val="NetworkBytesOut" href="#">Network Bytes Out</a></li>
-          <li><a class="dropdown-item" data-val="gpu.gpu_utilization" href="#">GPU Utilization (%)</a></li>
-          <li class="d-none"><a class="dropdown-item" data-val="gpu.memory_usage" href="#">GPU Memory (%)</a></li>
-          <li><a class="dropdown-item" data-val="gpu.power_draw" href="#">GPU Power (W)</a></li>
-          <li><a class="dropdown-item" data-val="gpu.temperature" href="#">GPU Temperature (&#8451;)</a></li>
-          {% else %}
-          <li class="d-none"><a class="dropdown-item" data-val="CpuUtilization" href="#">CPU Utilization (%)</a></li>
-          <li><a class="dropdown-item" data-val="DiskUtilization" href="#">Disk Utilization (%)</a></li>
-          <li><a class="dropdown-item" data-val="MemoryUtilization" href="#">Memory Utilization (%)</a></li>
-          <li><a class="dropdown-item" data-val="NetworkBytesIn" href="#">Network Bytes In</a></li>
-          <li><a class="dropdown-item" data-val="NetworkBytesOut" href="#">Network Bytes Out</a></li>
-          {% endif %}
-        </ul>
-      </div>
-      <div><canvas id="metrics-{{ run.id|replace('.', '') }}"></canvas></div>
+      {% include 'job_run_metrics.html' %}
     </div>
     <div class="card-footer text-muted">
       {% if run.log_id %}
@@ -78,58 +50,7 @@
     </div>
   </div>
 
-  <!-- Modal YAML -->
-  <div id="modal-details-{{ run.id|replace('.', '') }}" class="modal fade" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Job Run - {{ run.name}}</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <pre style="overflow-x: scroll;"><code class="language-yaml">{{ run|safe }}</code></pre>
-          <hr>
-          <div class="accordion" id="accordionJobYaml">
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingJobYaml">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseJobYaml" aria-expanded="false" aria-controls="collapseJobYaml">
-                  Job YAML - {{ job.name }}
-                </button>
-              </h2>
-              <div id="collapseJobYaml" class="accordion-collapse collapse" aria-labelledby="headingJobYaml" data-bs-parent="#accordionJobYaml">
-                <div class="accordion-body">
-                  <pre style="overflow-x: scroll;"><code class="language-yaml">{{ job|safe }}</code></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Modal Delete Confirmation -->
-  <div id="modal-delete-{{ run.id|replace('.', '') }}" class="modal fade" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">{{ run.name}}</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          Delete Job Run? <br />
-          {{ run.id }}
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" onclick="deleteResource('{{ run.id }}')"
-            data-bs-dismiss="modal">Delete Job Run</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  {% include 'modal_job_run_yaml.html' %}
+  {% include 'modal_job_run_delete.html' %}
+  
 </div>
