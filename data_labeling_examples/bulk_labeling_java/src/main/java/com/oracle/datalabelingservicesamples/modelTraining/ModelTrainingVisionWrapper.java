@@ -4,6 +4,7 @@ import com.oracle.bmc.aivision.model.CreateModelDetails;
 import com.oracle.bmc.aivision.model.CreateProjectDetails;
 import com.oracle.bmc.aivision.model.Model;
 import com.oracle.bmc.aivision.model.ObjectStorageDataset;
+import com.oracle.bmc.aivision.model.WorkRequest;
 import com.oracle.bmc.aivision.requests.CreateModelRequest;
 import com.oracle.bmc.aivision.requests.CreateProjectRequest;
 import com.oracle.bmc.aivision.responses.CreateModelResponse;
@@ -31,7 +32,6 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
 
 //      If project already exists, use the same ID, otherwise create a new project
 
-        // TODO validation function for model training params
         if(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId().isEmpty()) {
             try {
                 /* Create a request and dependent object(s). */
@@ -48,7 +48,8 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
 
                 /* Send request to the Client */
                 CreateProjectResponse createProjectResponse = Config.INSTANCE.getAiVisionClient().createProject(createProjectRequest);
-                com.oracle.bmc.aivision.model.WorkRequest workRequest = visionWorkRequestPollService
+
+                WorkRequest workRequest = visionWorkRequestPollService
                         .pollVisionWorkRequestStatus(createProjectResponse.getOpcWorkRequestId());
 
                 if (!workRequest.getStatus().equals(com.oracle.bmc.aivision.model.OperationStatus.Succeeded)) {

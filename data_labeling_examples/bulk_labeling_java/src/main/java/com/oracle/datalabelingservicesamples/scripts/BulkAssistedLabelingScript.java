@@ -211,7 +211,8 @@ public class BulkAssistedLabelingScript {
             log.info("Successfully Annotated {} record Ids", successRecordIds.size());
             log.info("Create annotation failed for record Ids {}", failedRecordIds);
 
-            updateDatasetWithModelInfo(assistedLabelingParams);
+            // TODO - enable tag creation when required for storing model metadata
+//            updateDatasetWithModelInfo(assistedLabelingParams);
             // TODO - delete the object storage files once labeling is complete
             long elapsedTime = System.nanoTime() - startTime;
             log.info("Time Taken for datasetId {} is {} seconds", datasetId, elapsedTime / 1_000_000_000);

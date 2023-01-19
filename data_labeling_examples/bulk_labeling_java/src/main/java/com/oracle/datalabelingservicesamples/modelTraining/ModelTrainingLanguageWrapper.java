@@ -20,7 +20,6 @@ import com.oracle.bmc.ailanguage.responses.CreateModelResponse;
 import com.oracle.bmc.ailanguage.responses.CreateProjectResponse;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
-import com.oracle.datalabelingservicesamples.requests.SnapshotDatasetParams;
 import com.oracle.datalabelingservicesamples.utils.DlsApiWrapper;
 import com.oracle.datalabelingservicesamples.workRequests.LanguageWorkRequestPollService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,17 +36,11 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
     @Override
     public void performModelTraining(AssistedLabelingParams assistedLabelingParams) throws Exception {
         log.info("Starting Custom model training using input dataset: {}", assistedLabelingParams.getDatasetId());
+
+        log.info("Generating new snapshot using training dataset Id : {}", assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId());
+        dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
+
 //      If project already exists, use the same ID, otherwise create a new project
-
-        if(assistedLabelingParams.getSnapshotDatasetParams() == null){
-            log.info("Snapshot file has not been provided, generating new snapshot using training dataset Id : {}", assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId());
-            dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
-        }
-
-        SnapshotDatasetParams snapshotDatasetParams =
-                SnapshotDatasetParams.builder().build();
-
-        assistedLabelingParams.setSnapshotDatasetParams(snapshotDatasetParams);
 
         if(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId().isEmpty()) {
             try {
@@ -85,8 +78,6 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             switch (assistedLabelingParams.getModelTrainingParams().getModelTrainingType()){
                 case "TEXT_CLASSIFICATION":
                     modelDetails = TextClassificationModelDetails.builder()
-                            .classificationMode(ClassificationMultiLabelModeDetails.builder()
-                                    .build())
                                     .build();
                     break;
                 case "NAMED_ENTITY_RECOGNITION":
@@ -98,8 +89,8 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             }
 
             LocationDetails locationDetails = ObjectListDataset.builder()
-                    .namespaceName("idgszs0xipmn")
-                    .bucketName("TestBucket1")
+                    .namespaceName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getNamespace())
+                    .bucketName(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotBucketDetails().getBucket())
                     .objectNames(Collections.singletonList(assistedLabelingParams.getSnapshotDatasetParams().getSnapshotObjectName()))
                     .build();
 
@@ -123,7 +114,7 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             CreateModelRequest createModelRequest = CreateModelRequest.builder()
                     .createModelDetails(createModelDetails)
                     .opcRetryToken("EXAMPLE-opcRetryToken-Value")
-//                    .opcRequestId("BulkAssistedLabeling")
+                    .opcRequestId("BulkAssistedLabeling")
                     .build();
 
             /* Send request to the Client */
@@ -135,7 +126,6 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             if (!workRequest.getStatus().equals(OperationStatus.Succeeded)) {
                 throw new Exception("Language model creation failed, cannot proceed with labeling");
             }
-
 
             assistedLabelingParams.setCustomModelId(modelResponse.getModel().getId());
             log.info("Custom model trained in language service with id :{}", assistedLabelingParams.getCustomModelId());
