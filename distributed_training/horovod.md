@@ -11,21 +11,11 @@ All the container image related artifacts are located under - `oci_dist_training
 
 ### Prerequisite
 
-#### Install ADS
+This guide uses `ads[opctl]` for creating and running distributed training jobs. Make sure that you follow the [Getting Started Guide](README.md) first.
 
-You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#) and the `ads opctl` CLI.
+Refer our [distributed training guide](distributed_training_cmd.md) for supported commands and options for distributed training.
 
-```bash
-python3 -m pip install oracle-ads[opctl]
-```
-
-This guide uses ```ads opctl``` for creating distributed training jobs. Refer [distributed_training_cmd.md](distributed_training_cmd.md) for supported commands and options for distributed training.
-
-#### Configurations
-
-Make sure you followed and configured your Oracle Cloud tenancy as shown in the [Getting Started](README.md) guide
-
-### Prepare the container image
+### Build the container image
 
 Horovod provides support for Pytorch and Tensorflow. Within these frameworks, there are two separate Dockerfiles, for cpu and gpu. Choose the Dockerfile and conda environment files based on whether you are going to use Pytorch or Tensorflow with either cpu or gpu.
 
