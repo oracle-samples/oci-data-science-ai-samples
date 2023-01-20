@@ -152,15 +152,7 @@ Known issues -
 Language service text classification returns the dominant category to which a particular text belongs. So, auto labeling is not supported for multilabel text classification usecase.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' 
--DCONFIG_PROFILE=DEFAULT 
--DTHREAD_COUNT=20 
--DREGION=us-phoenix-1 
--DLABELING_ALGORITHM=ML_ASSISTED_LABELING 
--DML_MODEL_TYPE=PRETRAINED 
--DCONFIDENCE_THRESHOLD=0.8 
--DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a 
--cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.BulkAssistedLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DTHREAD_COUNT=20 -DREGION=us-phoenix-1 -DLABELING_ALGORITHM=ML_ASSISTED_LABELING -DML_MODEL_TYPE=PRETRAINED -DCONFIDENCE_THRESHOLD=0.8 -DDATASET_ID=ocid1.datalabelingdataset.oc1.phx.amaaaaaaniob46ia4qae7hitbpxx6cmc6kmoowvxkckxmdlmdvtdprgibnsa -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.BulkAssistedLabelingScript
 ```
 
 Note: You can override any config using -D followed by the configuration name. The list of all configurations are mentioned in following section. 
