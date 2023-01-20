@@ -67,9 +67,9 @@ Conditions -
     LABELING_ALGORITHM=ML_ASSISTED_LABELING (Required)
     ML_MODEL_TYPE (Required)
     CONFIDENCE_THRESHOLD (Required, default is 0.7)
-    CUSTOM_MODEL_ID (Required for using custom model, default is null)
-    MODEL_TRAINING_PROJECT_ID (Required for training a new model)
-    TRAINING_DATASET_ID (Required for training a new model)
+    CUSTOM_MODEL_ID (Required only for using custom model, default is null)
+    MODEL_TRAINING_PROJECT_ID (Required only for training a new model)
+    TRAINING_DATASET_ID (Required only for training a new model)
     
 ```
 
@@ -117,17 +117,17 @@ cd data_labeling_examples
 5. Run the below command to bulk label by "FIRST_LETTER_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_LETTER_MATCH -DLABELS=cat,dog -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_LETTER_MATCH -DLABELS=cat,dog -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
 ```
 6. Run the below command to bulk label by "FIRST_REGEX_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_REGEX_MATCH -DFIRST_MATCH_REGEX_PATTERN=^abc* -DLABELS=cat,dog -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_REGEX_MATCH -DFIRST_MATCH_REGEX_PATTERN=^abc* -DLABELS=cat,dog -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
 ```
 7. Run the below command to bulk label by "CUSTOM_LABELS_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.CustomBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.CustomBulkLabelingScript
 ```
 8. Run the below command to bulk label by "ML_ASSISTED_LABELING" labeling algorithm.
 
@@ -158,10 +158,9 @@ java -DCONFIG_FILE_PATH='~/.oci/config'
 -DREGION=us-phoenix-1 
 -DLABELING_ALGORITHM=ML_ASSISTED_LABELING 
 -DML_MODEL_TYPE=PRETRAINED 
--DPREDICTION_CONFIDENCE_THRESHOLD=0.8 
+-DCONFIDENCE_THRESHOLD=0.8 
 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a 
--DCUSTOM_MODEL_ID=ocid1.aivisionmodel.oc1.phx.amaaaaaaniob46iazrkx6ir57egwpbcmfstr6lgwxzle4tw7qkkkoilmuita 
--cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.BulkAssistedLabelingScript
+-cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.BulkAssistedLabelingScript
 ```
 
 Note: You can override any config using -D followed by the configuration name. The list of all configurations are mentioned in following section. 
