@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
@@ -21,14 +20,13 @@ import com.oracle.bmc.datalabelingservice.model.ImageDatasetFormatDetails;
 import com.oracle.bmc.datalabelingservice.model.ObjectStorageSnapshotExportDetails;
 import com.oracle.bmc.datalabelingservice.model.ObjectStorageSourceDetails;
 import com.oracle.bmc.datalabelingservice.model.TextDatasetFormatDetails;
-import com.oracle.bmc.datalabelingservice.model.TextFileTypeMetadata;
 import com.oracle.bmc.datalabelingservice.model.UpdateDatasetDetails;
 import com.oracle.bmc.datalabelingservice.requests.GetDatasetRequest;
 import com.oracle.bmc.datalabelingservice.requests.UpdateDatasetRequest;
 import com.oracle.bmc.datalabelingservice.responses.GetDatasetResponse;
 import com.oracle.bmc.datalabelingservice.responses.UpdateDatasetResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.Annotation;
-import com.oracle.bmc.datalabelingservicedataplane.requests.UpdateRecordRequest;
+import com.oracle.bmc.model.BmcException;
 import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedLabelingStrategy;
 import com.oracle.datalabelingservicesamples.labelingstrategies.MlAssistedEntityExtraction;
@@ -54,7 +52,6 @@ import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
 
 import static java.lang.Float.parseFloat;
@@ -65,11 +62,11 @@ import static java.lang.Float.parseFloat;
  *
  * DATASET_ID : the id of the dataset that you want to bulk label
  * ML_MODEL_TYPE : String input specifying whether to use Pretrained/Custom models for the ai services
- * LABELING_ALGORITHM : The algorithm that will determine the label of any record.
- * 						Currently following algorithms are supported: ML_ASSISTED_IMAGE_CLASSIFICATION
- *                                                                    ML_ASSISTED_TEXT_CLASSIFICATION
- *                                                                    ML_ASSISTED_OBJECT_DETECTION
- *                                                                    ML_ASSISTED_ENTITY_EXTRACTION
+ * LABELING_ALGORITHM : The algorithm that will determine the label of any record. ML_ASSISTED_LABELING
+ * 						Currently following annotation types are supported: Single/Multi Label Image Classification
+     *                                                                      Single Label Text Classification
+ *                                                                          Image Object Detection
+ *                                                                          Text Named Entity Extraction
  *
  *
  * Following code constraints are added:
@@ -247,9 +244,11 @@ public class BulkAssistedLabelingScript {
                     }
                 },
                 exception -> {
-                    // TODO - Changes required here
-                    //                    if (exception.getCause() instanceof BmcException) {
-                    //                        BmcException bmcException = (BmcException)
+                    if (exception.getCause() instanceof BmcException) {
+                        BmcException bmcException = (BmcException) exception;
+                        log.error("Exception in Update Dataset API : {}", bmcException.getMessage());
+                        log.error("Create annotation failed with status code : {}", bmcException.getStatusCode());
+                    }
                 },
                 assistedLabelingParams.getAssistedLabelingTimeout());
         log.info("Coming here after thread finished");
@@ -297,6 +296,7 @@ public class BulkAssistedLabelingScript {
         /*
          * Validate custom model id
          */
+        // TODO support custom models in different compartments than the dataset
         if (Config.INSTANCE.getMlModelType().equals("CUSTOM")) {
             if(Config.INSTANCE.getCustomModelId().isEmpty()) {
                 log.error("Custom model ID cannot be empty when ML model type is custom");

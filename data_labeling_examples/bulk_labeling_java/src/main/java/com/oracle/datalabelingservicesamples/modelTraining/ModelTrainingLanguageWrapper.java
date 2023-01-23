@@ -1,21 +1,20 @@
 package com.oracle.datalabelingservicesamples.modelTraining;
 
-import com.oracle.bmc.ailanguage.model.ClassificationMultiLabelModeDetails;
-import com.oracle.bmc.ailanguage.model.ClassificationType;
 import com.oracle.bmc.ailanguage.model.CreateEndpointDetails;
 import com.oracle.bmc.ailanguage.model.CreateModelDetails;
-import com.oracle.bmc.ailanguage.model.DataScienceLabelingDataset;
 import com.oracle.bmc.ailanguage.model.LocationDetails;
 import com.oracle.bmc.ailanguage.model.ModelDetails;
 import com.oracle.bmc.ailanguage.model.NamedEntityRecognitionModelDetails;
 import com.oracle.bmc.ailanguage.model.ObjectListDataset;
 import com.oracle.bmc.ailanguage.model.ObjectStorageDataset;
 import com.oracle.bmc.ailanguage.model.OperationStatus;
+import com.oracle.bmc.ailanguage.model.TestStrategy;
 import com.oracle.bmc.ailanguage.model.TextClassificationModelDetails;
 import com.oracle.bmc.ailanguage.model.WorkRequest;
 import com.oracle.bmc.ailanguage.requests.CreateEndpointRequest;
 import com.oracle.bmc.ailanguage.requests.CreateModelRequest;
 import com.oracle.bmc.ailanguage.requests.CreateProjectRequest;
+import com.oracle.bmc.ailanguage.responses.CreateEndpointResponse;
 import com.oracle.bmc.ailanguage.responses.CreateModelResponse;
 import com.oracle.bmc.ailanguage.responses.CreateProjectResponse;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
@@ -142,11 +141,17 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
                             .createEndpointDetails(createEndpointDetails)
                             .build();
             try {
-                /* Send request to the Client */
-                assistedLabelingParams.setCustomModelEndpoint(Config.INSTANCE.getAiLanguageClient().createEndpoint(createEndpointRequest).getEndpoint().getId());
+                CreateEndpointResponse createEndpointResponse = Config.INSTANCE.getAiLanguageClient().createEndpoint(createEndpointRequest);
+
+                WorkRequest languageWorkrequest = languageWorkRequestPollService.pollLanguageWorkRequestStatus(createEndpointResponse.getOpcWorkRequestId());
+
+                if (!languageWorkrequest.getStatus().equals(OperationStatus.Succeeded)) {
+                    throw new Exception("Language endpoint creation failed, cannot proceed with inference");
+                }
+
+                assistedLabelingParams.setCustomModelEndpoint(createEndpointResponse.getEndpoint().getId());
             } catch (Exception ex) {
-                log.error("Error in creating an endpoint for custom model Id provided - {}", ex.getMessage());
-                throw ex;
+                throw new Exception("Error in creating an endpoint for custom model Id provided");
             }
         }
         catch (Exception e){

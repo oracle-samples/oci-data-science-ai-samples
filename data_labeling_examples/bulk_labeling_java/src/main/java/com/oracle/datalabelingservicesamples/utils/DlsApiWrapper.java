@@ -1,5 +1,6 @@
 package com.oracle.datalabelingservicesamples.utils;
 
+import com.oracle.bmc.datalabelingservice.model.ActionType;
 import com.oracle.bmc.datalabelingservice.model.ExportFormat;
 import com.oracle.bmc.datalabelingservice.model.ObjectStorageSnapshotExportDetails;
 import com.oracle.bmc.datalabelingservice.model.OperationStatus;
@@ -21,6 +22,7 @@ import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
 import com.oracle.datalabelingservicesamples.workRequests.DlsWorkRequestPollService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -141,10 +143,15 @@ public class DlsApiWrapper {
 
             if(!workRequest.getResources().isEmpty()){
                 for(WorkRequestResource workRequestResource: workRequest.getResources()) {
-                    String snapshotFilePath = workRequestResource.getEntityUri();
-                    String snapshotFileName = snapshotFilePath.substring(snapshotFilePath.lastIndexOf("/") + 1);
-                    log.info("Snapshot file name is : {} ", snapshotFileName);
-                    assistedLabelingParams.getSnapshotDatasetParams().setSnapshotObjectName(snapshotFileName);
+                    if(workRequestResource.getActionType().equals(ActionType.Written)) {
+                        String snapshotFilePath = workRequestResource.getEntityUri();
+                        String snapshotFileName = snapshotFilePath.substring(snapshotFilePath.lastIndexOf("/") + 1);
+                        if (!FilenameUtils.isExtension(snapshotFileName, "jsonl")) {
+                            snapshotFileName = snapshotFileName + '/' + snapshotFileName + ".jsonl";
+                        }
+                        log.info("Snapshot file name is : {} ", snapshotFileName);
+                        assistedLabelingParams.getSnapshotDatasetParams().setSnapshotObjectName(snapshotFileName);
+                    }
                 }
             }
 

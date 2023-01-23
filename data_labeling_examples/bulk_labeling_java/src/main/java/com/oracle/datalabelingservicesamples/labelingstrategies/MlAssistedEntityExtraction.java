@@ -4,10 +4,13 @@ import com.oracle.bmc.ailanguage.model.BatchDetectLanguageEntitiesDetails;
 import com.oracle.bmc.ailanguage.model.CreateEndpointDetails;
 import com.oracle.bmc.ailanguage.model.EntityDocumentResult;
 import com.oracle.bmc.ailanguage.model.HierarchicalEntity;
+import com.oracle.bmc.ailanguage.model.OperationStatus;
 import com.oracle.bmc.ailanguage.model.TextDocument;
+import com.oracle.bmc.ailanguage.model.WorkRequest;
 import com.oracle.bmc.ailanguage.requests.BatchDetectLanguageEntitiesRequest;
 import com.oracle.bmc.ailanguage.requests.CreateEndpointRequest;
 import com.oracle.bmc.ailanguage.responses.BatchDetectLanguageEntitiesResponse;
+import com.oracle.bmc.ailanguage.responses.CreateEndpointResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.Entity;
 import com.oracle.bmc.datalabelingservicedataplane.model.Label;
@@ -18,6 +21,7 @@ import com.oracle.bmc.datalabelingservicedataplane.requests.GetRecordContentRequ
 import com.oracle.bmc.datalabelingservicedataplane.responses.GetRecordContentResponse;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.Config;
+import com.oracle.datalabelingservicesamples.workRequests.LanguageWorkRequestPollService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -30,9 +34,10 @@ import java.util.List;
 
 @Slf4j
 public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
+    LanguageWorkRequestPollService languageWorkRequestPollService = new LanguageWorkRequestPollService();
 
     @Override
-    public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, AssistedLabelingParams assistedLabelingParams) {
+    public List<CreateAnnotationDetails> bulkAnalyzeRecords(List<RecordSummary> recordSummaries, AssistedLabelingParams assistedLabelingParams) throws Exception {
         List<TextDocument> documentList = new ArrayList<>();
         for (RecordSummary recordSummary : recordSummaries) {
             GetRecordContentRequest recordContentRequest =
@@ -65,11 +70,17 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
                             .build();
 
             try {
-                /* Send request to the Client */
-                assistedLabelingParams.setCustomModelEndpoint(Config.INSTANCE.getAiLanguageClient().createEndpoint(createEndpointRequest).getEndpoint().getId());
+                CreateEndpointResponse createEndpointResponse = Config.INSTANCE.getAiLanguageClient().createEndpoint(createEndpointRequest);
+
+                WorkRequest languageWorkrequest = languageWorkRequestPollService.pollLanguageWorkRequestStatus(createEndpointResponse.getOpcWorkRequestId());
+
+                if (!languageWorkrequest.getStatus().equals(OperationStatus.Succeeded)) {
+                    throw new Exception("Language endpoint creation failed, cannot proceed with inference");
+                }
+
+                assistedLabelingParams.setCustomModelEndpoint(createEndpointResponse.getEndpoint().getId());
             } catch (Exception ex) {
-                log.error("Error in creating an endpoint for custom model Id provided - {}", ex.getMessage());
-                throw ex;
+                throw new Exception("Error in creating an endpoint for custom model Id provided");
             }
         }
 

@@ -23,6 +23,5 @@ public class DataLabelingConstants {
 	public static final String CUSTOM_TRAINING_ENABLED = "CUSTOM_TRAINING_ENABLED";
 	public static final String MODEL_TRAINING_PROJECT_ID = "MODEL_TRAINING_PROJECT_ID";
 	public static final String TRAINING_DATASET_ID = "TRAINING_DATASET_ID";
-	public static final float DEFAULT_CONFIDENCE_THRESHOLD = 0.7F;
-	public static final int ASSISTED_LABELING_TIMEOUT = 3000; // Timeout in seconds
+	public static final int ASSISTED_LABELING_TIMEOUT = 6000; // Timeout in seconds
 }
