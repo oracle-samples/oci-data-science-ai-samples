@@ -17,14 +17,14 @@
         <dependency>
             <groupId>com.oracle.oci.sdk</groupId>
             <artifactId>oci-java-sdk-common</artifactId>
-            <version>3.0.1</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <!-- Since this is the "application" pom.xml, we do want to
                  choose the httpclient to use. -->
             <groupId>com.oracle.oci.sdk</groupId>
             <artifactId>oci-java-sdk-common-httpclient-jersey</artifactId>
-            <version>3.0.1</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
