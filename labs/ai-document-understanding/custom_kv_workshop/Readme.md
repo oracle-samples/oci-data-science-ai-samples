@@ -12,7 +12,7 @@ In this workshop, we will go through the end to end steps of creating a custom k
 
 * Familiarity with Python
 * OCI Paid Account
-* Access to OCI Document Understanding preview SDK (request access here)
+* Access to OCI Document Understanding preview SDK (request access by emailing contact_document_understanding_ww_grp@oracle.com)
 
 The purpose of this workshop is to give you an overview of the Key Value Extraction service without going into the details and more advanced scenarios.
 
