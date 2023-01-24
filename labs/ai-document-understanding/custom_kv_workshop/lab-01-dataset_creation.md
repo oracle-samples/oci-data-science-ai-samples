@@ -1,7 +1,7 @@
 # Lab 1: Label a dataset in OCI Data Labeling Service
 ## Introduction
 
-In this lab, you will use the OCI Console to a create dataset in Data Labelling Service.
+In order to train a custom key value model using Document Understanding, you need a labeled dataset. In this lab, you will use the OCI Console to a create dataset in Data Labeling Service.
 
 Estimated Time: 20 minutes
 
@@ -14,8 +14,7 @@ In this workshop, you will:
 * Get to know how to create a new dataset for Key Value Extraction model. 
 * Label the documents in the created dataset.
 
-## **Task 1:** Create an Object Storage Bucket (This step is optional in case the bucket is already created)
-
+## **Task 1:** Create an Object Storage Bucket (Optional if you already have an Object Storage bucket)
 * Using the Burger Menu on the top left corner, navigate to Storage and select **"Buckets"** under the Object Storage section.
 
 ![](./images/bucket1.png)
@@ -65,7 +64,7 @@ Create a new dataset with the following guidelines:
 
 ![](./images/dataset6.png)
 
-* We want to extract the values for **"Recipient", "Carrier Name", "Shipping ID",** and **"Trailer Number"** from the given sample documents(You can give labels depending on the type of data you use to create the dataset).
+* In the labels section, add the names of all the fields you want supported in your custom key value model. In this scenario, we want to train a key value model that detects recipient, carrier name, truck number, and shipping number from a bill of lading document. So, in the Labels section we'll add the fields **"Recipient", "Carrier Name", "Shipping ID",** and **"Trailer Number"**, pressing "enter" after each name. 
 
 ![](./images/dataset7.png)
 
@@ -79,7 +78,7 @@ Now that your dataset is generated, begin labelling your dataset. Select the doc
 
 ![](./images/label14.png)
 
-* Start labelling all the labels.
+* Start labelling all the labels. Note: you don't need to label field names, like "Shipping ID" in a document, just the values, like "5102353." You can also associate multiple words to a given label, like the first and last name to "Recipient."
 
 ![](./images/label1.png)
 
