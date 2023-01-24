@@ -19,63 +19,10 @@ public class Main {
         try {
 
             /* Step 1: Authentication */
-
-            //https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/AuthenticationPolicyExample.java
-            // Configuring the AuthenticationDetailsProvider. It's assuming there is a default OCI
-            // config file
-            // "~/.oci/config", and a profile in that config with the name "DEFAULT". Make changes to
-            // the following
-            // line if needed and use ConfigFileReader.parse(configurationFilePath, profile);
-            final ConfigFileReader.ConfigFile configFile =
-                    ConfigFileReader.parse("<PATH TO YOUR CONFIG FILE>", "DEFAULT");
-
-//            final AuthenticationDetailsProvider provider =
-//                    new ConfigFileAuthenticationDetailsProvider(configFile);
-
-            //https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/InstancePrincipalsAuthenticationDetailsProviderExample.java
-            //Using Instance Principal
-//            final InstancePrincipalsAuthenticationDetailsProvider provider;
-//            try {
-//                provider = InstancePrincipalsAuthenticationDetailsProvider.builder().build();
-//            } catch (Exception e) {
-//                if (e.getCause() instanceof SocketTimeoutException
-//                        || e.getCause() instanceof ConnectException) {
-//                    System.out.println(
-//                            "This sample only works when running on an OCI instance. Are you sure you’re running on an OCI instance? For more info see: https://docs.cloud.oracle.com/Content/Identity/Tasks/callingservicesfrominstances.htm");
-//                    return;
-//                }
-//                throw e;
-//            }
-
-
-            //https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/FunctionsEphemeralResourcePrincipalAuthenticationDetailsProviderExample.java
-            // Using Resource Principal
-
-//            final ResourcePrincipalAuthenticationDetailsProvider provider =
-//                    ResourcePrincipalAuthenticationDetailsProvider.builder().build();
-
-            //https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/SimpleAuthenticationDetailsProviderExample.java
-            // SimpleAuthenticationDetailsProvider
-
-            if (args.length != 5) {
-                throw new IllegalArgumentException(
-                        "This example expects five arguments: tenantId, userId, fingerprint, privateKey and passPhrase");
-            }
-
-            final String tenantId = args[0];
-            final String userId = args[1];
-            final String fingerprint = args[2];
-            final String privateKey = args[3];
-            final String passPhrase = args[4];
-
-            final AuthenticationDetailsProvider provider =
-                SimpleAuthenticationDetailsProvider.builder()
-                        .tenantId(tenantId)
-                        .userId(userId)
-                        .fingerprint(fingerprint)
-                        .privateKeySupplier(new StringPrivateKeySupplier(privateKey))
-                        .passPhrase(passPhrase)
-                        .build();
+            AuthenticationDetailsProvider provider = authenticateWithConfigFile();
+            //InstancePrincipalsAuthenticationDetailsProvider provider = authenticateWithServicePrincipal();
+            //ResourcePrincipalAuthenticationDetailsProvider provider = authenticateWithResourcePrincipal();
+            //AuthenticationDetailsProvider provider = authenticateWithSimpleAuthentication();
 
             /* Step 2: Create a service client */
             AIServiceLanguageClient client = AIServiceLanguageClient.builder().build(provider);
@@ -118,5 +65,72 @@ public class Main {
         catch(IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/AuthenticationPolicyExample.java
+    // Configuring the AuthenticationDetailsProvider. It's assuming there is a default OCI
+    // config file
+    // "~/.oci/config", and a profile in that config with the name "DEFAULT". Make changes to
+    // the following
+    // line if needed and use ConfigFileReader.parse(configurationFilePath, profile);
+    private static AuthenticationDetailsProvider authenticateWithConfigFile() throws IOException {
+        try {
+            // Uncomment below line and provide config file path if your config file is not at default location "~/.oci/config"
+            // final ConfigFileReader.ConfigFile configFile =
+            //          ConfigFileReader.parse("<PATH TO YOUR CONFIG FILE>", "DEFAULT");
+            // final AuthenticationDetailsProvider provider = new ConfigFileAuthenticationDetailsProvider(configFile);
+
+            return new ConfigFileAuthenticationDetailsProvider("DEFAULT");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    //Using Instance Principal
+    //https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/InstancePrincipalsAuthenticationDetailsProviderExample.java
+    private static InstancePrincipalsAuthenticationDetailsProvider authenticateWithServicePrincipal() {
+        final InstancePrincipalsAuthenticationDetailsProvider provider;
+        try {
+            provider = InstancePrincipalsAuthenticationDetailsProvider.builder().build();
+            return provider;
+        } catch (Exception e) {
+            if (e.getCause() instanceof SocketTimeoutException
+                    || e.getCause() instanceof ConnectException) {
+                System.out.println(
+                        "This sample only works when running on an OCI instance. Are you sure you’re running on an OCI instance? For more info see: https://docs.cloud.oracle.com/Content/Identity/Tasks/callingservicesfrominstances.htm");
+                return null;
+            }
+            throw e;
+        }
+    }
+
+    //https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/FunctionsEphemeralResourcePrincipalAuthenticationDetailsProviderExample.java
+    //Using Resource Principal
+    private static ResourcePrincipalAuthenticationDetailsProvider authenticateWithResourcePrincipal() {
+        return ResourcePrincipalAuthenticationDetailsProvider.builder().build();
+    }
+
+    //https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/SimpleAuthenticationDetailsProviderExample.java
+    //SimpleAuthenticationDetailsProvider
+    private static AuthenticationDetailsProvider authenticateWithSimpleAuthentication(String[] args) {
+        if (args.length != 5) {
+            throw new IllegalArgumentException(
+                    "This example expects five arguments: tenantId, userId, fingerprint, privateKey and passPhrase");
+        }
+
+        final String tenantId = args[0];
+        final String userId = args[1];
+        final String fingerprint = args[2];
+        final String privateKey = args[3];
+        final String passPhrase = args[4];
+
+        return SimpleAuthenticationDetailsProvider.builder()
+                .tenantId(tenantId)
+                .userId(userId)
+                .fingerprint(fingerprint)
+                .privateKeySupplier(new StringPrivateKeySupplier(privateKey))
+                .passPhrase(passPhrase)
+                .build();
     }
 }
