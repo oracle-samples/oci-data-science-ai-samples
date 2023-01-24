@@ -2,10 +2,10 @@
 
 ### Objectives
 
-In this workshop, we will go through the end to end steps of creating a custom key-value extraction model with OCI Document Understanding. We will mainly:
+In this workshop, we will go through the end to end steps of creating a custom key-value extraction model with OCI Document Understanding. By completing this workshop you will be able to:
 
-* Learn how to train a KeyValue extraction model through the OCI console.
-* Learn how to use OCI console, OCI preview SDK, and REST API to communicate with our document service endpoints.
+* Train a custom key value extraction model through the OCI console
+* Use OCI console, OCI preview SDK, and REST API to communicate with our document service endpoints
 
 
 ### Prerequisites
