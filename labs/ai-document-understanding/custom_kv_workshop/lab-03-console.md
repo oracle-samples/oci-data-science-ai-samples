@@ -12,8 +12,13 @@ In this workshop, you will:
 
 * Get to know how to call the key value extraction model created in [previous lab](./lab-02-model_training.md).
 
-## Task: Invoke model through OCI console
-* Once the model is active, select **"Analyze"** under _Resources_ header on the left hand side of the console.
+## Task 1: Navigate to Model Details page
+* Navigate to the project space you created in the previous lab, and look for the model you created. It will be in one of four states, "active" "in progress" "failed" or "deleted".
+* Once the model is active, click on the name to access its model details page
+![](./images/console4.PNG)
+
+## Task 2: Invoke model through OCI console
+* Once on your model's details page, select **"Analyze"** under _Resources_ header on the left hand side of the console.
 * Click on **"Select to change output location"** to give output location. 
 
 ![](./images/console3.png)
