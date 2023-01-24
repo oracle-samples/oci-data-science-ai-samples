@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import os
@@ -9,10 +10,17 @@ import ads
 import oci
 import requests
 import yaml
+import metric_query
 from ads.common.oci_datascience import OCIDataScienceMixin
 from ads.common.oci_resource import OCIResource
 from ads.jobs import DataScienceJobRun, Job
 from flask import Flask, request, abort, jsonify, render_template, make_response, redirect
+
+
+SERVICE_METRICS_NAMESPACE = "oci_datascience_jobrun"
+SERVICE_METRICS_DIMENSION = "resourceId"
+CUSTOM_METRICS_NAMESPACE_ENV = "METRICS_NAMESPACE"
+CUSTOM_METRICS_DIMENSION = metric_query.CUSTOM_METRIC_OCID_DIMENSION
 
 
 # Load config
@@ -114,6 +122,7 @@ def check_ocid(ocid):
     if not re.match(r'ocid[0-9].[a-z]+.oc[0-9].[a-z]{3}.[a-z0-9]+', ocid):
         abort_with_json_error(404, f"Invalid OCID: {ocid}")
 
+
 def check_project_id(project_id):
     if not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
         abort_with_json_error(404, f"Invalid Project OCID: {project_id}")
@@ -122,6 +131,12 @@ def check_project_id(project_id):
 def check_compartment_id(compartment_id):
     if not re.match(r'ocid[0-9].compartment.oc[0-9]..[a-z0-9]+', compartment_id):
         abort_with_json_error(404, f"Invalid Compartment OCID: {compartment_id}")
+
+
+def is_valid_ocid(resource_type, ocid):
+    if re.match(r'ocid[0-9].' + resource_type + r'.oc[0-9].[a-z]{3}.[a-z0-9]+', ocid):
+        return True
+    return False
 
 
 def check_compartment_project(compartment_id, project_id):
@@ -135,6 +150,7 @@ def check_compartment_project(compartment_id, project_id):
     check_compartment_id(compartment_id)
     return compartment_id, project_id
 
+
 def check_endpoint():
     endpoint = request.args.get("endpoint")
     if endpoint:
@@ -143,11 +159,13 @@ def check_endpoint():
         OCIDataScienceMixin.kwargs = None
     return endpoint
 
+
 def check_limit():
     limit = request.args.get("limit", 10)
     if isinstance(limit, str) and not limit.isdigit():
         abort_with_json_error(400, "limit parameter must be an integer.")
     return limit
+
 
 def list_all_sub_compartments(client: oci.identity.IdentityClient, compartment_id):
     compartments = oci.pagination.list_call_get_all_results(
@@ -158,12 +176,14 @@ def list_all_sub_compartments(client: oci.identity.IdentityClient, compartment_i
     ).data
     return compartments
 
+
 def list_all_child_compartments(client: oci.identity.IdentityClient, compartment_id):
     compartments = oci.pagination.list_call_get_all_results(
         client.list_compartments,
         compartment_id=compartment_id,
     ).data
     return compartments
+
 
 def init_components(compartment_id, project_id):
     limit = request.args.get("limit", 10)
@@ -282,6 +302,7 @@ def list_job_runs(job_id):
         "runs": run_list
     })
 
+
 @app.route("/projects/<compartment_id>")
 def list_projects(compartment_id):
     endpoint = check_endpoint()
@@ -338,18 +359,28 @@ def get_logs(job_run_ocid):
     return jsonify(context)
 
 
-@app.route("/delete/<job_ocid>")
-def delete_job(job_ocid):
+@app.route("/delete/<ocid>")
+def delete_job(ocid):
     check_endpoint()
-    job = Job.from_datascience_job(job_ocid)
-    try:
-        job.delete()
-        error = None
-    except oci.exceptions.ServiceError as ex:
-        error = ex.message
-    logger.info(f"Deleted Job: {job_ocid}")
+    if is_valid_ocid("datasciencejob", ocid):
+        job = Job.from_datascience_job(ocid)
+        try:
+            job.delete()
+            error = None
+        except oci.exceptions.ServiceError as ex:
+            error = ex.message
+        logger.info(f"Deleted Job: {ocid}")
+    elif is_valid_ocid("datasciencejobrun", ocid):
+        run = DataScienceJobRun.from_ocid(ocid)
+        try:
+            run.delete()
+            error = None
+        except oci.exceptions.ServiceError as ex:
+            error = ex.message
+        logger.info(f"Deleted Job Run: {ocid}")
+
     return jsonify({
-        "ocid": job_ocid,
+        "ocid": ocid,
         "error": error
     })
 
@@ -387,7 +418,6 @@ def load_yaml(filename=None):
     })
 
 
-
 @app.route("/run", methods=["POST"])
 def run():
     auth = get_authentication()
@@ -413,7 +443,18 @@ def run():
         else:
             # Running an opctl workflow require additional dependencies for ADS
             from ads.opctl.cmds import run as opctl_run
-            info = opctl_run(workflow)
+            kwargs = {}
+            kwargs["tag"] = None
+            kwargs["registry"] = None
+            kwargs["dockerfile"] = None
+            kwargs["source_folder"] = None
+            kwargs["nobuild"] = 1
+            kwargs["backend"] = None
+            kwargs["auto_increment"] = None
+            kwargs["nopush"] = 1
+            kwargs["dry_run"] = None
+            kwargs["job_info"] = None
+            info = opctl_run(workflow, **kwargs)
             job_id = info[0].id
 
         return jsonify({
@@ -422,3 +463,74 @@ def run():
     except Exception as ex:
         traceback.print_exc()
         abort_with_json_error(500, str(ex))
+
+
+def get_custom_metrics_namespace(job_run):
+    job_envs = job_run.job.runtime.envs
+    return job_envs.get(CUSTOM_METRICS_NAMESPACE_ENV)
+
+
+@app.route("/metrics/<ocid>")
+def list_metrics(ocid):
+    job_run = DataScienceJobRun.from_ocid(ocid)
+    custom_metric_namespace = get_custom_metrics_namespace(job_run)
+    client = oci.monitoring.MonitoringClient(**get_authentication())
+    service_metrics = metric_query.list_job_run_metrics(
+        job_run,
+        SERVICE_METRICS_NAMESPACE,
+        SERVICE_METRICS_DIMENSION,
+        client
+    )
+    custom_metrics = metric_query.list_job_run_metrics(
+        job_run,
+        custom_metric_namespace,
+        metric_query.CUSTOM_METRIC_OCID_DIMENSION,
+        client
+    )
+    return jsonify({
+        "metrics": service_metrics + custom_metrics,
+    })
+
+
+@app.route("/metrics/<name>/<ocid>")
+def get_metrics(name, ocid):
+    job_run = DataScienceJobRun.from_ocid(ocid)
+    if name.startswith("gpu"):
+        metric_namespace = get_custom_metrics_namespace(job_run)
+        dimension = CUSTOM_METRICS_DIMENSION
+    else:
+        metric_namespace = "oci_datascience_jobrun"
+        dimension = SERVICE_METRICS_DIMENSION
+    run_metrics = []
+    if metric_namespace:
+        client = oci.monitoring.MonitoringClient(**get_authentication())
+        results = metric_query.get_metric_values(
+            job_run,
+            name,
+            metric_namespace,
+            dimension,
+            client,
+            job_run.time_started,
+        )
+        if results:
+            for result in results:
+                run_metrics.append([
+                    {"timestamp": p.timestamp, "value": p.value }
+                    for p in result.aggregated_datapoints
+                ])
+    timestamps = set()
+    datasets = []
+    for metric in run_metrics:
+        timestamps.update([p["timestamp"] for p in metric])
+        datasets.append({p["timestamp"]: p["value"] for p in metric})
+    timestamps = list(timestamps)
+    timestamps.sort()
+    values = []
+    for dataset in datasets:
+        values.append([dataset.get(timestamp) for timestamp in timestamps])
+    datasets = [{"label": f"#{i}", "data": v} for i, v in enumerate(values, start=1)]
+    return jsonify({
+        "metrics": run_metrics,
+        "timestamps": timestamps,
+        "datasets": datasets
+    })

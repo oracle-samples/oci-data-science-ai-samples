@@ -11,32 +11,26 @@ All the container image related artifacts are located under - `oci_dist_training
 
 ### Prerequisite
 
-#### Install ADS
+This guide uses `ads[opctl]` for creating and running distributed training jobs. Make sure that you follow the [Getting Started Guide](README.md) first.
 
-You need to install [ads](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html#) and the `ads opctl` CLI.
+Refer our [distributed training guide](distributed_training_cmd.md) for supported commands and options for distributed training.
 
-```bash
-python3 -m pip install oracle-ads[opctl]
-```
-
-This guide uses ```ads opctl``` for creating distributed training jobs. Refer [distributed_training_cmd.md](distributed_training_cmd.md) for supported commands and options for distributed training.
-
-#### Configurations
-
-Make sure you followed and configured your Oracle Cloud tenancy as shown in the [Getting Started](README.md) guide
-
-### Prepare the container image
+### Build the container image
 
 Horovod provides support for Pytorch and Tensorflow. Within these frameworks, there are two separate Dockerfiles, for cpu and gpu. Choose the Dockerfile and conda environment files based on whether you are going to use Pytorch or Tensorflow with either cpu or gpu.
 
-The instruction assumes that you are running this within the folder where you ran `ads opctl distributed-training init --framework horovod-<pytorch|tensorflow>`
+Before you start, initialize your project to use the Horovod Distributed Project
+
+```bash
+ads opctl distributed-training init --framework horovod-<pytorch|tensorflow>
+```
 
 All files in the current directory is copied over to `/code` folder inside container image.
 
 For example, you can have the following training Tensorflow script saved as `train.py`:
 
 <details>
-<summary><b>tensorflow horovod train.py</b> <== click to open</summary>
+<summary><b>tensorflow horovod train.py</b> <= click to open</summary>
 
 ```python
 # Script adapted from https://github.com/horovod/horovod/blob/master/examples/elastic/tensorflow2/tensorflow2_keras_mnist_elastic.py
@@ -203,7 +197,7 @@ train(state)
 If you are creating a PyTorch based workload, here is an example that you can save as `train.py`.
 
 <details>
-<summary><b>pytorch horovod train.py</b> <== click to open</summary>
+<summary><b>pytorch horovod train.py</b> <= click to open</summary>
 
 ```python
 # Script adapted from https://github.com/horovod/horovod/blob/master/examples/elastic/pytorch/pytorch_mnist_elastic.py
@@ -621,7 +615,7 @@ oci_key_mnt = ~/.oci:/home/oci_dist_training/.oci
 Create `docker-compose.yaml` file and copy the content of the **docker-compose.yaml** `example` file below. You can learn more about docker compose [here](https://docs.docker.com/compose/)
 
 <details>
-<summary><b>docker-compose.yaml</b> <== click to open</summary>
+<summary><b>docker-compose.yaml</b> <= click to open</summary>
 
 ```yaml
 # docker-compose.yaml for distributed horovod testing

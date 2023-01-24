@@ -1,0 +1,31 @@
+<div class="btn-group">
+  {% if 'METRICS_NAMESPACE' in run.job.runtime.envs %}
+  <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    GPU Memory (%)
+  </button>
+  {% else %}
+  <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    CPU Utilization (%)
+  </button>
+  {% endif %}
+  <ul class="dropdown-menu">
+    {% if 'METRICS_NAMESPACE' in run.job.runtime.envs %}
+    <li><a class="dropdown-item" data-val="CpuUtilization" href="#">CPU Utilization (%)</a></li>
+    <li><a class="dropdown-item" data-val="DiskUtilization" href="#">Disk Utilization (%)</a></li>
+    <li><a class="dropdown-item" data-val="MemoryUtilization" href="#">Memory Utilization (%)</a></li>
+    <li><a class="dropdown-item" data-val="NetworkBytesIn" href="#">Network Bytes In</a></li>
+    <li><a class="dropdown-item" data-val="NetworkBytesOut" href="#">Network Bytes Out</a></li>
+    <li><a class="dropdown-item" data-val="gpu.gpu_utilization" href="#">GPU Utilization (%)</a></li>
+    <li class="d-none"><a class="dropdown-item" data-val="gpu.memory_usage" href="#">GPU Memory (%)</a></li>
+    <li><a class="dropdown-item" data-val="gpu.power_draw" href="#">GPU Power (W)</a></li>
+    <li><a class="dropdown-item" data-val="gpu.temperature" href="#">GPU Temperature (&#8451;)</a></li>
+    {% else %}
+    <li class="d-none"><a class="dropdown-item" data-val="CpuUtilization" href="#">CPU Utilization (%)</a></li>
+    <li><a class="dropdown-item" data-val="DiskUtilization" href="#">Disk Utilization (%)</a></li>
+    <li><a class="dropdown-item" data-val="MemoryUtilization" href="#">Memory Utilization (%)</a></li>
+    <li><a class="dropdown-item" data-val="NetworkBytesIn" href="#">Network Bytes In</a></li>
+    <li><a class="dropdown-item" data-val="NetworkBytesOut" href="#">Network Bytes Out</a></li>
+    {% endif %}
+  </ul>
+</div>
+<div><canvas id="metrics-{{ run.id|replace('.', '') }}"></canvas></div>

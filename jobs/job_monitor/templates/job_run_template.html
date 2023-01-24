@@ -1,0 +1,56 @@
+<div class="col-xxl-4 {{ job.id|replace('.', '') }}" id="{{ run.id|replace('.', '') }}">
+  <div class="card run-monitor" id="{{ run.id }}" style="margin-bottom: 25px;">
+
+    <div class="card-header">
+      <div>
+        <div class="float-end" style="font-size: larger">
+          <a href="#" onclick="downloadLogs('{{ run.id }}')"><i title="Download Logs" class="bi-download"></i></a>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#modal-details-{{ run.id|replace('.', '') }}"><i title="Show YAML..."
+              class="bi-info-circle"></i></a>
+          <a class="text-danger" href="#" data-bs-toggle="modal"
+            data-bs-target="#modal-delete-{{ run.id|replace('.', '') }}"><i title="Delete Job..." class="bi-x-lg"></i></a>
+        </div>
+        <h4>
+          <a style="color: inherit;" target="_blank"
+            href="https://console.us-ashburn-1.oraclecloud.com/data-science/jobs/{{ job.id }}">
+            {{ job.name }}
+          </a>
+        </h4>
+      </div>
+      <div class="clearfix"></div>
+      <div>
+        <div class="float-end">
+          <p><strong class="run-status">{{ run.lifecycle_state}}</strong></p>
+        </div>
+        <h5>{{ run.name }}</h5>
+      </div>
+    </div>
+
+    <div class="card-body logs" style="height: 500px; overflow: scroll;">
+      <pre style="overflow: visible;">Loading Logs...</pre>
+    </div>
+    
+    <div class="card-footer job-run-metrics" style="height: 200px">
+      {% include 'job_run_metrics.html' %}
+    </div>
+    <div class="card-footer text-muted">
+      {% if run.log_id %}
+      <div><a target="_blank"
+          href="https://console.us-ashburn-1.oraclecloud.com/logging/search?searchQuery=search%20%22{{ run.compartment_id }}%22%20%7C%20source%3D%27%2A{{ run.id }}%27%20%7C%20sort%20by%20datetime%20desc">View
+          logs in OCI
+          console</a></div>
+      {% endif %}
+      {{ run.id }} <br>
+      <span class="run-status-details">
+        {{ run.lifecycle_state }}
+        {% if run.lifecycle_details %}
+        - {{ run.lifecycle_details }}
+        {% endif %}
+      </span>
+    </div>
+  </div>
+
+  {% include 'modal_job_run_yaml.html' %}
+  {% include 'modal_job_run_delete.html' %}
+  
+</div>
