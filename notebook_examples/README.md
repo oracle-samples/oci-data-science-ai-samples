@@ -12,7 +12,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Topics
-<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen"> <img src="https://img.shields.io/badge/train model-6-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous driving-1-brightgreen"> <img src="https://img.shields.io/badge/tensorflow-1-brightgreen"> <img src="https://img.shields.io/badge/authentication-1-brightgreen"> <img src="https://img.shields.io/badge/api keys-1-brightgreen"> <img src="https://img.shields.io/badge/iam-1-brightgreen"> <img src="https://img.shields.io/badge/access management-1-brightgreen"> <img src="https://img.shields.io/badge/caltech-1-brightgreen"> <img src="https://img.shields.io/badge/pedestrian detection-1-brightgreen"> <img src="https://img.shields.io/badge/dcat-1-brightgreen"> <img src="https://img.shields.io/badge/pytorch-1-brightgreen"> <img src="https://img.shields.io/badge/model evaluation-1-brightgreen"> <img src="https://img.shields.io/badge/binary classification-1-brightgreen"> <img src="https://img.shields.io/badge/regression-1-brightgreen"> <img src="https://img.shields.io/badge/multi class classification-1-brightgreen"> <img src="https://img.shields.io/badge/imbalanced dataset-1-brightgreen"> <img src="https://img.shields.io/badge/synthetic dataset-1-brightgreen"> <img src="https://img.shields.io/badge/text extraction-1-brightgreen"> 
+<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen"> <img src="https://img.shields.io/badge/train model-6-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/hyperparameter tuning-1-brightgreen"> <img src="https://img.shields.io/badge/caltech-1-brightgreen"> <img src="https://img.shields.io/badge/pedestrian detection-1-brightgreen"> <img src="https://img.shields.io/badge/streaming-1-brightgreen"> <img src="https://img.shields.io/badge/kafka-1-brightgreen"> <img src="https://img.shields.io/badge/model evaluation-1-brightgreen"> <img src="https://img.shields.io/badge/binary classification-1-brightgreen"> <img src="https://img.shields.io/badge/regression-1-brightgreen"> <img src="https://img.shields.io/badge/multi class classification-1-brightgreen"> <img src="https://img.shields.io/badge/imbalanced dataset-1-brightgreen"> <img src="https://img.shields.io/badge/synthetic dataset-1-brightgreen"> <img src="https://img.shields.io/badge/object annotation-1-brightgreen"> <img src="https://img.shields.io/badge/genome visualization-1-brightgreen"> <img src="https://img.shields.io/badge/tensorflow-1-brightgreen"> <img src="https://img.shields.io/badge/sql magic-1-brightgreen"> <img src="https://img.shields.io/badge/lightgbm-1-brightgreen"> <img src="https://img.shields.io/badge/data labeling-1-brightgreen"> 
 
 ## Contents
  - [API Keys](#api_keys-authentication.ipynb)
@@ -78,20 +78,6 @@ This notebook was developed on the conda pack with slug: `computervision_p37_cpu
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="read-write-big_data_service-(BDS).ipynb"></a> - How to Read Data with fsspec from Oracle Big Data Service (BDS)
-#### [`read-write-big_data_service-(BDS).ipynb`](read-write-big_data_service-(BDS).ipynb)
-
- 
-Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
-
-This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
-
- 
-`bds`  `fsspec`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### <a name="big_data_service-(BDS)-livy.ipynb"></a> - Using Livy on the Big Data Service
 #### [`big_data_service-(BDS)-livy.ipynb`](big_data_service-(BDS)-livy.ipynb)
 
@@ -102,6 +88,20 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 
  
 `bds`  `big data service`  `livy`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="read-write-big_data_service-(BDS).ipynb"></a> - How to Read Data with fsspec from Oracle Big Data Service (BDS)
+#### [`read-write-big_data_service-(BDS).ipynb`](read-write-big_data_service-(BDS).ipynb)
+
+ 
+Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
+
+This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
+
+ 
+`bds`  `fsspec`
 
 <sub>Universal Permissive License v 1.0</sup>
 
@@ -358,20 +358,6 @@ This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v1`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="pyspark-data_flow_studio-introduction.ipynb"></a> - Introduction to the Oracle Cloud Infrastructure Data Flow Studio
-#### [`pyspark-data_flow_studio-introduction.ipynb`](pyspark-data_flow_studio-introduction.ipynb)
-
- 
-Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.
-
-This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v2`
-
- 
-`pyspark`  `data flow`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### <a name="pyspark-data_flow-application.ipynb"></a> - PySpark
 #### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
 
@@ -379,6 +365,20 @@ This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v2`
 Develop local PySpark applications and work with remote clusters using Data Flow.
 
 This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
+
+ 
+`pyspark`  `data flow`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="pyspark-data_flow_studio-introduction.ipynb"></a> - Introduction to the Oracle Cloud Infrastructure Data Flow Studio
+#### [`pyspark-data_flow_studio-introduction.ipynb`](pyspark-data_flow_studio-introduction.ipynb)
+
+ 
+Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.
+
+This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v2`
 
  
 `pyspark`  `data flow`
