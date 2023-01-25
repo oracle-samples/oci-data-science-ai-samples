@@ -1,5 +1,6 @@
 package com.oracle.datalabelingservicesamples.modelTraining;
 
+import com.oracle.bmc.ailanguage.model.ClassificationMultiClassModeDetails;
 import com.oracle.bmc.ailanguage.model.CreateEndpointDetails;
 import com.oracle.bmc.ailanguage.model.CreateModelDetails;
 import com.oracle.bmc.ailanguage.model.LocationDetails;
@@ -8,7 +9,6 @@ import com.oracle.bmc.ailanguage.model.NamedEntityRecognitionModelDetails;
 import com.oracle.bmc.ailanguage.model.ObjectListDataset;
 import com.oracle.bmc.ailanguage.model.ObjectStorageDataset;
 import com.oracle.bmc.ailanguage.model.OperationStatus;
-import com.oracle.bmc.ailanguage.model.TestStrategy;
 import com.oracle.bmc.ailanguage.model.TextClassificationModelDetails;
 import com.oracle.bmc.ailanguage.model.WorkRequest;
 import com.oracle.bmc.ailanguage.requests.CreateEndpointRequest;
@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import com.oracle.bmc.ailanguage.model.CreateProjectDetails;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 @Slf4j
 public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
@@ -34,14 +33,14 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
 
     @Override
     public void performModelTraining(AssistedLabelingParams assistedLabelingParams) throws Exception {
-        log.info("Starting Custom model training using input dataset: {}", assistedLabelingParams.getDatasetId());
-
         log.info("Generating new snapshot using training dataset Id : {}", assistedLabelingParams.getModelTrainingParams().getTrainingDatasetId());
+
         dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
 
 //      If project already exists, use the same ID, otherwise create a new project
 
         if(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId().isEmpty()) {
+            log.info("Project ID not provided, creating a new project ");
             try {
                 /* Create a request and dependent object(s). */
                 CreateProjectDetails createProjectDetails = CreateProjectDetails.builder()
@@ -77,10 +76,13 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             switch (assistedLabelingParams.getModelTrainingParams().getModelTrainingType()){
                 case "TEXT_CLASSIFICATION":
                     modelDetails = TextClassificationModelDetails.builder()
+                            .languageCode("en")
+                            .classificationMode(ClassificationMultiClassModeDetails.builder().build())
                                     .build();
                     break;
                 case "NAMED_ENTITY_RECOGNITION":
                     modelDetails = NamedEntityRecognitionModelDetails.builder()
+                            .languageCode("en")
                             .build();
                     break;
                 default:
@@ -95,7 +97,7 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
 
             /* Create a request and dependent object(s). */
             CreateModelDetails createModelDetails = CreateModelDetails.builder()
-                    .displayName("test-model")
+                    .displayName("language-model")
                     .description("Test custom model training")
                     .compartmentId(assistedLabelingParams.getCompartmentId())
                     .modelDetails(modelDetails)
@@ -103,18 +105,13 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
                             .locationDetails(locationDetails)
                             .build())
                     .projectId(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId())
-                    .freeformTags(new HashMap<String, String>() {
-                        {
-                            put("datasetId", assistedLabelingParams.getDatasetId());
-                        }
-                    })
                     .build();
 
             CreateModelRequest createModelRequest = CreateModelRequest.builder()
                     .createModelDetails(createModelDetails)
-                    .opcRetryToken("EXAMPLE-opcRetryToken-Value")
-                    .opcRequestId("BulkAssistedLabeling")
                     .build();
+
+            log.info("Starting Custom model training using snapshot: {}", assistedLabelingParams.getDatasetId());
 
             /* Send request to the Client */
             CreateModelResponse modelResponse = Config.INSTANCE.getAiLanguageClient().createModel(createModelRequest);

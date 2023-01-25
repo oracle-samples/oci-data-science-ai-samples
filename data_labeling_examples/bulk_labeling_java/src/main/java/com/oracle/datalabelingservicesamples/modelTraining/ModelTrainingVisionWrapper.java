@@ -25,14 +25,13 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
 
     @Override
     public void performModelTraining(AssistedLabelingParams assistedLabelingParams) throws Exception {
-        log.info("Starting Custom model training using input dataset: {}", assistedLabelingParams.getDatasetId());
-
         log.info("Generating new snapshot using training dataset Id : {}", assistedLabelingParams.getSnapshotDatasetParams().getSnapshotDatasetId());
         dlsApiWrapper.createDatasetSnapshot(assistedLabelingParams);
 
 //      If project already exists, use the same ID, otherwise create a new project
 
         if(assistedLabelingParams.getModelTrainingParams().getModelTrainingProjectId().isEmpty()) {
+            log.info("Project ID not provided, creating a new project ");
             try {
                 /* Create a request and dependent object(s). */
                 CreateProjectDetails createProjectDetails = CreateProjectDetails.builder()
@@ -90,6 +89,8 @@ public class ModelTrainingVisionWrapper implements ModelTrainingWrapper {
                     .opcRetryToken("EXAMPLE-opcRetryToken-Value")
                     .opcRequestId("BulkAssistedLabeling")
                     .build();
+
+            log.info("Starting Custom model training using snapshot: {}", assistedLabelingParams.getDatasetId());
 
             /* Send request to the Client */
             CreateModelResponse modelResponse = Config.INSTANCE.getAiVisionClient().createModel(createModelRequest);
