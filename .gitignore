@@ -30,3 +30,4 @@ __pycache__/
 .ipynb_checkpoints
 
 jobs/ts+js/downloaded_artifact.py
+jobs/Fn/.oci/

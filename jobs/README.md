@@ -35,11 +35,11 @@ Depending on the programing language, like for example Python, we provide also s
 
 This repository provides following samples:
 
-- `byoc` - Bring Your Own Container guide and sample
+- `byoc` - Bring Your Own Container guide for Jobs and samples
 - `cli` - Oracle OCI CLI client samples of how to create and run jobs
 - `custom_metrics` - emit custom metrics from your Job Run and query metric values on your local machine
-- `flask_job_monitoring` - a simple application to monitor multiple Job Run logs on your local or compute machine
 - `java` - Java client code implementing utilizing the Oracle Cloud Jobs Java OCI SDK
+- `job_monitoring` - a simple application to monitor multiple Job Run logs on your local or compute machine
 - `python` - OCI SDK API sample, as well as actual Job simple samples written in Python
 - `shell` - shell scripts example that can be executed as a Job
 - `ts+js` - client OCI SDK TypeScript and JavaScript samples of how to use to create and run Job
@@ -85,6 +85,24 @@ If you're past the proof-of-concept phase and want to restrict access to your re
 - Learn the basics of how policies work: [How Policies Work](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm#How_Policies_Work)
 - Check the [OCI Data Science Policies Guidance](https://docs.oracle.com/en-us/iaas/data-science/using/policies.htm)
 - Provision your policies with the [Oracle Resource Manager Template for Data Science](https://docs.oracle.com/en-us/iaas/data-science/using/orm-configure-tenancy.htm)
+
+## Local Enviroment Setup
+
+If you anticipate to test run jobs code on your local environment, you have to install OCI SDK and configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm).
+
+The OCI API Auth Token is used for the OCI CLI and Python SDK, as well as all other OCI SDK supported languages. Follow the guidance from the online documentation to configure it: <https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm>
+
+At the high level the instructions are:
+
+- (1) `login` into your Oracle Cloud
+- (2) `select your account` from the top right dropdown menu
+- (3) generate a new `API Auth Key`
+- (4) download the private key and store it into your `$HOME/.oci` folder on your local machine
+- (5) copy the suggested configuration and store it into config file under your home directy `$HOME/.oci/config`
+- (6) change the `$HOME/.oci/config` with the suggested configuration in (5) to point to your private key
+- (7) test the SDK or CLI
+
+For more detailed explanations, follow the instructions from our public documentation.
 
 ## Your First Job
 
