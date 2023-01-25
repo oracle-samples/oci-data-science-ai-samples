@@ -2,6 +2,7 @@ import nbformat as nbf
 import glob, os
 from tqdm import tqdm
 from collections import Counter
+import json
 
 
 def parse_adsbib_format(input: str) -> dict:
@@ -51,6 +52,9 @@ def escape_underscore(str: str) -> str:
 def make_readme():
 
     README_FILE = "README.md"
+    INDEX_FILE = "index.json"
+    # content of the future index.json
+    index_json_content = []
 
     with open(README_FILE, "w") as f:
 
@@ -86,6 +90,13 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
                 if cell.cell_type == "raw":
                     bib = cell["source"]
                     parsed_bib = parse_adsbib_format(bib)
+
+                    # add a record for the future index.json
+                    index_json_entry: dict = {}
+                    for key in parsed_bib:
+                        index_json_entry[key.replace(' ', '_')] = parsed_bib[key]
+                    index_json_content.append(index_json_entry)
+
                     assert (
                         notebook_file == parsed_bib["filename"]
                     ), f"Notebook filename [{notebook_file}] does not match [{parsed_bib.get('filename')}]"
@@ -135,6 +146,10 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             print(f"\n---", file=f)
 
         print(f"{len(all_notebooks)} notebooks proceesed into {README_FILE}")
+        print(f"{len(index_json_content)} notebooks proceesed into {INDEX_FILE}")
+    
+    with open(INDEX_FILE, "w") as index_file:
+        json.dump(index_json_content, index_file, sort_keys=True, indent=4)
 
 
 if __name__ == "__main__":
