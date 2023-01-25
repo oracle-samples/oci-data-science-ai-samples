@@ -245,7 +245,7 @@
         ],
         "license": "Universal Permissive License v 1.0",
         "summary": "Create and use ML pipelines through the entire machine learning lifecycle",
-        "title": "Working with Pipelines [Limited Availability]"
+        "title": "Working with Pipelines"
     },
     {
         "developed_on": "pytorch110_p38_cpu_v1",
