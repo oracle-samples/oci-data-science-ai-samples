@@ -51,7 +51,7 @@ This example requires a desktop tool to build, run, launch and push the containe
 To be able to execute this example you have to install the configure Oracle Fn on your local environment.
 
 - Install Oracle Fn <https://fnproject.io/tutorials/install/>
-- Create new context: ```fn create context bigdatatenancy --provider oracle```
+- Create new context: ```fn create context <your-tenancy-name> --provider oracle```
 - Update the Fn context to point to your region, for example: ```fn update context api-url https://functions.<your-region>.oci.oraclecloud.com```
 - Update the Fn registry to point to your OCIR: ```fn update context registry <region-key>.ocir.io/<your-tenancy-namespace>/<your-repo-name-prefix>```
 - Update the Fn contex to point to your compartment: ```fn update context oracle.compartment-id <your-compartment-ocid>```
