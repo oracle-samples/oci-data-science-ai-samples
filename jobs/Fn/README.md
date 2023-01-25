@@ -66,7 +66,7 @@ all {resource.type='fnfunc'}
 
 ### Policies
 
-No additional policies required, however make sure that you have the Jobs policies in place as described in our public documentation or the README.md for jobs.
+No additional policies required, however make sure that you have the Jobs policies in place as described in our public documentation or the [README.md](../README.md) for jobs.
 
 ## Step by Step Guide
 
@@ -189,7 +189,7 @@ docker run --rm -i --name fnserver \
 
 ### Inspect the Container Image Content
 
-In case your innterested to inspec the Function image content.
+To inspect the Function container image content.
 
 ```bash
 docker run -it --entrypoint sh fnlvp/runjob:0.0.<version>
@@ -199,7 +199,7 @@ ls -alsh
 
 ## Deploy the Function
 
-Make sure that you have your own context configure and pointing to your tenancy OCID, as shown at the beggining of this guide!
+Make sure that you have your own context configured and pointing to your tenancy OCID, as shown at the beggining of this guide!
 
 ```bash
 fn use context <your-tenancy-context>
