@@ -1,0 +1,6 @@
+schema_version: 20180708
+name: runjob
+version: 0.0.73
+runtime: docker
+entrypoint: /python/bin/fdk /function/func.py handler
+memory: 1024
