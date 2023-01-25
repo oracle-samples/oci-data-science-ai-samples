@@ -35,6 +35,7 @@ Depending on the programing language, like for example Python, we provide also s
 
 This repository provides following samples:
 
+- `Fn` - Oracle Function example for how to start Job Runs
 - `byoc` - Bring Your Own Container guide for Jobs and samples
 - `cli` - Oracle OCI CLI client samples of how to create and run jobs
 - `custom_metrics` - emit custom metrics from your Job Run and query metric values on your local machine
