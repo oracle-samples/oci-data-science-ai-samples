@@ -45,7 +45,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Using Livy on the Big Data Service](#big_data_service-(BDS)-livy.ipynb)
  - [Visual Genome Repository](#genome_visualization-oracle_open_data.ipynb)
  - [Visualizing Data](#visualizing_data-exploring_data.ipynb)
- - [Working with Pipelines [Limited Availability]](#pipelines-ml_lifecycle.ipynb)
+ - [Working with Pipelines](#pipelines-ml_lifecycle.ipynb)
  - [XGBoost with RAPIDS](#xgboost-with-rapids.ipynb)
 
 
@@ -330,7 +330,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 <sub>Universal Permissive License v 1.0 (https://oss.oracle.com/licenses/upl/)</sup>
 
 ---
-### <a name="pipelines-ml_lifecycle.ipynb"></a> - Working with Pipelines [Limited Availability]
+### <a name="pipelines-ml_lifecycle.ipynb"></a> - Working with Pipelines
 #### [`pipelines-ml_lifecycle.ipynb`](pipelines-ml_lifecycle.ipynb)
 
  
