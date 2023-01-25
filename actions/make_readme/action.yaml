@@ -1,5 +1,5 @@
-name: "Make README.md"
-description: "Make README.md"
+name: "Make README.md and index.json"
+description: "Run python script which makes README.md and index.json"
 runs:
   using: "composite"
   steps:
@@ -13,7 +13,7 @@ runs:
         pip install tqdm
         pip install nbformat
       shell: bash
-    - name: Make README.md
+    - name: Make README.md and index.json
       working-directory: ./notebook_examples
       id: make_readme
       run: python make_readme.py
