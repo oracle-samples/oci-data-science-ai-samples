@@ -2,7 +2,13 @@
 
 ## Data Labeling Service (DLS) Bulk-Labeling tool
 
-Bulk-Labeling Tool provides following script to facilitate bulk labeling records in Data Labeling Service:
+Bulk-Labeling Tool provides the following scripts:
+
+**1. Upload files to object storage bucket**
+
+**upload_files_script**: This script takes the path to the dataset directory, along with the object storage bucket name and namespace of the bucket as input and uploads the files present in the given directory to the given object storage bucket.
+
+**2. Bulk labeling records in Data Labeling Service**
 
 **bulk_labeling_script**: This script can be used to annotate records of type classification (single-label, multi-label) as well as of type bounding-box.
 
@@ -94,6 +100,7 @@ CONFIG_PROFILE = "DEFAULT"
 REGION_IDENTIFIER = "uk-london-1"
 # service_endpoint
 SERVICE_ENDPOINT_DP = f"https://dlstest-dp.{REGION_IDENTIFIER}.oci.oraclecloud.com"
+SERVICE_ENDPOINT_OBJECT_STORAGE = f"https://objectstorage.{REGION_IDENTIFIER}.oraclecloud.com"
 # ocid of the DLS Dataset
 DATASET_ID = "ocid1.datalabelingdatasetint.oc1.uk-london-1.amaaaaaaniob46ia7fsk45ghmfxcdkqnjrdzk2nprbhxijqzclm7qntvo4ya"
 # the no of processes to be used for parallel execution by default is set to maximum no of processors in the system
@@ -101,6 +108,14 @@ NO_OF_PROCESSORS = mp.cpu_count()
 # Type of Annotation
 # Possible values for ANNOTATION_TYPE "BOUNDING_BOX", "CLASSIFICATION"
 ANNOTATION_TYPE = "BOUNDING_BOX"
+
+#Files present inside this directory will be uploaded to the object storage bucket
+DATASET_DIRECTORY_PATH = "/Users/rahulprakash/Documents/Dataset"
+#Object storage bucket name where the dataset will be uploaded
+OBJECT_STORAGE_BUCKET_NAME = "Bulk-Labelling-bucket"
+#Namespace of the object storage bucket
+OBJECT_STORAGE_NAMESPACE = "idgszs0xipmn"
+
 ##############################################################################################################
 # If ANNOTATION_TYPE is "CLASSIFICATION" edit classification_config.py
 # If ANNOTATION_TYPE is "BOUNDING_BOX" edit bounding_box__config.py
