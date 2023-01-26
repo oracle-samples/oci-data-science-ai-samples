@@ -121,16 +121,34 @@ async function headJobArtifact(jobId) {
     return client.headJobArtifact(headJobArtifactRequest);
 }
 
-// TODO: Fix for the latest SDK version
-// async function getJobArtifact(jobId) {
-//     const getJobArtifactRequest = {
-//         jobId: jobId
-//     }
-//     let filedata = await client.getJobArtifactContent(getJobArtifactRequest);
-//     let downloadedFile = fs.createWriteStream('downloaded_artifact.py');
-//     filedata.value.pipe(downloadedFile);
-//     return "DONE";
-// }
+async function getJobArtifact(jobId) {
+    const getJobArtifactRequest = {
+        jobId: jobId
+    }
+    let filedata = await client.getJobArtifactContent(getJobArtifactRequest);
+
+    // only if job artifact exist
+    if (filedata && filedata.contentDisposition) {
+        let regexJobArtifactName = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        let matches = regexJobArtifactName.exec(filedata.contentDisposition);
+        let jobArtifactName = undefined;
+
+        if (matches != null && matches[1]) {
+            jobArtifactName = matches[1].replace(/['"]/g, '');
+        }
+
+        if (jobArtifactName) {
+            let download_stream = await fs.createWriteStream(jobArtifactName);
+            const stream = new WritableStream({
+                write(chunk) {
+                    download_stream.write(chunk);
+                },
+            });
+            filedata.value.pipeTo(stream)
+        }
+    }
+    return "DONE";
+}
 
 async function changeJobCompartment(jobId, changeToCompartmentId) {
     const changeJobCompartmentRequest = {
@@ -252,10 +270,12 @@ async function cancelJobRun(jobRunId) {
     const createArtifactResponse = await createJobArtifact(createJobResponse.job.id, "hello_world_job.py");
     console.log(createArtifactResponse);
 
+    console.log("headJobArtifact");
     const headJobArtifactResponse = await headJobArtifact(createJobResponse.job.id);
     console.log(headJobArtifactResponse);
 
-    // console.log(await getJobArtifact(createJobResponse.job.id));
+    console.log("getJobArtifact");
+    console.log(await getJobArtifact(createJobResponse.job.id));
 
     console.log("createJobRun");
     const jobRunRespone = await createJobRun(tenancy.projectId, tenancy.compartmentId, createJobResponse.job.id, "Node Job Run");
@@ -269,9 +289,9 @@ async function cancelJobRun(jobRunId) {
     let listJobRunsResponse = await listJobRuns(createJobResponse.job.id, tenancy.compartmentId);
     console.log(listJobRunsResponse);
 
-    // console.log("updateJobRuns");
-    // let updateJobRunsResponse = await updateJobRuns(getJobRunResponse.jobRun.id);
-    // console.log(updateJobRunsResponse);
+    console.log("updateJobRuns");
+    let updateJobRunsResponse = await updateJobRuns(getJobRunResponse.jobRun.id);
+    console.log(updateJobRunsResponse);
 
     // You can't cancel Job Run in ACCEPTED, CANCELLING, DELETED or NEEDS_ATTENTION state
 
