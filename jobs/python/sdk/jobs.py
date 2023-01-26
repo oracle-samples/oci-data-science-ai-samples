@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.DEBUG)
 # --- Set up
 config_file = "~/.oci/config"
 CONFIG_FILE = ""
-ENV_TYPE = ""
+ENV_TYPE = "DEFAULT"
 
 
 class MJobs:
@@ -77,10 +77,11 @@ class MJobs:
                 # "logId": "<log_ocid>"
             },
             "jobInfrastructureConfigurationDetails": {
-                "jobInfrastructureType": "STANDALONE",
+                # for custom VCN use "jobInfrastructureType": "STANDALONE",
+                "jobInfrastructureType": "ME_STANDALONE",
                 "shapeName": "VM.Standard2.1",
                 "blockStorageSizeInGBs": "100",
-                "subnetId": subnet_id,
+                # "subnetId": subnet_id,
             },
         }
         return self.dsc.create_job(job_payload)
@@ -94,7 +95,7 @@ class MJobs:
                 "jobType": "DEFAULT",
                 "environmentVariables": {
                     "CONDA_ENV_TYPE": "service",
-                    "CONDA_ENV_SLUG": "classic_cpu",
+                    "CONDA_ENV_SLUG": "generalml_p38_cpu_v1",
                 },
             },
             "jobInfrastructureConfigurationDetails": {
@@ -169,7 +170,7 @@ class MJobs:
                 "environmentVariables": {
                     # "JOB_RUN_ENTRYPOINT": "job_arch/entry.py"
                     "CONDA_ENV_TYPE": "service",
-                    "CONDA_ENV_SLUG": "dataexpl_p37_cpu_v2",
+                    "CONDA_ENV_SLUG": "generalml_p38_cpu_v1",
                     # "MY_ENV_VAR": "abcde"
                 },
             },

@@ -31,3 +31,4 @@ __pycache__/
 
 jobs/ts+js/downloaded_artifact.py
 jobs/Fn/.oci/
+node_modules
