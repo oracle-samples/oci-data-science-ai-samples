@@ -53,6 +53,8 @@ def make_readme():
 
     README_FILE = "README.md"
     INDEX_FILE = "index.json"
+    EMPTY_FIELD_WARNING = "Nothing present for this field. Please fix."
+
     # content of the future index.json
     index_json_content = []
 
@@ -64,6 +66,8 @@ ADS Expertise Notebooks
 =======================
 
 The [Accelerated Data Science (ADS) SDK](https://accelerated-data-science.readthedocs.io/en/latest/) is maintained by the Oracle Cloud Infrastructure Data Science service team. It speeds up common data science activities by providing tools that automate and/or simplify common data science tasks, along with providing a data scientist friendly pythonic interface to Oracle Cloud Infrastructure (OCI) services, most notably OCI Data Science, Data Flow, Object Storage, and the Autonomous Database. ADS gives you an interface to manage the lifecycle of machine learning models, from data acquisition to model evaluation, interpretation, and model deployment.
+
+Notebooks added to this folder should include a single raw cell at the beginning of the notebook containing a BibTex style entry. See any existing notebook for an example. This informatio is used to build the README file.
 
 The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/), contributions welcome on [GitHub](https://github.com/oracle/accelerated-data-science)
 
@@ -94,7 +98,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
                     # add a record for the future index.json
                     index_json_entry: dict = {}
                     for key in parsed_bib:
-                        index_json_entry[key.replace(' ', '_')] = parsed_bib[key]
+                        index_json_entry[key.replace(" ", "_")] = parsed_bib[key]
                     index_json_content.append(index_json_entry)
 
                     assert (
@@ -113,15 +117,18 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
                 file=f,
                 end=" ",
             )
-            
+
         # toc
         print("\n\n## Contents", file=f)
-        
+
         for notebook_file, notebook_metadata in sorted(
             all_notebooks.items(),
             key=lambda nb: nb[1].get("title", None),
-        ):        
-            print(f" - [{notebook_metadata['title']}](#{notebook_metadata['filename']})", file=f)
+        ):
+            print(
+                f" - [{notebook_metadata['title']}](#{notebook_metadata['filename']})",
+                file=f,
+            )
 
         print("\n\n## Notebooks", file=f)
         for notebook_file, notebook_metadata in sorted(
@@ -129,25 +136,39 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             key=lambda nb: nb[1].get("keywords", None)[0],
         ):
 
-            print(f"### <a name=\"{notebook_metadata['filename']}\"></a> - {notebook_metadata['title']}", file=f)
-            print(f"#### [`{notebook_metadata['filename']}`]({notebook_metadata['filename']})", file=f)
+            print(
+                f"### <a name=\"{notebook_metadata['filename']}\"></a> - {notebook_metadata.get('title', EMPTY_FIELD_WARNING)}",
+                file=f,
+            )
+            print(
+                f"#### [`{notebook_metadata['filename']}`]({notebook_metadata['filename']})",
+                file=f,
+            )
             print("\n ", file=f)
             print(f"{notebook_metadata['summary']}", file=f)
             print(
-                f"\nThis notebook was developed on the conda pack with slug: `{notebook_metadata['developed on']}`",
+                f"\nThis notebook was developed on the conda pack with slug and/or libraries: `{notebook_metadata.get('developed on', EMPTY_FIELD_WARNING)}`",
                 file=f,
             )
             print("\n ", file=f)
 
-            tags = "  ".join([f"`{kw}`" for kw in notebook_metadata["keywords"]])
+            tags = "  ".join(
+                [
+                    f"`{kw}`"
+                    for kw in notebook_metadata.get("keywords", EMPTY_FIELD_WARNING)
+                ]
+            )
             print(f"{tags}", file=f)
 
-            print(f"\n<sub>{notebook_metadata['license']}</sup>", file=f)
+            print(
+                f"\n<sub>{notebook_metadata.get('license', EMPTY_FIELD_WARNING)}</sup>",
+                file=f,
+            )
             print(f"\n---", file=f)
 
         print(f"{len(all_notebooks)} notebooks proceesed into {README_FILE}")
         print(f"{len(index_json_content)} notebooks proceesed into {INDEX_FILE}")
-    
+
     with open(INDEX_FILE, "w") as index_file:
         json.dump(index_json_content, index_file, sort_keys=True, indent=4)
 
