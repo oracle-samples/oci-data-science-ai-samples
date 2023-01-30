@@ -1,4 +1,4 @@
-# Oracle Data Science Service Jobs
+# Oracle Cloud Infrastructure Data Science Jobs Service
 
 - `OCI` = [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/home.htm)
 - `DT` = [Distributed Training](../distributed_training/README.md)
@@ -35,16 +35,16 @@ Depending on the programing language, like for example Python, we provide also s
 
 This repository provides following samples:
 
-- `Fn` - Oracle Function example for how to start Job Runs
-- `byoc` - Bring Your Own Container guide for Jobs and samples
-- `cli` - Oracle OCI CLI client samples of how to create and run jobs
-- `custom_metrics` - emit custom metrics from your Job Run and query metric values on your local machine
-- `java` - Java client code implementing utilizing the Oracle Cloud Jobs Java OCI SDK
-- `job_monitoring` - a simple application to monitor multiple Job Run logs on your local or compute machine
-- `python` - OCI SDK API sample, as well as actual Job simple samples written in Python
-- `shell` - shell scripts example that can be executed as a Job
-- `ts+js` - client OCI SDK TypeScript and JavaScript samples of how to use to create and run Job
-- `zip+tar` - provides ZIP or TAR packaged samples that can be run as a Job
+- [Fn](Fn/README.md) - Oracle Function example for how to start Job Runs
+- [byoc](byoc/README.md) - Bring Your Own Container guide for Jobs and samples
+- [cli](cli/cli/README.md) - Oracle OCI CLI client samples of how to create and run jobs
+- [custom_metrics](custom_metrics/README.md) - emit custom metrics from your Job Run and query metric values on your local machine
+- [java](java/README.md) - Java client code implementing utilizing the Oracle Cloud Jobs Java OCI SDK
+- [job_monitoring](job_monitor/README.md) - a simple application to monitor multiple Job Run logs on your local or compute machine
+- [python](python/README.md) - OCI SDK API sample, as well as actual Job simple samples written in Python
+- [shell](shell/README.md) - shell scripts example that can be executed as a Job
+- [ts+js](ts%2Bjs/README.md) - client OCI SDK TypeScript and JavaScript samples of how to use to create and run Job
+- [zip+tar](zip%2Btar/README.md) - provides ZIP or TAR packaged samples that can be run as a Job
 
 ## Getting Started
 
@@ -61,6 +61,7 @@ If you're just trying out Oracle Cloud Infrastructure Data Science or doing a pr
     all { resource.type = 'datasciencenotebooksession' }
     all { resource.type = 'datasciencejobrun' }
     all { resource.type = 'datasciencemodeldeployment' }
+    all { resource.type = 'datasciencepipelinerun' }
     ```
 
 2. Create a [policy](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm) in [your root compartment](https://cloud.oracle.com/identity/policies) with the following statements:
@@ -89,7 +90,7 @@ If you're past the proof-of-concept phase and want to restrict access to your re
 
 ## Local Enviroment Setup
 
-If you anticipate to test run jobs code on your local environment, you have to install OCI SDK and configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm).
+If you anticipate to test run jobs code on your local machine, you have to install OCI SDK and configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm).
 
 The OCI API Auth Token is used for the OCI CLI and Python SDK, as well as all other OCI SDK supported languages. Follow the guidance from the online documentation to configure it: <https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm>
 
@@ -109,7 +110,7 @@ For more detailed explanations, follow the instructions from our public document
 
 Let's create simple hello world job and run it on Oracle Cloud Infrastructure Data Science Jobs Service.
 
-### Step 1 - prepare sample code
+### Step 1 - prepare a job sample code
 
 Create a file called [hello_world_job.py](python/job%2Bsamples/hello_world_job.py)
 

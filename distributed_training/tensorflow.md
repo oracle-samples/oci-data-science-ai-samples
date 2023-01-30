@@ -36,7 +36,7 @@ You can also initialize existing projects.
 
 ### Setup Sample Code
 
-Use the following training Tensorflow scripts for MultiWorkerMirroredStrategy.
+Use the following training Tensorflow scripts for `MultiWorkerMirroredStrategy`.
 
 Saved the following script as `mnist.py`:
 

@@ -1,4 +1,8 @@
-# Distributed Training - Getting Started
+# Oracle Cloud Infrastructure Data Science Service - Distributed Training With Jobs
+
+## :book: Getting Started
+
+Oracle Cloud Infrastructure Data Science Service supports distributed training with Jobs for the frameworks: Dask, Horovod, TensorFlow Distributed and PyTorch Distributed.
 
 Here are the key pre-requisites that you would need to execute before you can proceed to run a distributed training on Oracle Cloud Infrastructure Data Science Service.
 
@@ -39,7 +43,7 @@ See also: [Security Lists](https://docs.oracle.com/en-us/iaas/Content/Network/Co
 
 ### 2. Object Storage
 
-Create an object storage bucket at your Oracle Cloud Infrastructure to be used for the distibuted training.
+> Create an object storage bucket at your Oracle Cloud Infrastructure to be used for the distibuted training.
 
 Distributed training uses OCI Object Storage to store artifacts, outputs, checkpoints etc. The bucket should be created before starting any distributed training. The `manage objects` policy provided later in the guide is needed for users and job runs to read/write files in the bucket you will create and it is required for job runs to synchronize generated artifacts.
 
@@ -58,6 +62,7 @@ If you're just trying out Oracle Cloud Infrastructure Data Science Distributed T
     all { resource.type = 'datasciencenotebooksession' }
     all { resource.type = 'datasciencejobrun' }
     all { resource.type = 'datasciencemodeldeployment' }
+    all { resource.type = 'datasciencepipelinerun' }
     ```
 
 2. Create a [policy](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm) in [your root compartment](https://cloud.oracle.com/identity/policies) with the following statements:
@@ -71,7 +76,7 @@ If you're just trying out Oracle Cloud Infrastructure Data Science Distributed T
 
     **Replace** `<your-dynamic-group-name>` with the name of your dynamic group!
     &nbsp;
-3. Create new users you need and add them to [your Administrators Group](https://cloud.oracle.com/identity/groups)
+3. Create new user(s) you need and add them to [your Administrators Group](https://cloud.oracle.com/identity/groups)
 
 ### If You're Past the Proof-of-Concept Phase
 
@@ -82,52 +87,50 @@ If you're past the proof-of-concept phase and want to restrict access to your re
 - Learn the basics of how policies work: [How Policies Work](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm#How_Policies_Work)
 - Check the [OCI Data Science Policies Guidance](https://docs.oracle.com/en-us/iaas/data-science/using/policies.htm)
 
-Following policies will be required for distributed training.
+At the high level the process is again as following:
 
-#### User Group Policies
+1. Create a [Dynamic Group](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) in [your cloud tenancy](https://cloud.oracle.com/identity/dynamicgroups) with the following matching rules:
+&nbsp;
 
-Following user group policies are required for distributed training.
+    ```bash
+    all { resource.type = 'datasciencenotebooksession' }
+    all { resource.type = 'datasciencejobrun' }
+    all { resource.type = 'datasciencemodeldeployment' }
+    all { resource.type = 'datasciencepipelinerun' }
+    ```
 
-```xml
-Allow group <your_data_science_users-group> to manage repos in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to manage data-science-family in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to use virtual-network-family in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to manage log-groups in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to manage log-content in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to read metrics in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to manage objects in compartment <your_compartment_name> where all {target.bucket.name=<your_bucket_name>}
-```
+2. Create a [User Group](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managinggroups.htm) in [your cloud tenancy](https://cloud.oracle.com/identity/groups). Only the users beloging to this group would have access to the service, as per the policies we will write in the next step.
+&nbsp;
 
-**Replace** `<your_data_science_users-group>` with your user group name and `<your_compartment_name>` with the name of the compartment where distributed training should run.
+3. Create the [policies](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm) in the compartment where you intend to use the OCI Data Science Service.
+&nbsp;
 
-#### Dynamic Group Policies
+    ```xml
+    Allow service datascience to manage virtual-network-family in compartment <your_compartment_name>
 
-Following dynamic group policies are required for distributed training.
+    Allow dynamic-group <your-dynamic-group-name> to read repos in compartment <your_compartment_name>
+    Allow dynamic-group <your-dynamic-group-name> to manage data-science-family in compartment <your_compartment_name>
+    Allow dynamic-group <your-dynamic-group-name> to manage log-groups in compartment <your_compartment_name>
+    Allow dynamic-group <your-dynamic-group-name> to manage log-content in compartment <your_compartment_name>
+    Allow dynamic-group <your-dynamic-group-name> to manage objects in compartment <your_compartment_name>
 
-```xml
-Allow dynamic-group <your-dynamic-group-name> to read repos in compartment <your_compartment_name>
-Allow dynamic-group <your-dynamic-group-name> to manage data-science-family in compartment <your_compartment_name>
-Allow dynamic-group <your-dynamic-group-name> to manage log-groups in compartment <your_compartment_name>
-Allow dynamic-group <your-dynamic-group-name> to manage log-content in compartment <your_compartment_name>
-Allow dynamic-group <your-dynamic-group-name> to manage objects in compartment your_compartment_name where all {target.bucket.name=<your_bucket_name>}
-Allow service datascience to manage virtual-network-family in compartment <your_compartment_name>
-```
+    Allow group <your-data-science-users-group> to manage repos in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to manage data-science-family in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to use virtual-network-family in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to manage log-groups in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to manage log-content in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to read metrics in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to manage objects in compartment <your_compartment_name>
+    ```
 
-**Replace** `<your-dynamic-group-name>` with the name of your data science dynamic group and `<your_compartment_name>` with the name of the compartment where distributed training should run.
+    **Replace** `<your-dynamic-group-name>`, `<your-data-science-users-group>` with your user group name and `<your_compartment_name>` with the name of the compartment where your distributed training should run.
+    &nbsp;
 
-See also [Data Science Policies](https://docs.oracle.com/en-us/iaas/data-science/using/policies.htm).
+4. Add the users required to have access to the Data Science service to the group you created in step (2) in [your tenancy](https://cloud.oracle.com/identity/groups)
 
-**Example** for an OCI Data Science Service Dynamic Group Rules:
+#### Further Policy Restricting Access
 
-```bash
-all {resource.type='datasciencejobrun'}
-all {resource.type='datasciencemodeldeployment'}
-all {resource.type='datasciencenotebooksession'}
-```
-
-#### Further Restricting Access
-
-You can restrict the permission to specific container repository, for example:
+You could restrict the permission to specific container repository, for example:
 
 ```xml
 Allow <group|dynamic-group> <group-name> to read repos in compartment <your_compartment_name> where all { target.repo.name=<your_repo_name> }
@@ -147,7 +150,7 @@ See also [Object Storage Policies](https://docs.oracle.com/en-us/iaas/Content/Id
 
 Configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) to be able to run and test your code locally and monitor the logs.
 
-The OCI AI Auth Token is used for the OCI CLI and Python SDK. Follow the guidance from the online documentation to configure: <https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm>
+The OCI Auth Token is used for the OCI CLI and Python SDK. Follow the guidance from the online documentation to configure: <https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm>
 
 At the high level the instructions are:
 
@@ -159,11 +162,9 @@ At the high level the instructions are:
 - (6) change the `$HOME/.oci/config` with the suggested configuration in (5) and point to your private key
 - (7) test the SDK or CLI
 
-Follow the instructions provided above for more detailed explanations.
-
 ### 5. Install Desktop Container Management
 
-ADS OPCTL Distributed Training CLI require a desktop tool to build, run, launch and push the containers. We support:
+ADS OPCTL CLI requires a container desktop tool to build, run, launch and push the containers. We support:
 
 - [Docker Desktop](<https://docs.docker.com/get-docker>)
 - [Rancher Desktop](<https://rancherdesktop.io/>)
@@ -197,7 +198,7 @@ ads opctl -h
 
 OCI Data Science Distributed Training uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image.
 
-You may need to `docker login` to the Oracle Cloud Container Registry (OCIR), if you haven't done so before, to been able to push the images. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
+You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) from your local machine, if you haven't done so before, to been able to push the images. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
 
 ```bash
 docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
