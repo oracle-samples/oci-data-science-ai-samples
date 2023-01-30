@@ -1,4 +1,4 @@
-# Oracle Cloud Infrastructure Data Science Service - Distributed Training With Jobs
+# Oracle Cloud Infrastructure Data Science Service - Distributed Training
 
 ## :book: Getting Started
 
