@@ -131,6 +131,7 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
                     .compartmentId(assistedLabelingParams.getCompartmentId())
                     .description("Endpoint for model Id : "+ assistedLabelingParams.getCustomModelId())
                     .modelId(assistedLabelingParams.getCustomModelId())
+                    .inferenceUnits(1)
                     .build();
 
             CreateEndpointRequest createEndpointRequest =
