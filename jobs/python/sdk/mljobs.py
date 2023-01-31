@@ -11,9 +11,10 @@ config_file = "~/.oci/config"
 CONFIG_FILE = ""
 ENV_TYPE = ""
 
+
 class MLJobs:
     def __init__(self, env_type, config_file, compartment_id, subnet_id):
-        
+
         self.config_file = config_file
         self.compartment_id = compartment_id
         self.subnet_id = subnet_id
@@ -43,10 +44,10 @@ class MLJobs:
                 "environmentVariables": {
                     # SET env. variables
                     # "CONDA_ENV_TYPE": "service",
-                    # "CONDA_ENV_SLUG": "classic_cpu"
+                    # "CONDA_ENV_SLUG": "generalml_p38_cpu_v1"
                 },
             },
-            # SETS the logging
+            # Sets the logging
             # "jobLogConfigurationDetails": {
             #     "enableLogging": True,
             #     "enableAutoLogCreation": False,
@@ -54,7 +55,8 @@ class MLJobs:
             #     "logId": "<log_id>"
             # },
             "jobInfrastructureConfigurationDetails": {
-                "jobInfrastructureType": "STANDALONE",
+                # for custom VCN use "jobInfrastructureType": "STANDALONE",
+                "jobInfrastructureType": "ME_STANDALONE",
                 "shapeName": "VM.Standard2.1",
                 "blockStorageSizeInGBs": "100",
                 "subnetId": subnet_id,
@@ -82,7 +84,9 @@ class MLJobs:
         fstream = open(file_name, "rb")
         os.path.basename(fstream.name)
         return self.dsc.create_job_artifact(
-            job_id, fstream, content_disposition=f"attachment; filename={os.path.basename(fstream.name)}"
+            job_id,
+            fstream,
+            content_disposition=f"attachment; filename={os.path.basename(fstream.name)}",
         )
 
     def run_job(
@@ -101,10 +105,10 @@ class MLJobs:
                 "environmentVariables": {
                     # "JOB_RUN_ENTRYPOINT": "<main_python_file>.py"
                     # "CONDA_ENV_TYPE": "service",
-                    # "CONDA_ENV_SLUG": "mlcpuv1",
+                    # "CONDA_ENV_SLUG": "generalml_p38_cpu_v1",
                     # "MY_ENV_VAR": "abcde"
                 },
-                "commandLineArguments": "100 linux \"hi there\""
+                "commandLineArguments": '100 linux "hi there"',
             },
             "jobLogConfigurationOverrideDetails": {
                 "logGroupId": log_id,
@@ -146,7 +150,13 @@ class MLJobs:
 
 
 def main(parser):
-    parser.add_argument("-f", "--file", required=True, default="", help='file to be used as job artifact')
+    parser.add_argument(
+        "-f",
+        "--file",
+        required=True,
+        default="",
+        help="file to be used as job artifact",
+    )
 
     args = parser.parse_args()
     file = args.file
@@ -172,12 +182,12 @@ if __name__ == "__main__":
         JOB_FILE = arguments["file"]
 
         # params
-        project_id = os.environ['PROJECT']
-        compartment_id = os.environ['COMPARTMENT']
-        log_group_ocid = os.environ['LOGGROUP']
-        subnet_id = os.environ['SUBNET']
-        tenant = os.environ['TENANCY']
-        config = os.environ['CONFIG']
+        project_id = os.environ["PROJECT"]
+        compartment_id = os.environ["COMPARTMENT"]
+        log_group_ocid = os.environ["LOGGROUP"]
+        subnet_id = os.environ["SUBNET"]
+        tenant = os.environ["TENANCY"]
+        config = os.environ["CONFIG"]
 
         # initialize
         sdk = MLJobs(tenant, config, compartment_id, subnet_id)
@@ -212,6 +222,7 @@ if __name__ == "__main__":
         # job_runs = sdk.list_job_runs(compartment_id)
         # print(job_runs.data)
 
+        # checks Job status every 10s
         while True:
             time.sleep(10)
             job_run_details = sdk.get_job_run(job_run_id)

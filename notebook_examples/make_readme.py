@@ -2,6 +2,7 @@ import nbformat as nbf
 import glob, os
 from tqdm import tqdm
 from collections import Counter
+import json
 
 
 def parse_adsbib_format(input: str) -> dict:
@@ -51,6 +52,9 @@ def escape_underscore(str: str) -> str:
 def make_readme():
 
     README_FILE = "README.md"
+    INDEX_FILE = "index.json"
+    # content of the future index.json
+    index_json_content = []
 
     with open(README_FILE, "w") as f:
 
@@ -62,6 +66,8 @@ ADS Expertise Notebooks
 The [Accelerated Data Science (ADS) SDK](https://accelerated-data-science.readthedocs.io/en/latest/) is maintained by the Oracle Cloud Infrastructure Data Science service team. It speeds up common data science activities by providing tools that automate and/or simplify common data science tasks, along with providing a data scientist friendly pythonic interface to Oracle Cloud Infrastructure (OCI) services, most notably OCI Data Science, Data Flow, Object Storage, and the Autonomous Database. ADS gives you an interface to manage the lifecycle of machine learning models, from data acquisition to model evaluation, interpretation, and model deployment.
 
 The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/), contributions welcome on [GitHub](https://github.com/oracle/accelerated-data-science)
+
+[![PyPI](https://img.shields.io/pypi/v/oracle-ads.svg)](https://pypi.org/project/oracle-ads/) [![Python](https://img.shields.io/pypi/pyversions/oracle-ads.svg?style=plastic)](https://pypi.org/project/oracle-ads/)
 
     """,
             file=f,
@@ -84,6 +90,13 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
                 if cell.cell_type == "raw":
                     bib = cell["source"]
                     parsed_bib = parse_adsbib_format(bib)
+
+                    # add a record for the future index.json
+                    index_json_entry: dict = {}
+                    for key in parsed_bib:
+                        index_json_entry[key.replace(' ', '_')] = parsed_bib[key]
+                    index_json_content.append(index_json_entry)
+
                     assert (
                         notebook_file == parsed_bib["filename"]
                     ), f"Notebook filename [{notebook_file}] does not match [{parsed_bib.get('filename')}]"
@@ -94,12 +107,21 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             tags.update(notebook_metadata["keywords"])
 
         print("\n\n## Topics", file=f)
-        for tag_name, tag_count in tags.most_common(25):
+        for tag_name, tag_count in tags.most_common(30):
             print(
                 f"""<img src="https://img.shields.io/badge/{tag_name.replace('-', ' ')}-{tag_count}-brightgreen">""",
                 file=f,
                 end=" ",
             )
+            
+        # toc
+        print("\n\n## Contents", file=f)
+        
+        for notebook_file, notebook_metadata in sorted(
+            all_notebooks.items(),
+            key=lambda nb: nb[1].get("title", None),
+        ):        
+            print(f" - [{notebook_metadata['title']}](#{notebook_metadata['filename']})", file=f)
 
         print("\n\n## Notebooks", file=f)
         for notebook_file, notebook_metadata in sorted(
@@ -107,12 +129,12 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             key=lambda nb: nb[1].get("keywords", None)[0],
         ):
 
-            print(f"### - {notebook_metadata['title']}", file=f)
-            print(f"#### `{notebook_metadata['filename']}`", file=f)
+            print(f"### <a name=\"{notebook_metadata['filename']}\"></a> - {notebook_metadata['title']}", file=f)
+            print(f"#### [`{notebook_metadata['filename']}`]({notebook_metadata['filename']})", file=f)
             print("\n ", file=f)
             print(f"{notebook_metadata['summary']}", file=f)
             print(
-                f"\nThis notebook was developed on the conda pack with slug: *{escape_underscore(notebook_metadata['developed on'])}*",
+                f"\nThis notebook was developed on the conda pack with slug: `{notebook_metadata['developed on']}`",
                 file=f,
             )
             print("\n ", file=f)
@@ -124,6 +146,10 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             print(f"\n---", file=f)
 
         print(f"{len(all_notebooks)} notebooks proceesed into {README_FILE}")
+        print(f"{len(index_json_content)} notebooks proceesed into {INDEX_FILE}")
+    
+    with open(INDEX_FILE, "w") as index_file:
+        json.dump(index_json_content, index_file, sort_keys=True, indent=4)
 
 
 if __name__ == "__main__":

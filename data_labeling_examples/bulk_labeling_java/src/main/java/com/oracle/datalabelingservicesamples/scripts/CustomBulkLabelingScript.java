@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.oracle.datalabelingservicesamples.requests.DLSScript;
 import org.apache.commons.lang3.StringUtils;
 
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
@@ -52,7 +53,7 @@ import lombok.extern.slf4j.Slf4j;
  * 
  */
 @Slf4j
-public class CustomBulkLabelingScript {
+public class CustomBulkLabelingScript extends DLSScript {
 
 	static ExecutorService executorService;
 	static Dataset dataset;

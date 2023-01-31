@@ -27,6 +27,7 @@ import com.oracle.bmc.datalabelingservicedataplane.responses.ListRecordsResponse
 import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
+import com.oracle.datalabelingservicesamples.requests.DLSScript;
 import lombok.extern.slf4j.Slf4j;
 
 /*
@@ -42,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Slf4j
-public class SingleLabelDatasetBulkLabelingScript {
+public class SingleLabelDatasetBulkLabelingScript extends DLSScript {
 
 	static ExecutorService executorService;
 	static Dataset dataset;

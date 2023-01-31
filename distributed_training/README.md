@@ -1,107 +1,136 @@
-# Distributed Training - Getting Started
+# Oracle Cloud Infrastructure Data Science Service - Distributed Training
 
-Here are the key pre-requisites that you would need to execute before you can proceed to building a distributed workload docker image and execute it using odsc-jobs.
+## :book: Getting Started
 
-1. `Configure Your Network` - required for the inter node communication (P.S we are working to provide managed networking for your distributed cluster communication, coming soon)
+Oracle Cloud Infrastructure Data Science Service supports distributed training with Jobs for the frameworks: Dask, Horovod, TensorFlow Distributed and PyTorch Distributed.
+
+Here are the key pre-requisites that you would need to execute before you can proceed to run a distributed training on Oracle Cloud Infrastructure Data Science Service.
+
+1. `Configure your network` - required for the inter node communication (P.S we are working to provide managed networking for your distributed cluster communication, coming soon)
 2. `Create object storage bucket` - to be used for storing checkpoints, logs and other artifacts during the training process
-3. `Set OCI policies` - required for accessing OCI services by the distributed job
-4. `Install ads-opctl` - required for packaging training script and launching OCI Data Science distributed jobs
+3. `Set the policies` - required for accessing OCI services by the distributed job
+4. `Configure your Auth Token` - to use the OCI SDK on your local machine, to create, run and monitor the jobs
+5. `Install a desktop container management` - our cli requires dekstop container management tool to build, run and push your container images
+6. `Install ads[opctl]` - required for packaging training script and launching OCI Data Science distributed jobs
+7. `Create a container registry repository` - to store the container images that will be used during the distributed training
 
-`OCI` = Oracle Cloud Infrastructure
-`DT` = Distributed Training
-`ADS` = Oracle Accelerated Data Science Library
-`OCIR` = Oracle Cloud Infrastructure Registry
+- `OCI` = [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/home.htm)
+- `DT` = [Distributed Training](../distributed_training/README.md)
+- `ADS` = [Oracle Accelerated Data Science Library](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html)
+- `OCIR` = [Oracle Cloud Infrastructure Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/home.htm#top)
 
-## 1. Networks
+## 1. Networking
 
 You need to use a `private subnet` for distributed training and config the ports in the `VCN Security List` to allow traffic for communication between nodes. The following default ports are used by the corresponding frameworks:
 
 **Note** we are working to provide managed networking for your distributed cluster communication, which will remove this configuration step in the future coming soon.
 
-* Dask:
-  * Scheduler Port: 8786. More information [here](https://docs.dask.org/en/stable/deploying-cli.html#dask-scheduler)
-  * Dashboard Port: 8787. More information [here](https://docs.dask.org/en/stable/deploying-cli.html#dask-scheduler)
-  * Worker Ports: Default is Random. It is good to open a specific range of port and then provide the value in the startup option. More information [here](https://docs.dask.org/en/stable/deploying-cli.html#dask-worker)
-  * Nanny Process Ports: Default is Random. It is good to open a specific range of port and then provide the value in the startup option. More information [here](https://docs.dask.org/en/stable/deploying-cli.html#dask-worker)
+> &nbsp;
+> **If you're working a Proof-of-Concept** you **can open all** the Ingress/Egress TCP ports in the subnet!
+> &nbsp;
 
-* PyTorch: By default, PyTorch uses 29400.
-* Horovod: You need to allow all traffic within the subnet.
-* Tensorflow: Worker Port: Allow traffic from all source ports to one worker port (default: 12345). If changed, provide this in train.yaml config.
+- Dask:
+  - Scheduler Port: 8786. More information [here](https://docs.dask.org/en/stable/deploying-cli.html#dask-scheduler)
+  - Dashboard Port: 8787. More information [here](https://docs.dask.org/en/stable/deploying-cli.html#dask-scheduler)
+  - Worker Ports: Default is Random. It is good to open a specific range of port and then provide the value in the startup option. More information [here](https://docs.dask.org/en/stable/deploying-cli.html#dask-worker)
+  - Nanny Process Ports: Default is Random. It is good to open a specific range of port and then provide the value in the startup option. More information [here](https://docs.dask.org/en/stable/deploying-cli.html#dask-worker)
+
+- PyTorch: By default, PyTorch uses 29400.
+- Horovod: You need to allow all traffic within the subnet.
+- Tensorflow: Worker Port: Allow traffic from all source ports to one worker port (default: 12345). If changed, provide this in train.yaml config.
 
 See also: [Security Lists](https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/securitylists.htm)
 
 ### 2. Object Storage
 
-Create an object storage bucket at your Oracle Cloud Infrastructure to be used for the distibuted training.
+> Create an object storage bucket at your Oracle Cloud Infrastructure to be used for the distibuted training.
 
-Distributed training uses OCI Object Storage to store artifacts and outputs. The bucket should be created before starting any distributed training. The ```manage objects``` policy provided later in the guide is needed for users and job runs to read/write files in the bucket you will create. The manage ```buckets policy``` is required for job runs to synchronize generated artifacts. Point those policies to the bucket you created for the distributed training.
+Distributed training uses OCI Object Storage to store artifacts, outputs, checkpoints etc. The bucket should be created before starting any distributed training. The `manage objects` policy provided later in the guide is needed for users and job runs to read/write files in the bucket you will create and it is required for job runs to synchronize generated artifacts.
 
 ## 3. OCI Policies
 
-To start distributed training jobs on OCI Data Science Service, the user will need access to multiple resources, which will be specified by the OCI Policies shown below.
+To use Distributed Training on OCI Data Science Service, your accounts and services require access to multiple resources, which will be specified by the OCI Policies shown below.
 
-Note that distributed training uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image.
+### If You're Doing a Proof-of-Concept
 
-### User Group Policies
+If you're just trying out Oracle Cloud Infrastructure Data Science Distributed Training in a proof-of-concept project, you may not need more than a few administrators with full access to everything. In that case, you can simply create any new users you need and add them to the Administrators group. The users will be able to do anything with any kind of resource, and you can create all your resources directly in the tenancy (the root compartment). You don't need to create any compartments yet, or any other policies beyond the Tenant Admin Policy, which automatically comes with your tenancy and can't be changed. Additionally you have to create following resources:
 
-* ```manage repos```
-* ```manage data-science-family```
-* ```use virtual-network-family```
-* ```manage log-groups```
-* ```manage log-content```
-* ```to manage objects```
-* ```read metrics```
+1. Create a [Dynamic Group](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) in [your cloud tenancy](https://cloud.oracle.com/identity/dynamicgroups) with the following matching rules:
+&nbsp;
 
-**_Example_**:
+    ```bash
+    all { resource.type = 'datasciencenotebooksession' }
+    all { resource.type = 'datasciencejobrun' }
+    all { resource.type = 'datasciencemodeldeployment' }
+    all { resource.type = 'datasciencepipelinerun' }
+    ```
 
-```xml
-Allow group <your_data_science_users-group> to manage repos in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to manage data-science-family in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to use virtual-network-family in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to manage log-groups in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to manage log-content in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to read metrics in compartment <your_compartment_name>
-Allow group <your_data_science_users-group> to manage objects in compartment <your_compartment_name> where all {target.bucket.name=<your_bucket_name>}
-```
+2. Create a [policy](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm) in [your root compartment](https://cloud.oracle.com/identity/policies) with the following statements:
+&nbsp;
 
-**Note** In the example, ```group <your_data_science_users-group>``` is the subject of the policy. When starting the job from an OCI Data Science Notebook Session using resource principal, the subject should be ```dynamic-group```, for example, ```dynamic-group <your_notebook_sessions>```, for more see the Dynamic Group Policies
+    ```xml
+    allow service datascience to use virtual-network-family in tenancy
+    allow dynamic-group <your-dynamic-group-name> to manage data-science-family in tenancy
+    allow dynamic-group <your-dynamic-group-name> to manage all-resources in tenancy
+    ```
 
-### Dynamic Group Policies
+    **Replace** `<your-dynamic-group-name>` with the name of your dynamic group!
+    &nbsp;
+3. Create new user(s) you need and add them to [your Administrators Group](https://cloud.oracle.com/identity/groups)
 
-* ```read repos```
-* ```manage data-science-family```
-* ```use virtual-network-family```
-* ```manage log-groups```
-* ```manage log-content```
-* ```to manage objects```
-* ```read metrics```
+### If You're Past the Proof-of-Concept Phase
 
-**_Example_**:
+If you're past the proof-of-concept phase and want to restrict access to your resources, first:
 
-```xml
-Allow dynamic-group <your-dynamic-group-name> to read repos in compartment <your_compartment_name>
-Allow dynamic-group <your-dynamic-group-name> to manage data-science-family in compartment <your_compartment_name>
-Allow dynamic-group <your-dynamic-group-name> to manage log-groups in compartment <your_compartment_name>
-Allow dynamic-group <your-dynamic-group-name> to manage log-content in compartment <your_compartment_name>
-Allow dynamic-group <your-dynamic-group-name> to manage objects in compartment your_compartment_name where all {target.bucket.name=<your_bucket_name>}
-Allow service datascience to manage virtual-network-family in compartment <your_compartment_name>
-```
+- Make sure you're familiar with the basic IAM components, and read through the example scenario: [Overview of Identity and Access Management](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/overview.htm#Overview_of_Oracle_Cloud_Infrastructure_Identity_and_Access_Management)
+- Think about how to organize your resources into compartments: [Learn Best - Practices for Setting Up Your Tenancy](https://docs.oracle.com/en-us/iaas/Content/GSG/Concepts/settinguptenancy.htm#Setting_Up_Your_Tenancy)
+- Learn the basics of how policies work: [How Policies Work](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm#How_Policies_Work)
+- Check the [OCI Data Science Policies Guidance](https://docs.oracle.com/en-us/iaas/data-science/using/policies.htm)
 
-See also [Data Science Policies](https://docs.oracle.com/en-us/iaas/data-science/using/policies.htm).
+At the high level the process is again as following:
 
-**_Example for an OCI Data Science Service Dynamic Group Rules_**:
+1. Create a [Dynamic Group](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingdynamicgroups.htm) in [your cloud tenancy](https://cloud.oracle.com/identity/dynamicgroups) with the following matching rules:
+&nbsp;
 
-```bash
-all {resource.type='datasciencejobrun',resource.compartment.id='ocid1.compartment.oc1..aaaaaaaa<>'}
-all {resource.type='datasciencemodeldeployment',resource.compartment.id='ocid1.compartment.oc1..aaaaaaaa<>'}
-all {resource.type='datasciencenotebooksession',resource.compartment.id='ocid1.compartment.oc1..aaaaaaaa<>'}
-```
+    ```bash
+    all { resource.type = 'datasciencenotebooksession' }
+    all { resource.type = 'datasciencejobrun' }
+    all { resource.type = 'datasciencemodeldeployment' }
+    all { resource.type = 'datasciencepipelinerun' }
+    ```
 
-**Note** `resource.compartment.id` point to the OCID of your compartment
+2. Create a [User Group](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managinggroups.htm) in [your cloud tenancy](https://cloud.oracle.com/identity/groups). Only the users beloging to this group would have access to the service, as per the policies we will write in the next step.
+&nbsp;
 
-### Further Restricting Access
+3. Create the [policies](https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policies.htm) in the compartment where you intend to use the OCI Data Science Service.
+&nbsp;
 
-You can restrict the permission to specific container repository, for example:
+    ```xml
+    Allow service datascience to manage virtual-network-family in compartment <your_compartment_name>
+
+    Allow dynamic-group <your-dynamic-group-name> to read repos in compartment <your_compartment_name>
+    Allow dynamic-group <your-dynamic-group-name> to manage data-science-family in compartment <your_compartment_name>
+    Allow dynamic-group <your-dynamic-group-name> to manage log-groups in compartment <your_compartment_name>
+    Allow dynamic-group <your-dynamic-group-name> to manage log-content in compartment <your_compartment_name>
+    Allow dynamic-group <your-dynamic-group-name> to manage objects in compartment <your_compartment_name>
+
+    Allow group <your-data-science-users-group> to manage repos in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to manage data-science-family in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to use virtual-network-family in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to manage log-groups in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to manage log-content in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to read metrics in compartment <your_compartment_name>
+    Allow group <your-data-science-users-group> to manage objects in compartment <your_compartment_name>
+    ```
+
+    **Replace** `<your-dynamic-group-name>`, `<your-data-science-users-group>` with your user group name and `<your_compartment_name>` with the name of the compartment where your distributed training should run.
+    &nbsp;
+
+4. Add the users required to have access to the Data Science service to the group you created in step (2) in [your tenancy](https://cloud.oracle.com/identity/groups)
+
+#### Further Policy Restricting Access
+
+You could restrict the permission to specific container repository, for example:
 
 ```xml
 Allow <group|dynamic-group> <group-name> to read repos in compartment <your_compartment_name> where all { target.repo.name=<your_repo_name> }
@@ -117,12 +146,34 @@ Allow <group|dynamic-group> <group-name> to manage buckets in compartment <your_
 
 See also [Object Storage Policies](https://docs.oracle.com/en-us/iaas/Content/Identity/Reference/objectstoragepolicyreference.htm#Details_for_Object_Storage_Archive_Storage_and_Data_Transfer)
 
-### 4. Install ads opctl and container management
+### 4. Configure Your Auth Token
 
-Lastly, you need to install the ads-opctl utility which is required to package (containerize) your distributed training script and
-launch OCI Data Science distributed jobs.
+Configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) to be able to run and test your code locally and monitor the logs.
 
-* Setup Conda (optional, but recommended)
+The OCI Auth Token is used for the OCI CLI and Python SDK. Follow the guidance from the online documentation to configure: <https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm>
+
+At the high level the instructions are:
+
+- (1) login into your Oracle Cloud
+- (2) select your account from the top right dropdown menu
+- (3) generate a new API Auth Key
+- (4) download the private key and store it into your `$HOME/.oci` folder
+- (5) copy the suggested configuration and store it into your home directy `$HOME/.oci/config` file
+- (6) change the `$HOME/.oci/config` with the suggested configuration in (5) and point to your private key
+- (7) test the SDK or CLI
+
+### 5. Install Desktop Container Management
+
+ADS OPCTL CLI requires a container desktop tool to build, run, launch and push the containers. We support:
+
+- [Docker Desktop](<https://docs.docker.com/get-docker>)
+- [Rancher Desktop](<https://rancherdesktop.io/>)
+
+### 6. Install ADS OPCTL CLI
+
+Install the `ads[opctl]` CLI which is required to package (containerize) your distributed training script and launch OCI Data Science Distributed Training Jobs.
+
+- Setup Conda (optional, but recommended)
 
 ```bash
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
@@ -131,53 +182,44 @@ conda create -n distributed-training python=3.8
 conda activate distributed-training
 ```
 
-* Install ADS >= 2.6.6
+- Install ADS >= 2.6.8
 
 ```bash
 python3 -m pip install "oracle-ads[opctl]"
 ```
 
-* Install Docker. Refer <https://docs.docker.com/get-docker>
-**Note** A good alternative solution to Docker for your local environment is Rancher Desktop <https://rancherdesktop.io/>
+- Test the ADS CLI runs
+
+```bash
+ads opctl -h
+```
+
+### 7. Login to OCIR
+
+OCI Data Science Distributed Training uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image.
+
+You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) from your local machine, if you haven't done so before, to been able to push the images. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
+
+```bash
+docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
+```
+
+... where `<tenancy-namespace>` is the auto-generated Object Storage namespace string of your tenancy (as shown on the **Tenancy Information** page).
+
+If your tenancy is **federated** with Oracle Identity Cloud Service, use the format `<tenancy-namespace>/oracleidentitycloudservice/<username>`
+
+### 7. Create Container Registry Repository
+
+Create a repository in your Container Registry in your Oracle Cloud, preferably in the same compartment where you will run the distributed training. For more information follow the [Creating a Repository Guide](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrycreatingarepository.htm).
+
+> Take a note of the `name` of the repository as well as the `namespace`, those will be used later.
 
 ### Next steps
 
-Using the `ads opctl`, download and initialize the relevant distributed training framework in your project folder.
+You are now all set to create, test and launch your distributed training workload. Refer to the specific framework guides to continue.
 
-* Dask:
-  
-  ```bash
-  ads opctl distributed-training init --framework dask
-  ```
-
-* Horovod (Tensorflow):
-  
-  ```bash
-  ads opctl distributed-training init --framework horovod-tensorflow --version v1
-  ```
-  
-* Horovod (Pytorch):
-  
-  ```bash
-  ads opctl distributed-training init --framework horovod-pytorch --version v1
-  ```
-  
-* Pytorch Native: [pytorch.md](pytorch.md)
-
-    ```bash
-    ads opctl distributed-training init --framework pytorch --version v1
-    ```
-
-* Tensorflow Native: [tensorflow.md](tensorflow.md)
-
-    ```bash
-    ads opctl distributed-training init --framework tensorflow --version v1
-    ```
-
-You are now all set to create, test locally and launch your distributed training workload. Refer these framework specific guides
-to continue.
-
-* Dask: [dask.md](dask.md)
-* Horovod (Tensorflow and Pytorch): [horovod.md](horovod.md)
-* Pytorch Native: [pytorch.md](pytorch.md)
-* Tensorflow Native: [tensorflow.md](tensorflow.md)
+- [Dask](dask.md)
+- [Horovod (Tensorflow and Pytorch)](horovod.md)
+- [PyTorch Native](pytorch.md)
+- [Tensorflow Native](tensorflow.md)
+- [Troubleshooting Guide](Troubleshooting.md)

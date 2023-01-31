@@ -1,10 +1,4 @@
-import com.oracle.bmc.datascience.model.JobRunSummary;
-import com.oracle.bmc.datascience.model.JobShapeSummary;
-import com.oracle.bmc.datascience.model.JobSummary;
-import com.oracle.bmc.datascience.responses.*;
-
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Client ML Jobs delete test.

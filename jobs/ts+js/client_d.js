@@ -1,13 +1,10 @@
-const identity = require("oci-identity");
 const odcs = require("oci-datascience");
 const common = require("oci-common");
-const moment = require('moment');
-const fs = require('fs')
 
 const tenancy = {
     projectId: process.env.PROJECT,
     compartmentId: process.env.COMPARTMENT,
-    subnetId: process.env.SUBNET,
+    // subnetId: process.env.SUBNET,
     logGroupId: process.env.LOGGROUP,
     tenancyName: process.env.TENANCY,
     config: process.env.CONFIG
@@ -36,7 +33,7 @@ async function deleteJob(jobId, deleteRelatedJobRuns = false) {
 
 
 (async () => {
-    // NOTICE: You won't be able to delete JobRun or Job during Cancel or Running lifecycle!
+    // NOTICE: You cannot delete JobRun or Job during the Cancel or Running lifecycle!
 
     console.log("deleteJobRun");
     let deleteJobRunRequest = await deleteJobRun("<JobRun OCID>");

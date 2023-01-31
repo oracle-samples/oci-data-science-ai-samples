@@ -1,6 +1,7 @@
 package com.oracle.datalabelingservicesamples.requests;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -12,15 +13,16 @@ import com.oracle.bmc.aivision.AIServiceVisionClient;
 import com.oracle.bmc.datalabelingservice.DataLabelingManagementClient;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.datalabelingservicesamples.modelTraining.ModelTrainingWrapper;
+import com.oracle.bmc.auth.AuthenticationDetailsProvider;
+import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oracle.bmc.ConfigFileReader;
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.bmc.datalabelingservicedataplane.DataLabelingClient;
+import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.labelingstrategies.CustomLabelMatch;
 import com.oracle.datalabelingservicesamples.labelingstrategies.FirstLetterMatch;
@@ -41,8 +43,11 @@ public enum Config {
 	private AIServiceVisionClient aiVisionClient;
 	private AIServiceLanguageClient aiLanguageClient;
 	private ObjectStorageClient objectStorageClient;
+
 	private String configFilePath;
 	private String configProfile;
+	private int threadCount;
+
 	private String dpEndpoint;
 	private String cpEndpoint;
 	private String region;
@@ -54,14 +59,19 @@ public enum Config {
 	private String customTrainingEnabled;
 	private String modelTrainingProjectId;
 	private String trainingDatasetId;
+	private String objectStorageEndpoint;
 
+	private String datasetId;
 	private List<String> labels;
 	private Map<String, List<String>> customLabels;
 	private String labelingAlgorithm;
 	private RuleBasedLabelingStrategy ruleBasedLabelingStrategy;
 	private String regexPattern;
 	private Pattern pattern;
-	private int threadCount;
+
+	private String objectStorageNameSpace;
+	private String objectStorageBucket;
+	private String datasetDirectory;
 
 	private Config() {
 		try {
@@ -83,6 +93,9 @@ public enum Config {
 			cpEndpoint = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DLS_CP_URL))
 					? config.getProperty(DataLabelingConstants.DLS_CP_URL)
 					: System.getProperty(DataLabelingConstants.DLS_CP_URL);
+			objectStorageEndpoint = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.OBJECT_STORAGE_URL))
+					? config.getProperty(DataLabelingConstants.OBJECT_STORAGE_URL)
+					: System.getProperty(DataLabelingConstants.OBJECT_STORAGE_URL);
 			datasetId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DATASET_ID))
 					? config.getProperty(DataLabelingConstants.DATASET_ID)
 					: System.getProperty(DataLabelingConstants.DATASET_ID);
@@ -110,6 +123,15 @@ public enum Config {
 			trainingDatasetId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.TRAINING_DATASET_ID))
 					? config.getProperty(DataLabelingConstants.TRAINING_DATASET_ID)
 					: System.getProperty(DataLabelingConstants.TRAINING_DATASET_ID);
+			objectStorageNameSpace = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.OBJECT_STORAGE_NAMESPACE))
+					? config.getProperty(DataLabelingConstants.OBJECT_STORAGE_NAMESPACE)
+					: System.getProperty(DataLabelingConstants.OBJECT_STORAGE_NAMESPACE);
+			objectStorageBucket = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.OBJECT_STORAGE_BUCKET_NAME))
+					? config.getProperty(DataLabelingConstants.OBJECT_STORAGE_BUCKET_NAME)
+					: System.getProperty(DataLabelingConstants.OBJECT_STORAGE_BUCKET_NAME);
+			datasetDirectory = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DATASET_DIRECTORY_PATH))
+					? config.getProperty(DataLabelingConstants.DATASET_DIRECTORY_PATH)
+					: System.getProperty(DataLabelingConstants.DATASET_DIRECTORY_PATH);
 			String threadConfig = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.THREAD_COUNT))
 					? config.getProperty(DataLabelingConstants.THREAD_COUNT)
 					: System.getProperty(DataLabelingConstants.THREAD_COUNT);
@@ -123,6 +145,7 @@ public enum Config {
 			aiLanguageClient = initializeLanguageClient();
 			aiVisionClient = initializeVisionClient();
 			objectStorageClient = initializeObjectStorageClient();
+			validateAndInitialize(config);
 		} catch (IOException ex) {
 			ExceptionUtils.wrapAndThrow(ex);
 		}
@@ -130,6 +153,34 @@ public enum Config {
 
 	/* Initialise labeling strategy only for rule based algorithms. ML based algorithms are initialised automatically
 	based on the dataset format type */
+
+	private void validateAndInitialize(Properties config) {
+		switch (System.getProperty(DataLabelingConstants.TENANT))
+		{
+			case DataLabelingConstants.DLS:
+				performAssertionOnDLSInput();
+				initializeLabelingStrategy();
+				validateAndInitializeLabels(config);
+				initializeDpClient();
+				break;
+			case DataLabelingConstants.OBJECT_STORAGE:
+				performAssertionOnObjectStorageInput();
+				initializeObjectStorageClient();
+		}
+	}
+
+	private void performAssertionOnObjectStorageInput() {
+		assert objectStorageEndpoint != null : "OBJECT STORAGE URL cannot be empty";
+		assert objectStorageBucket != null : "OBJECT STORAGE BUCKET NAME cannot be empty";
+		assert objectStorageNameSpace != null : "OBJECT STORAGE NAMESPACE cannot be empty";
+		assert datasetDirectory != null : "DATASET DIRECTORY PATH cannot be empty";
+	}
+
+	private void performAssertionOnDLSInput() {
+		assert dpEndpoint != null : "DLS DP URL cannot be empty";
+		assert datasetId != null : "Dataset Id cannot be empty";
+		assert labelingAlgorithm != null : "Labeling Strategy cannot be empty";
+	}
 
 	private void initializeLabelingStrategy() {
 		switch (labelingAlgorithm) {
@@ -196,7 +247,7 @@ public enum Config {
 		return dlsCpClient;
 	}
 
-	private DataLabelingClient initializeDpClient() {
+	private AuthenticationDetailsProvider getConfigFileProvider() {
 		ConfigFileReader.ConfigFile configFile = null;
 		try {
 			configFile = ConfigFileReader.parse(configFilePath, configProfile);
@@ -206,9 +257,18 @@ public enum Config {
 		}
 		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
 				configFile);
-		dlsDpClient = new DataLabelingClient(configFileProvider);
+
+		return configFileProvider;
+	}
+
+	private void initializeObjectStorageClient() {
+		objectStorageClient = new ObjectStorageClient(getConfigFileProvider());
+		objectStorageClient.setEndpoint(objectStorageEndpoint);
+	}
+
+	private void initializeDpClient() {
+		dlsDpClient = new DataLabelingClient(getConfigFileProvider());
 		dlsDpClient.setEndpoint(dpEndpoint);
-		return dlsDpClient;
 	}
 
 	private AIServiceVisionClient initializeVisionClient() {
@@ -263,10 +323,8 @@ public enum Config {
 	private void performAssertionOninput() {
 		assert configFilePath != null : "Config filepath cannot be empty";
 		assert configProfile != null : "Config Profile cannot be empty";
-		assert dpEndpoint != null : "DLS DP URL cannot be empty";
-		assert datasetId != null : "Dataset Id cannot be empty";
-		assert labelingAlgorithm != null : "Labeling Strategy cannot be empty";
 		assert threadCount >= 1 : "Invalid Thread Count Passed";
 	}
 
 }
+

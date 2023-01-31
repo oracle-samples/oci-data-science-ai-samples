@@ -1,0 +1,37 @@
+name: Update README.md, index.json and create a PR
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+    branches:
+      - master
+    paths:
+      - "notebook_examples/*.ipynb"
+      - "notebook_examples/make_readme.py"
+  pull_request:
+    branches:
+      - master
+    paths: |
+      - "notebook_examples/*.ipynb"
+      - "notebook_examples/make_readme.py"
+  # Allows mannual triggering
+  workflow_dispatch:
+jobs:
+  make-and-commit-readme-file:
+    runs-on: ubuntu-latest
+    name: update readme.md, index.json, and create a PR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Make README.md and index.json
+        uses: ./actions/make_readme
+      - name: Commit, push and create a PR if there are changes in README.md and index.json
+        uses: ./actions/create_pr_action
+        with:
+          # Optional. A branch name to create a PR from. Defaults to "updated_by_github_action"
+          branch_name: auto_update_readme_and_index
+          # Optional. PR title. Defaults to "Updates made by GitHub action"
+          pr_title: README.md and index.json auto update
+          # Optional. PR body value. Defaults to "Updates made by GitHub action"
+          pr_body: README.md and index.json has been auto updated by GitHub action
+          # Optional. Commit message for the created commit. Defaults to "Auto commit changes"
+          commit_message: Auto commit README.md and index.json

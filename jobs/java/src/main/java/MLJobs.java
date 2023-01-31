@@ -6,8 +6,6 @@ import com.oracle.bmc.datascience.DataScienceClient;
 import com.oracle.bmc.datascience.model.*;
 import com.oracle.bmc.datascience.requests.*;
 import com.oracle.bmc.datascience.responses.*;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.file.StandardCopyOption;
@@ -39,11 +37,15 @@ public class MLJobs {
         final AuthenticationDetailsProvider provider =
                 new ConfigFileAuthenticationDetailsProvider(configWithProfile);
 
-        clientDataScience = new DataScienceClient(provider);
-        clientDataScience.setRegion(Region.US_ASHBURN_1);
+        /*
+         Old patter, which is now deprecated!
+         clientDataScience = new DataScienceClient(provider);
+         clientDataScience.setRegion(Region.US_ASHBURN_1);
+        */
+        clientDataScience = DataScienceClient.builder().region(Region.US_ASHBURN_1).build(provider);
     }
 
-    public CreateProjectResponse createProject(){
+    public CreateProjectResponse createProject() {
         CreateProjectDetails createProjectDetails =
                 CreateProjectDetails.builder()
                         .displayName("Java Project")
@@ -58,7 +60,7 @@ public class MLJobs {
         return createProjectResponse;
     }
 
-    public List<JobShapeSummary> listJobShapes(){
+    public List<JobShapeSummary> listJobShapes() {
         ListJobShapesRequest.Builder listJobShapesBuilder = ListJobShapesRequest.builder().compartmentId(COMPARTMENT_OCID);
         ListJobShapesRequest listJobShapesRequest = listJobShapesBuilder.build();
         ListJobShapesResponse listJobShapesResponse = clientDataScience.listJobShapes(listJobShapesRequest);
@@ -85,13 +87,13 @@ public class MLJobs {
     }
 
     public CreateJobResponse createJob(String jobName, String compartmentUuid,
-                                              String projectUuid, String subnetUuid) throws IOException {
+                                       String projectUuid, String subnetUuid) throws IOException {
 
         CreateJobRequest createJobRequest = null;
 
         Map<String, String> envVariables = new HashMap<String, String>();
         envVariables.put("CONDA_ENV_TYPE", "service");
-        envVariables.put("CONDA_ENV_SLUG", "mlcpuv1");
+        envVariables.put("CONDA_ENV_SLUG", "generalml_p38_cpu_v1");
 
         CreateJobDetails jobRequestDetails = CreateJobDetails.builder()
                 .displayName(jobName)
@@ -114,13 +116,13 @@ public class MLJobs {
     }
 
     public CreateJobResponse createJobWithManagedEgress(String jobName, String compartmentUuid,
-                                       String projectUuid) throws IOException {
+                                                        String projectUuid) throws IOException {
 
         CreateJobRequest createJobRequest = null;
 
         Map<String, String> envVariables = new HashMap<String, String>();
         envVariables.put("CONDA_ENV_TYPE", "service");
-        envVariables.put("CONDA_ENV_SLUG", "mlcpuv1");
+        envVariables.put("CONDA_ENV_SLUG", "generalml_p38_cpu_v1");
 
         CreateJobDetails jobRequestDetails = CreateJobDetails.builder()
                 .displayName(jobName)
@@ -146,8 +148,7 @@ public class MLJobs {
             throws IOException {
 
         final File jobArtifactFile = new File("src/main/java/hello_world_job.py");
-        final InputStream in =
-                new ByteArrayInputStream(FileUtils.readFileToByteArray(jobArtifactFile));
+        final InputStream in = new FileInputStream(jobArtifactFile);
 
         String filename = jobArtifactFile.getName();
         System.out.println("File name: " + filename);
@@ -161,7 +162,7 @@ public class MLJobs {
         return clientDataScience.createJobArtifact(createJobArtifactRequest);
     }
 
-    public void getJobArtifact (String jobUUID) throws IOException {
+    public void getJobArtifact(String jobUUID) throws IOException {
         GetJobArtifactContentRequest getJobArtifactContentRequest = GetJobArtifactContentRequest.builder().jobId(jobUUID).build();
         GetJobArtifactContentResponse getJobArtifactContentResponse = clientDataScience.getJobArtifactContent(getJobArtifactContentRequest);
 
@@ -180,23 +181,23 @@ public class MLJobs {
         return clientDataScience.headJobArtifact(headJobArtifactRequest);
     }
 
-    public GetJobResponse getJob (String JOB_UUID) {
+    public GetJobResponse getJob(String JOB_UUID) {
         GetJobRequest getJObRequest = GetJobRequest.builder().jobId(JOB_UUID).build();
         return clientDataScience.getJob(getJObRequest);
     }
 
     public UpdateJobResponse updateJob(String jobUUID) {
         UpdateJobDetails updateJobDetails = UpdateJobDetails.builder()
-                    .displayName("Java Job Update")
-                    .jobInfrastructureConfigurationDetails(
-                            StandaloneJobInfrastructureConfigurationDetails
-                                    .builder()
-                                    .shapeName("VM.Standard2.1")
-                                    .blockStorageSizeInGBs(101)
-                                    .build()
-                    )
-                    .description("Change description")
-                    .build();
+                .displayName("Java Job Update")
+                .jobInfrastructureConfigurationDetails(
+                        StandaloneJobInfrastructureConfigurationDetails
+                                .builder()
+                                .shapeName("VM.Standard2.1")
+                                .blockStorageSizeInGBs(101)
+                                .build()
+                )
+                .description("Change description")
+                .build();
 
         UpdateJobRequest updateJobRequest = UpdateJobRequest
                 .builder()
@@ -208,7 +209,7 @@ public class MLJobs {
     }
 
     public ChangeJobCompartmentResponse changeJobCompartment(String jobUUID, String compartmentUUID) {
-        ChangeJobCompartmentDetails  changeJobCompartmentDetails = ChangeJobCompartmentDetails.builder()
+        ChangeJobCompartmentDetails changeJobCompartmentDetails = ChangeJobCompartmentDetails.builder()
                 .compartmentId(compartmentUUID)
                 .build();
 
@@ -221,7 +222,7 @@ public class MLJobs {
         return clientDataScience.changeJobCompartment(changeJobCompartmentRequest);
     }
 
-    public GetJobRunResponse getJobRun (String JOB_RUN_UUID) {
+    public GetJobRunResponse getJobRun(String JOB_RUN_UUID) {
         GetJobRunRequest getJobRunRequest =
                 GetJobRunRequest.builder().jobRunId(JOB_RUN_UUID).build();
 
@@ -229,12 +230,12 @@ public class MLJobs {
     }
 
     public CreateJobRunResponse createJobRun(String jobUuid,
-                                                     String compartmentUuid,
-                                                     String projectUuid,
-                                                     String jobRunName) {
+                                             String compartmentUuid,
+                                             String projectUuid,
+                                             String jobRunName) {
         Map<String, String> envVariables = new HashMap<String, String>();
         envVariables.put("CONDA_ENV_TYPE", "service");
-        envVariables.put("CONDA_ENV_SLUG", "mlcpuv1");
+        envVariables.put("CONDA_ENV_SLUG", "generalml_p38_cpu_v1");
 
 
         CreateJobRunRequest createJobRunRequest =
@@ -247,9 +248,9 @@ public class MLJobs {
                                         .displayName(jobRunName)
                                         .jobConfigurationOverrideDetails(
                                                 DefaultJobConfigurationDetails
-                                                .builder()
-                                                .environmentVariables(envVariables)
-                                                .build())
+                                                        .builder()
+                                                        .environmentVariables(envVariables)
+                                                        .build())
                                         .build())
                         .build();
         return clientDataScience.createJobRun(createJobRunRequest);
@@ -292,7 +293,7 @@ public class MLJobs {
         return clientDataScience.cancelJobRun(cancelJobRunRequest);
     }
 
-    public ListJobRunsResponse listJobRuns(String compartmentUuid){
+    public ListJobRunsResponse listJobRuns(String compartmentUuid) {
         //
         ListJobRunsRequest listJobRunsRequest =
                 ListJobRunsRequest.builder()
@@ -301,7 +302,7 @@ public class MLJobs {
         return clientDataScience.listJobRuns(listJobRunsRequest);
     }
 
-    public List<JobRunSummary> listJobRunsByState(DataScienceClient clientDataScience, String compartmentUuid){
+    public List<JobRunSummary> listJobRunsByState(DataScienceClient clientDataScience, String compartmentUuid) {
         //
         ListJobRunsRequest listJobRunsRequest =
                 ListJobRunsRequest.builder()
