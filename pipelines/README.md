@@ -14,14 +14,14 @@ Using pipelines, you can:
 - Execute the pipeline, set parameters for each run.
 - Monitor the execution of the pipeline and review logs outputted from the steps
 
-Product documentation can be found [here](https://surl.us.oracle.com/oci-data-science-docs-ml-pipelines).
+Product documentation can be found [here](https://docs.oracle.com/iaas/data-science/using/pipelines-about.htm).
 
 ## Available Samples 
 
 ### Simple pipeline with data sharing between steps
-[simple pipeline](/workspaces/oci-data-science-ai-samples/pipelines/samples/simple)
+[simple pipeline](./samples/simple)
 This is a very simple sample with 3 consecutive steps, each passes data to the next step for additional processing.
 
 ### Employee attrition sample
-[employee attrition](/workspaces/oci-data-science-ai-samples/pipelines/samples/employee-attrition)
+[employee attrition](./samples/employee-attrition)
 This is a full featured pipeline, with data processing, parallel training of models, evaluating the models and deploying the best one into a real time Model Deployment.
