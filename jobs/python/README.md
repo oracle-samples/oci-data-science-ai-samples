@@ -12,7 +12,7 @@ If you want to try this samples on your local machine, we would recommend you to
 
 Download Miniconda, for detailed information, check the Miniconda download page: https://docs.conda.io/en/latest/miniconda.html
 
-- For Linux and Windows [Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)
+- For Linux and [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)
 
 ```bash
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
@@ -24,7 +24,7 @@ curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Mi
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -o Miniconda3-latest-MacOSX-x86_64.sh
 ```
 
-- MacOS Apple M1|M2
+- MacOS Apple Silicon
 
 ```bash
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o Miniconda3-latest-MacOSX-arm64.sh
@@ -50,7 +50,7 @@ Activate it.
 conda activate jobs
 ```
 
-Install the OCI CLI Preview release
+Install the OCI CLI Python SDK
 
 ```bash
 pip install oci
