@@ -1,41 +1,43 @@
 import oci
-from datetime import datetime, timedelta
+import os
 import logging
 
 # logging.basicConfig(filename="jobs.log", encoding="utf-8", level=logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
 
-# --- Set up
+# default location for the oci api auth key
 config_file = "~/.oci/config"
 CONFIG_FILE = ""
-ENV_TYPE = "DEFAULT"
+ENV_TYPE = ""
 
 
 class MJobs:
-    def __init__(
-        self, env_type, config_file, compartment_id, subnet_id, service_endpoint=None
-    ):
+    def __init__(self, env_type, config_file, compartment_id):
         self.config_file = config_file
         self.compartment_id = compartment_id
-        self.subnet_id = subnet_id
+        # self.subnet_id = subnet_id
 
         try:
             logging.info("*** Setting up data science client....")
-            self.oci_config = oci.config.from_file(self.config_file, env_type)
-            self.identity = oci.identity.IdentityClient(config=self.oci_config)
 
-            if service_endpoint == None:
-                self.dsc = oci.data_science.DataScienceClient(config=self.oci_config)
+            # detect RP
+            rp_version = os.environ.get("OCI_RESOURCE_PRINCIPAL_VERSION", "UNDEFINED")
+            if not rp_version or rp_version == "UNDEFINED":
+                # RUN LOCAL TEST
+                self.signer = oci.config.from_file(config_file, env_type)
+                self.dsc = oci.data_science.DataScienceClient(config=self.signer)
             else:
+                # RUN ON OCI
+                self.signer = oci.auth.signers.get_resource_principals_signer()
                 self.dsc = oci.data_science.DataScienceClient(
-                    config=self.oci_config, service_endpoint=service_endpoint
+                    config={}, signer=self.signer
                 )
         except Exception as e:
             logging.error(e)
             raise e
 
     def create_project(self, compartment_id, project_name, project_description):
-        logging.info("*** Creating Project ...")
+        logging.info("*** Creating project ...")
 
         return self.dsc.create_project(
             create_project_details=oci.data_science.models.CreateProjectDetails(
@@ -46,18 +48,12 @@ class MJobs:
         )
 
     def list_projects(self, compartment_id):
-        logging.info("*** List Projects ...")
+        logging.info("*** List projects ...")
         return self.dsc.list_projects(compartment_id)
 
-    def create_job(
-        self, compartment_id, project_id, job_name="Job", log_group=None, subnet_id=None
-    ):
-        logging.info("*** Creating Job ...")
+    def create_job(self, compartment_id, project_id, job_name="Job", log_group=None):
+        logging.info("*** Creating a Job ...")
 
-        if subnet_id == None:
-            subnet_id = self.subnet_id
-
-        # TODO: Make sure shape etc are variables as well
         job_payload = {
             "projectId": project_id,
             "compartmentId": compartment_id,
@@ -66,24 +62,68 @@ class MJobs:
                 "jobType": "DEFAULT",
                 "environmentVariables": {
                     # "CONDA_ENV_TYPE": "service",
-                    # "CONDA_ENV_SLUG": "classic_cpu"
+                    # "CONDA_ENV_SLUG": "generalml_p38_cpu_v1"
                 },
             },
             "jobLogConfigurationDetails": {
                 "enableLogging": True,
-                "enableAutoLogCreation": False,
+                "enableAutoLogCreation": True,
                 "logGroupId": log_group
-                # "logGroupId": "<log_group_ocid>",
-                # "logId": "<log_ocid>"
+                # "logId": "<log_id>"
             },
             "jobInfrastructureConfigurationDetails": {
                 # for custom VCN use "jobInfrastructureType": "STANDALONE",
                 "jobInfrastructureType": "ME_STANDALONE",
                 "shapeName": "VM.Standard2.1",
+                # For Flex Shapes Use
+                # jobShapeConfigDetails: {
+                #     ocpus: 4,
+                #     memoryInGBs: 32
+                # }
+                "blockStorageSizeInGBs": "100"
+                # Custom subnet is no longer required
+                # "subnetId": subnet_id,
+            },
+        }
+        return self.dsc.create_job(job_payload)
+
+    # check fast jobs enabled shapes first!
+    def create_fastjob(
+        self,
+        compartment_id,
+        project_id,
+        job_name="Job",
+        jobShape="VM.Standard2.1",
+        log_group=None,
+    ):
+        logging.info("*** Creating Fast Job ...")
+
+        job_payload = {
+            "projectId": project_id,
+            "compartmentId": compartment_id,
+            "displayName": job_name,
+            "jobConfigurationDetails": {
+                "jobType": "DEFAULT",
+                "environmentVariables": {
+                    # "CONDA_ENV_TYPE": "service",
+                    # "CONDA_ENV_SLUG": "generalml_p38_cpu_v1"
+                },
+            },
+            "jobLogConfigurationDetails": {
+                "enableLogging": True,
+                "enableAutoLogCreation": True,
+                "logGroupId": log_group
+                # "logId": "<log_id>"
+            },
+            "jobInfrastructureConfigurationDetails": {
+                # for custom VCN use "jobInfrastructureType": "STANDALONE",
+                "jobInfrastructureType": "ME_STANDALONE",
+                "shapeName": jobShape,
                 "blockStorageSizeInGBs": "100",
                 # "subnetId": subnet_id,
             },
         }
+
         return self.dsc.create_job(job_payload)
 
     def update_job(self, job_id, update_job_details=None):
@@ -99,8 +139,14 @@ class MJobs:
                 },
             },
             "jobInfrastructureConfigurationDetails": {
-                "jobInfrastructureType": "STANDALONE",
+                # for custom VCN use "jobInfrastructureType": "STANDALONE",
+                "jobInfrastructureType": "ME_STANDALONE",
                 "shapeName": "VM.Standard2.2",
+                # For Flex Shapes Use
+                # jobShapeConfigDetails: {
+                #     ocpus: 4,
+                #     memoryInGBs: 32
+                # }
                 "blockStorageSizeInGBs": "101",
             },
         }
@@ -115,17 +161,19 @@ class MJobs:
         return self.dsc.list_jobs(compartment_id=compartment_id, project_id=project_id)
 
     def get_job(self, job_id):
-        logging.info("*** Get Job ...")
+        logging.info("*** Get Job details ...")
 
         return self.dsc.get_job(job_id)
 
-    # NOTICE: Articat cannot be replaceds, once uploaded?
+    # IMPORTANT: Currently Job artifacts cannot be replaced, once created!
     def create_job_artifact(self, job_id, file_name):
         logging.info("*** Create Job Artifact ...")
 
         fstream = open(file_name, "rb")
         return self.dsc.create_job_artifact(
-            job_id, fstream, content_disposition=f"attachment; filename={file_name}"
+            job_id,
+            fstream,
+            content_disposition=f"attachment; filename={os.path.basename(fstream.name)}",
         )
 
     def get_job_artifact(self, job_id):
@@ -152,12 +200,21 @@ class MJobs:
 
         return self.dsc.delete_job(job_id, delete_related_job_runs=True)
 
+    # all jobs shapes supported in the region
     def list_job_shapes(self, compartment_id):
         logging.info("*** List Job Shapes ...")
 
         return self.dsc.list_job_shapes(compartment_id=compartment_id)
 
-    def run_job(self, compartment_id, project_id, job_id, job_run_name="Job Run"):
+    # List all avaialble fast launch shapes in given region
+    def list_fast_job_shapes(self, compartment_id):
+        logging.info("*** List Fast Job Shapes ...")
+
+        return self.dsc.list_fast_launch_job_configs(compartment_id=compartment_id)
+
+    def run_job(
+        self, compartment_id, project_id, job_id, job_run_name="Job Run",
+    ):
         logging.info("*** Run Job  ...")
 
         job_run_payload = {
@@ -165,20 +222,25 @@ class MJobs:
             "displayName": job_run_name,
             "jobId": job_id,
             "compartmentId": compartment_id,
-            "jobConfigurationOverrideDetails": {
-                "jobType": "DEFAULT",
-                "environmentVariables": {
-                    # "JOB_RUN_ENTRYPOINT": "job_arch/entry.py"
-                    "CONDA_ENV_TYPE": "service",
-                    "CONDA_ENV_SLUG": "generalml_p38_cpu_v1",
-                    # "MY_ENV_VAR": "abcde"
-                },
-            },
-            "jobLogConfigurationOverrideDetails": {
-                # "logGroupId": log_id,
-                "enableLogging": True,
-                "enableAutoLogCreation": True,
-            },
+            "jobConfigurationOverrideDetails": {"jobType": "DEFAULT"}
+            # Override the env. variables and log configs, if desired
+            #
+            # "jobConfigurationOverrideDetails": {
+            #   "jobType": "DEFAULT",
+            #   "environmentVariables": {
+            #       "LOG_OBJECT_OCID": log_id,
+            #       "JOB_RUN_ENTRYPOINT": "job_arch/entry.py"
+            #       "CONTAINER_CUSTOM_IMAGE": "iad.ocir.io/tenancy-name/repo-name:tag"
+            #       "CONDA_ENV_TYPE": "service",
+            #       "CONDA_ENV_SLUG": "dataexpl_p37_cpu_v2",
+            #       "MY_ENV_VAR": "abcde"
+            #   },
+            # },
+            # "jobLogConfigurationOverrideDetails": {
+            #   "logGroupId": log_id,
+            #   "enableLogging": True,
+            #   "enableAutoLogCreation": True,
+            # },
         }
 
         return self.dsc.create_job_run(job_run_payload)
@@ -192,6 +254,10 @@ class MJobs:
             )
         else:
             return self.dsc.list_job_runs(compartment_id)
+
+    def list_job_runs_by(self, compartment_id, id):
+        logging.info("*** List Job Runs By ...")
+        return self.dsc.list_job_runs(compartment_id=compartment_id, id=id)
 
     def get_job_run(self, job_run_id):
         logging.info("*** Get Job Run ...")
