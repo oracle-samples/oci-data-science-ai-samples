@@ -5,32 +5,7 @@ def authenticateWithConfigFile():
     # Default config file and profile
     default_config = oci.config.from_file()
 
-    # Since config is a dict, you can also build it manually and check it with config.validate_config().
-    config_with_key_file = {
-        "user": 'ocid1.user.oc1..aaaaaaaa65abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmn',
-        "key_file": '~/.oci/oci_api_key.pem',
-        "fingerprint": '11:22:33:44:55:66:77:88:99:0a:1b:2c:3d:4e:5f:6g',
-        "tenancy": 'ocid1.tenancy.oc1..aaaaaaaa5nfwo53cezleyy6t73v6rn6knhu3molvptnl3kcq34l5ztenancy',
-        "region": 'us-phoenix-1'
-    }
-
-    # If you want to use the private key which is not in the key file, key_content can be the backup of key_file.
-    pem_prefix = '-----BEGIN RSA PRIVATE KEY-----\n'
-    pem_suffix = '\n-----END RSA PRIVATE KEY-----'
-    key = "aaaaabbbbbbbcccccc..."  # The content of your private key
-    key_content = '{}{}{}'.format(pem_prefix, key, pem_suffix)
-
-    config_with_key_content = {
-        "user": 'ocid1.user.oc1..aaaaaaaa65abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmn',
-        "key_content": key_content,
-        "fingerprint": '11:22:33:44:55:66:77:88:99:0a:1b:2c:3d:4e:5f:6g',
-        "tenancy": 'ocid1.tenancy.oc1..aaaaaaaa5nfwo53cezleyy6t73v6rn6knhu3molvptnl3kcq34l5ztenancy',
-        "region": 'us-phoenix-1'
-    }
-
     ai_client = oci.ai_language.AIServiceLanguageClient(default_config)
-    # ai_client = oci.ai_language.AIServiceLanguageClient(config_with_key_file)
-    # ai_client = oci.ai_language.AIServiceLanguageClient(config_with_key_content)
 
     return ai_client
 
