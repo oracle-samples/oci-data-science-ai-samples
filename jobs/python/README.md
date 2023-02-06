@@ -10,9 +10,9 @@ If you want to try this samples on your local machine, we would recommend you to
 
 ### Using Conda
 
-Download Miniconda, for detailed information, check the Miniconda download page: https://docs.conda.io/en/latest/miniconda.html
+Download Miniconda, for detailed information, check the Miniconda download page: <https://docs.conda.io/en/latest/miniconda.html>
 
-- For Linux and Windows [Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)
+- For Linux and [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)
 
 ```bash
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
@@ -24,7 +24,7 @@ curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Mi
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -o Miniconda3-latest-MacOSX-x86_64.sh
 ```
 
-- MacOS Apple M1|M2
+- MacOS Apple Silicon
 
 ```bash
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o Miniconda3-latest-MacOSX-arm64.sh
@@ -50,7 +50,7 @@ Activate it.
 conda activate jobs
 ```
 
-Install the OCI CLI Preview release
+Install the OCI CLI Python SDK
 
 ```bash
 pip install oci
@@ -68,7 +68,7 @@ export PROJECT=<project ocid>
 export COMPARTMENT=<compartment ocid>
 export SUBNET=<subnet ocid>
 export LOGGROUP=<log group ocid>
-export TENANCY=<ini tenancy name>
+export TENANCY=<oci config profile>
 export CONFIG=$HOME/.oci/config
 ```
 
@@ -76,11 +76,13 @@ export CONFIG=$HOME/.oci/config
 - `COMPARTMENT`: Data Science Service Project Compartment OCID
 - `SUBNET`: VCN Private Subnet OCID to be used by the Jobs
 - `LOGGROUP`: Log Group OCID to be used by the Job Runs to create the logs
-- `TENANCY`: The name of your tenancy as set in your `$HOME/.oci/config` file
-- `CONFIG`: OCI API Key configuration location, by default `$HOME/.oci/config`
+- `TENANCY`: The `profile name` as set in your `~/.oci/config` file, default name is usually `DEFAULT`
+- `CONFIG`: OCI API Key configuration file location, default `$HOME/.oci/config`
 
-Run the `/sdk/mljobs.py` and set the file to be ran as a Job.
+Use the `/sdk/jobs-runner.py` and set the file to be ran as a Job.
+
+Example:
 
 ```bash
-python mljobs.py -f ../samples/hello_world_job.py 
+python jobs-runner.py -f ../job+samples/hello_world_job.py 
 ```
