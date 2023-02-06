@@ -126,6 +126,7 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
             assistedLabelingParams.setCustomModelId(modelResponse.getModel().getId());
             log.info("Custom model trained in language service with id :{}", assistedLabelingParams.getCustomModelId());
 
+
             /* Create endpoint mapping to given model id */
             CreateEndpointDetails createEndpointDetails = CreateEndpointDetails.builder()
                     .compartmentId(assistedLabelingParams.getCompartmentId())
@@ -139,6 +140,8 @@ public class ModelTrainingLanguageWrapper implements ModelTrainingWrapper {
                             .createEndpointDetails(createEndpointDetails)
                             .build();
             try {
+                log.info("Creating an endpoint for the custom language model with Id : {}", assistedLabelingParams.getCustomModelId());
+
                 CreateEndpointResponse createEndpointResponse = Config.INSTANCE.getAiLanguageClient().createEndpoint(createEndpointRequest);
 
                 WorkRequest languageWorkrequest = languageWorkRequestPollService.pollLanguageWorkRequestStatus(createEndpointResponse.getOpcWorkRequestId());

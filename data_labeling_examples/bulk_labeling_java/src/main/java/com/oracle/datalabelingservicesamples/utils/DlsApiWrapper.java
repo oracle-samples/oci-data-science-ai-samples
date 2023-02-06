@@ -146,14 +146,9 @@ public class DlsApiWrapper {
                     if(workRequestResource.getActionType().equals(ActionType.Written)) {
                         String snapshotFilePath = workRequestResource.getEntityUri();
                         String snapshotFileName = snapshotFilePath.substring(snapshotFilePath.lastIndexOf("/") + 1);
-                        String snapshotFileName1 = null;
                         if (!FilenameUtils.isExtension(snapshotFileName, "jsonl")) {
-                            snapshotFileName1 = snapshotFileName + '/' + snapshotFileName +".jsonl";
                             snapshotFileName = String.format("%s/%s.jsonl",snapshotFileName,snapshotFileName);
                         }
-                        assert snapshotFileName1 != null;
-                        log.info("Snapshot file name 1 is : {} of type :{} ", snapshotFileName1, snapshotFileName1.getClass());
-                        log.info("Snapshot file name 2 is : {} of type :{} ", snapshotFileName, snapshotFileName.getClass());
                         assistedLabelingParams.getSnapshotDatasetParams().setSnapshotObjectName(snapshotFileName);
                     }
                 }

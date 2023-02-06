@@ -1,7 +1,6 @@
 package com.oracle.datalabelingservicesamples.requests;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import com.oracle.bmc.ailanguage.AIServiceLanguageClient;
 import com.oracle.bmc.aivision.AIServiceVisionClient;
 import com.oracle.bmc.datalabelingservice.DataLabelingManagementClient;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
-import com.oracle.datalabelingservicesamples.modelTraining.ModelTrainingWrapper;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +20,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oracle.bmc.ConfigFileReader;
 import com.oracle.bmc.datalabelingservicedataplane.DataLabelingClient;
-import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.labelingstrategies.CustomLabelMatch;
 import com.oracle.datalabelingservicesamples.labelingstrategies.FirstLetterMatch;
@@ -61,7 +58,6 @@ public enum Config {
 	private String trainingDatasetId;
 	private String objectStorageEndpoint;
 
-	private String datasetId;
 	private List<String> labels;
 	private Map<String, List<String>> customLabels;
 	private String labelingAlgorithm;
@@ -138,13 +134,6 @@ public enum Config {
 			threadCount = (!threadConfig.isEmpty()) ? Integer.parseInt(threadConfig)
 					: DataLabelingConstants.DEFAULT_THREAD_COUNT;
 			performAssertionOninput();
-			initializeLabelingStrategy();
-			validateAndInitializeLabels(config);
-			dlsDpClient = initializeDpClient();
-			dlsCpClient = initializeCpClient();
-			aiLanguageClient = initializeLanguageClient();
-			aiVisionClient = initializeVisionClient();
-			objectStorageClient = initializeObjectStorageClient();
 			validateAndInitialize(config);
 		} catch (IOException ex) {
 			ExceptionUtils.wrapAndThrow(ex);
@@ -162,6 +151,9 @@ public enum Config {
 				initializeLabelingStrategy();
 				validateAndInitializeLabels(config);
 				initializeDpClient();
+				initializeCpClient();
+				initializeLanguageClient();
+				initializeVisionClient();
 				break;
 			case DataLabelingConstants.OBJECT_STORAGE:
 				performAssertionOnObjectStorageInput();
@@ -232,7 +224,21 @@ public enum Config {
 		}
 	}
 
-	private DataLabelingManagementClient initializeCpClient() {
+	private void initializeDpClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		dlsDpClient = new DataLabelingClient(configFileProvider);
+		dlsDpClient.setEndpoint(dpEndpoint);
+	}
+
+	private void initializeCpClient() {
 		ConfigFileReader.ConfigFile configFile = null;
 		try {
 			configFile = ConfigFileReader.parse(configFilePath, configProfile);
@@ -244,7 +250,6 @@ public enum Config {
 				configFile);
 		dlsCpClient = new DataLabelingManagementClient(configFileProvider);
 		dlsCpClient.setEndpoint(cpEndpoint);
-		return dlsCpClient;
 	}
 
 	private AuthenticationDetailsProvider getConfigFileProvider() {
@@ -261,17 +266,7 @@ public enum Config {
 		return configFileProvider;
 	}
 
-	private void initializeObjectStorageClient() {
-		objectStorageClient = new ObjectStorageClient(getConfigFileProvider());
-		objectStorageClient.setEndpoint(objectStorageEndpoint);
-	}
-
-	private void initializeDpClient() {
-		dlsDpClient = new DataLabelingClient(getConfigFileProvider());
-		dlsDpClient.setEndpoint(dpEndpoint);
-	}
-
-	private AIServiceVisionClient initializeVisionClient() {
+	private void initializeVisionClient() {
 		ConfigFileReader.ConfigFile configFile = null;
 		try {
 			configFile = ConfigFileReader.parse(configFilePath, configProfile);
@@ -285,10 +280,9 @@ public enum Config {
 		aiVisionClient.setEndpoint(String.format(
 				"https://vision.aiservice.%s.oci.oraclecloud.com",
 				region));
-		return aiVisionClient;
 	}
 
-	private AIServiceLanguageClient initializeLanguageClient() {
+	private void initializeLanguageClient() {
 		ConfigFileReader.ConfigFile configFile = null;
 		try {
 			configFile = ConfigFileReader.parse(configFilePath, configProfile);
@@ -302,10 +296,9 @@ public enum Config {
 		aiLanguageClient.setEndpoint(String.format(
 				"https://language.aiservice.%s.oci.oraclecloud.com",
 				region));
-		return aiLanguageClient;
 	}
 
-	private ObjectStorageClient initializeObjectStorageClient() {
+	private void initializeObjectStorageClient() {
 		ConfigFileReader.ConfigFile configFile = null;
 		try {
 			configFile = ConfigFileReader.parse(configFilePath, configProfile);
@@ -317,7 +310,6 @@ public enum Config {
 				configFile);
 		objectStorageClient = new ObjectStorageClient(configFileProvider);
 		objectStorageClient.setRegion(region);
-		return objectStorageClient;
 	}
 
 	private void performAssertionOninput() {

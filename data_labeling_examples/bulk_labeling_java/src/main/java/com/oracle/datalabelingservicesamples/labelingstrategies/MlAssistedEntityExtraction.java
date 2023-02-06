@@ -2,15 +2,19 @@ package com.oracle.datalabelingservicesamples.labelingstrategies;
 
 import com.oracle.bmc.ailanguage.model.BatchDetectLanguageEntitiesDetails;
 import com.oracle.bmc.ailanguage.model.CreateEndpointDetails;
+import com.oracle.bmc.ailanguage.model.Endpoint;
 import com.oracle.bmc.ailanguage.model.EntityDocumentResult;
 import com.oracle.bmc.ailanguage.model.HierarchicalEntity;
 import com.oracle.bmc.ailanguage.model.OperationStatus;
+import com.oracle.bmc.ailanguage.model.SortOrder;
 import com.oracle.bmc.ailanguage.model.TextDocument;
 import com.oracle.bmc.ailanguage.model.WorkRequest;
 import com.oracle.bmc.ailanguage.requests.BatchDetectLanguageEntitiesRequest;
 import com.oracle.bmc.ailanguage.requests.CreateEndpointRequest;
+import com.oracle.bmc.ailanguage.requests.ListEndpointsRequest;
 import com.oracle.bmc.ailanguage.responses.BatchDetectLanguageEntitiesResponse;
 import com.oracle.bmc.ailanguage.responses.CreateEndpointResponse;
+import com.oracle.bmc.ailanguage.responses.ListEndpointsResponse;
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
 import com.oracle.bmc.datalabelingservicedataplane.model.Entity;
 import com.oracle.bmc.datalabelingservicedataplane.model.Label;
@@ -58,30 +62,7 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
         }
 
         if(assistedLabelingParams.getMlModelType().equals("CUSTOM")) {
-            CreateEndpointDetails createEndpointDetails = CreateEndpointDetails.builder()
-                    .compartmentId(assistedLabelingParams.getCompartmentId())
-                    .description("Endpoint for model Id : " + assistedLabelingParams.getCustomModelId())
-                    .modelId(assistedLabelingParams.getCustomModelId())
-                    .build();
-
-            CreateEndpointRequest createEndpointRequest =
-                    CreateEndpointRequest.builder()
-                            .createEndpointDetails(createEndpointDetails)
-                            .build();
-
-            try {
-                CreateEndpointResponse createEndpointResponse = Config.INSTANCE.getAiLanguageClient().createEndpoint(createEndpointRequest);
-
-                WorkRequest languageWorkrequest = languageWorkRequestPollService.pollLanguageWorkRequestStatus(createEndpointResponse.getOpcWorkRequestId());
-
-                if (!languageWorkrequest.getStatus().equals(OperationStatus.Succeeded)) {
-                    throw new Exception("Language endpoint creation failed, cannot proceed with inference");
-                }
-
-                assistedLabelingParams.setCustomModelEndpoint(createEndpointResponse.getEndpoint().getId());
-            } catch (Exception ex) {
-                throw new Exception("Error in creating an endpoint for custom model Id provided");
-            }
+            setCustomLanguageModelEndpoint(assistedLabelingParams);
         }
 
         BatchDetectLanguageEntitiesDetails languageEntitiesDetails =
@@ -98,9 +79,6 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
             /* Send request to the Client */
             BatchDetectLanguageEntitiesResponse languageEntitiesResponse =
                     Config.INSTANCE.getAiLanguageClient().batchDetectLanguageEntities(languageEntitiesRequest);
-            log.info(
-                    "Response of language entity detection : {} ",
-                    languageEntitiesResponse.getBatchDetectLanguageEntitiesResult().getDocuments());
 
             List<CreateAnnotationDetails> createAnnotationDetails = new ArrayList<>();
             for (EntityDocumentResult document :
@@ -155,5 +133,58 @@ public class MlAssistedEntityExtraction implements MlAssistedLabelingStrategy {
             }
         }
         return entityList;
+    }
+
+    public void setCustomLanguageModelEndpoint(AssistedLabelingParams assistedLabelingParams) throws Exception {
+
+            ListEndpointsRequest listEndpointsRequest = ListEndpointsRequest.builder()
+                    .compartmentId(assistedLabelingParams.getCompartmentId())
+                    .modelId(assistedLabelingParams.getCustomModelId())
+                    .lifecycleState(Endpoint.LifecycleState.Active)
+                    .sortOrder(SortOrder.Asc)
+                    .sortBy(ListEndpointsRequest.SortBy.TimeCreated)
+                    .build();
+
+            try{
+                log.info("Fetching endpoints for model ID :{}", assistedLabelingParams.getCustomModelId());
+                ListEndpointsResponse listEndpointsResponse = Config.INSTANCE.getAiLanguageClient()
+                        .listEndpoints(listEndpointsRequest);
+                if(listEndpointsResponse.getEndpointCollection() != null){
+                    if(!listEndpointsResponse.getEndpointCollection().getItems().isEmpty()){
+                        String customModelEndpoint = listEndpointsResponse.getEndpointCollection().getItems().get(0).getId();
+                        assistedLabelingParams.setCustomModelEndpoint(customModelEndpoint);
+                        log.info("Language model endpoint set to : {} ", assistedLabelingParams.getCustomModelEndpoint());
+                        return;
+                    }
+                }
+            } catch (Exception ex) {
+                throw new Exception("Error in fetching endpoints for custom model Id provided");
+            }
+
+            CreateEndpointDetails createEndpointDetails = CreateEndpointDetails.builder()
+                    .compartmentId(assistedLabelingParams.getCompartmentId())
+                    .description("Endpoint for model Id : " + assistedLabelingParams.getCustomModelId())
+                    .modelId(assistedLabelingParams.getCustomModelId())
+                    .build();
+
+            CreateEndpointRequest createEndpointRequest =
+                    CreateEndpointRequest.builder()
+                            .createEndpointDetails(createEndpointDetails)
+                            .build();
+
+            try {
+                log.info("No existing endpoint, creating a new endpoint for model Id :{}", assistedLabelingParams.getCustomModelId());
+                CreateEndpointResponse createEndpointResponse = Config.INSTANCE.getAiLanguageClient().createEndpoint(createEndpointRequest);
+
+                WorkRequest languageWorkrequest = languageWorkRequestPollService.pollLanguageWorkRequestStatus(createEndpointResponse.getOpcWorkRequestId());
+
+                if (!languageWorkrequest.getStatus().equals(OperationStatus.Succeeded)) {
+                    throw new Exception("Language endpoint creation failed, cannot proceed with inference");
+                }
+
+                assistedLabelingParams.setCustomModelEndpoint(createEndpointResponse.getEndpoint().getId());
+            } catch (Exception ex) {
+                throw new Exception("Error in creating an endpoint for custom model Id provided");
+            }
     }
 }

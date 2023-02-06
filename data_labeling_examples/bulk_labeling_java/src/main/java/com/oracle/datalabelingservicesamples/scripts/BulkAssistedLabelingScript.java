@@ -38,6 +38,7 @@ import com.oracle.datalabelingservicesamples.modelTraining.ModelTrainingVisionWr
 import com.oracle.datalabelingservicesamples.modelTraining.ModelTrainingWrapper;
 import com.oracle.datalabelingservicesamples.requests.AssistedLabelingParams;
 import com.oracle.datalabelingservicesamples.requests.BucketDetails;
+import com.oracle.datalabelingservicesamples.requests.DLSScript;
 import com.oracle.datalabelingservicesamples.requests.ModelTrainingParams;
 import com.oracle.datalabelingservicesamples.requests.SnapshotDatasetParams;
 import com.oracle.datalabelingservicesamples.tasks.TaskHandler;
@@ -74,7 +75,7 @@ import static java.lang.Float.parseFloat;
  *
  */
 @Slf4j
-public class BulkAssistedLabelingScript {
+public class BulkAssistedLabelingScript extends DLSScript {
 
     static ExecutorService executorService;
     static ExecutorService annotationExecutorService;

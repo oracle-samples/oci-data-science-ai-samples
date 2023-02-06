@@ -62,6 +62,7 @@ Result of CUSTOM_LABELS_MATCH algorithm:
     dog/dog2.png will be labeled with dog and pup labels
 ```
 
+**Supported in bulklabelutility-v2.jar !!**
 3. **BulkAssistedLabelingScript**: This script takes datasetId as input along with the labeling algorithm as ML_ASSISTED_LABELING. There are 3 different ways to use this script - 
     1. Use the pretrained model offered by the ai service to auto label records
     2. Provide the OCID of the custom ML model that you have trained separately using OCI ai services to auto label records
