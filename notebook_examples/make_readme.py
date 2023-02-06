@@ -1,8 +1,11 @@
-import nbformat as nbf
-import glob, os
-from tqdm import tqdm
-from collections import Counter
+import glob
 import json
+import os
+from collections import Counter
+from datetime import datetime
+
+import nbformat as nbf
+from tqdm import tqdm
 
 
 def parse_adsbib_format(input: str) -> dict:
@@ -86,21 +89,26 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
                 len([cell for cell in nb.cells if cell.cell_type == "raw"]) == 1
             ), f"[{notebook_file}] Found more than one raw cell"
 
+            # add a record for the future index.json
+            index_json_entry: dict = {}
+            index_json_entry["time_created"] = datetime.fromtimestamp(
+                os.path.getctime(notebook_file)
+            ).isoformat()
+            index_json_entry["size"] = os.path.getsize(notebook_file)
+
             for cell in nb.cells:
                 if cell.cell_type == "raw":
                     bib = cell["source"]
                     parsed_bib = parse_adsbib_format(bib)
-
-                    # add a record for the future index.json
-                    index_json_entry: dict = {}
                     for key in parsed_bib:
-                        index_json_entry[key.replace(' ', '_')] = parsed_bib[key]
-                    index_json_content.append(index_json_entry)
+                        index_json_entry[key.replace(" ", "_")] = parsed_bib[key]
 
                     assert (
                         notebook_file == parsed_bib["filename"]
                     ), f"Notebook filename [{notebook_file}] does not match [{parsed_bib.get('filename')}]"
                     all_notebooks[notebook_file] = parsed_bib
+
+            index_json_content.append(index_json_entry)
 
         tags = Counter([])
         for _, notebook_metadata in all_notebooks.items():
@@ -113,15 +121,18 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
                 file=f,
                 end=" ",
             )
-            
+
         # toc
         print("\n\n## Contents", file=f)
-        
+
         for notebook_file, notebook_metadata in sorted(
             all_notebooks.items(),
             key=lambda nb: nb[1].get("title", None),
-        ):        
-            print(f" - [{notebook_metadata['title']}](#{notebook_metadata['filename']})", file=f)
+        ):
+            print(
+                f" - [{notebook_metadata['title']}](#{notebook_metadata['filename']})",
+                file=f,
+            )
 
         print("\n\n## Notebooks", file=f)
         for notebook_file, notebook_metadata in sorted(
@@ -129,8 +140,14 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             key=lambda nb: nb[1].get("keywords", None)[0],
         ):
 
-            print(f"### <a name=\"{notebook_metadata['filename']}\"></a> - {notebook_metadata['title']}", file=f)
-            print(f"#### [`{notebook_metadata['filename']}`]({notebook_metadata['filename']})", file=f)
+            print(
+                f"### <a name=\"{notebook_metadata['filename']}\"></a> - {notebook_metadata['title']}",
+                file=f,
+            )
+            print(
+                f"#### [`{notebook_metadata['filename']}`]({notebook_metadata['filename']})",
+                file=f,
+            )
             print("\n ", file=f)
             print(f"{notebook_metadata['summary']}", file=f)
             print(
@@ -147,7 +164,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
         print(f"{len(all_notebooks)} notebooks proceesed into {README_FILE}")
         print(f"{len(index_json_content)} notebooks proceesed into {INDEX_FILE}")
-    
+
     with open(INDEX_FILE, "w") as index_file:
         json.dump(index_json_content, index_file, sort_keys=True, indent=4)
 
