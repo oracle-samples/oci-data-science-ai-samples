@@ -150,6 +150,7 @@ public enum Config {
 				performAssertionOnDLSInput();
 				initializeLabelingStrategy();
 				validateAndInitializeLabels(config);
+				initializeObjectStorageClient();
 				initializeDpClient();
 				initializeCpClient();
 				initializeLanguageClient();
