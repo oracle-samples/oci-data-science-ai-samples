@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import com.oracle.bmc.datalabelingservicedataplane.model.RecordSummary;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
-public class FirstRegexMatch implements LabelingStrategy {
+public class FirstRegexMatch implements RuleBasedLabelingStrategy {
 
 	@Override
 	public List<String> getLabel(RecordSummary record) {

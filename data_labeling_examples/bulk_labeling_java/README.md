@@ -62,6 +62,32 @@ Result of CUSTOM_LABELS_MATCH algorithm:
     dog/dog2.png will be labeled with dog and pup labels
 ```
 
+**Supported in bulklabelutility-v2.jar !!**
+3. **BulkAssistedLabelingScript**: This script takes datasetId as input along with the labeling algorithm as ML_ASSISTED_LABELING. There are 3 different ways to use this script - 
+    1. Use the pretrained model offered by the ai service to auto label records
+    2. Provide the OCID of the custom ML model that you have trained separately using OCI ai services to auto label records
+    3. Provide the training dataset so that the script can invoke model training internally and then auto label records
+
+```
+Consider a dataset with the following dataset labels - 
+{Dog, Cat, Animal}
+Let us consider picture of a cat - 
+If the machine learning model suggests 4 labels -> {Cat, Carnivore, Animal, Mammal} for this image, only the labels that 
+are provided in the DLS dataset details will be considered. 
+i.e, Expected output is the image gets labeled as a {Cat, Animal} once the script executes.
+
+Conditions - 
+
+3. Ensure that the following assisted labeling specific params are set in config.properties file - 
+
+    LABELING_ALGORITHM=ML_ASSISTED_LABELING (Required)
+    ML_MODEL_TYPE (Required)
+    CONFIDENCE_THRESHOLD (Required, default is 0.7)
+    CUSTOM_MODEL_ID (Required only for using custom model, default is null)
+    MODEL_TRAINING_PROJECT_ID (Required only for training a new model)
+    TRAINING_DATASET_ID (Required only for training a new model)
+    
+```
 
 ### Requirements
 1. An Oracle Cloud Infrastructure account. <br/>
@@ -71,6 +97,21 @@ Result of CUSTOM_LABELS_MATCH algorithm:
 5. A TTL value of 60. For more information, see [Configuring the SDK](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkgettingstarted.htm#Configur). <br/>
 
 For more information [SDK for Java](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdk.htm)
+
+### Additional requirements for Assisted Labeling Utility 
+1. The group where the user is present needs to have the following policies: 
+    a) AI Vision service access: 
+    Quick set up of Vision policies using a template - https://docs.oracle.com/en-us/iaas/vision/vision/using/policies_quick_set_up.htm
+    Manual set up of Vision policies - https://docs.oracle.com/en-us/iaas/vision/vision/using/about_vision_policies.htm
+    
+    b) AI Language service access:
+    Manual set up of Language service policies - https://docs.oracle.com/en-us/iaas/language/using/policies.htm
+    
+### Training custom models with OCI AI services 
+
+1. If you have a niche labeling use case which will not be covered by the pretrained models supplied by Vision/Language,
+this route applies to you. 
+
 
 ### Running the Utility
 1. Open Terminal on your system.
@@ -97,17 +138,42 @@ java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DOBJECT_STORAG
 6. Run the below command to bulk label by "FIRST_LETTER_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_LETTER_MATCH -DLABELS=cat,dog -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_LETTER_MATCH -DLABELS=cat,dog -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
 ```
 7. Run the below command to bulk label by "FIRST_REGEX_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_REGEX_MATCH -DFIRST_MATCH_REGEX_PATTERN=^abc* -DLABELS=cat,dog -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_REGEX_MATCH -DFIRST_MATCH_REGEX_PATTERN=^abc* -DLABELS=cat,dog -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
 ```
 8. Run the below command to bulk label by "CUSTOM_LABELS_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.CustomBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.CustomBulkLabelingScript
+```
+8. Run the below command to bulk label by "ML_ASSISTED_LABELING" labeling algorithm.
+
+Before you run the command, please understand the limitations of this utility.
+1. If you choose a pretrained model to predict labels on the records, the DLS dataset labels should be a part of the supported categories for the auto labeling to provide results.
+
+Supported labels for vision use cases are identifying scene-based features and common objects in an image.
+
+Supported list of labels for language use cases can be found below - 
+Pretrained model type  Supported labels 
+Text Classifcation     https://docs.oracle.com/en-us/iaas/language/using/pretrain-models.htm#text-class
+Named Entity Recognition https://docs.oracle.com/en-us/iaas/language/using/pretrain-models.htm#ner
+
+2. If you choose to provide a custom model OCID, the predictions will depend on the trained model's quality. 
+
+3. If you choose to train a new custom model using the utility, it always uses "quick training" - This option produces a model that is not fully optimized but is available in about an hour. 
+If you are interested in using "recommended training" which can take upto 24 hours, please finish the training independently using the ai service console/SDK 
+and use (ML_MODEL_TYPE=CUSTOM) to plug in the custom model OCID for auto labeling.
+
+Known issues - 
+
+Language service text classification returns the dominant category to which a particular text belongs. So, auto labeling is not supported for multilabel text classification usecase.
+
+```
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DTHREAD_COUNT=20 -DREGION=us-phoenix-1 -DLABELING_ALGORITHM=ML_ASSISTED_LABELING -DML_MODEL_TYPE=PRETRAINED -DCONFIDENCE_THRESHOLD=0.8 -DDATASET_ID=ocid1.datalabelingdataset.oc1.phx.amaaaaaaniob46ia4qae7hitbpxx6cmc6kmoowvxkckxmdlmdvtdprgibnsa -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.BulkAssistedLabelingScript
 ```
 
 Note: You can override any config using -D followed by the configuration name. The list of all configurations are mentioned in following section.
@@ -135,7 +201,7 @@ DATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s
 #Number of Parallel Threads for Bulk Labeling. Default is 20
 THREAD_COUNT=30
 
-# Algorithm that will be used to assign labels to DLS Dataset records : FIRST_LETTER_MATCH, FIRST_REGEX_MATCH, CUSTOM_LABELS_MATCH
+# Algorithm that will be used to assign labels to DLS Dataset records : FIRST_LETTER_MATCH, FIRST_REGEX_MATCH, CUSTOM_LABELS_MATCH, ML_ASSISTED_LABELING
 LABELING_ALGORITHM=FIRST_REGEX_MATCH
 
 # Comma separated Input Label Set for FIRST_LETTER_MATCH, FIRST_REGEX_MATCH algorithm. Each element is a separate label.
@@ -155,3 +221,23 @@ OBJECT_STORAGE_BUCKET_NAME=bucket-20220629-0913
 
 #Namespace of the object storage bucket
 OBJECT_STORAGE_NAMESPACE=idgszs0xipmn
+
+REGION=us-phoenix-1
+
+## All the following inputs are only for ML_ASSISTED_LABELING algorithm :
+
+# ML model type for assisted labeling, choices are PRETRAINED, CUSTOM and NEW
+ML_MODEL_TYPE=PRETRAINED
+
+# Optional parameters for ML_MODEL_TYPE=CUSTOM :
+# ML model OCID for any vision/language trained model
+CUSTOM_MODEL_ID=
+
+# Optional parameters for ML_MODEL_TYPE=NEW :
+
+# ML project OCID from vision/language service to create the model. If not provided, a new project is created
+MODEL_TRAINING_PROJECT_ID=
+
+# DLS dataset OCID with labeled records to be used as initial training data for creating custom model
+TRAINING_DATASET_ID=
+

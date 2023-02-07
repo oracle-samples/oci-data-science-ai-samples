@@ -1,13 +1,16 @@
 package com.oracle.datalabelingservicesamples.requests;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import com.oracle.bmc.ailanguage.AIServiceLanguageClient;
+import com.oracle.bmc.aivision.AIServiceVisionClient;
+import com.oracle.bmc.datalabelingservice.DataLabelingManagementClient;
+import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import org.apache.commons.lang3.StringUtils;
@@ -17,12 +20,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oracle.bmc.ConfigFileReader;
 import com.oracle.bmc.datalabelingservicedataplane.DataLabelingClient;
-import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.labelingstrategies.CustomLabelMatch;
 import com.oracle.datalabelingservicesamples.labelingstrategies.FirstLetterMatch;
 import com.oracle.datalabelingservicesamples.labelingstrategies.FirstRegexMatch;
-import com.oracle.datalabelingservicesamples.labelingstrategies.LabelingStrategy;
+import com.oracle.datalabelingservicesamples.labelingstrategies.RuleBasedLabelingStrategy;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,9 @@ public enum Config {
 	INSTANCE;
 
 	private DataLabelingClient dlsDpClient;
+	private DataLabelingManagementClient dlsCpClient;
+	private AIServiceVisionClient aiVisionClient;
+	private AIServiceLanguageClient aiLanguageClient;
 	private ObjectStorageClient objectStorageClient;
 
 	private String configFilePath;
@@ -41,13 +46,22 @@ public enum Config {
 	private int threadCount;
 
 	private String dpEndpoint;
+	private String cpEndpoint;
+	private String region;
+	private String datasetId;
+	private String compartmentId;
+	private String customModelId;
+	private String mlModelType;
+	private String confidenceThreshold;
+	private String customTrainingEnabled;
+	private String modelTrainingProjectId;
+	private String trainingDatasetId;
 	private String objectStorageEndpoint;
 
-	private String datasetId;
 	private List<String> labels;
 	private Map<String, List<String>> customLabels;
 	private String labelingAlgorithm;
-	private LabelingStrategy labelingStrategy;
+	private RuleBasedLabelingStrategy ruleBasedLabelingStrategy;
 	private String regexPattern;
 	private Pattern pattern;
 
@@ -59,24 +73,52 @@ public enum Config {
 		try {
 			Properties config = new Properties();
 			config.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
+
 			configFilePath = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIG_FILE_PATH))
 					? config.getProperty(DataLabelingConstants.CONFIG_FILE_PATH)
 					: System.getProperty(DataLabelingConstants.CONFIG_FILE_PATH);
 			configProfile = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIG_PROFILE))
 					? config.getProperty(DataLabelingConstants.CONFIG_PROFILE)
 					: System.getProperty(DataLabelingConstants.CONFIG_PROFILE);
+			region = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.REGION))
+					? config.getProperty(DataLabelingConstants.REGION)
+					: System.getProperty(DataLabelingConstants.REGION);
 			dpEndpoint = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DLS_DP_URL))
 					? config.getProperty(DataLabelingConstants.DLS_DP_URL)
 					: System.getProperty(DataLabelingConstants.DLS_DP_URL);
+			cpEndpoint = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DLS_CP_URL))
+					? config.getProperty(DataLabelingConstants.DLS_CP_URL)
+					: System.getProperty(DataLabelingConstants.DLS_CP_URL);
 			objectStorageEndpoint = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.OBJECT_STORAGE_URL))
 					? config.getProperty(DataLabelingConstants.OBJECT_STORAGE_URL)
 					: System.getProperty(DataLabelingConstants.OBJECT_STORAGE_URL);
 			datasetId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DATASET_ID))
 					? config.getProperty(DataLabelingConstants.DATASET_ID)
 					: System.getProperty(DataLabelingConstants.DATASET_ID);
+			compartmentId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.COMPARTMENT_ID))
+					? config.getProperty(DataLabelingConstants.COMPARTMENT_ID)
+					: System.getProperty(DataLabelingConstants.COMPARTMENT_ID);
+			mlModelType = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.ML_MODEL_TYPE))
+					? config.getProperty(DataLabelingConstants.ML_MODEL_TYPE)
+					: System.getProperty(DataLabelingConstants.ML_MODEL_TYPE);
+			customModelId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CUSTOM_MODEL_ID))
+					? config.getProperty(DataLabelingConstants.CUSTOM_MODEL_ID)
+					: System.getProperty(DataLabelingConstants.CUSTOM_MODEL_ID);
 			labelingAlgorithm = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.LABELING_ALGORITHM))
 					? config.getProperty(DataLabelingConstants.LABELING_ALGORITHM)
 					: System.getProperty(DataLabelingConstants.LABELING_ALGORITHM);
+			confidenceThreshold = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CONFIDENCE_THRESHOLD))
+					? config.getProperty(DataLabelingConstants.CONFIDENCE_THRESHOLD)
+					: System.getProperty(DataLabelingConstants.CONFIDENCE_THRESHOLD);
+			modelTrainingProjectId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.MODEL_TRAINING_PROJECT_ID))
+					? config.getProperty(DataLabelingConstants.MODEL_TRAINING_PROJECT_ID)
+					: System.getProperty(DataLabelingConstants.MODEL_TRAINING_PROJECT_ID);
+			customTrainingEnabled = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.CUSTOM_TRAINING_ENABLED))
+					? config.getProperty(DataLabelingConstants.CUSTOM_TRAINING_ENABLED)
+					: System.getProperty(DataLabelingConstants.CUSTOM_TRAINING_ENABLED);
+			trainingDatasetId = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.TRAINING_DATASET_ID))
+					? config.getProperty(DataLabelingConstants.TRAINING_DATASET_ID)
+					: System.getProperty(DataLabelingConstants.TRAINING_DATASET_ID);
 			objectStorageNameSpace = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.OBJECT_STORAGE_NAMESPACE))
 					? config.getProperty(DataLabelingConstants.OBJECT_STORAGE_NAMESPACE)
 					: System.getProperty(DataLabelingConstants.OBJECT_STORAGE_NAMESPACE);
@@ -98,6 +140,9 @@ public enum Config {
 		}
 	}
 
+	/* Initialise labeling strategy only for rule based algorithms. ML based algorithms are initialised automatically
+	based on the dataset format type */
+
 	private void validateAndInitialize(Properties config) {
 		switch (System.getProperty(DataLabelingConstants.TENANT))
 		{
@@ -105,7 +150,11 @@ public enum Config {
 				performAssertionOnDLSInput();
 				initializeLabelingStrategy();
 				validateAndInitializeLabels(config);
+				initializeObjectStorageClient();
 				initializeDpClient();
+				initializeCpClient();
+				initializeLanguageClient();
+				initializeVisionClient();
 				break;
 			case DataLabelingConstants.OBJECT_STORAGE:
 				performAssertionOnObjectStorageInput();
@@ -129,15 +178,15 @@ public enum Config {
 	private void initializeLabelingStrategy() {
 		switch (labelingAlgorithm) {
 		case "FIRST_LETTER_MATCH":
-			labelingStrategy = new FirstLetterMatch();
+			ruleBasedLabelingStrategy = new FirstLetterMatch();
 			break;
 
 		case "FIRST_REGEX_MATCH":
-			labelingStrategy = new FirstRegexMatch();
+			ruleBasedLabelingStrategy = new FirstRegexMatch();
 			break;
 
 		case "CUSTOM_LABELS_MATCH":
-			labelingStrategy = new CustomLabelMatch();
+			ruleBasedLabelingStrategy = new CustomLabelMatch();
 			break;
 		}
 	}
@@ -176,6 +225,34 @@ public enum Config {
 		}
 	}
 
+	private void initializeDpClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		dlsDpClient = new DataLabelingClient(configFileProvider);
+		dlsDpClient.setEndpoint(dpEndpoint);
+	}
+
+	private void initializeCpClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		dlsCpClient = new DataLabelingManagementClient(configFileProvider);
+		dlsCpClient.setEndpoint(cpEndpoint);
+	}
+
 	private AuthenticationDetailsProvider getConfigFileProvider() {
 		ConfigFileReader.ConfigFile configFile = null;
 		try {
@@ -190,14 +267,50 @@ public enum Config {
 		return configFileProvider;
 	}
 
-	private void initializeObjectStorageClient() {
-		objectStorageClient = new ObjectStorageClient(getConfigFileProvider());
-		objectStorageClient.setEndpoint(objectStorageEndpoint);
+	private void initializeVisionClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		aiVisionClient = new AIServiceVisionClient(configFileProvider);
+		aiVisionClient.setEndpoint(String.format(
+				"https://vision.aiservice.%s.oci.oraclecloud.com",
+				region));
 	}
 
-	private void initializeDpClient() {
-		dlsDpClient = new DataLabelingClient(getConfigFileProvider());
-		dlsDpClient.setEndpoint(dpEndpoint);
+	private void initializeLanguageClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		aiLanguageClient = new AIServiceLanguageClient(configFileProvider);
+		aiLanguageClient.setEndpoint(String.format(
+				"https://language.aiservice.%s.oci.oraclecloud.com",
+				region));
+	}
+
+	private void initializeObjectStorageClient() {
+		ConfigFileReader.ConfigFile configFile = null;
+		try {
+			configFile = ConfigFileReader.parse(configFilePath, configProfile);
+		} catch (IOException ioe) {
+			log.error("Configuration file not found", ioe);
+			ExceptionUtils.wrapAndThrow(ioe);
+		}
+		final AuthenticationDetailsProvider configFileProvider = new ConfigFileAuthenticationDetailsProvider(
+				configFile);
+		objectStorageClient = new ObjectStorageClient(configFileProvider);
+		objectStorageClient.setRegion(region);
 	}
 
 	private void performAssertionOninput() {
