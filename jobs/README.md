@@ -5,35 +5,34 @@
 - `ADS` = [Oracle Accelerated Data Science Library](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/index.html)
 - `OCIR` = [Oracle Cloud Infrastructure Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/home.htm#top)
 
-This project consist of examples that demonstrate usage of Oracle Cloud Infrastructure Data Science Jobs.
+This project showcases the usage of Oracle Cloud Infrastructure Data Science Jobs through practical examples.
 
-Oracle Cloud Data Science Service Jobs enables you to define and run a repeatable task on a fully managed infrastructure. Jobs is fully customizable and user-defined, you can apply any use case you may have such as data preparation, model training, hyperparameter tuning, batch inference, web scraping etc.
+The Oracle Cloud Data Science Service Jobs offers a fully managed infrastructure that allows you to easily create and run repeatable tasks. With its customizable and user-defined features, you can apply a wide range of use cases, including data preparation, model training, hyperparameter tuning, batch inference, web scraping, and more.
 
-Using jobs, you can:
+By using Jobs, you can take advantage of the following benefits:
 
-- Run machine learning or data science tasks outside of your notebooks (JupyterLab)
-- Operationalize discrete data science and machine learning tasks as reusable executable operation
-- Automate your typical MLOps or CI/CD Process
-- Automate repeatable batches or workloads triggered by events or actions
-- Process your batch inference, mini-batch and distributed batch jobs
-- Run [distributed training](../distributed_training/README.md) with Horovod, TensorFlow, PyTorch and Dask
+- Streamline your machine learning and data science workflow by executing tasks outside of JupyterLab notebooks.
+- Make your data science and machine learning processes more efficient and consistent by turning them into reusable operations
+- Automate your MLOps or CI/CD pipeline to simplify and speed up your work.
+- Effortlessly perform batch inference, mini-batch and distributed batch jobs.
+- Take advantage of [distributed training](../distributed_training/README.md) capabilities with popular frameworks such as Horovod, TensorFlow, PyTorch and Dask.
 
-Natively Jobs support Python and Shell scripts, but you could also Bring Your Own Container with jobs, which enables you to execute any language and environment you desire.
+> Jobs natively support Python and Shell scripts, but you also have the flexibility to [bring your own container](byoc/README.md) and execute any desired language and environment.
 
 ## Introduction
 
-The repository contains set of folders for the programing languages we currently provide samples. Each folder contains codes of how to use the client OCI SDK, for example:
+This repository features a collection of folders, each dedicated to a specific programming language, showcasing how to use the OCI Jobs SDK client. for example:
 
 - `cli`, `node`,`python`,`shell`, `ts+js` the programing language client SDK samples
 
-Depending on the programing language, like for example Python, we provide also sample Jobs in the sub folders.
+Within each programming language folder, there are sub-folders that contain sample Jobs for that language. For example, in the Python folder, you will find samples written in Python.
 
 - `sdk` Oracle Cloud SDK Jobs API implementation samples
 - `job+samples` actual code samples you could run as a Job
 
 ## Samples
 
-This repository provides following samples:
+This repository has following samples:
 
 - [Fn](Fn/README.md) - Oracle Function example for how to start Job Runs
 - [byoc](byoc/README.md) - Bring Your Own Container guide for Jobs and samples
@@ -48,7 +47,7 @@ This repository provides following samples:
 
 ## Getting Started
 
-The key pre-requisites that you would need before you can proceed to use OCI Data Science Jobs.
+The following are the key requirements that must be fulfilled before you can use Oracle Cloud Infrastructure Data Science Jobs.
 
 ### If You're Doing a Proof-of-Concept
 
@@ -116,9 +115,15 @@ Create a file called [hello_world_job.py](python/job%2Bsamples/hello_world_job.p
 
 ```bash
 import time
+from pathlib import Path
 
 print("Hello world!")
 time.sleep(3)
+
+# 
+current_path = Path(sys.path[0])
+print (f'current path: {current_path}')
+
 print("Job Done.")
 ```
 
@@ -126,17 +131,16 @@ print("Job Done.")
 
 Login with your Oracle Cloud account then:
 
-- go to the Data Science Service
-- click on the button `Create Project` and create a new project
-- select the new project
-- under `Resources` go to `Jobs`
-- click on the `Create job` button
-- under `Upload job artifact` click on `select a file` link and select the file `hello_world_job.py` on your computer
-- in the `Logging` section click on the `Select` button, make sure that `Enable logging` is selected and choose your `Log group` from the Drop-Down (if no Log Group appears, you have to create one!)
-- make sure that the option `Enable automatic log creation` is selected and click on `Select` button
-- set the `Storage` to be at least 50GB
-- leave the `Default Networking` configuration
-- click on `Create` to create the job
+- In the Oracle Cloud console, select the Data Science Service
+- Click the `Create Project` button and create a new project
+- Select the new project and go to `Jobs` under `Resources`
+- Click the `Create job` button.
+- Under `Upload job artifact`, click the `select a file` link and select the file `hello_world_job.py` from your computer.
+- In the `Logging` section, make sure `Enable logging` is selected and choose your `Log Group` from the drop-down menu. If no Log Group appears, create one.
+- Ensure `Enable automatic log creation` is selected and click the `Select` button.
+- Set the `Storage` to at least 50GB.
+- Keep the `Default Networking` configuration.
+- Click `Create` to create the job.
 
 ### Step 3 - run the job
 
@@ -145,4 +149,4 @@ Login with your Oracle Cloud account then:
 - there is no need to override the job configuration, leave everything as-is
 - click on the `Start` button
 
-The job will automatically provison and execute your code. You can click on the Job Run that will be created and monitor the progress. Under the `Logging details` of the Job Run a `Log` will be created, you can click on the link to view the prints from your code in the OCI Logging Service.
+The job will automatically provison the specified compute shape and execute your code. You can click on the newly created Job Run to monitor the progress. Under the `Logging details` of the Job Run a `Log` will be created, you can click on the link to view the stdout output from your code in the OCI Logging Service.
