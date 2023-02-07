@@ -8,14 +8,14 @@ import nbformat as nbf
 from tqdm import tqdm
 
 
-def parse_adsbib_format(input: str) -> dict:
+def parse_bibblock(input: str) -> dict:
     """Parse the adsbib format into a dictionary. On error return an empty dict"""
 
     # Set valid prefix and return if string does not start with it.
     prefix = "@notebook"
     input = input.strip("\n\t ")
     if not input.startswith(prefix):
-        return {}
+        raise ValueError(f"Missing {prefix} prefix in {input}")
 
     # Strip out the field/value strings
     input = input[len(prefix) :].strip("{}")
@@ -44,20 +44,55 @@ def parse_adsbib_format(input: str) -> dict:
     assert all(
         x in must_have for x in results.keys()
     ), f"Missing fields in {results['filename']}: {set(must_have) - set(results.keys())}"
+    
+    assert len(results["keywords"]), f"Must have at least one keyword"
+    
+    # change all dict keys to be snake case with no spaces
 
-    return results
+    return { k.replace(" ", "_"): v for k,v in results.items() }
 
 
 def escape_underscore(str: str) -> str:
     return str.replace("_", "\_")
 
 
-def make_readme():
+def make_readme_and_index():
+    """produce a README file along with an index.json file used by the notebook explorer"""
 
     README_FILE = "README.md"
     INDEX_FILE = "index.json"
-    # content of the future index.json
-    index_json_content = []
+
+    def parse_notebook_metadata(nb):
+        """Returns None if none of the raw cells contain a bib block, otherwise returns an unvalidated notebook bib block"""
+
+        for cell in nb.cells:
+            if cell.cell_type == "raw":
+                try:
+                    return parse_bibblock(cell["source"])
+                except ValueError:
+                    continue
+                
+        return None
+
+    all_notebooks = {}
+    for notebook_file in tqdm(glob.glob("[!_]*.ipynb"), leave=True):
+        if notebook_file == "getting_started.ipynb":
+            continue
+
+        notebook_metadata = parse_notebook_metadata(nbf.read(notebook_file, nbf.NO_CONVERT))
+        if notebook_metadata:
+
+            assert (
+                notebook_file == notebook_metadata["filename"]
+            ), f"Notebook filename [{notebook_file}] does not match [{notebook_metadata.get('filename')}]"
+
+            # augment with file system meta data
+            notebook_metadata["time_created"] = datetime.fromtimestamp(
+                os.path.getctime(notebook_file)
+            ).isoformat()
+            notebook_metadata["size"] = os.path.getsize(notebook_file)
+
+            all_notebooks[notebook_file] = notebook_metadata
 
     with open(README_FILE, "w") as f:
 
@@ -77,38 +112,6 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
         )
 
         # badges for the tags https://img.shields.io/badge/tensorflow-3-brightgreen
-
-        all_notebooks = {}
-        for notebook_file in tqdm(glob.glob("[!_]*.ipynb"), leave=True):
-            if notebook_file == "getting_started.ipynb":
-                continue
-
-            nb = nbf.read(notebook_file, nbf.NO_CONVERT)
-
-            assert (
-                len([cell for cell in nb.cells if cell.cell_type == "raw"]) == 1
-            ), f"[{notebook_file}] Found more than one raw cell"
-
-            # add a record for the future index.json
-            index_json_entry: dict = {}
-            index_json_entry["time_created"] = datetime.fromtimestamp(
-                os.path.getctime(notebook_file)
-            ).isoformat()
-            index_json_entry["size"] = os.path.getsize(notebook_file)
-
-            for cell in nb.cells:
-                if cell.cell_type == "raw":
-                    bib = cell["source"]
-                    parsed_bib = parse_adsbib_format(bib)
-                    for key in parsed_bib:
-                        index_json_entry[key.replace(" ", "_")] = parsed_bib[key]
-
-                    assert (
-                        notebook_file == parsed_bib["filename"]
-                    ), f"Notebook filename [{notebook_file}] does not match [{parsed_bib.get('filename')}]"
-                    all_notebooks[notebook_file] = parsed_bib
-
-            index_json_content.append(index_json_entry)
 
         tags = Counter([])
         for _, notebook_metadata in all_notebooks.items():
@@ -137,7 +140,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
         print("\n\n## Notebooks", file=f)
         for notebook_file, notebook_metadata in sorted(
             all_notebooks.items(),
-            key=lambda nb: nb[1].get("keywords", None)[0],
+            key=lambda nb: nb[1]["keywords"][0],
         ):
 
             print(
@@ -151,7 +154,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             print("\n ", file=f)
             print(f"{notebook_metadata['summary']}", file=f)
             print(
-                f"\nThis notebook was developed on the conda pack with slug: `{notebook_metadata['developed on']}`",
+                f"\nThis notebook was developed on the conda pack with slug: `{notebook_metadata['developed_on']}`",
                 file=f,
             )
             print("\n ", file=f)
@@ -163,11 +166,14 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             print(f"\n---", file=f)
 
         print(f"{len(all_notebooks)} notebooks proceesed into {README_FILE}")
-        print(f"{len(index_json_content)} notebooks proceesed into {INDEX_FILE}")
 
     with open(INDEX_FILE, "w") as index_file:
-        json.dump(index_json_content, index_file, sort_keys=True, indent=4)
+ 
+        json.dump(
+            sorted(all_notebooks.values(), key=lambda nb: nb["keywords"][0]), index_file, sort_keys=True, indent=2, ensure_ascii=False
+        )
+        print(f"{len(all_notebooks)} notebooks proceesed into {INDEX_FILE}")
 
 
 if __name__ == "__main__":
-    make_readme()
+    make_readme_and_index()
