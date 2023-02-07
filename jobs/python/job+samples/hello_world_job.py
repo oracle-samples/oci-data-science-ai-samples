@@ -1,6 +1,12 @@
-# simple job
+# get the job code path, works in JL Notebook! 
 import time
+from pathlib import Path
 
-print("Hello Job!")
+print("Hello world!")
 time.sleep(3)
+
+# 
+current_path = Path(sys.path[0])
+print (f'current path: {current_path}')
+
 print("Job Done.")
