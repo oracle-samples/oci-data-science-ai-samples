@@ -173,32 +173,65 @@ ADS OPCTL CLI requires a container desktop tool to build, run, launch and push t
 
 Install the `ads[opctl]` CLI which is required to package (containerize) your distributed training script and launch OCI Data Science Distributed Training Jobs.
 
-- Setup Conda (optional, but recommended)
+#### Setup Conda (optional, but recommended)
+
+- For Linux and [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)
 
 ```bash
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+- MacOS Intel
+
+```bash
+curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -o Miniconda3-latest-MacOSX-x86_64.sh
+```
+
+- MacOS Apple Silicon
+
+```bash
+curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o Miniconda3-latest-MacOSX-arm64.sh
+```
+
+- Run the installer
+
+```bash
+bash Miniconda3-latest-<Linux|MacOSX>-<x86_64|arm64>.sh
+```
+
+You may need to restart your terminal or `source ~/.bashrc` or `~/.zshrc` to enable the conda command. Use `conda -V` to test if it is installed successfully.
+
+- Create new conda
+
+```bash
 conda create -n distributed-training python=3.8
+```
+
+- Activate it
+
+```bash
 conda activate distributed-training
 ```
 
-- Install ADS >= 2.6.8
+#### Install the CLI
+
+- Install the `oracle-ads[opctl] >= 2.8.0` in the activated conda.
 
 ```bash
 python3 -m pip install "oracle-ads[opctl]"
 ```
 
-- Test the ADS CLI runs
+- Test the CLI is running
 
 ```bash
 ads opctl -h
 ```
 
-### 7. Login to OCIR
+### 7. Login to Your OCIR
 
 OCI Data Science Distributed Training uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image.
 
-You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) from your local machine, if you haven't done so before, to been able to push the images. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
+You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) from your local machine, if you haven't done so before, to been able to push your images. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
 
 ```bash
 docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
