@@ -75,6 +75,8 @@ def make_readme_and_index():
         return None
 
     all_notebooks = {}
+    ignored_notebooks = []
+    
     for notebook_file in tqdm(glob.glob("[!_]*.ipynb"), leave=True):
         if notebook_file == "getting_started.ipynb":
             continue
@@ -93,6 +95,8 @@ def make_readme_and_index():
             notebook_metadata["size"] = os.path.getsize(notebook_file)
 
             all_notebooks[notebook_file] = notebook_metadata
+        else:
+            ignored_notebooks.append(notebook_file)
 
     with open(README_FILE, "w") as f:
 
@@ -165,7 +169,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             print(f"\n<sub>{notebook_metadata['license']}</sup>", file=f)
             print(f"\n---", file=f)
 
-        print(f"{len(all_notebooks)} notebooks proceesed into {README_FILE}")
+        print(f"{len(all_notebooks)} notebooks processed into {README_FILE}")
 
     with open(INDEX_FILE, "w") as index_file:
  
@@ -174,6 +178,10 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
         )
         print(f"{len(all_notebooks)} notebooks proceesed into {INDEX_FILE}")
 
+    if ignored_notebooks:
+        print(f"{len(ignored_notebooks)} notebooks ignored (missing @notebook)")
+        for nb_file in ignored_notebooks:
+            print(f" - {nb_file}")
 
 if __name__ == "__main__":
     make_readme_and_index()
