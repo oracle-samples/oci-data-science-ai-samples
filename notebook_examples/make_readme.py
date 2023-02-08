@@ -62,7 +62,7 @@ def find_git_last_commit_time_in_iso_str_format(file_name):
         cmd = f'git log --pretty=format:%cd -n 1 --date=unix --date-order -- "{file_name}"'
         time_string = os.popen(cmd).read()
         assert (
-            len(time_string) > 0
+            time_string.strip() != ""
         ), f"Unable to get git timestamp for {file_name}, this can happen when you `rm` a notebook locally, rather than using `git rm`"
         return datetime.fromtimestamp(float(time_string.strip())).isoformat()
     else:
@@ -108,9 +108,10 @@ def make_readme_and_index():
             ), f"Notebook filename [{notebook_file}] does not match [{notebook_metadata.get('filename')}]"
 
             # augment with file system meta data
-            notebook_metadata["time_created"] = datetime.fromtimestamp(
-                os.path.getmtime(notebook_file)
-            ).isoformat()
+            # notebook_metadata["time_created"] = datetime.fromtimestamp(
+            #     os.path.getmtime(notebook_file)
+            # ).isoformat()
+            notebook_metadata["time_created"] = find_git_last_commit_time_in_iso_str_format(notebook_file)
             notebook_metadata["size"] = os.path.getsize(notebook_file)
 
             all_notebooks[notebook_file] = notebook_metadata
