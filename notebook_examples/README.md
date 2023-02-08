@@ -12,7 +12,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Topics
-<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen"> <img src="https://img.shields.io/badge/train model-6-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous driving-1-brightgreen"> <img src="https://img.shields.io/badge/tensorflow-1-brightgreen"> <img src="https://img.shields.io/badge/caltech-1-brightgreen"> <img src="https://img.shields.io/badge/pedestrian detection-1-brightgreen"> <img src="https://img.shields.io/badge/dcat-1-brightgreen"> <img src="https://img.shields.io/badge/pytorch-1-brightgreen"> <img src="https://img.shields.io/badge/model evaluation-1-brightgreen"> <img src="https://img.shields.io/badge/binary classification-1-brightgreen"> <img src="https://img.shields.io/badge/regression-1-brightgreen"> <img src="https://img.shields.io/badge/multi class classification-1-brightgreen"> <img src="https://img.shields.io/badge/imbalanced dataset-1-brightgreen"> <img src="https://img.shields.io/badge/synthetic dataset-1-brightgreen"> <img src="https://img.shields.io/badge/text extraction-1-brightgreen"> <img src="https://img.shields.io/badge/lime-1-brightgreen"> <img src="https://img.shields.io/badge/model_explanation-1-brightgreen"> <img src="https://img.shields.io/badge/text_classification-1-brightgreen"> <img src="https://img.shields.io/badge/text_explanation-1-brightgreen"> 
+<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen"> <img src="https://img.shields.io/badge/train model-6-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous driving-1-brightgreen"> <img src="https://img.shields.io/badge/kerberos-1-brightgreen"> <img src="https://img.shields.io/badge/livy-1-brightgreen"> <img src="https://img.shields.io/badge/intel-1-brightgreen"> <img src="https://img.shields.io/badge/intel extension-1-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-1-brightgreen"> <img src="https://img.shields.io/badge/hyperparameter tuning-1-brightgreen"> <img src="https://img.shields.io/badge/caltech-1-brightgreen"> <img src="https://img.shields.io/badge/pedestrian detection-1-brightgreen"> <img src="https://img.shields.io/badge/model evaluation-1-brightgreen"> <img src="https://img.shields.io/badge/binary classification-1-brightgreen"> <img src="https://img.shields.io/badge/regression-1-brightgreen"> <img src="https://img.shields.io/badge/multi class classification-1-brightgreen"> <img src="https://img.shields.io/badge/imbalanced dataset-1-brightgreen"> <img src="https://img.shields.io/badge/synthetic dataset-1-brightgreen"> <img src="https://img.shields.io/badge/object annotation-1-brightgreen"> <img src="https://img.shields.io/badge/genome visualization-1-brightgreen"> 
 
 ## Contents
  - [Audi Autonomous Driving Dataset Repository](#audi-autonomous_driving-oracle_open_data.ipynb)
@@ -51,7 +51,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 ## Notebooks
 ### <a name="audi-autonomous_driving-oracle_open_data.ipynb"></a> - Audi Autonomous Driving Dataset Repository
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`audi-autonomous_driving-oracle_open_data.ipynb`](audi-autonomous_driving-oracle_open_data.ipynb)
 
  
@@ -65,25 +65,9 @@ This notebook was developed on the conda pack with slug: `computervision_p37_cpu
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="read-write-big_data_service-(BDS).ipynb"></a> - How to Read Data with fsspec from Oracle Big Data Service (BDS)
-
-<sub>Updated: 12/22/2022</sub>
-#### [`read-write-big_data_service-(BDS).ipynb`](read-write-big_data_service-(BDS).ipynb)
-
- 
-Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
-
-This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
-
- 
-`bds`  `fsspec`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### <a name="big_data_service-(BDS)-livy.ipynb"></a> - Using Livy on the Big Data Service
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`big_data_service-(BDS)-livy.ipynb`](big_data_service-(BDS)-livy.ipynb)
 
  
@@ -97,9 +81,25 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
+### <a name="read-write-big_data_service-(BDS).ipynb"></a> - How to Read Data with fsspec from Oracle Big Data Service (BDS)
+
+<sub>Updated: 02/08/2023</sub>
+#### [`read-write-big_data_service-(BDS).ipynb`](read-write-big_data_service-(BDS).ipynb)
+
+ 
+Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
+
+This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
+
+ 
+`bds`  `fsspec`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### <a name="caltech-pedestrian_detection-oracle_open_data.ipynb"></a> - Caltech Pedestrian Detection Benchmark Repository
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`caltech-pedestrian_detection-oracle_open_data.ipynb`](caltech-pedestrian_detection-oracle_open_data.ipynb)
 
  
@@ -115,7 +115,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="pyspark-data_catalog-hive_metastore-data_flow.ipynb"></a> - Using Data Catalog Metastore with DataFlow
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`pyspark-data_catalog-hive_metastore-data_flow.ipynb`](pyspark-data_catalog-hive_metastore-data_flow.ipynb)
 
  
@@ -131,7 +131,7 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 ---
 ### <a name="data_labeling-text_classification.ipynb"></a> - Text Classification with Data Labeling Service Integration
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`data_labeling-text_classification.ipynb`](data_labeling-text_classification.ipynb)
 
  
@@ -147,7 +147,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
 ---
 ### <a name="visualizing_data-exploring_data.ipynb"></a> - Visualizing Data
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`visualizing_data-exploring_data.ipynb`](visualizing_data-exploring_data.ipynb)
 
  
@@ -163,7 +163,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="pyspark-data_catalog-hive_metastore.ipynb"></a> - Using Data Catalog Metastore with PySpark
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`pyspark-data_catalog-hive_metastore.ipynb`](pyspark-data_catalog-hive_metastore.ipynb)
 
  
@@ -179,7 +179,7 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 ---
 ### <a name="train-register-deploy-other-frameworks.ipynb"></a> - Train, Register, and Deploy a Generic Model
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`train-register-deploy-other-frameworks.ipynb`](train-register-deploy-other-frameworks.ipynb)
 
  
@@ -195,7 +195,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="hyperparameter_tuning.ipynb"></a> - Introduction to ADSTuner
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`hyperparameter_tuning.ipynb`](hyperparameter_tuning.ipynb)
 
  
@@ -211,7 +211,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="accelerate-scikit_learn-with-intel_extension.ipynb"></a> - Intel Extension for Scikit-Learn
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`accelerate-scikit_learn-with-intel_extension.ipynb`](accelerate-scikit_learn-with-intel_extension.ipynb)
 
  
@@ -227,7 +227,7 @@ This notebook was developed on the conda pack with slug: `sklearnex202130_p37_cp
 ---
 ### <a name="big_data_service-(BDS)-kerberos.ipynb"></a> - Connect to Oracle Big Data Service
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`big_data_service-(BDS)-kerberos.ipynb`](big_data_service-(BDS)-kerberos.ipynb)
 
  
@@ -243,7 +243,7 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 ---
 ### <a name="natural_language_processing.ipynb"></a> - Natural Language Processing
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`natural_language_processing.ipynb`](natural_language_processing.ipynb)
 
  
@@ -259,7 +259,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
 ---
 ### <a name="train-register-deploy-lightgbm.ipynb"></a> - Train, Register, and Deploy a LightGBM Model
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`train-register-deploy-lightgbm.ipynb`](train-register-deploy-lightgbm.ipynb)
 
  
@@ -275,7 +275,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="load_data-object_storage-hive-autonomous-database.ipynb"></a> - Loading Data With Pandas & Dask
 
-<sub>Updated: 01/09/2023</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`load_data-object_storage-hive-autonomous-database.ipynb`](load_data-object_storage-hive-autonomous-database.ipynb)
 
  
@@ -291,7 +291,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="model_version_set.ipynb"></a> - Introduction to Model Version Set
 
-<sub>Updated: 02/03/2023</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`model_version_set.ipynb`](model_version_set.ipynb)
 
  
@@ -307,7 +307,7 @@ This notebook was developed on the conda pack with slug: `dbexp_p38_cpu_v1`
 ---
 ### <a name="model_evaluation-with-ADSEvaluator.ipynb"></a> - Model Evaluation with ADSEvaluator
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`model_evaluation-with-ADSEvaluator.ipynb`](model_evaluation-with-ADSEvaluator.ipynb)
 
  
@@ -323,7 +323,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="text_classification-model_explanation-lime.ipynb"></a> - Text Classification and Model Explanations using LIME
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`text_classification-model_explanation-lime.ipynb`](text_classification-model_explanation-lime.ipynb)
 
  
@@ -339,7 +339,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
 ---
 ### <a name="genome_visualization-oracle_open_data.ipynb"></a> - Visual Genome Repository
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`genome_visualization-oracle_open_data.ipynb`](genome_visualization-oracle_open_data.ipynb)
 
  
@@ -355,7 +355,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="pipelines-ml_lifecycle.ipynb"></a> - Working with Pipelines
 
-<sub>Updated: 02/03/2023</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`pipelines-ml_lifecycle.ipynb`](pipelines-ml_lifecycle.ipynb)
 
  
@@ -369,9 +369,25 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
+### <a name="pyspark-data_flow-application.ipynb"></a> - PySpark
+
+<sub>Updated: 02/08/2023</sub>
+#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
+
+ 
+Develop local PySpark applications and work with remote clusters using Data Flow.
+
+This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
+
+ 
+`pyspark`  `data flow`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### <a name="pyspark-data_flow_studio-spark_nlp.ipynb"></a> - Spark NLP within Oracle Cloud Infrastructure Data Flow Studio
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`pyspark-data_flow_studio-spark_nlp.ipynb`](pyspark-data_flow_studio-spark_nlp.ipynb)
 
  
@@ -387,7 +403,7 @@ This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v1`
 ---
 ### <a name="pyspark-data_flow_studio-introduction.ipynb"></a> - Introduction to the Oracle Cloud Infrastructure Data Flow Studio
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`pyspark-data_flow_studio-introduction.ipynb`](pyspark-data_flow_studio-introduction.ipynb)
 
  
@@ -401,25 +417,9 @@ This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v2`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="pyspark-data_flow-application.ipynb"></a> - PySpark
-
-<sub>Updated: 12/22/2022</sub>
-#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
-
- 
-Develop local PySpark applications and work with remote clusters using Data Flow.
-
-This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
-
- 
-`pyspark`  `data flow`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### <a name="train-register-deploy-pytorch.ipynb"></a> - Train, Register, and Deploy a PyTorch Model
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`train-register-deploy-pytorch.ipynb`](train-register-deploy-pytorch.ipynb)
 
  
@@ -435,7 +435,7 @@ This notebook was developed on the conda pack with slug: `pytorch110_p38_cpu_v1`
 ---
 ### <a name="train-register-deploy-sklearn.ipynb"></a> - Train, register, and deploy Sklearn Model
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`train-register-deploy-sklearn.ipynb`](train-register-deploy-sklearn.ipynb)
 
  
@@ -451,7 +451,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="sql_magic-commands-with-autonomous_database.ipynb"></a> - Introduction to SQL Magic
 
-<sub>Updated: 02/02/2023</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`sql_magic-commands-with-autonomous_database.ipynb`](sql_magic-commands-with-autonomous_database.ipynb)
 
  
@@ -467,7 +467,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="streaming-service-introduction.ipynb"></a> - Introduction to Streaming
 
-<sub>Updated: 01/02/2023</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`streaming-service-introduction.ipynb`](streaming-service-introduction.ipynb)
 
  
@@ -483,7 +483,7 @@ This notebook was developed on the conda pack with slug: `dataexpl_p37_cpu_v3`
 ---
 ### <a name="train-register-deploy-tensorflow.ipynb"></a> - Train, Register, and Deploy a TensorFlow Model
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`train-register-deploy-tensorflow.ipynb`](train-register-deploy-tensorflow.ipynb)
 
  
@@ -499,7 +499,7 @@ This notebook was developed on the conda pack with slug: `tensorflow28_p38_cpu_v
 ---
 ### <a name="document-text_extraction.ipynb"></a> - Text Extraction Using the Accelerated Data Science (ADS) SDK
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`document-text_extraction.ipynb`](document-text_extraction.ipynb)
 
  
@@ -515,7 +515,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
 ---
 ### <a name="train-register-deploy-xgboost.ipynb"></a> - Train, Register, and Deploy an XGBoost Model
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`train-register-deploy-xgboost.ipynb`](train-register-deploy-xgboost.ipynb)
 
  
@@ -531,7 +531,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="xgboost-with-rapids.ipynb"></a> - XGBoost with RAPIDS
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/08/2023</sub>
 #### [`xgboost-with-rapids.ipynb`](xgboost-with-rapids.ipynb)
 
  
