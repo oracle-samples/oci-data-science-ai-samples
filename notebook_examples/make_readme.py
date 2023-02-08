@@ -109,6 +109,8 @@ def make_readme_and_index():
                 notebook_file == notebook_metadata["filename"]
             ), f"Notebook filename [{notebook_file}] does not match [{notebook_metadata.get('filename')}]"
 
+            notebook_metadata["test"]  = "test"
+
             # augment with file system meta data
             notebook_metadata["time_created"] = datetime.fromtimestamp(
                 os.path.getmtime(notebook_file)
