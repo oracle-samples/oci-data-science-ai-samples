@@ -57,18 +57,15 @@ def parse_bibblock(input: str) -> dict:
 def escape_underscore(str: str) -> str:
     return str.replace("_", "\_")
 
-
-def fixup_timestamps_of_git_controlled_files(files: list):
-    """For git controlled notebook files, restore the local file system timestamp to the last commit time"""
-    print("Restore timestamps of git controlled files...")
-    for file_name in tqdm(os.popen("git ls-files").read().strip().split("\n")):
-        if file_name.endswith(".ipynb"):
-            cmd = f'git log --pretty=format:%cd -n 1 --date=unix --date-order -- "{file_name}"'
-            time_string = os.popen(cmd).read()
-            assert len(time_string) > 0, f"Unable to get git timestamp for {file_name}, this can happen when you `rm` a notebook locally, rather than using `git rm`"
-            modification_time = float(time_string.strip())
-            os.utime(file_name, (modification_time, modification_time))
-
+def find_git_last_commit_time_in_iso_str_format(file_name):
+    all_git_controlled_files = os.popen("git ls-files").read().strip().split("\n")
+    if file_name in all_git_controlled_files:
+        cmd = f'git log --pretty=format:%cd -n 1 --date=unix --date-order -- "{file_name}"'
+        time_string = os.popen(cmd).read()
+        assert len(time_string) > 0, f"Unable to get git timestamp for {file_name}, this can happen when you `rm` a notebook locally, rather than using `git rm`"
+        return datetime.fromtimestamp(float(time_string.strip())).isoformat()
+    else:
+        return datetime.now().isoformat()
 
 def make_readme_and_index():
     """produce a README file along with an index.json file used by the notebook explorer"""
@@ -92,7 +89,6 @@ def make_readme_and_index():
     ignored_notebooks = []
 
     files = glob.glob("[!_]*.ipynb")
-    fixup_timestamps_of_git_controlled_files(files)
     files.sort(key=os.path.getmtime)
 
     print("Parsing notebooks...")
@@ -108,8 +104,6 @@ def make_readme_and_index():
             assert (
                 notebook_file == notebook_metadata["filename"]
             ), f"Notebook filename [{notebook_file}] does not match [{notebook_metadata.get('filename')}]"
-
-            notebook_metadata["test"]  = f"{notebook_file} - mtime: {datetime.fromtimestamp(os.path.getmtime(notebook_file)).isoformat()} - ctime: {datetime.fromtimestamp(os.path.getctime(notebook_file)).isoformat()}"
 
             # augment with file system meta data
             notebook_metadata["time_created"] = datetime.fromtimestamp(
