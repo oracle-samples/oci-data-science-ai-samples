@@ -7,6 +7,8 @@ from datetime import datetime
 import nbformat as nbf
 from tqdm import tqdm
 
+# This is a script to generate a README.md file from the notebook metadata
+
 
 def parse_bibblock(input: str) -> dict:
     """Parse the adsbib format into a dictionary. On error return an empty dict"""
