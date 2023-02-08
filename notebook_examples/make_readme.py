@@ -7,8 +7,6 @@ from datetime import datetime
 import nbformat as nbf
 from tqdm import tqdm
 
-# This is a script to generate a README.md file from the notebook metadata
-
 
 def parse_bibblock(input: str) -> dict:
     """Parse the adsbib format into a dictionary. On error return an empty dict"""
@@ -57,15 +55,19 @@ def parse_bibblock(input: str) -> dict:
 def escape_underscore(str: str) -> str:
     return str.replace("_", "\_")
 
+
 def find_git_last_commit_time_in_iso_str_format(file_name):
     all_git_controlled_files = os.popen("git ls-files").read().strip().split("\n")
     if file_name in all_git_controlled_files:
         cmd = f'git log --pretty=format:%cd -n 1 --date=unix --date-order -- "{file_name}"'
         time_string = os.popen(cmd).read()
-        assert len(time_string) > 0, f"Unable to get git timestamp for {file_name}, this can happen when you `rm` a notebook locally, rather than using `git rm`"
+        assert (
+            len(time_string) > 0
+        ), f"Unable to get git timestamp for {file_name}, this can happen when you `rm` a notebook locally, rather than using `git rm`"
         return datetime.fromtimestamp(float(time_string.strip())).isoformat()
     else:
         return datetime.now().isoformat()
+
 
 def make_readme_and_index():
     """produce a README file along with an index.json file used by the notebook explorer"""
@@ -168,9 +170,12 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
                 f"### <a name=\"{notebook_metadata['filename']}\"></a> - {notebook_metadata['title']}",
                 file=f,
             )
-            
-            print(f"\n<sub>Updated: {datetime.fromisoformat(notebook_metadata['time_created']).strftime('%m/%d/%Y')}</sub>", file=f)
-            
+
+            print(
+                f"\n<sub>Updated: {datetime.fromisoformat(notebook_metadata['time_created']).strftime('%m/%d/%Y')}</sub>",
+                file=f,
+            )
+
             print(
                 f"#### [`{notebook_metadata['filename']}`]({notebook_metadata['filename']})",
                 file=f,
