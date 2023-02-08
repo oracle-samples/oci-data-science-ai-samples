@@ -44,16 +44,28 @@ def parse_bibblock(input: str) -> dict:
     assert all(
         x in must_have for x in results.keys()
     ), f"Missing fields in {results['filename']}: {set(must_have) - set(results.keys())}"
-    
+
     assert len(results["keywords"]), f"Must have at least one keyword"
-    
+
     # change all dict keys to be snake case with no spaces
 
-    return { k.replace(" ", "_"): v for k,v in results.items() }
+    return {k.replace(" ", "_"): v for k, v in results.items()}
 
 
 def escape_underscore(str: str) -> str:
     return str.replace("_", "\_")
+
+
+def fixup_timestamps_of_git_controlled_files(files: list):
+    """For git controlled notebook files, restore the local file system timestamp to the last commit time"""
+    print("Restore timestamps of git controlled files...")
+    for file_name in tqdm(os.popen("git ls-files").read().strip().split("\n")):
+        if file_name.endswith(".ipynb"):
+            cmd = f'git log --pretty=format:%cd -n 1 --date=unix --date-order -- "{file_name}"'
+            time_string = os.popen(cmd).read()
+            assert len(time_string) > 0, f"Unable to get git timestamp for {file_name}, this can happen when you `rm` a notebook locally, rather than using `git rm`"
+            modification_time = float(time_string.strip())
+            os.utime(file_name, (modification_time, modification_time))
 
 
 def make_readme_and_index():
@@ -71,17 +83,24 @@ def make_readme_and_index():
                     return parse_bibblock(cell["source"])
                 except ValueError:
                     continue
-                
+
         return None
 
     all_notebooks = {}
     ignored_notebooks = []
-    
-    for notebook_file in tqdm(glob.glob("[!_]*.ipynb"), leave=True):
+
+    files = glob.glob("[!_]*.ipynb")
+    fixup_timestamps_of_git_controlled_files(files)
+    files.sort(key=os.path.getmtime)
+
+    print("Parsing notebooks...")
+    for notebook_file in tqdm(files, leave=True):
         if notebook_file == "getting_started.ipynb":
             continue
 
-        notebook_metadata = parse_notebook_metadata(nbf.read(notebook_file, nbf.NO_CONVERT))
+        notebook_metadata = parse_notebook_metadata(
+            nbf.read(notebook_file, nbf.NO_CONVERT)
+        )
         if notebook_metadata:
 
             assert (
@@ -90,7 +109,7 @@ def make_readme_and_index():
 
             # augment with file system meta data
             notebook_metadata["time_created"] = datetime.fromtimestamp(
-                os.path.getctime(notebook_file)
+                os.path.getmtime(notebook_file)
             ).isoformat()
             notebook_metadata["size"] = os.path.getsize(notebook_file)
 
@@ -151,6 +170,9 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
                 f"### <a name=\"{notebook_metadata['filename']}\"></a> - {notebook_metadata['title']}",
                 file=f,
             )
+            
+            print(f"\n<sub>Updated: {datetime.fromisoformat(notebook_metadata['time_created']).strftime('%m/%d/%Y')}</sub>", file=f)
+            
             print(
                 f"#### [`{notebook_metadata['filename']}`]({notebook_metadata['filename']})",
                 file=f,
@@ -172,9 +194,13 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
         print(f"{len(all_notebooks)} notebooks processed into {README_FILE}")
 
     with open(INDEX_FILE, "w") as index_file:
- 
+
         json.dump(
-            sorted(all_notebooks.values(), key=lambda nb: nb["keywords"][0]), index_file, sort_keys=True, indent=2, ensure_ascii=False
+            sorted(all_notebooks.values(), key=lambda nb: nb["keywords"][0]),
+            index_file,
+            sort_keys=True,
+            indent=2,
+            ensure_ascii=False,
         )
         print(f"{len(all_notebooks)} notebooks proceesed into {INDEX_FILE}")
 
@@ -182,6 +208,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
         print(f"{len(ignored_notebooks)} notebooks ignored (missing @notebook)")
         for nb_file in ignored_notebooks:
             print(f" - {nb_file}")
+
 
 if __name__ == "__main__":
     make_readme_and_index()
