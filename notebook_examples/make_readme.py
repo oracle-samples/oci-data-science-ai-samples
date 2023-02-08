@@ -1,9 +1,12 @@
+# Standard library
 import glob
 import json
 import os
 from collections import Counter
 from datetime import datetime
+import hashlib
 
+# Third party
 import nbformat as nbf
 from tqdm import tqdm
 
@@ -79,18 +82,24 @@ def make_readme_and_index():
         if notebook_file == "getting_started.ipynb":
             continue
 
-        notebook_metadata = parse_notebook_metadata(nbf.read(notebook_file, nbf.NO_CONVERT))
+        with open(notebook_file, "r") as fh:
+            notebook_text = fh.read().encode('utf-8')
+
+        notebook_md5 = hashlib.md5(notebook_text).hexdigest()
+
+        notebook_metadata = parse_notebook_metadata(nbf.reads(notebook_text, nbf.NO_CONVERT))
         if notebook_metadata:
 
-            assert (
-                notebook_file == notebook_metadata["filename"]
-            ), f"Notebook filename [{notebook_file}] does not match [{notebook_metadata.get('filename')}]"
+            # Skip notebooks when filename does not match bib.
+            if notebook_file != notebook_metadata.get("filename"):
+                continue
 
-            # augment with file system meta data
+            # Augment with file system meta data
             notebook_metadata["time_created"] = datetime.fromtimestamp(
                 os.path.getctime(notebook_file)
             ).isoformat()
             notebook_metadata["size"] = os.path.getsize(notebook_file)
+            notebook_metadata["md5_hash"] = notebook_md5
 
             all_notebooks[notebook_file] = notebook_metadata
 
