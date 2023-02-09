@@ -15,6 +15,14 @@ The pipeline has the following steps:
 Open the [employee-attrition-pipeline-ads.ipynb](./employee-attrition-pipeline-ads.ipynb) notebook and run it.
 
 Make sure you define the permissions in your tenancy properly.
+<br/><br/>
+
+:warning: **NOTE**: You need ADS (Accelerated Data Science) SDK version 2.8 or above to use pipelines.
+
+To check ADS version in your environment, open a termial window and run the command: ```pip show oracle-ads```
+
+To update ADS version in your environment, open a terminal window and run the command: ```pip install oracle-ads --upgrade```
+
 
 ## Dependencies
 mlpipeline_data_helpers.py - helper functions to transfer data between steps

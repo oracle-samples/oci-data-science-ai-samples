@@ -16,6 +16,12 @@ Using pipelines, you can:
 
 Product documentation can be found [here](https://docs.oracle.com/iaas/data-science/using/pipelines-about.htm).
 
+**NOTE**: You need ADS (Accelerated Data Science) SDK version 2.8 or above to use pipelines.
+
+To check ADS version in your environment, open a termial window and run the command: ```pip show oracle-ads```
+
+To update ADS version in your environment, open a terminal window and run the command: ```pip install oracle-ads --upgrade```
+
 ## Available Samples 
 
 ### Simple pipeline with data sharing between steps
