@@ -17,7 +17,7 @@ By using Jobs, you can take advantage of the following benefits:
 - Effortlessly perform batch inference, mini-batch and distributed batch jobs.
 - Take advantage of [distributed training](../distributed_training/README.md) capabilities with popular frameworks such as Horovod, TensorFlow, PyTorch and Dask.
 
-> Jobs natively support Python and Shell scripts, but you also have the flexibility to [bring your own container](byoc/README.md) and execute any desired language and environment.
+`Jobs not only support Python and Shell scripts, but also gives you the flexibility to run custom code in any language or environment of your choice by bringing your own container image` [BYOC](byoc/README.md)
 
 ## Introduction
 
@@ -29,21 +29,6 @@ Within each programming language folder, there are sub-folders that contain samp
 
 - `sdk` Oracle Cloud SDK Jobs API implementation samples
 - `job+samples` actual code samples you could run as a Job
-
-## Samples
-
-This repository has following samples:
-
-- [Fn](Fn/README.md) - Oracle Function example for how to start Job Runs
-- [byoc](byoc/README.md) - Bring Your Own Container guide for Jobs and samples
-- [cli](cli/cli/README.md) - Oracle OCI CLI client samples of how to create and run jobs
-- [custom_metrics](custom_metrics/README.md) - emit custom metrics from your Job Run and query metric values on your local machine
-- [java](java/README.md) - Java client code implementing utilizing the Oracle Cloud Jobs Java OCI SDK
-- [job_monitoring](job_monitor/README.md) - a simple application to monitor multiple Job Run logs on your local or compute machine
-- [python](python/README.md) - OCI SDK API sample, as well as actual Job simple samples written in Python
-- [shell](shell/README.md) - shell scripts example that can be executed as a Job
-- [ts+js](ts%2Bjs/README.md) - client OCI SDK TypeScript and JavaScript samples of how to use to create and run Job
-- [zip+tar](zip%2Btar/README.md) - provides ZIP or TAR packaged samples that can be run as a Job
 
 ## Getting Started
 
@@ -105,6 +90,8 @@ At the high level the instructions are:
 
 For more detailed explanations, follow the instructions from our public documentation.
 
+Oracle [Accelerated Data Science SDK (short ADS)](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/opctl/localdev/local_jobs.html) provides easy to use CLI to create and run your jobs, check it out!
+
 ## Your First Job
 
 Let's create simple hello world job and run it on Oracle Cloud Infrastructure Data Science Jobs Service.
@@ -150,3 +137,36 @@ Login with your Oracle Cloud account then:
 - click on the `Start` button
 
 The job will automatically provison the specified compute shape and execute your code. You can click on the newly created Job Run to monitor the progress. Under the `Logging details` of the Job Run a `Log` will be created, you can click on the link to view the stdout output from your code in the OCI Logging Service.
+
+## What's Next?
+
+Check our code samples and follow our tutorials.
+
+### Samples
+
+This repository has following samples:
+
+- [Fn](Fn/README.md) - Oracle Function example for how to start Job Runs
+- [byoc](byoc/README.md) - Bring Your Own Container guide for Jobs and samples
+- [cli](cli/cli/README.md) - Oracle OCI CLI client samples of how to create and run jobs
+- [custom_metrics](custom_metrics/README.md) - emit custom metrics from your Job Run and query metric values on your local machine
+- [java](java/README.md) - Java client code implementing utilizing the Oracle Cloud Jobs Java OCI SDK
+- [job_monitoring](job_monitor/README.md) - a simple application to monitor multiple Job Run logs on your local or compute machine
+- [python](python/README.md) - OCI SDK API sample, as well as actual Job simple samples written in Python
+- [shell](shell/README.md) - shell scripts example that can be executed as a Job
+- [ts+js](ts%2Bjs/README.md) - client OCI SDK TypeScript and JavaScript samples of how to use to create and run Job
+- [zip+tar](zip%2Btar/README.md) - provides ZIP or TAR packaged samples that can be run as a Job
+
+### Tutorials
+
+:bulb: You can find our tutorials section under the [tutorials](tutorials/README.md) folder.
+
+#### General
+
+- [Jobs With Custom Exit Code](tutorials/jobs-custom-exit-code.md)
+- [Jobs Emit Custom Metrics](custom_metrics/README.md) :wrench:
+- [Jobs Monitoring Dashboard](job_monitor/README.md) :mag:
+
+#### Model Training
+
+- [Jobs Model Training With Early Stopping Metrics](tutorials/model-training-early-stopping-by-metrics.md)
