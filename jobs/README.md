@@ -161,6 +161,12 @@ This repository has following samples:
 
 :bulb: You can find our tutorials section under the [tutorials](tutorials/README.md) folder.
 
+#### General
+
 - [Jobs With Custom Exit Code](tutorials/jobs-custom-exit-code.md)
 - [Jobs Emit Custom Metrics](custom_metrics/README.md) :wrench:
 - [Jobs Monitoring Dashboard](job_monitor/README.md) :mag:
+
+#### Model Training
+
+- [Jobs Model Training With Early Stopping Metrics](tutorials/model-training-early-stopping-by-metrics.md)
