@@ -13,7 +13,7 @@ Sometimes it might be useful to return a special exit code with the job, a code 
 
 ## Examples
 
-<span style="background:lightblue; padding:5px; border-radius:7px">`Python` Custom Exit Code Sample</span>
+:large_orange_diamond: <span style="background:lightblue; padding:5px; border-radius:7px">`Python` Custom Exit Code Sample</span>
 
 ```python
 import sys
@@ -24,7 +24,7 @@ print("Going to exit with 64 :D")
 sys.exit(64)
 ```
 
-<span style="background:lightblue; padding:5px; border-radius:7px">`Python` Custom Exit Code with Environment Variables</span>
+:large_orange_diamond: <span style="background:lightblue; padding:5px; border-radius:7px">`Python` Custom Exit Code with Environment Variables</span>
 
 ```python
 import os, sys
@@ -45,7 +45,7 @@ else:
     print("Job Done.")
 ```
 
-<span style="background:lightblue; padding:5px; border-radius:7px">`Shell` Script With Custom Exit Code</span>
+:large_orange_diamond: <span style="background:lightblue; padding:5px; border-radius:7px">`Shell` Script With Custom Exit Code</span>
 
 ```bash
 #!/bin/bash
@@ -61,7 +61,7 @@ else
 fi
 ```
 
-<span style="background:orange; padding:5px; border-radius:7px"> `Notice` that if you execute a code with shell script, you have to catch the exit code and raised it up, otherwise the JobRun end showing successful run.</span>
+:heavy_exclamation_mark: <span style="background:orange; padding:5px; border-radius:7px"> `Notice` that if you execute a code with shell script, you have to catch the exit code and raised it up, otherwise the JobRun end showing successful run.</span>
 
 ```bash
 #!/bin/bash
@@ -73,7 +73,7 @@ echo $exit_status
 exit $exit_status
 ```
 
-<span style="background:lightblue; padding:5px; border-radius:7px">`BYOC` Jobs</span>
+:large_orange_diamond: <span style="background:lightblue; padding:5px; border-radius:7px">`BYOC` Jobs</span>
 
 Custom exit codes works also with BYOC, example Dockerfile:
 
