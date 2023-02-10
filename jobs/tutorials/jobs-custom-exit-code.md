@@ -2,18 +2,18 @@
 
 Sometimes it might be useful to return a special exit code with the job, a code that the customer can specify, depending on internal error. Jobs now enables to exit with the job code with customer specified exit code that will appear in the lifecycle detail, example:
 
-`IMAGE`
+![job with custom exit code in OCI console](images/job-exit-code.png)
 
 ## Requirements
 
 - the exit code has to be from type Number
 - the exit code has to be a Number between 1-255
 
-<div style="background:lightgreen; padding:5px; border-radius:7px"> This feature works with `Python Code` and/or `Shell Scripts` as well as `BYOC` (Bring Your Own Container) Jobs! </div>
+<span style="background:lightgreen; padding:5px; border-radius:7px"> :bulb: This feature works with `Python Code` and/or `Shell Scripts` as well as `BYOC` (Bring Your Own Container) Jobs! </span>
 
 ## Examples
 
-<div style="background:lightblue; padding:5px; border-radius:7px">`Python` Custom Exit Code Sample</div>
+:large_orange_diamond: <span style="background:lightblue; padding:5px; border-radius:7px">`Python` Custom Exit Code Sample</span>
 
 ```python
 import sys
