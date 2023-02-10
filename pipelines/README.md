@@ -14,20 +14,49 @@ Using pipelines, you can:
 - Execute the pipeline, set parameters for each run.
 - Monitor the execution of the pipeline and review logs outputted from the steps
 
-Product documentation can be found [here](https://docs.oracle.com/iaas/data-science/using/pipelines-about.htm).
+Pipelines enables the ability to orchestrage OCI Data Science Jobs, for example:
 
-**NOTE**: You need ADS (Accelerated Data Science) SDK version 2.8 or above to use pipelines.
+```mermaid
+graph TB
+    subgraph pipeline v3
+    ops1-->ops2
+    ops1-->ops3
+    ops2-->ops4
+    ops3-->ops4
+    ops4-->ops5
+    end
+
+    subgraph pipeline v2
+    step1-->step2
+    step1-->step3
+    step1-->step4
+    step2-->step5
+    step3-->step5
+    step4-->step5
+    end
+    
+    subgraph pipeline v1
+    job1-->job2;
+    job2-->job3;
+    end
+```
+
+:bulb: Product documentation can be found [here](https://docs.oracle.com/iaas/data-science/using/pipelines-about.htm).
+
+**NOTE**: You `need ADS` [(Accelerated Data Science) SDK](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/pipeline/overview.html) `version 2.8` or above to use pipelines.
 
 To check ADS version in your environment, open a termial window and run the command: ```pip show oracle-ads```
 
 To update ADS version in your environment, open a terminal window and run the command: ```pip install oracle-ads --upgrade```
 
-## Available Samples 
+## Available Samples
 
 ### Simple pipeline with data sharing between steps
+
 [simple pipeline](./samples/simple)
 This is a very simple sample with 3 consecutive steps, each passes data to the next step for additional processing.
 
 ### Employee attrition sample
+
 [employee attrition](./samples/employee-attrition)
 This is a full featured pipeline, with data processing, parallel training of models, evaluating the models and deploying the best one into a real time Model Deployment.
