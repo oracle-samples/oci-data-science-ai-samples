@@ -14,7 +14,7 @@ Using pipelines, you can:
 - Execute the pipeline, set parameters for each run.
 - Monitor the execution of the pipeline and review logs outputted from the steps
 
-Pipelines enables the ability to orchestrage OCI Data Science Jobs, for example:
+Pipelines also enables the ability to orchestrate OCI Data Science Jobs, for example:
 
 ```mermaid
 graph TB
@@ -43,7 +43,7 @@ graph TB
 
 :bulb: Product documentation can be found [here](https://docs.oracle.com/iaas/data-science/using/pipelines-about.htm).
 
-**NOTE**: You `need ADS` [(Accelerated Data Science) SDK](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/pipeline/overview.html) `version 2.8` or above to use pipelines.
+**NOTE**: You need `ADS` [(Accelerated Data Science) SDK](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/pipeline/overview.html) `version 2.8` or above to use pipelines.
 
 To check ADS version in your environment, open a termial window and run the command: ```pip show oracle-ads```
 
