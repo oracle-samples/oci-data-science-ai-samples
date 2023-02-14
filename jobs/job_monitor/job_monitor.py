@@ -400,6 +400,7 @@ def load_yaml_list(uri):
             yaml_files.append({
                 "filename": filename
             })
+    yaml_files.sort(key=lambda x: x.get("filename"))
     return {
         "yaml": yaml_files
     }
