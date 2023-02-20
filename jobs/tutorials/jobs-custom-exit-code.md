@@ -2,7 +2,7 @@
 
 Sometimes it might be useful to return a special exit code with the job, a code that the customer can specify, depending on internal error. Jobs now enables to exit with the job code with customer specified exit code that will appear in the lifecycle detail, example:
 
-![job with custom exit code in OCI console](images/job-exit-code.png)
+![job with custom exit code in OCI console](assets/images/job-exit-code.png)
 
 ## Requirements
 

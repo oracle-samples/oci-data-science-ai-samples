@@ -195,11 +195,13 @@ curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o Mi
 
 - Run the installer
 
+Depending on your host system, get the one that much:
+
 ```bash
 bash Miniconda3-latest-<Linux|MacOSX>-<x86_64|arm64>.sh
 ```
 
-You may need to restart your terminal or `source ~/.bashrc` or `~/.zshrc` to enable the conda command. Use `conda -V` to test if it is installed successfully.
+You may need to restart your terminal or run `source ~/.bashrc` or `~/.zshrc` to enable the conda command. Use `conda -V` to test if it is installed successfully.
 
 - Create new conda
 
