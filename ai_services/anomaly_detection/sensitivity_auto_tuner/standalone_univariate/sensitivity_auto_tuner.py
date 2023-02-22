@@ -138,7 +138,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Setting up AnomalyDetectionClient
-    config = oci.config.from_file("~/.oci/config")
+    config = oci.config.from_file(args.config_path)
     ad_client = AnomalyDetectionClient(config)
 
     # Read input dataset into DataFrame
