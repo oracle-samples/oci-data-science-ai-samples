@@ -1,6 +1,8 @@
 ## Sensitivity Auto Tuning based on Labeled Data
 
-Anomaly Detection Univariate Inference Workflow API provides a sensitivity parameter to move the decision boundary based on which we classify whether a timestamp is an anomaly. In other words, it is a parameter to tradeoff between False Alarm Probability and Missed Alarm Probability.
+Anomaly Detection Univariate Inference Workflow API provides a sensitivity parameter to move the decision boundary based on which we classify whether a timestamp is an anomaly. In other words, it is a parameter to tradeoff between False Positive Rate and True Positive Rate.
+Other Anomaly Detection Service features also offer the sensitivity parameter and this solution can be extended to those features as well.
+
 
 ### Problem Statement:
 
@@ -34,7 +36,7 @@ The script supports following params:
   
 |  Parameter   |  Description   | Default Value |
 |-----|-----|---------------|
-|  \--dataset\_path|  Path to the labeled dataset  | ~/            |
+|  \--dataset\_path|  Path to the labeled dataset  | ~/input.csv            |
 | \--des\_tpr    |  Desired True Positive Rate   |        0.80      |
 |  \--des\_fpr   |   Desired False Positive Rate  |         0.15     |
 | \--window\_size    |   Window size required for making the inference call |     10          |
