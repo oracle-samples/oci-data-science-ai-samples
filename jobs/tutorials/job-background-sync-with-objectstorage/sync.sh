@@ -31,9 +31,7 @@ fi
 
 echo "Auth Method: $auth_method"
 
-# TODO: the error appears in jobs, because the directly is not avaiable, we have to use the BASEDIR probably or another way to construct the path!!!!
-
-# Check if the directory exists and is not empty
+# Check if the directory exists, try to create it if it doesn't
 if [[ -d "$SYNC_DIR" && -n "$(ls -A "$SYNC_DIR")" ]]; then
   echo "Sync Directory: $SYNC_DIR"
 else
@@ -46,7 +44,7 @@ else
   fi
 fi
 
-# regulary check, maybe the folder to sync is created later
+# regulary check, maybe the folder to sync is removed later
 while true; do
   if [[ -d $SYNC_DIR && -n "$(ls -A $SYNC_DIR)" ]]; then
     echo "Directory and data present, syncing..."
