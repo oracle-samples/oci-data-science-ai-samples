@@ -117,4 +117,9 @@ NAME=MyName
 -f hello.py -- -g Hey 
 ```
 
+Job Run Console Example
 ![jobrun subprocess with cmd example](../assets/images/jobrun-subprocess-with-cmd.png)
+
+In the Job Run logs you should see something like:
+
+![jobrun subprocess with cmd logs example](../assets/images/jobrun-subprocess-with-cmd-logs.png)
