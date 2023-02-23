@@ -11,22 +11,19 @@ import com.oracle.bmc.ailanguage.responses.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
-    private static String compartmentId = "<Specify your COMPARTMENT_ID here>";
-    private static String modelName = "ailangaugemodel";
-    private static String bucket_name = "<Specify name of your training data bucket here>";
-    private static String namespace_name = "<Specify the namespace here>";
-    private static String object_name = "<Specify training file name here>";
-    private static String projectId;
-    private static String nerModelId;
-    private static String txtcModelId;
-    private static String nerEndpointId;
-    private static String txtcEndpointId;
-    private static String entext = "The Indy Autonomous Challenge is the worlds first head-to-head, high speed autonomous race taking place at the Indianapolis Motor Speedway";
-    private static String spanishText = "Este es un texto en el idioma de mi madre, la mejor mamá del mundo.";
-    String languageCode = "en";  // for english
+    private static final String compartmentId = "<Specify your COMPARTMENT_ID here>";
+
+    private static final String text = "Zoom interface is really simple and easy to use. The learning curve is very short thanks to the interface. It is very easy to share the Zoom link to join the video conference. Screen sharing quality is just ok. Zoom now claims to have 300 million meeting participants per day. It chose Oracle Corporation co-founded by Larry Ellison and headquartered in Redwood Shores , for its cloud infrastructure deployments over the likes of Amazon, Microsoft, Google, and even IBM to build an enterprise grade experience for its product. The security feature is significantly lacking as it allows people to zoom bomb";
+    private static final String spanishText = "Este es un texto en el idioma de mi madre, la mejor mamá del mundo.";
+    private static final String languageCode = "en";  // for english
+    private static final String sourceTextForTranslation = "El idioma español es muy facil de aprender.";
+    private static final String sourceLanguageCode = "es";
+    private static final String targetLanguageCode = "en";
 
     private static AIServiceLanguageClient client;
 
@@ -42,207 +39,280 @@ public class Main {
             /* Step 2: Create a service client */
             client = AIServiceLanguageClient.builder().build(provider);
 
-            /*Sample of single record API */
-            DetectDominantLanguageDetails detectdominantLanguageDetails =
-                    DetectDominantLanguageDetails.builder()
-                    .text("Este es un texto en el idioma de mi madre, la mejor mamá del mundo.").build();
-
-            DetectDominantLanguageRequest detectDominantLanguageRequest = DetectDominantLanguageRequest.builder()
-                    .detectDominantLanguageDetails(detectdominantLanguageDetails)
-                    .opcRequestId("Just-some-unique-id")
-                    .build();
-
-            DetectDominantLanguageResponse response = client.
-                    detectDominantLanguage(detectDominantLanguageRequest);
-
-            System.out.println("Detected language: " +
-                            response.getDetectDominantLanguageResult().getLanguages().get(0).getName());
-
-
-            /*Sample using more efficient batch APIs */
-            BatchLanguageTranslationDetails batchLanguageTranslationDetails = BatchLanguageTranslationDetails.builder()
-                    .targetLanguageCode("en")
-                    .documents(new ArrayList<>(Arrays.asList(TextDocument.builder()
-                            .key("key1")
-                            .text(spanishText)
-                            .languageCode("es").build()))).build();
-
-            BatchLanguageTranslationRequest batchLanguageTranslationRequest = BatchLanguageTranslationRequest.builder()
-                    .batchLanguageTranslationDetails(batchLanguageTranslationDetails)
-                    .opcRequestId("EMFIG6AAEBVTRXALWQTC<unique_ID>").build();
-
-            /* Send request to the Client */
-            BatchLanguageTranslationResponse response1 = client.batchLanguageTranslation(batchLanguageTranslationRequest);
-            System.out.println("Translation: " + response1.getBatchLanguageTranslationResult().getDocuments().get(0).getTranslatedText());
-
-           // ------------------------------------------------------------------------------------------
-
-            /* Custom Models */
-            /* Create an object */
             Main aiServiceLanguageExample = new Main();
 
-            // Create AiLanguageProject
-            Project languageProject = aiServiceLanguageExample.createLanguageProject();
-            projectId = languageProject.getId();
-            System.out.println(languageProject.toString());
+            /* Single Documents APIs */
+            DetectLanguageSentimentsResult sentimentsResult = aiServiceLanguageExample.getLanguageSentiments(text);
+            DetectLanguageEntitiesResult entitiesResult = aiServiceLanguageExample.getLanguageEntities(text);
+            DetectDominantLanguageResult dominantLanguageResult = aiServiceLanguageExample.getDominantLanguage(text);
+            DetectLanguageKeyPhrasesResult keyPhrasesResult = aiServiceLanguageExample.getLanguageKeyPhrases(text);
+            DetectLanguageTextClassificationResult textClassificationResult = aiServiceLanguageExample.getLanguageTextClassification(text);
 
-            // wait till project state becomes ACTIVE
-            while (languageProject.getLifecycleState() == Project.LifecycleState.Creating){
-                System.out.println("Waiting for project creation to complete...");
-                Thread.sleep(4000);
-                languageProject = aiServiceLanguageExample.getLanguageProject(projectId);
-            }
-            languageProject = aiServiceLanguageExample.getLanguageProject(projectId);
-            System.out.println("Project status changed to" + languageProject.getLifecycleState());
+            aiServiceLanguageExample.printSentiments(sentimentsResult);
+            aiServiceLanguageExample.printEntities(entitiesResult);
+            aiServiceLanguageExample.printLanguageType(dominantLanguageResult);
+            aiServiceLanguageExample.printKeyPhrases(keyPhrasesResult);
+            aiServiceLanguageExample.printTextClassification(textClassificationResult);
 
-            /* Create and train Custom NER Model */
-            // Create and train Custom NER AilanguageModel
-            Model nerLanguageModel = aiServiceLanguageExample.createLanguageModel();
-            nerModelId =  nerLanguageModel.getId();
-            System.out.println(nerLanguageModel.toString());
+            /* Sample using more efficient Batch APIs */
+            getTranslatedText(sourceTextForTranslation, sourceLanguageCode, targetLanguageCode);
+            BatchDetectLanguageSentimentsResult batchSentimentsResult = aiServiceLanguageExample.getLanguageBatchSentiments(text, languageCode);
+            BatchDetectLanguageEntitiesResult batchEntitiesResult = aiServiceLanguageExample.getLanguageBatchEntities(text, languageCode);
+            BatchDetectDominantLanguageResult batchDominantLanguageResult = aiServiceLanguageExample.getBatchDominantLanguage(text);
+            BatchDetectLanguageKeyPhrasesResult batchKeyPhrasesResult = aiServiceLanguageExample.getLanguageBatchKeyPhrases(text, languageCode);
+            BatchDetectLanguageTextClassificationResult batchTextClassificationResult = aiServiceLanguageExample.getLanguageBatchTextClassification(text, languageCode);
 
-            // wait till model state becomes ACTIVE
-            while (nerLanguageModel.getLifecycleState() == Model.LifecycleState.Creating){
-                System.out.println("Waiting for model training to complete...");
-                Thread.sleep(60000);
-                nerLanguageModel = aiServiceLanguageExample.getLanguageModel(nerModelId);
-            }
-            nerLanguageModel = aiServiceLanguageExample.getLanguageModel(nerModelId);
-            System.out.println("Model status changed to" + nerLanguageModel.getLifecycleState());
-
-            System.out.println("Printing model evaluation results");
-            System.out.println(nerLanguageModel.getEvaluationResults());
-
-            // Create AiLanguageEndpoint
-            Endpoint nerLanguageEndpoint = aiServiceLanguageExample.createLanguageEndpoint(nerModelId);
-            nerEndpointId = nerLanguageEndpoint.getId();
-            System.out.println(nerLanguageEndpoint.toString());
-
-            // wait till endpoint state becomes ACTIVE
-            while (nerLanguageEndpoint.getLifecycleState() == Endpoint.LifecycleState.Creating){
-                System.out.println("Waiting for endpoint creation to complete...");
-                Thread.sleep(60000);
-                nerLanguageEndpoint = aiServiceLanguageExample.getLanguageEndpoint(nerEndpointId);
-            }
-            nerLanguageEndpoint = aiServiceLanguageExample.getLanguageEndpoint(nerEndpointId);
-            System.out.println("Endpoint status changed to" + nerLanguageEndpoint.getLifecycleState());
-
-            // Inferencing on Custom Named Entity recognition model
-            String customDetectLanguageEntitiesResponse = aiServiceLanguageExample.getBatchDetectLanguageEntities(entext);
-            System.out.println(customDetectLanguageEntitiesResponse.toString());
-
-            /* Create and train Custom Text classification Model */
-
-            // Create and train Custom Text classification AilanguageModel
-            Model txtcLanguageModel = aiServiceLanguageExample.createLanguageModel();
-            txtcModelId =  txtcLanguageModel.getId();
-            System.out.println(txtcLanguageModel.toString());
-
-            // wait till model state becomes ACTIVE
-            while (txtcLanguageModel.getLifecycleState() == Model.LifecycleState.Creating){
-                System.out.println("Waiting for model training to complete...");
-                Thread.sleep(60000);
-                txtcLanguageModel = aiServiceLanguageExample.getLanguageModel(txtcModelId);
-            }
-            txtcLanguageModel = aiServiceLanguageExample.getLanguageModel(txtcModelId);
-            System.out.println("Model status changed to" + txtcLanguageModel.getLifecycleState());
-
-
-            // Create AiLanguageEndpoint
-            Endpoint txtcLanguageEndpoint = aiServiceLanguageExample.createLanguageEndpoint(txtcModelId);
-            txtcEndpointId = txtcLanguageEndpoint.getId();
-            System.out.println(txtcLanguageEndpoint.toString());
-
-            // wait till endpoint state becomes ACTIVE
-            while (txtcLanguageEndpoint.getLifecycleState() == Endpoint.LifecycleState.Creating){
-                System.out.println("Waiting for endpoint creation to complete...");
-                Thread.sleep(60000);
-                txtcLanguageEndpoint = aiServiceLanguageExample.getLanguageEndpoint(nerEndpointId);
-            }
-            txtcLanguageEndpoint = aiServiceLanguageExample.getLanguageEndpoint(nerEndpointId);
-            System.out.println("Endpoint status changed to" + txtcLanguageEndpoint.getLifecycleState());
-
-            // Inferencing on Custom Text classification model
-            String customDetectLanguageTextClassificationResponse = aiServiceLanguageExample.getBatchDetectLanguageTextClassification(entext);
-            System.out.println(customDetectLanguageTextClassificationResponse.toString());
+            aiServiceLanguageExample.printBatchSentiments(batchSentimentsResult);
+            aiServiceLanguageExample.printBatchEntities(batchEntitiesResult);
+            aiServiceLanguageExample.printBatchLanguageType(batchDominantLanguageResult);
+            aiServiceLanguageExample.printBatchKPE(batchKeyPhrasesResult);
+            aiServiceLanguageExample.printBatchTextClass(batchTextClassificationResult);
 
             client.close();
 
         }
-        catch(IOException | InterruptedException e) {
+        catch(IOException e) {
             e.printStackTrace();
         }
     }
 
-    // Create AiLanguageProject
-    private Project createLanguageProject() {
-        CreateProjectDetails projectDetails = CreateProjectDetails.builder().compartmentId(compartmentId).build();
-        CreateProjectRequest request = CreateProjectRequest.builder().createProjectDetails(projectDetails).build();
-        CreateProjectResponse response = client.createProject(request);
-        return response.getProject();
+    private BatchDetectLanguageSentimentsResult getLanguageBatchSentiments(String text, String languageCode) {
+        TextDocument sentimentsDocument = TextDocument.builder().key("doc1").text(text).languageCode(languageCode).build();
+        java.util.List<TextDocument> documents = Arrays.asList(sentimentsDocument);
+        BatchDetectLanguageSentimentsDetails sentimentsDetails = BatchDetectLanguageSentimentsDetails
+                .builder()
+                .documents(documents)
+                .build();
+        BatchDetectLanguageSentimentsRequest request = BatchDetectLanguageSentimentsRequest
+                .builder()
+                .batchDetectLanguageSentimentsDetails(sentimentsDetails)
+                .build();
+        BatchDetectLanguageSentimentsResponse response = client.batchDetectLanguageSentiments(request);
+        return response.getBatchDetectLanguageSentimentsResult();
     }
 
-    // Get AiLanguageProject
-    private Project getLanguageProject(String projectOcid) {
-        GetProjectRequest request = GetProjectRequest.builder().projectId(projectOcid).build();
-        GetProjectResponse response = client.getProject(request);
-        return response.getProject();
+    private BatchDetectLanguageKeyPhrasesResult getLanguageBatchKeyPhrases(String text, String languageCode) {
+        TextDocument keyPhraseDocument = TextDocument.builder().key("doc1").text(text).languageCode(languageCode).build();
+        java.util.List<TextDocument> documents = Arrays.asList(keyPhraseDocument);
+        BatchDetectLanguageKeyPhrasesDetails keyPhrasesDetails = BatchDetectLanguageKeyPhrasesDetails.builder().documents(documents).build();
+        BatchDetectLanguageKeyPhrasesRequest request = BatchDetectLanguageKeyPhrasesRequest.builder().batchDetectLanguageKeyPhrasesDetails(keyPhrasesDetails).build();
+        BatchDetectLanguageKeyPhrasesResponse response = client.batchDetectLanguageKeyPhrases(request);
+        return response.getBatchDetectLanguageKeyPhrasesResult();
     }
 
-    // Create AiLanguageModel
-    private Model createLanguageModel() {
-        ModelDetails modeldtls = NamedEntityRecognitionModelDetails.builder().languageCode("en").build();
-        java.util.List<String> trainingDataobjects = Arrays.asList(object_name);
-        LocationDetails locationDetails = ObjectListDataset.builder().bucketName(bucket_name).namespaceName(namespace_name).objectNames(trainingDataobjects).build();
-        DatasetDetails trainingDataset = ObjectStorageDataset.builder().locationDetails(locationDetails).build();
-
-        CreateModelDetails modelDetails = CreateModelDetails.builder()
-                .compartmentId(compartmentId).displayName(modelName).projectId(projectId)
-                .modelDetails(modeldtls).trainingDataset(trainingDataset).build();
-        CreateModelRequest request = CreateModelRequest.builder().createModelDetails(modelDetails).build();
-        CreateModelResponse response = client.createModel(request);
-        return response.getModel();
-    }
-
-    // Get AiLanguageModel
-    private Model getLanguageModel(String modelOcid) {
-        GetModelRequest request = GetModelRequest.builder().modelId(modelOcid).build();
-        GetModelResponse response = client.getModel(request);
-        return response.getModel();
-    }
-
-    // Create AiLanguageEndpoint
-    private Endpoint createLanguageEndpoint(String modelId) {
-        CreateEndpointDetails endpointDetails = CreateEndpointDetails.builder().compartmentId(compartmentId).modelId(modelId).inferenceUnits(1).build();
-        CreateEndpointRequest request = CreateEndpointRequest.builder().createEndpointDetails(endpointDetails).build();
-        CreateEndpointResponse response = client.createEndpoint(request);
-        return response.getEndpoint();
-    }
-
-    // Get AiLanguageEndpoint
-    private Endpoint getLanguageEndpoint(String endpointOcid) {
-        GetEndpointRequest request = GetEndpointRequest.builder().endpointId(endpointOcid).build();
-        GetEndpointResponse response = client.getEndpoint(request);
-        return response.getEndpoint();
-    }
-
-    // Custom Named Entity Recognition
-    private String getBatchDetectLanguageEntities(String text) {
-        TextDocument textDocument = TextDocument.builder().text(text).languageCode("en").key("key1").build();
-        java.util.List<TextDocument> documents = Arrays.asList(textDocument);
-        BatchDetectLanguageEntitiesDetails details = BatchDetectLanguageEntitiesDetails.builder().endpointId(nerEndpointId).documents(documents).build();
-        BatchDetectLanguageEntitiesRequest request = BatchDetectLanguageEntitiesRequest.builder().batchDetectLanguageEntitiesDetails(details).build();
-        BatchDetectLanguageEntitiesResponse response = client.batchDetectLanguageEntities(request);
-        return response.toString();
-    }
-
-    // Custom Text Classification
-    private String getBatchDetectLanguageTextClassification(String text) {
-        TextDocument textDocument = TextDocument.builder().text(text).languageCode("en").key("key1").build();
-        java.util.List<TextDocument> documents = Arrays.asList(textDocument);
-        BatchDetectLanguageTextClassificationDetails details = BatchDetectLanguageTextClassificationDetails.builder().endpointId(txtcEndpointId).documents(documents).build();
-        BatchDetectLanguageTextClassificationRequest request = BatchDetectLanguageTextClassificationRequest.builder().batchDetectLanguageTextClassificationDetails(details).build();
+    private BatchDetectLanguageTextClassificationResult getLanguageBatchTextClassification(String text, String languageCode) {
+        TextDocument textClassificationDocument = TextDocument.builder().key("doc1").text(text).languageCode(languageCode).build();
+        java.util.List<TextDocument> documents = Arrays.asList(textClassificationDocument);
+        BatchDetectLanguageTextClassificationDetails textClassificationDetails = BatchDetectLanguageTextClassificationDetails.builder().documents(documents).build();
+        BatchDetectLanguageTextClassificationRequest request = BatchDetectLanguageTextClassificationRequest.builder().batchDetectLanguageTextClassificationDetails(textClassificationDetails).build();
         BatchDetectLanguageTextClassificationResponse response = client.batchDetectLanguageTextClassification(request);
-        return response.toString();
+        return response.getBatchDetectLanguageTextClassificationResult();
+    }
+
+    private BatchDetectLanguageEntitiesResult getLanguageBatchEntities(String text, String languageCode) {
+        TextDocument entityDocument = TextDocument.builder().key("doc1").text(text).languageCode(languageCode).build();
+        java.util.List<TextDocument> documents = Arrays.asList(entityDocument);
+        BatchDetectLanguageEntitiesDetails entitiesDetails = BatchDetectLanguageEntitiesDetails.builder().documents(documents).build();
+        BatchDetectLanguageEntitiesRequest request = BatchDetectLanguageEntitiesRequest.builder().batchDetectLanguageEntitiesDetails(entitiesDetails).build();
+        BatchDetectLanguageEntitiesResponse response = client.batchDetectLanguageEntities(request);
+        return response.getBatchDetectLanguageEntitiesResult();
+    }
+
+    private BatchDetectDominantLanguageResult getBatchDominantLanguage(String text) {
+        DominantLanguageDocument dominantLanguageDocument = DominantLanguageDocument.builder().key("doc1").text(text).build();
+        java.util.List<DominantLanguageDocument> documents = Arrays.asList(dominantLanguageDocument);
+        BatchDetectDominantLanguageDetails dominantLanguageDetails = BatchDetectDominantLanguageDetails.builder().documents(documents).build();
+        BatchDetectDominantLanguageRequest request = BatchDetectDominantLanguageRequest.builder().batchDetectDominantLanguageDetails(dominantLanguageDetails).build();
+        BatchDetectDominantLanguageResponse response = client.batchDetectDominantLanguage(request);
+        return response.getBatchDetectDominantLanguageResult();
+    }
+
+    private DetectLanguageSentimentsResult getLanguageSentiments(String text) {
+        DetectLanguageSentimentsDetails sentimentsDetails = DetectLanguageSentimentsDetails.builder().text(text).build();
+        DetectLanguageSentimentsRequest request = DetectLanguageSentimentsRequest.builder().detectLanguageSentimentsDetails(sentimentsDetails).build();
+        DetectLanguageSentimentsResponse response = client.detectLanguageSentiments(request);
+        return response.getDetectLanguageSentimentsResult();
+    }
+
+    private DetectLanguageEntitiesResult getLanguageEntities(String text) {
+        DetectLanguageEntitiesDetails entitiesDetails = DetectLanguageEntitiesDetails.builder().text(text).build();
+        DetectLanguageEntitiesRequest request = DetectLanguageEntitiesRequest.builder().detectLanguageEntitiesDetails(entitiesDetails).build();
+        DetectLanguageEntitiesResponse response = client.detectLanguageEntities(request);
+        return response.getDetectLanguageEntitiesResult();
+    }
+
+    private DetectDominantLanguageResult getDominantLanguage(String text) {
+        DetectDominantLanguageDetails languageDetails = DetectDominantLanguageDetails.builder().text(text).build();
+        DetectDominantLanguageRequest request = DetectDominantLanguageRequest.builder().detectDominantLanguageDetails(languageDetails).build();
+        DetectDominantLanguageResponse response = client.detectDominantLanguage(request);
+        return response.getDetectDominantLanguageResult();
+    }
+
+    private DetectLanguageKeyPhrasesResult getLanguageKeyPhrases(String text) {
+        DetectLanguageKeyPhrasesDetails keyPhrasesDetails = DetectLanguageKeyPhrasesDetails.builder().text(text).build();
+        DetectLanguageKeyPhrasesRequest request = DetectLanguageKeyPhrasesRequest.builder().detectLanguageKeyPhrasesDetails(keyPhrasesDetails).build();
+        DetectLanguageKeyPhrasesResponse response = client.detectLanguageKeyPhrases(request);
+        return response.getDetectLanguageKeyPhrasesResult();
+    }
+
+    private DetectLanguageTextClassificationResult getLanguageTextClassification(String text) {
+        DetectLanguageTextClassificationDetails textClassificationDetails = DetectLanguageTextClassificationDetails.builder().text(text).build();
+        DetectLanguageTextClassificationRequest request = DetectLanguageTextClassificationRequest.builder().detectLanguageTextClassificationDetails(textClassificationDetails).build();
+        DetectLanguageTextClassificationResponse response = client.detectLanguageTextClassification(request);
+        return response.getDetectLanguageTextClassificationResult();
+    }
+
+    private static void getTranslatedText(String text, String sourceLanguageCoce, String targetLanguageCode) {
+        BatchLanguageTranslationDetails batchLanguageTranslationDetails = BatchLanguageTranslationDetails.builder()
+                .targetLanguageCode(targetLanguageCode)
+                .documents(new ArrayList<>(Arrays.asList(TextDocument.builder()
+                        .key("key1")
+                        .text(text)
+                        .languageCode(sourceLanguageCoce).build()))).build();
+
+        BatchLanguageTranslationRequest batchLanguageTranslationRequest = BatchLanguageTranslationRequest.builder()
+                .batchLanguageTranslationDetails(batchLanguageTranslationDetails)
+                .opcRequestId("EMFIG6AAEBVTRXALWQTC<unique_ID>").build();
+
+        BatchLanguageTranslationResponse response1 = client.batchLanguageTranslation(batchLanguageTranslationRequest);
+        System.out.println("Translation: " + response1.getBatchLanguageTranslationResult().getDocuments().get(0).getTranslatedText());
+    }
+
+    private void printBatchSentiments(BatchDetectLanguageSentimentsResult result) {
+        if (result.getDocuments() != null && result.getDocuments().size() > 0) {
+            SentimentDocumentResult documentResult = result.getDocuments().get(0);
+            List<SentimentAspect> aspects = documentResult.getAspects();
+            String printFormat = "%s [%s - %s]";
+            System.out.println();
+            System.out.println("========= Language Batch Aspect Based Sentiment ========");
+            aspects.forEach(aspect -> System.out.println(String.format(printFormat, aspect.getText(), aspect.getSentiment(), aspect.getScores())));
+            System.out.println("========= End ========");
+            System.out.println();
+        }
+
+        if (result.getErrors() != null && result.getErrors().size() > 0) {
+            System.out.println("========= Language Batch Aspect Based Sentiment Error========");
+            System.out.println(result.getErrors().get(0).getError().getMessage());
+            System.out.println("========= End ========");
+        }
+    }
+
+    private void printBatchEntities(BatchDetectLanguageEntitiesResult result) {
+        if (result.getDocuments() != null && result.getDocuments().size() > 0) {
+            EntityDocumentResult documentResult = result.getDocuments().get(0);
+            List<HierarchicalEntity> entities = documentResult.getEntities();
+            String printFormat = "%s [%s]";
+            System.out.println("========= Batch Entities ========");
+            entities.forEach(entity -> System.out.println(String.format(printFormat, entity.getText(), entity.getType())));
+            System.out.println("========= End ========");
+            System.out.println();
+        }
+
+        if (result.getErrors() != null && result.getErrors().size() > 0) {
+            System.out.println("========= Language Batch Entity Error========");
+            System.out.println(result.getErrors().get(0).getError().getMessage());
+            System.out.println("========= End ========");
+        }
+    }
+
+    private void printBatchKPE(BatchDetectLanguageKeyPhrasesResult result) {
+        if (result.getDocuments() != null && result.getDocuments().size() > 0) {
+            KeyPhraseDocumentResult documentResult = result.getDocuments().get(0);
+            List<KeyPhrase> keyPhrases = documentResult.getKeyPhrases();
+            System.out.println("========= Language Batch Key Phrases ========");
+            List<String> keyPhrasesStr = keyPhrases.stream().map(keyPhrase -> keyPhrase.getText()+ " ("+keyPhrase.getScore()+")").collect(Collectors.toList());
+            System.out.println(String.join(",", keyPhrasesStr));
+            System.out.println("========= End ========");
+            System.out.println();
+        }
+
+        if (result.getErrors() != null && result.getErrors().size() > 0) {
+            System.out.println("========= Language Batch Key Phrases Error========");
+            System.out.println(result.getErrors().get(0).getError().getMessage());
+            System.out.println("========= End ========");
+        }
+    }
+
+    private void printBatchTextClass(BatchDetectLanguageTextClassificationResult result) {
+        if (result.getDocuments() != null && result.getDocuments().size() > 0) {
+            TextClassificationDocumentResult documentResult = result.getDocuments().get(0);
+            List<TextClassification> textClassifications = documentResult.getTextClassification();
+            String printFormat = "%s (%s)";
+            System.out.println("========= Language Batch Text Classification ========");
+            textClassifications.forEach(textClassification -> System.out.println(String.format(printFormat, textClassification.getLabel(), textClassification.getScore())));
+            System.out.println("========= End ========");
+            System.out.println();
+        }
+
+        if (result.getErrors() != null && result.getErrors().size() > 0) {
+            System.out.println("========= Language Batch Text Classification Error========");
+            System.out.println(result.getErrors().get(0).getError().getMessage());
+            System.out.println("========= End ========");
+        }
+    }
+
+    private void printBatchLanguageType(BatchDetectDominantLanguageResult result) {
+        if (result.getDocuments() != null && result.getDocuments().size() > 0) {
+            DominantLanguageDocumentResult documentResult = result.getDocuments().get(0);
+            List<DetectedLanguage> languages = documentResult.getLanguages();
+            System.out.println("========= Batch Dominant Language ========");
+            List<String> languagesStr = languages.stream().map(language -> language.getName()+ " ("+language.getScore()+")").collect(Collectors.toList());
+            System.out.println(String.join(",", languagesStr));
+            System.out.println("========= End ========");
+            System.out.println();
+        }
+
+        if (result.getErrors() != null && result.getErrors().size() > 0) {
+            System.out.println("========= Batch Dominant Language Error========");
+            System.out.println(result.getErrors().get(0).getError().getMessage());
+            System.out.println("========= End ========");
+        }
+    }
+
+    private void printSentiments(DetectLanguageSentimentsResult result) {
+        List<SentimentAspect> aspects = result.getAspects();
+        String printFormat = "%s [%s - %s]";
+
+        System.out.println();
+        System.out.println("========= Language Aspect Based Sentiment ========");
+        aspects.forEach(aspect -> System.out.println(String.format(printFormat, aspect.getText(), aspect.getSentiment(), aspect.getScores())));
+        System.out.println("========= End ========");
+        System.out.println();
+    }
+
+    private void printEntities(DetectLanguageEntitiesResult result) {
+        List<Entity> entities = result.getEntities();
+        String printFormat = "%s [%s]";
+        System.out.println("========= Entities ========");
+        entities.forEach(entity -> System.out.println(String.format(printFormat, entity.getText(), entity.getType())));
+        System.out.println("========= End ========");
+        System.out.println();
+    }
+
+    private void printLanguageType(DetectDominantLanguageResult result) {
+        System.out.println("========= Dominant Language ========");
+        List<DetectedLanguage> languages = result.getLanguages();
+        List<String> languagesStr = languages.stream().map(language -> language.getName()+ " ("+language.getScore()+")").collect(Collectors.toList());
+        System.out.println(String.join(",", languagesStr));
+        System.out.println("========= End ========");
+        System.out.println();
+    }
+
+    private void printKeyPhrases(DetectLanguageKeyPhrasesResult result) {
+        List<KeyPhrase> keyPhrases = result.getKeyPhrases();
+        System.out.println("========= Language Key Phrases ========");
+        List<String> keyPhrasesStr = keyPhrases.stream().map(keyPhrase -> keyPhrase.getText()+ " ("+keyPhrase.getScore()+")").collect(Collectors.toList());
+        System.out.println(String.join(",", keyPhrasesStr));
+        System.out.println("========= End ========");
+        System.out.println();
+    }
+
+    private void printTextClassification(DetectLanguageTextClassificationResult result) {
+        List<TextClassification> textClassifications = result.getTextClassification();
+        String printFormat = "%s (%s)";
+        System.out.println("========= Language Topic Labels & Related Words ========");
+        System.out.println("========= Language Topic Labels ========");
+        textClassifications.forEach(textClassification -> System.out.println(String.format(printFormat, textClassification.getLabel(), textClassification.getScore())));
+        System.out.println("========= End ========");
     }
 }
