@@ -101,7 +101,7 @@ Let's create simple hello world job and run it on Oracle Cloud Infrastructure Da
 Create a file called [hello_world_job.py](python/job%2Bsamples/hello_world_job.py)
 
 ```bash
-import time
+import time, sys
 from pathlib import Path
 
 print("Hello world!")
