@@ -8,8 +8,7 @@ text3 = "OCI ha realizado con éxito la transición de Renault para ejecutar sus
 
 ai_client = oci.ai_language.AIServiceLanguageClient(oci.config.from_file())
 
-compartment_id = "ocid1.tenancy.oc1..aaaaaaaaih4krf4od5g2ym7pffbp6feof3rx64522aoxxvv3iuw3tam6fvea"
-# compartment_id = "<Provice your compartment Id here>"
+compartment_id = "<Provice your compartment Id here>"
 
 language_code = "en"
 
