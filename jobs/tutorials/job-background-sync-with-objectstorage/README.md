@@ -17,7 +17,7 @@ In this example a local folder call `logs/` will be created and a python code wi
 The sample can be tested locally on your machine before you run it as a job.
 
 ### Run local test
- 
+
 Examine the sample code, it includes following files:
 
 ```ini
