@@ -13,7 +13,7 @@ import yaml
 import metric_query
 from ads.common.oci_datascience import OCIDataScienceMixin
 from ads.common.oci_resource import OCIResource
-from ads.jobs import DataScienceJobRun, Job
+from ads.jobs import DataScienceJobRun, Job, DataScienceJob
 from flask import Flask, request, abort, jsonify, render_template, make_response, redirect
 
 
@@ -534,4 +534,17 @@ def get_metrics(name, ocid):
         "metrics": run_metrics,
         "timestamps": timestamps,
         "datasets": datasets
+    })
+
+@app.route("/shapes/<compartment_ocid>")
+def supported_shapes(compartment_ocid):
+    supported_shapes = [
+        shape.name for shape in DataScienceJob.instance_shapes(compartment_id=compartment_ocid)
+    ]
+    fast_launch_shapes = [
+        shape.shape_name for shape in DataScienceJob.fast_launch_shapes(compartment_id=compartment_ocid)
+    ]
+    return jsonify({
+        "supported_shapes": supported_shapes,
+        "fast_launch_shapes": fast_launch_shapes,
     })
