@@ -9,9 +9,7 @@ import com.oracle.bmc.ailanguage.responses.*;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -19,7 +17,9 @@ public class Main {
     private static final String compartmentId = "<Specify your COMPARTMENT_ID here>";
 
     private static final String text = "Zoom interface is really simple and easy to use. The learning curve is very short thanks to the interface. It is very easy to share the Zoom link to join the video conference. Screen sharing quality is just ok. Zoom now claims to have 300 million meeting participants per day. It chose Oracle Corporation co-founded by Larry Ellison and headquartered in Redwood Shores , for its cloud infrastructure deployments over the likes of Amazon, Microsoft, Google, and even IBM to build an enterprise grade experience for its product. The security feature is significantly lacking as it allows people to zoom bomb";
-    private static final String spanishText = "Este es un texto en el idioma de mi madre, la mejor mamá del mundo.";
+    private static final String piiText = "I am reaching out to seek help with my credit card number 1234 5678 9873 2345 expiring on 11/23. There was a suspicious transaction on 12-Aug-2022 which I reported by calling from my mobile number (423) 111-9999 also I emailed from my email id sarah.jones1234@hotmail.com. Would you please let me know the refund status?\n" +
+            "Regards,\n" +
+            "Sarah";
     private static final String languageCode = "en";  // for english
     private static final String sourceTextForTranslation = "El idioma español es muy facil de aprender.";
     private static final String sourceLanguageCode = "es";
@@ -67,6 +67,10 @@ public class Main {
             aiServiceLanguageExample.printBatchLanguageType(batchDominantLanguageResult);
             aiServiceLanguageExample.printBatchKPE(batchKeyPhrasesResult);
             aiServiceLanguageExample.printBatchTextClass(batchTextClassificationResult);
+
+            /* PII */
+            BatchDetectLanguagePiiEntitiesResult result = aiServiceLanguageExample.getPersonalIdentificationInformation(piiText, languageCode);
+            System.out.println("PII Response: " + result);
 
             client.close();
 
@@ -176,6 +180,49 @@ public class Main {
 
         BatchLanguageTranslationResponse response1 = client.batchLanguageTranslation(batchLanguageTranslationRequest);
         System.out.println("Translation: " + response1.getBatchLanguageTranslationResult().getDocuments().get(0).getTranslatedText());
+    }
+
+    private BatchDetectLanguagePiiEntitiesResult getPersonalIdentificationInformation(String text, String languageCode) {
+        TextDocument textDocument = TextDocument.builder()
+                .key("1")
+                .text(text)
+                .languageCode(languageCode)
+                .build();
+
+        // Masking mode is MASK
+        PiiEntityMasking piiEntityMasking = PiiEntityMask
+                .builder()
+                .maskingCharacter("*")
+                .build();
+
+        //Masking mode is REPLACE
+        PiiEntityMasking piiEntityReplace = PiiEntityReplace
+                .builder()
+                .replaceWith("Entity")
+                .build();
+
+        //Masking mode is REMOVE
+        PiiEntityMasking piiEntityRemove = PiiEntityRemove.builder().build();
+
+        Map<String, PiiEntityMasking> masking = new HashMap<>();
+        masking.put("ALL", piiEntityMasking);
+
+        BatchDetectLanguagePiiEntitiesDetails batchDetectLanguagePiiEntitiesDetails = BatchDetectLanguagePiiEntitiesDetails
+                .builder()
+                .compartmentId(compartmentId)
+                .documents(Arrays.asList(textDocument))
+                .masking(masking)
+                .build();
+
+        BatchDetectLanguagePiiEntitiesRequest batchDetectLanguagePiiEntitiesRequest = BatchDetectLanguagePiiEntitiesRequest
+                .builder()
+                .batchDetectLanguagePiiEntitiesDetails(batchDetectLanguagePiiEntitiesDetails)
+                .build();
+
+        BatchDetectLanguagePiiEntitiesResponse batchDetectLanguagePiiEntitiesResponse =
+                client.batchDetectLanguagePiiEntities(batchDetectLanguagePiiEntitiesRequest);
+
+        return batchDetectLanguagePiiEntitiesResponse.getBatchDetectLanguagePiiEntitiesResult();
     }
 
     private void printBatchSentiments(BatchDetectLanguageSentimentsResult result) {
