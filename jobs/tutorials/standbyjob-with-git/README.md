@@ -106,7 +106,7 @@ On Job Run specify:
 
 `JOB_RUN_ENTRYPOINT=listener.sh`
 
-The script takes following env. variables, the with default values, which you can change on Job Run, in case you would like to pull from a different repository.
+The script takes following env. variables, with default values, which you can change on the Job or Job Run creation, in case you would like to pull from a different repository. The default values are:
 
 ```ini
 GIT_REPO=https://github.com/lyudmil-pelov/standbyjob.git
@@ -114,9 +114,9 @@ ENTRYPOINT=test.py
 PULL_INTERVAL=10
 ```
 
-`Notice` that you have to CANCEL the job to exit, this job won't exit alone. You could also setup max runtime!
+Change those environment variables to point to your repository, main file of execution and pull interval.
 
-Change those to point to your repository, main file of execution and pull interval.
+`Notice` that you have to CANCEL the job to exit, this job won't exit alone. You could also setup max runtime!
 
 Monitoring with the `ads opctl watch <job-run-ocid>` should show something like:
 
