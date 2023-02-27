@@ -24,7 +24,7 @@ After successful conda setup and activate, you can run the example directly:
 bash listener.sh
 ```
 
-You should see output similar to this, if you run the code for first time:
+You should see output similar to this, if you run the code for the first time locally:
 
 ```bash
 set default git repo: https://github.com/lyudmil-pelov/standbyjob.git
@@ -32,41 +32,63 @@ set default entrypoint: test.py
 set default pull interval of 10 seconds
 Creating sync directory: /Users/lypelov/development/oci-data-science-ai-samples/jobs/tutorials/standbyjob-with-git/code
 Sync directory created
+check the local directory has the git repository already...
+repository does not exist, clone it!
 Cloning into '/Users/lypelov/development/oci-data-science-ai-samples/jobs/tutorials/standbyjob-with-git/code'...
-remote: Enumerating objects: 26, done.
-remote: Counting objects: 100% (26/26), done.
-remote: Compressing objects: 100% (26/26), done.
-remote: Total 26 (delta 12), reused 0 (delta 0), pack-reused 0
-Receiving objects: 100% (26/26), 6.88 KiB | 6.88 MiB/s, done.
-Resolving deltas: 100% (12/12), done.
+remote: Enumerating objects: 47, done.
+remote: Counting objects: 100% (47/47), done.
+remote: Compressing objects: 100% (47/47), done.
+remote: Total 47 (delta 26), reused 0 (delta 0), pack-reused 0
+Receiving objects: 100% (47/47), 11.10 KiB | 811.00 KiB/s, done.
+Resolving deltas: 100% (26/26), done.
+enter the directory
+/Users/lypelov/development/oci-data-science-ai-samples/jobs/tutorials/standbyjob-with-git/code
+check latest commit...
+f828086f497f5964a4a3a4157635a9f6de4c5add HEAD
+remote repositori has a change
+pull the latest version
+From https://github.com/lyudmil-pelov/standbyjob
+ * branch            HEAD       -> FETCH_HEAD
+Already up to date.
 Starting hello.py
-do something else here ...
+do something else here - modify me v6! ...
 Hello (Job)
 Job Done.
+check latest commit...
+f828086f497f5964a4a3a4157635a9f6de4c5add HEAD
+Already up to date
 ```
 
-After the first run, if you run the script again the output would change, because the code is already checkout the first time:
+After the first run, if you run the script again the output would change, because the code is already locally avai;able:
 
 ```bash
+set default git repo: https://github.com/lyudmil-pelov/standbyjob.git
+set default entrypoint: test.py
+set default pull interval of 10 seconds
 Sync Directory: /Users/lypelov/development/oci-data-science-ai-samples/jobs/tutorials/standbyjob-with-git/code
+check the local directory has the git repository already...
+repository exist!
+enter the directory
+/Users/lypelov/development/oci-data-science-ai-samples/jobs/tutorials/standbyjob-with-git/code
+check latest commit...
+f828086f497f5964a4a3a4157635a9f6de4c5add HEAD
+remote repositori has a change
+pull the latest version
 From https://github.com/lyudmil-pelov/standbyjob
  * branch            HEAD       -> FETCH_HEAD
 Already up to date.
 Starting hello.py
-do something else here ...
+do something else here - modify me v6! ...
 Hello (Job)
 Job Done.
-From https://github.com/lyudmil-pelov/standbyjob
- * branch            HEAD       -> FETCH_HEAD
-Already up to date.
 ```
 
-... after which you will see regular pulls every `PULL_INTERVAL` (default 10s) time in seconds:
+... after which you will see regular pulls every `PULL_INTERVAL` (default 10) time in seconds:
 
 ```bash
-From https://github.com/lyudmil-pelov/standbyjob
- * branch            HEAD       -> FETCH_HEAD
-Already up to date.
+check latest commit...
+f828086f497f5964a4a3a4157635a9f6de4c5add HEAD
+Already up to date
 ```
 
 ### Run as a job
