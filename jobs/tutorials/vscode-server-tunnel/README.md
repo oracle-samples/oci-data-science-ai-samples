@@ -12,7 +12,7 @@ This example requires a container client CLI to build and test your container im
 
 ## Build and Run
 
-You can test this example locally before running as a job.
+You can test this example locally before running it as a job.
 
 ### Build to test run locally
 
@@ -34,7 +34,7 @@ To run it:
 docker run --rm vscode
 ```
 
-This will produce an input similar to
+This will produce an output similar to:
 
 ```bash
 opening code tunnel
@@ -52,9 +52,9 @@ opening code tunnel
 To grant access to the server, please log into https://github.com/login/device and use code XXXX-XXXX
 ```
 
-This requires you to open the link `https://github.com/login/device` login with your GitHub account and use the code `XXXX-XXXX` to verify that you are the user that starts the tunneling.
+This requires you to open the link `https://github.com/login/device`, login with your GitHub account and use the code `XXXX-XXXX` to verify and authorize the tunneling.
 
-Once this is complete, you will in the logs a message similar to
+Once this is complete, following would appear int the logs:
 
 ```bash
 [2023-02-28 12:39:53] info Creating tunnel with the name: nice-seedeater
@@ -62,11 +62,11 @@ Once this is complete, you will in the logs a message similar to
 Open this link in your browser https://vscode.dev/tunnel/nice-seedeater/aiapps
 ```
 
-**Notice** the link would be different for you, you can now copy the link and open it a browser which will open a VSCode editor in the browser and allow you to work directly against your container.
+**Notice** the link would be different for you! Copy the link and open it in your browser. This would load the VSCode Editor and enables to work directly against your container.
 
 ### Build to run as a Job
 
-You are now ready to run the job with the container you've just build and testing.
+To run the job on the OCI Data Science Service
 
 ## OCIR Login
 
@@ -109,9 +109,9 @@ Create a job and use following job environment variable, poiting to the location
 For example:
 `CONTAINER_CUSTOM_IMAGE=iad.ocir.io/datadatascience/byoc:1.0`
 
-**Notice** that you should enable logging for the job to be able to copy the code required to authenticate the tunnel. Additionally you have to use either Default Networking for the job, or in case you specify your own customer private subnet, you have to make sure the NAT for the network is configured, so that your job has access to the Internet.
+**Notice** that logging should be enabled for the job, to reveal the code required to authorize the tunnel. Additionally use either Default Networking or a custom private subnet with configured NAT networking that enables access to the Internet.
 
-:exclamation: Make sure your Jobs have a policy for the Resource Principal allowing to read the Oracle Container Registry from the compartment where the image was stored.****
+:exclamation: Make sure the policy for the Jobs Resource Principal is configured allowing to read from the Oracle Container Registry from the compartment where the image was stored.
 
 > Allow dynamic-group {YOUR-DYNAMIC-GROUP-NAME} to read repos in compartment {YOUR-COMPARTMENT-NAME}
 
@@ -119,4 +119,4 @@ Once the job is up and running, you will notice in the logs, the authentication 
 
 ![vscode tunnel in the oci job](../assets/images/vscde-server-tunnel-job.png)
 
-Copy the link and open it in your browser and you will be inside your job, able to code directly and debug.
+Copy the link and open it in a browser, which should load the VSCode Editor and reveals the code inside the job, enabling direct debugging and coding.
