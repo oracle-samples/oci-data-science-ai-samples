@@ -12,9 +12,9 @@ This example requires a container client CLI to build and test your container im
 
 ## Build and Run
 
-You can test this example locally before running it as a job.
+You can test this example locally to verify it is running, then execute as a job.
 
-### Build to test run locally
+### Build and run locally
 
 Builds the docker image for a quick local run.
 
@@ -64,11 +64,11 @@ Open this link in your browser https://vscode.dev/tunnel/nice-seedeater/aiapps
 
 **Notice** the link would be different for you! Copy the link and open it in your browser. This would load the VSCode Editor and enables to work directly against your container.
 
-### Build to run as a Job
+### Build and run as a Job
 
 To run the job on the OCI Data Science Service
 
-## OCIR Login
+#### OCIR Login
 
 You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before, to been able to push the image. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
 
@@ -78,7 +78,7 @@ docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
 
 If `your tenancy` is **federated** with Oracle Identity Cloud Service, use the format `<tenancy-namespace>/oracleidentitycloudservice/<username>`
 
-## Tag & Push
+#### Tag & Push
 
 Tag the container to the location of the OCIR you wish to push it later. You could also build the container with that tag directly, if you like to save a step.
 
@@ -86,21 +86,21 @@ Tag the container to the location of the OCIR you wish to push it later. You cou
 docker tag <tag>:<version> <region>.ocir.io/<namespace>/<tag>:<version>
 ```
 
-**Replace** the `<region>`, `<namespace>`, `<tag>` and `<version>` with yours.
+**Replace** the `<region>`, `<namespace>`, `<tag>` and `<version>`
 
 Example:
 
 ```bash
-docker tag byoc:latest iad.ocir.io/mytenancy/byoc:1.0
+docker tag vscode:latest iad.ocir.io/mytenancy/vscode:1.0
 ```
 
-Then push the container to the tagged location
+Then push the container
 
 ```bash
-docker push iad.ocir.io/mytenancy/byoc:1.0
+docker push iad.ocir.io/mytenancy/vscode:1.0
 ```
 
-## Run as a JOB
+#### Run as a JOB
 
 Create a job and use following job environment variable, poiting to the location of the container image in your OCIR.
 
