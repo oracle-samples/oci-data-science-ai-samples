@@ -4,7 +4,7 @@ This document provides a walkthrough for deploying an ONNX model into a NVIDIA [
 The sample used here is based on [Triton's ONNX sample](https://github.com/triton-inference-server/tutorials/tree/main/Quick_Deploy/ONNX).
 
 ## Step 1: Set up Triton Inference Server
-### Step 1.1: Create Model Artefact
+### Step 1.1: Create Model Artifact
 To use Triton, we need to build a model repository. The structure of the repository as follows:
 
 model_repository
