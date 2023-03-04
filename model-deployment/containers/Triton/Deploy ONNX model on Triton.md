@@ -36,17 +36,17 @@ docker push $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-serv
 ```
 
 ### Step 1.3 Upload model artifact to Model catalog
-Compress model_repository folder  created in Step 1.1 in zip format and upload it to model catalog. Refer https://docs.oracle.com/en-us/iaas/data-science/using/models_saving_catalog.htm for details
-
+Compress model_repository folder created in Step 1.1 in zip format and upload it to model catalog. Refer to https://docs.oracle.com/en-us/iaas/data-science/using/models_saving_catalog.htm for details
 
 
 ### Step 1.4 Create Model Deployment
-In order to reduce the customer burden and enable Triton Inference Server's integration to OCI Model Deployment service using BYOC offering, we as a service extended the BYOC feature to do the mapping of service-mandated endpoints to the Triton's inference and health HTTP/REST endpoint by passing a following flag as an environment variable.
+OCI Data Science Model Deployment has a dedicated support for Triton image, to make it easier to manage the Triton image by mapping of service-mandated endpoints to the Triton's inference and health HTTP/REST endpoint. To enable this support, enter the following environment variable when creating the Model Deployment:
 
 `CONTAINER_TYPE = TRITON`
 
 #### Using python sdk
 **Create a model configuration details object**
+```
 model_config_details = ModelConfigurationDetails(
     model_id= <model_id>,
     bandwidth_mbps = <bandwidth_mbps>,
@@ -59,7 +59,7 @@ environment_config_details = OcirModelDeploymentEnvironmentConfigurationDetails(
     environment_configuration_type="OCIR_CONTAINER",
     environment_variables={'CONTAINER_TYPE': 'TRITON'},
     image="iad.ocir.io/testtenancy/oci-datascience-triton-server/onnx-runtime:1.0.0",
-    image_digest="sha256:aa32690a166b09015d34c9372812ee9c878cbdc75649f7be6e4465b5eb9ad290",
+    image_digest=<image_digest>,
     cmd=[
         "/opt/nvidia/nvidia_entrypoint.sh",
         "tritonserver",
@@ -83,18 +83,15 @@ create_model_deployment_details = CreateModelDeploymentDetails(
     compartment_id = <compartment_id>,
     project_id = <project_id>
 )
+```
 
+## Step 2: Using Python SDK to query the Inference Server
+Download an example image to test inference:
 
-## Step 2: Using python-sdk to query  the Inference Server
-Install dependencies & download an example image to test inference.
+`wget  -O ${HOME}/img1.jpg "https://www.hakaimagazine.com/wp-content/uploads/header-gulf-birds.jpg"`
 
-
-wget  -O ${HOME}/img1.jpg "https://www.hakaimagazine.com/wp-content/uploads/header-gulf-birds.jpg"
-
-
-Firstly,  specify the json inference payload with input and output layers for the model as well as describe the shape and datatype of the expected input and output.
-
-
+Specify the JSON inference payload with input and output layers for the model as well as describe the shape and datatype of the expected input and output:
+```
 from PIL import Image
 import numpy as np
 import json
@@ -107,24 +104,20 @@ img_array = np.array(img)
 input_data = np.expand_dims(img_array, axis=0)
  
 # Convert the array to the appropriate data type
-input_data = input_data.astype(np.float32).toList()
+request_data = input_data.astype(np.float32).tolist()
  
- 
-request_body = {"inputs": [{"name": "data_0", "shape": [1,3,224,224], "datatype": "FP32", "data": final_data}], "outputs": [{"name": "fc6_1", "shape":[1,1000],"datatype": "FP32"}]}
+request_body = {"inputs": [{"name": "data_0", "shape": [1,3,224,224], "datatype": "FP32", "data": request_data}], "outputs": [{"name": "fc6_1", "shape":[1,1000],"datatype": "FP32"}]}
  
 request_body = json.dumps(request_body)
+```
 
-
-Secondly, specify the request headers indicating model name and version
-
-
-
+Specify the request headers indicating model name and version:
+```
 request_headers = {"model_name":"densenet_onnx", "model_version":"1"}
+```
 
-
-Lastly, we send an inference request to the Triton Inference Server.
-
-
+Now, you can send an inference request to the Triton Inference Server:
+```
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
  
@@ -143,14 +136,4 @@ auth = Signer(
 endpoint = <modelDeploymentEndpoint>
  
 inference_output = requests.request('POST',endpoint, data=request_body, auth=auth, headers=request_headers).json()['outputs'][0]['data'][:5]
-
-
-The output of the same should look like below:
-
-
-
-
-
-[-7.781406879425049, 8.147658348083496, -5.036427021026611, -31.72595977783203, -19.792512893676758]
-
-
+```
