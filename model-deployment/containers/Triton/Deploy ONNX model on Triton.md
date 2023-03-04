@@ -21,8 +21,9 @@ The config.pbtxt configuration file is optional. The configuration file is autog
 
 `mkdir -p model_repository/densenet_onnx/1`
 
-`wget -O model_repository/densenet_onnx/1/model.onnx https://github.com/oracle-samples/oci-data-science-ai-samples/tree/master/model-deployment/containers/Triton/model.onnx`
-
+```
+wget -O model_repository/densenet_onnx/1/model.onnx https://github.com/oracle-samples/oci-data-science-ai-samples/tree/master/model-deployment/containers/Triton/model.onnx
+```
 
 ### Step 1.2  Upload NVIDIA base triton server image to OCI Container Registry
 
