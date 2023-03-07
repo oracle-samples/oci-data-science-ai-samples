@@ -46,7 +46,7 @@ Here is a sample Dockerfile that uses Flask server,
 1. Before testing the container image in local, make sure to copy the contents from the `model_artifact` directory and 
 save it in the same directory as Dockerfile. The structure of the filesystem will look like this,
    ```
-   ☁  byoc  ls -l
+   > ls -l
    total 9048
    drwxr-xr-x  18 user  staff      576 Oct 11 12:57 ..
    -rwxrwxrwx@  1 user  staff       27 Oct 11 13:00 requirements.txt
@@ -56,7 +56,7 @@ save it in the same directory as Dockerfile. The structure of the filesystem wil
    -rwxrwxrwx   1 user  staff      356 Oct 12 09:23 Dockerfile
     
     
-   ☁  byoc  ls -l models
+   > ls -l models
    total 4624
    -rw-r--r--  1 user  staff   101675 Oct 11 13:19 clf_lda.joblib
    ```
