@@ -132,9 +132,9 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 16248,
+    "size": 16212,
     "summary": "Train, register, and deploy a huggingface pipeline.",
-    "time_created": "2023-02-14T22:24:34",
+    "time_created": "2023-03-06T09:05:53",
     "title": "Train, register, and deploy HuggingFace Pipeline"
   },
   {
