@@ -161,7 +161,7 @@ Follow [these instructions](https://docs.oracle.com/en-us/iaas/Content/Registry/
    ```
    *Format:*
    ```text
-   docker push <region>.ocir.io/<tenancy_ocid_namespace>/<repo>:<version>
+   docker push <region>.ocir.io/<tenancy_ocir_namespace>/<repo>:<version>
    ```
    See [documentation](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrypushingimagesusingthedockercli.htm) for more details.
 
