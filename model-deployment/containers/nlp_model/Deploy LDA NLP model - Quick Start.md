@@ -25,7 +25,7 @@ Here is a sample Dockerfile that uses Flask server,
 
    The server in our sample image will be a flask based app which runs on port `5000` by default.
    ```text
-   Note: curl package must be installed in the container image for the docker HEALTHCHECK policy to work.
+   Note: curl package must be installed in the container image for the docker HEALTHCHECK policy to work
    ```
 
 
@@ -61,7 +61,7 @@ save it in the same directory as Dockerfile. The structure of the filesystem wil
    -rw-r--r--  1 user  staff   101675 Oct 11 13:19 clf_lda.joblib
    ```
 
-2. Run the image locally with Entrypoint and CMD.
+2. Run the image locally with Entrypoint script.
    ```shell
    docker run -p 5000:5000 \
      --health-cmd='curl -f http://localhost:5000/health || exit 1' \
@@ -92,7 +92,9 @@ save it in the same directory as Dockerfile. The structure of the filesystem wil
 3. Send a prediction request
    ```shell
    curl -H "Content-type: application/json" -X  POST http://localhost:5000/predict --data '{"line" : "12"}'  
-   
+   ```
+   *Response:*
+   ```
    {
      "prediction LDA": 21
    }
@@ -101,7 +103,9 @@ save it in the same directory as Dockerfile. The structure of the filesystem wil
 4. Send a health request
    ```shell
    curl -vf http://localhost:5000/health
-    
+   ```
+   *Response:*
+   ``` 
    *   Trying 127.0.0.1...
    * TCP_NODELAY set
    * Connected to localhost (127.0.0.1) port 5000 (#0)
@@ -141,19 +145,23 @@ Follow [these instructions](https://docs.oracle.com/en-us/iaas/Content/Registry/
    ```
    See [documentation](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrypushingimagesusingthedockercli.htm) for more details on log-in.
 
-3. Tag the local docker image
+3. Tag the local docker image with the region URL and namespace,
    ```shell
-   docker tag <local_image_name>:<local_version> <region>.ocir.io/<tenancy_ocir_namespace>/<repo>:<version>
-   
    docker tag ml_flask_app_demo:1.0.0 iad.ocir.io/testtenancy/ml_flask_app_demo:1.0.0
+   ```
+   *Format:*
+   ```text
+   docker tag <local_image_name>:<local_version> <region>.ocir.io/<tenancy_ocir_namespace>/<repo>:<version>
    ```
    See [documentation](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrypushingimagesusingthedockercli.htm) for more details on tagging.
 
 4. Push the tagged image to OCI Container Registry
    ```shell
-   docker push <region>.ocir.io/<tenancy_ocid_namespace>/<repo>:<version>
-   
    docker push iad.ocir.io/testtenancy/ml_flask_app_demo:1.0.0
+   ```
+   *Format:*
+   ```text
+   docker push <region>.ocir.io/<tenancy_ocid_namespace>/<repo>:<version>
    ```
    See [documentation](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrypushingimagesusingthedockercli.htm) for more details.
 
@@ -179,7 +187,7 @@ Refer [Policy Setup](https://docs.oracle.com/en-us/iaas/data-science/using/model
    
    ![environment_variable.png](./screenshots/environment_variable.png)
    ```text
-   To add a new environment variable key-value combination, click on "+ Additional custom environment key"
+   Note: To add a new environment variable key-value combination, click on "+ Additional custom environment key"
    ```
    
    b. Click on `Advanced Options` and check the `Use a custom container image` checkbox.
@@ -188,15 +196,15 @@ Refer [Policy Setup](https://docs.oracle.com/en-us/iaas/data-science/using/model
    
    ![create_model_deployment.png](./screenshots/create_model_deployment.png)
    
-   d. Choose the image that was imported to OCI Registry. The image digest will be populated after image selection.
+   d. Choose the image that was imported to OCI Registry. The image digest will be auto-populated after image selection.
 
    e. Pass the Entrypoint and Ports as shown in the screenshot.
    ```text
-   For CMD and Entrypoint, each parameter must be passed in a separate text box. Use "+ Add parameter" to create a new text box.
+   Note: For CMD and Entrypoint, each parameter must be passed in a separate text box. Use "+ Add parameter" to create a new text box.
    ```
-   Entrypoint: `python`, `/opt/ds/model/deployed_model/api.py`
+   **Entrypoint:** `python`, `/opt/ds/model/deployed_model/api.py`
       
-   Ports: Pass `5000` as both server port and health check port
+   **Ports:** Pass `5000` as both server port and health check port
    
 ### From the SDK
 #### 1. Python SDK code
