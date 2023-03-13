@@ -6,8 +6,9 @@ The [Natural Language Processing conda environment family](https://docs.oracle.c
 
 The notebooks in this folder are meant to be run in the [Natural Language Processing conda environment family](https://docs.oracle.com/en-us/iaas/data-science/using/conda-nlp-fam.htm) conda environments.
 
-# Notebook Descriptions
+# Descriptions
 
+* `Customer Review Sentiment Analysis`: This folder contains a notebook demonstrating how to perform sentiment analysis on customer reviews using OCI AI-Language service. It includes a sample dataset from a hotel chain, but can be adapted to work with other datasets by following the instructions in the folder. The notebook includes multiple visualizations to help analyzing the reviews such as geo-map of reviewers and also word clouds of the most common positive and negative words in the reviews.
 * `bert_classifier_lightning.ipynb`: This notebook shows you how to fine-tune a pre-trained Bert model using PyTorch Lightning for the 20 Newsgroups dataset. You will construct a binary classification model by selecting the data on two topics, `bydate_rec.sport.baseball` and `bydate_sci.space`, to illustrate how to use PyTorch Lightning to solve a text classification task.
 * `bert_keyphrase_extraction.ipynb`: This notebook demonstrates the KeyBERT package. KeyBERT enables you to take a BERT model and do keyphrase extraction with it. KeyPhrase extraction has a wide variety of use-cases and is a canonical use-case for state-of-the-art NLP techniques like transformer architecture neural networks. This notebook showcases a domain-specific Keyphrase extraction model called [SPECTER](https://arxiv.org/pdf/2004.07180.pdf) which is an effective Keyphrase extraction model for academic texts.
 * `nlp_model_explanation.ipynb`: This notebook demonstrates model explanations on an NLP classifier. It does this using a surrogate model technique called Locally Interpretable Model Explanations (LIME). It focuses on training a Decision Tree multiclass classification model using the 20 Newsgroups dataset. It illustrates how to do this using two different implementations of LIME within the NLP conda pack.
