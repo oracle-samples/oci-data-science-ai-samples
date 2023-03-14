@@ -11,7 +11,7 @@ public class FirstLetterMatch implements RuleBasedLabelingStrategy {
 	@Override
 	public List<String> getLabel(RecordSummary record) {
 		for (String label : Config.INSTANCE.getLabels()) {
-			if (record.getName().startsWith(label)) {
+			if (record.getName().startsWith(String.valueOf(label.charAt(0)))) {
 				return Arrays.asList(label);
 			}
 		}

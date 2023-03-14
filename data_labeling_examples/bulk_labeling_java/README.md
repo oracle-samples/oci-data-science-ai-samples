@@ -1,6 +1,7 @@
 # Annotate bulk number of records in OCI Data Labeling Service (DLS)
 
-## Data Labeling Service(DLS) Bulk-Labeling tool
+Introduction to Bulk Labeling Utility [demo video](https://otube.oracle.com/media/Bulk+Labeling+Utility/1_6jv76ouj)
+## Data Labeling Service (DLS) Bulk-Labeling tool
 
 Bulk-Labeling Tool provides the following scripts:
 
@@ -62,7 +63,6 @@ Result of CUSTOM_LABELS_MATCH algorithm:
     dog/dog2.png will be labeled with dog and pup labels
 ```
 
-**Supported in bulklabelutility-v2.jar !!**
 3. **BulkAssistedLabelingScript**: This script takes datasetId as input along with the labeling algorithm as ML_ASSISTED_LABELING. There are 3 different ways to use this script - 
     1. Use the pretrained model offered by the ai service to auto label records
     2. Provide the OCID of the custom ML model that you have trained separately using OCI ai services to auto label records
@@ -88,7 +88,40 @@ Conditions -
     TRAINING_DATASET_ID (Required only for training a new model)
     
 ```
+**3. Remove labels of records in Data Labeling Service**
 
+**RemoveLabelScript:** This script takes REMOVE_LABEL_PREFIX as input and remove the labels from records which are matching with REMOVE_LABEL_PREFIX.
+REMOVE_LABEL_PREFIX will be a label name, or label name prefix or '*'. 
+
+If '*' is given as REMOVE_LABEL_PREFIX then it will remove all labels from all records.
+
+```
+Consider a dataset having following records:
+cat1.jpeg, cat2.jpeg, dog1.jpeg, dog2.jpeg
+Labels in dataset: dog, pup, cat, kitten
+    cat1.jpeg will be labeled with cat label
+    cat2.jpeg will be labeled with cat and kitten labels
+    dog1.png will be labeled with dog label
+    dog2.png will be labeled with dog and pup labels
+    
+1. If REMOVE_LABEL_PREFIX = 'c' then it will remove label 'cat' from all labeled records. Dataset will be as folows :
+    cat1.jpeg -> unlabeled
+    cat2.jpeg will be labeled with kitten labels
+    dog1.png will be labeled with dog label
+    dog2.png will be labeled with dog and pup labels
+    
+2. If REMOVE_LABEL_PREFIX = 'd' then it will remove label 'dog' from all labeled records. Dataset will be as folows :
+    cat1.jpeg will be labeled with cat label
+    cat2.jpeg will be labeled with kitten labels
+    dog1.png -> unlabeled
+    dog2.png will be labeled with dog and pup labels
+
+3. If REMOVE_LABEL_PREFIX = '*' then it will remove all labels from all labeled records. Dataset will be as folows :
+    cat1.jpeg -> unlabeled
+    cat2.jpeg -> unlabeled
+    dog1.png -> unlabeled
+    dog2.png -> unlabeled
+```
 ### Requirements
 1. An Oracle Cloud Infrastructure account. <br/>
 2. A user created in that account, in a group with a policy that grants the desired permissions. This can be a user for yourself, or another person/system that needs to call the API. <br/>
@@ -125,32 +158,32 @@ java -version
 ```
 git clone https://github.com/oracle-samples/oci-data-science-ai-samples.git
 ```
-4. Go to data_labeling_examples directory
+4. Go to data_labeling_examples/bulk_labeling_java directory
 
 ```
-cd data_labeling_examples
+cd data_labeling_examples/bulk_labeling_java
 ```
 5. Run the below command to upload files to object storage bucket.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DOBJECT_STORAGE_URL=https://objectstorage.<REGION>.oraclecloud.com -DOBJECT_STORAGE_BUCKET_NAME=<BUCKET_NAME> -DOBJECT_STORAGE_NAMESPACE=<NAMESPACE> -DDATASET_DIRECTORY_PATH=<DIRECTORY_PATH> -cp libs/bulklabelutility-v1.jar com.oracle.datalabelingservicesamples.scripts.UploadToObjectStorageScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DOBJECT_STORAGE_URL=https://objectstorage.<REGION>.oraclecloud.com -DOBJECT_STORAGE_BUCKET_NAME=<BUCKET_NAME> -DOBJECT_STORAGE_NAMESPACE=<NAMESPACE> -DDATASET_DIRECTORY_PATH=<DIRECTORY_PATH> -cp libs/bulklabelutility-v3.jar com.oracle.datalabelingservicesamples.scripts.UploadToObjectStorageScript
 ```
 6. Run the below command to bulk label by "FIRST_LETTER_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_LETTER_MATCH -DLABELS=cat,dog -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.<REGION>.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.datalabelingdatasetint.oc1.phx.amaaaaaaniob46ia7ybplfjdfmohqxxmwpg4p6nftl4ypnuirvsljkzhlq3q -DLABELING_ALGORITHM=FIRST_LETTER_MATCH -DLABELS=cat,dog -cp libs/bulklabelutility-v3.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
 ```
 7. Run the below command to bulk label by "FIRST_REGEX_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=FIRST_REGEX_MATCH -DFIRST_MATCH_REGEX_PATTERN=^abc* -DLABELS=cat,dog -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.<REGION>.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.datalabelingdatasetint.oc1.phx.amaaaaaaniob46ia7ybplfjdfmohqxxmwpg4p6nftl4ypnuirvsljkzhlq3q -DLABELING_ALGORITHM=FIRST_REGEX_MATCH -DFIRST_MATCH_REGEX_PATTERN=^abc* -DLABELS=cat,dog -cp libs/bulklabelutility-v3.jar com.oracle.datalabelingservicesamples.scripts.SingleLabelDatasetBulkLabelingScript
 ```
 8. Run the below command to bulk label by "CUSTOM_LABELS_MATCH" labeling algorithm.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.us-ashburn-1.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.CustomBulkLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlsprod-dp.<REGION>.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.datalabelingdatasetint.oc1.phx.amaaaaaaniob46ia7ybplfjdfmohqxxmwpg4p6nftl4ypnuirvsljkzhlq3q -DLABELING_ALGORITHM=CUSTOM_LABELS_MATCH -DCUSTOM_LABELS='{"dog/": ["dog"], "cat/": ["cat"] }' -cp libs/bulklabelutility-v3.jar com.oracle.datalabelingservicesamples.scripts.CustomBulkLabelingScript
 ```
-8. Run the below command to bulk label by "ML_ASSISTED_LABELING" labeling algorithm.
+9. Run the below command to bulk label by "ML_ASSISTED_LABELING" labeling algorithm.
 
 Before you run the command, please understand the limitations of this utility.
 1. If you choose a pretrained model to predict labels on the records, the DLS dataset labels should be a part of the supported categories for the auto labeling to provide results.
@@ -173,7 +206,12 @@ Known issues -
 Language service text classification returns the dominant category to which a particular text belongs. So, auto labeling is not supported for multilabel text classification usecase.
 
 ```
-java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DTHREAD_COUNT=20 -DREGION=us-phoenix-1 -DLABELING_ALGORITHM=ML_ASSISTED_LABELING -DML_MODEL_TYPE=PRETRAINED -DCONFIDENCE_THRESHOLD=0.8 -DDATASET_ID=ocid1.datalabelingdataset.oc1.phx.amaaaaaaniob46ia4qae7hitbpxx6cmc6kmoowvxkckxmdlmdvtdprgibnsa -cp libs/bulklabelutility-v2.jar com.oracle.datalabelingservicesamples.scripts.BulkAssistedLabelingScript
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DTHREAD_COUNT=20 -DREGION=us-phoenix-1 -DLABELING_ALGORITHM=ML_ASSISTED_LABELING -DML_MODEL_TYPE=PRETRAINED -DCONFIDENCE_THRESHOLD=0.8 -DDATASET_ID=ocid1.datalabelingdataset.oc1.phx.amaaaaaaniob46ia4qae7hitbpxx6cmc6kmoowvxkckxmdlmdvtdprgibnsa -cp libs/bulklabelutility-v3.jar com.oracle.datalabelingservicesamples.scripts.BulkAssistedLabelingScript
+```
+
+10. Run the below command to remove labels from records
+```
+java -DCONFIG_FILE_PATH='~/.oci/config' -DCONFIG_PROFILE=DEFAULT -DDLS_DP_URL=https://dlstest-dp.<REGION>.oci.oraclecloud.com -DTHREAD_COUNT=20 -DDATASET_ID=ocid1.datalabelingdatasetint.oc1.phx.amaaaaaaniob46ia7ybplfjdfmohqxxmwpg4p6nftl4ypnuirvsljkzhlq3q -DREMOVE_LABEL_PREFIX='cat' -cp libs/bulklabelutility-v3.jar com.oracle.datalabelingservicesamples.scripts.RemoveLabelScript
 ```
 
 Note: You can override any config using -D followed by the configuration name. The list of all configurations are mentioned in following section.
@@ -189,17 +227,23 @@ CONFIG_FILE_PATH=~/.oci/config
 #Config Profile
 CONFIG_PROFILE=DEFAULT
 
+#region identifier 
+REGION=us-phoenix-1
+
 #DLS DP URL
-DLS_DP_URL=https://dlsprod-dp.uk-london-1.oci.oraclecloud.com
+DLS_DP_URL=https://dlsprod-dp.<REGION>.oci.oraclecloud.com
+
+#DLS CP URL
+DLS_CP_URL=https://dlsprod-cp.<REGION>.oci.oraclecloud.com
 
 #OBJECT STORAGE URL
-OBJECT_STORAGE_URL=https://objectstorage.uk-london-1.oraclecloud.com
+OBJECT_STORAGE_URL=https://objectstorage.<REGION>.oraclecloud.com
 
 #Dataset Id whose record you want to bulk label
-DATASET_ID=ocid1.compartment.oc1..aaaaaaaawob4faujxaqxqzrb555b44wxxrfkcpapjxwp4s4hwjthu46idr5a
+DATASET_ID=ocid1.datalabelingdatasetint.oc1.phx.amaaaaaaniob46ia7ybplfjdfmohqxxmwpg4p6nftl4ypnuirvsljkzhlq3q
 
 #Number of Parallel Threads for Bulk Labeling. Default is 20
-THREAD_COUNT=30
+THREAD_COUNT=20
 
 # Algorithm that will be used to assign labels to DLS Dataset records : FIRST_LETTER_MATCH, FIRST_REGEX_MATCH, CUSTOM_LABELS_MATCH, ML_ASSISTED_LABELING
 LABELING_ALGORITHM=FIRST_REGEX_MATCH
@@ -222,7 +266,8 @@ OBJECT_STORAGE_BUCKET_NAME=bucket-20220629-0913
 #Namespace of the object storage bucket
 OBJECT_STORAGE_NAMESPACE=idgszs0xipmn
 
-REGION=us-phoenix-1
+#Prefix will be a label name, or label name prefix
+REMOVE_LABEL_PREFIX=
 
 ## All the following inputs are only for ML_ASSISTED_LABELING algorithm :
 
