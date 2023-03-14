@@ -1,6 +1,6 @@
 # Annotate bulk number of records in OCI Data Labeling Service (DLS)
 
-## Data Labeling Service (DLS) Bulk-Labeling tool
+## Data Labeling Service(DLS) Bulk-Labeling tool
 
 Bulk-Labeling Tool provides the following scripts:
 
