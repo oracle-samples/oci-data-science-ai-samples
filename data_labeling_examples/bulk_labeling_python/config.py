@@ -10,7 +10,7 @@ CONFIG_PROFILE = "DEFAULT"
 # region identifier of DLS Dataset
 REGION_IDENTIFIER = "uk-london-1"
 # service_endpoint
-SERVICE_ENDPOINT_DP = f"https://dlstest-dp.{REGION_IDENTIFIER}.oci.oraclecloud.com"
+SERVICE_ENDPOINT_DP = f"https://dlsprod-dp.{REGION_IDENTIFIER}.oci.oraclecloud.com"
 SERVICE_ENDPOINT_OBJECT_STORAGE = f"https://objectstorage.{REGION_IDENTIFIER}.oraclecloud.com"
 # ocid of the DLS Dataset
 DATASET_ID = "ocid1.datalabelingdatasetint.oc1.uk-london-1.amaaaaaaniob46iagvz2cg7rpwrpuqmqfcbuyyzqviqoseow5eaurg66pwhq"
