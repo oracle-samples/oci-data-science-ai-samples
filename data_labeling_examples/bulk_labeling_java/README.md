@@ -3,7 +3,7 @@
 Introduction to Bulk Labeling Utility [demo video](https://otube.oracle.com/media/Bulk+Labeling+Utility/1_6jv76ouj)
 ## Data Labeling Service (DLS) Bulk-Labeling tool
 
-Bulk-Labeling Tool provides the following scripts:
+Bulk-Labeling Tool provides the following scripts :
 
 **1. Upload files to object storage bucket**
 
