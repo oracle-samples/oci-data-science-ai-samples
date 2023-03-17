@@ -12,7 +12,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Topics
-<img src="https://img.shields.io/badge/deploy model-7-brightgreen"> <img src="https://img.shields.io/badge/register model-7-brightgreen"> <img src="https://img.shields.io/badge/train model-7-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen"> <img src="https://img.shields.io/badge/intel-1-brightgreen"> <img src="https://img.shields.io/badge/intel extension-1-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-1-brightgreen"> <img src="https://img.shields.io/badge/autonomous driving-1-brightgreen"> <img src="https://img.shields.io/badge/kerberos-1-brightgreen"> <img src="https://img.shields.io/badge/livy-1-brightgreen"> <img src="https://img.shields.io/badge/caltech-1-brightgreen"> <img src="https://img.shields.io/badge/pedestrian detection-1-brightgreen"> <img src="https://img.shields.io/badge/data labeling-1-brightgreen"> <img src="https://img.shields.io/badge/text classification-1-brightgreen"> <img src="https://img.shields.io/badge/text extraction-1-brightgreen"> <img src="https://img.shields.io/badge/hyperparameter tuning-1-brightgreen"> <img src="https://img.shields.io/badge/model evaluation-1-brightgreen"> <img src="https://img.shields.io/badge/binary classification-1-brightgreen"> <img src="https://img.shields.io/badge/regression-1-brightgreen"> <img src="https://img.shields.io/badge/multi class classification-1-brightgreen"> <img src="https://img.shields.io/badge/imbalanced dataset-1-brightgreen"> 
+<img src="https://img.shields.io/badge/deploy model-7-brightgreen"> <img src="https://img.shields.io/badge/register model-7-brightgreen"> <img src="https://img.shields.io/badge/train model-7-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/automlx-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/text classification-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/regression-2-brightgreen"> <img src="https://img.shields.io/badge/language services-2-brightgreen"> <img src="https://img.shields.io/badge/string manipulation-2-brightgreen"> <img src="https://img.shields.io/badge/regex-2-brightgreen"> <img src="https://img.shields.io/badge/regular expression-2-brightgreen"> <img src="https://img.shields.io/badge/natural language processing-2-brightgreen"> <img src="https://img.shields.io/badge/NLP-2-brightgreen"> <img src="https://img.shields.io/badge/part of speech tagging-2-brightgreen"> <img src="https://img.shields.io/badge/named entity recognition-2-brightgreen"> <img src="https://img.shields.io/badge/sentiment analysis-2-brightgreen"> <img src="https://img.shields.io/badge/custom plugins-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/classification-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen"> <img src="https://img.shields.io/badge/intel-1-brightgreen"> <img src="https://img.shields.io/badge/intel extension-1-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-1-brightgreen"> 
 
 ## Contents
  - [Audi Autonomous Driving Dataset Repository](#audi-autonomous_driving-oracle_open_data.ipynb)
@@ -23,6 +23,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Building and Explaining an Anomaly Detector using AutoMLx - Experimental](#automlx-anomaly_detection.ipynb)
  - [Caltech Pedestrian Detection Benchmark Repository](#caltech-pedestrian_detection-oracle_open_data.ipynb)
  - [Connect to Oracle Big Data Service](#big_data_service-(BDS)-kerberos.ipynb)
+ - [Graph Analytics and Graph Machine Learning with PyPGX](#pypgx-graph_analytics-machine_learning.ipynb)
  - [How to Read Data with fsspec from Oracle Big Data Service (BDS)](#read-write-big_data_service-(BDS).ipynb)
  - [Intel Extension for Scikit-Learn](#accelerate-scikit_learn-with-intel_extension.ipynb)
  - [Introduction to ADSTuner](#hyperparameter_tuning.ipynb)
@@ -57,7 +58,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 ## Notebooks
 ### <a name="automlx-anomaly_detection.ipynb"></a> - Building and Explaining an Anomaly Detector using AutoMLx - Experimental
 
-<sub>Updated: 03/06/2023</sub>
+<sub>Updated: 03/17/2023</sub>
 #### [`automlx-anomaly_detection.ipynb`](automlx-anomaly_detection.ipynb)
 
  
@@ -73,7 +74,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
 ---
 ### <a name="automlx-classifier.ipynb"></a> - Building and Explaining a Classifier using AutoMLx
 
-<sub>Updated: 03/06/2023</sub>
+<sub>Updated: 03/17/2023</sub>
 #### [`automlx-classifier.ipynb`](automlx-classifier.ipynb)
 
  
@@ -89,7 +90,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
 ---
 ### <a name="automlx-regression.ipynb"></a> - Building and Explaining a Regressor using AutoMLx
 
-<sub>Updated: 03/06/2023</sub>
+<sub>Updated: 03/17/2023</sub>
 #### [`automlx-regression.ipynb`](automlx-regression.ipynb)
 
  
@@ -105,7 +106,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
 ---
 ### <a name="automlx-text_classification.ipynb"></a> - Building and Explaining a Text Classifier using AutoMLx
 
-<sub>Updated: 03/06/2023</sub>
+<sub>Updated: 03/17/2023</sub>
 #### [`automlx-text_classification.ipynb`](automlx-text_classification.ipynb)
 
  
@@ -345,7 +346,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
 ---
 ### <a name="automlx-forecasting.ipynb"></a> - Building a Forecaster using AutoMLx
 
-<sub>Updated: 03/06/2023</sub>
+<sub>Updated: 03/17/2023</sub>
 #### [`automlx-forecasting.ipynb`](automlx-forecasting.ipynb)
 
  
@@ -467,6 +468,22 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 
  
 `pipelines`  `pipeline step`  `jobs pipeline`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="pypgx-graph_analytics-machine_learning.ipynb"></a> - Graph Analytics and Graph Machine Learning with PyPGX
+
+<sub>Updated: 03/13/2023</sub>
+#### [`pypgx-graph_analytics-machine_learning.ipynb`](pypgx-graph_analytics-machine_learning.ipynb)
+
+ 
+Use Oracle's Graph Analytics libraries to demonstrate graph algorithms, graph machine learning models, and use the property graph query language (PGQL)
+
+This notebook was developed on the conda pack with slug: `pypgx2310_p38_cpu_v1`
+
+ 
+`pypgx`  `graph analytics`  `pgx`
 
 <sub>Universal Permissive License v 1.0</sup>
 
