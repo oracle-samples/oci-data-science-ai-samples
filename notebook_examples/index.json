@@ -14,19 +14,6 @@
   },
   {
     "developed_on": "pyspark30_p37_cpu_v5",
-    "filename": "read-write-big_data_service-(BDS).ipynb",
-    "keywords": [
-      "bds",
-      "fsspec"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 21291,
-    "summary": "Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.",
-    "time_created": "2022-12-22T14:27:22",
-    "title": "How to Read Data with fsspec from Oracle Big Data Service (BDS)"
-  },
-  {
-    "developed_on": "pyspark30_p37_cpu_v5",
     "filename": "big_data_service-(BDS)-livy.ipynb",
     "keywords": [
       "bds",
@@ -38,6 +25,19 @@
     "summary": "Work interactively with a BDS cluster using Livy and two different connection techniques, SparkMagic (for a notebook environment) and with REST.",
     "time_created": "2022-12-22T14:27:22",
     "title": "Using Livy on the Big Data Service"
+  },
+  {
+    "developed_on": "pyspark30_p37_cpu_v5",
+    "filename": "read-write-big_data_service-(BDS).ipynb",
+    "keywords": [
+      "bds",
+      "fsspec"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21291,
+    "summary": "Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.",
+    "time_created": "2022-12-22T14:27:22",
+    "title": "How to Read Data with fsspec from Oracle Big Data Service (BDS)"
   },
   {
     "developed_on": "generalml_p38_cpu_v1",
@@ -293,30 +293,18 @@
     "title": "Working with Pipelines"
   },
   {
-    "developed_on": "pyspark32_p38_cpu_v1",
-    "filename": "pyspark-data_flow_studio-spark_nlp.ipynb",
+    "developed_on": "pypgx2310_p38_cpu_v1",
+    "filename": "pypgx-graph_analytics-machine_learning.ipynb",
     "keywords": [
-      "pyspark",
-      "data flow"
+      "pypgx",
+      "graph analytics",
+      "pgx"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 17270,
-    "summary": "Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.",
-    "time_created": "2022-12-22T14:27:22",
-    "title": "Spark NLP within Oracle Cloud Infrastructure Data Flow Studio"
-  },
-  {
-    "developed_on": "pyspark32_p38_cpu_v2",
-    "filename": "pyspark-data_flow_studio-introduction.ipynb",
-    "keywords": [
-      "pyspark",
-      "data flow"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 144930,
-    "summary": "Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.",
-    "time_created": "2022-12-22T14:27:22",
-    "title": "Introduction to the Oracle Cloud Infrastructure Data Flow Studio"
+    "size": 885240,
+    "summary": "Use Oracle's Graph Analytics libraries to demonstrate graph algorithms, graph machine learning models, and use the property graph query language (PGQL)",
+    "time_created": "2023-03-17T14:17:20",
+    "title": "Graph Analytics and Graph Machine Learning with PyPGX"
   },
   {
     "developed_on": "pyspark24_p37_cpu_v3",
@@ -332,6 +320,32 @@
     "title": "PySpark"
   },
   {
+    "developed_on": "pyspark32_p38_cpu_v2",
+    "filename": "pyspark-data_flow_studio-introduction.ipynb",
+    "keywords": [
+      "pyspark",
+      "data flow"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 144930,
+    "summary": "Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.",
+    "time_created": "2022-12-22T14:27:22",
+    "title": "Introduction to the Oracle Cloud Infrastructure Data Flow Studio"
+  },
+  {
+    "developed_on": "pyspark32_p38_cpu_v1",
+    "filename": "pyspark-data_flow_studio-spark_nlp.ipynb",
+    "keywords": [
+      "pyspark",
+      "data flow"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 17270,
+    "summary": "Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.",
+    "time_created": "2022-12-22T14:27:22",
+    "title": "Spark NLP within Oracle Cloud Infrastructure Data Flow Studio"
+  },
+  {
     "developed_on": "pytorch110_p38_cpu_v1",
     "filename": "train-register-deploy-pytorch.ipynb",
     "keywords": [
@@ -341,9 +355,9 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 708226,
+    "size": 708243,
     "summary": "Train, register, and deploy a PyTorch model.",
-    "time_created": "2022-12-22T14:27:22",
+    "time_created": "2023-02-10T02:56:38",
     "title": "Train, Register, and Deploy a PyTorch Model"
   },
   {
