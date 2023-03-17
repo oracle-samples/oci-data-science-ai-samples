@@ -1,5 +1,63 @@
 [
   {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-anomaly_detection.ipynb",
+    "keywords": [
+      "automlx",
+      "anomaly detection"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_AnomalyDetection.ipynb",
+    "size": 116269,
+    "summary": "Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.",
+    "time_created": "2023-03-06T11:46:35",
+    "title": "Building and Explaining an Anomaly Detector using AutoMLx - Experimental"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-classifier.ipynb",
+    "keywords": [
+      "automlx",
+      "classification",
+      "classifier"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification.ipynb",
+    "size": 555882,
+    "summary": "Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.",
+    "time_created": "2023-03-06T11:46:35",
+    "title": "Building and Explaining a Classifier using AutoMLx"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-regression.ipynb",
+    "keywords": [
+      "automlx",
+      "regression"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Regression.ipynb",
+    "size": 388959,
+    "summary": "Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.",
+    "time_created": "2023-03-06T11:46:35",
+    "title": "Building and Explaining a Regressor using AutoMLx"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-text_classification.ipynb",
+    "keywords": [
+      "automlx",
+      "text classification",
+      "text classifier"
+    ],
+    "license": "Universal Permissive License v 1.0.",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification_Text.ipynb",
+    "size": 31674,
+    "summary": "build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset",
+    "time_created": "2023-03-06T11:46:35",
+    "title": "Building and Explaining a Text Classifier using AutoMLx"
+  },
+  {
     "developed_on": "computervision_p37_cpu_v1",
     "filename": "audi-autonomous_driving-oracle_open_data.ipynb",
     "keywords": [
@@ -14,19 +72,6 @@
   },
   {
     "developed_on": "pyspark30_p37_cpu_v5",
-    "filename": "read-write-big_data_service-(BDS).ipynb",
-    "keywords": [
-      "bds",
-      "fsspec"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 21291,
-    "summary": "Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.",
-    "time_created": "2022-12-22T14:27:22",
-    "title": "How to Read Data with fsspec from Oracle Big Data Service (BDS)"
-  },
-  {
-    "developed_on": "pyspark30_p37_cpu_v5",
     "filename": "big_data_service-(BDS)-livy.ipynb",
     "keywords": [
       "bds",
@@ -38,6 +83,19 @@
     "summary": "Work interactively with a BDS cluster using Livy and two different connection techniques, SparkMagic (for a notebook environment) and with REST.",
     "time_created": "2022-12-22T14:27:22",
     "title": "Using Livy on the Big Data Service"
+  },
+  {
+    "developed_on": "pyspark30_p37_cpu_v5",
+    "filename": "read-write-big_data_service-(BDS).ipynb",
+    "keywords": [
+      "bds",
+      "fsspec"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21291,
+    "summary": "Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.",
+    "time_created": "2022-12-22T14:27:22",
+    "title": "How to Read Data with fsspec from Oracle Big Data Service (BDS)"
   },
   {
     "developed_on": "generalml_p38_cpu_v1",
@@ -185,6 +243,28 @@
     "title": "Natural Language Processing"
   },
   {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-forecasting.ipynb",
+    "keywords": [
+      "language services",
+      "string manipulation",
+      "regex",
+      "regular expression",
+      "natural language processing",
+      "NLP",
+      "part-of-speech tagging",
+      "named entity recognition",
+      "sentiment analysis",
+      "custom plugins"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Forecasting.ipynb",
+    "size": 36763,
+    "summary": "Use Oracle AutoMLx to build a forecast model with real-world data sets.",
+    "time_created": "2023-03-06T12:23:56",
+    "title": "Building a Forecaster using AutoMLx"
+  },
+  {
     "developed_on": "generalml_p38_cpu_v1",
     "filename": "train-register-deploy-lightgbm.ipynb",
     "keywords": [
@@ -293,17 +373,17 @@
     "title": "Working with Pipelines"
   },
   {
-    "developed_on": "pyspark32_p38_cpu_v1",
-    "filename": "pyspark-data_flow_studio-spark_nlp.ipynb",
+    "developed_on": "pyspark24_p37_cpu_v3",
+    "filename": "pyspark-data_flow-application.ipynb",
     "keywords": [
       "pyspark",
       "data flow"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 17270,
-    "summary": "Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.",
+    "size": 13104,
+    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
     "time_created": "2022-12-22T14:27:22",
-    "title": "Spark NLP within Oracle Cloud Infrastructure Data Flow Studio"
+    "title": "PySpark"
   },
   {
     "developed_on": "pyspark32_p38_cpu_v2",
@@ -319,17 +399,17 @@
     "title": "Introduction to the Oracle Cloud Infrastructure Data Flow Studio"
   },
   {
-    "developed_on": "pyspark24_p37_cpu_v3",
-    "filename": "pyspark-data_flow-application.ipynb",
+    "developed_on": "pyspark32_p38_cpu_v1",
+    "filename": "pyspark-data_flow_studio-spark_nlp.ipynb",
     "keywords": [
       "pyspark",
       "data flow"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 13104,
-    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
+    "size": 17270,
+    "summary": "Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.",
     "time_created": "2022-12-22T14:27:22",
-    "title": "PySpark"
+    "title": "Spark NLP within Oracle Cloud Infrastructure Data Flow Studio"
   },
   {
     "developed_on": "pytorch110_p38_cpu_v1",
@@ -341,9 +421,9 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 708226,
+    "size": 708243,
     "summary": "Train, register, and deploy a PyTorch model.",
-    "time_created": "2022-12-22T14:27:22",
+    "time_created": "2023-02-10T02:56:38",
     "title": "Train, Register, and Deploy a PyTorch Model"
   },
   {

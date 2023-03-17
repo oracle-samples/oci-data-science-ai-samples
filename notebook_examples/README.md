@@ -12,10 +12,15 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Topics
-<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen"> <img src="https://img.shields.io/badge/train model-6-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous driving-1-brightgreen"> <img src="https://img.shields.io/badge/tensorflow-1-brightgreen"> <img src="https://img.shields.io/badge/caltech-1-brightgreen"> <img src="https://img.shields.io/badge/pedestrian detection-1-brightgreen"> <img src="https://img.shields.io/badge/dcat-1-brightgreen"> <img src="https://img.shields.io/badge/pytorch-1-brightgreen"> <img src="https://img.shields.io/badge/model evaluation-1-brightgreen"> <img src="https://img.shields.io/badge/binary classification-1-brightgreen"> <img src="https://img.shields.io/badge/regression-1-brightgreen"> <img src="https://img.shields.io/badge/multi class classification-1-brightgreen"> <img src="https://img.shields.io/badge/imbalanced dataset-1-brightgreen"> <img src="https://img.shields.io/badge/synthetic dataset-1-brightgreen"> <img src="https://img.shields.io/badge/text extraction-1-brightgreen"> <img src="https://img.shields.io/badge/lime-1-brightgreen"> <img src="https://img.shields.io/badge/model_explanation-1-brightgreen"> <img src="https://img.shields.io/badge/text_classification-1-brightgreen"> <img src="https://img.shields.io/badge/text_explanation-1-brightgreen"> 
+<img src="https://img.shields.io/badge/deploy model-6-brightgreen"> <img src="https://img.shields.io/badge/register model-6-brightgreen"> <img src="https://img.shields.io/badge/train model-6-brightgreen"> <img src="https://img.shields.io/badge/data flow-4-brightgreen"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen"> <img src="https://img.shields.io/badge/automlx-4-brightgreen"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen"> <img src="https://img.shields.io/badge/bds-3-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen"> <img src="https://img.shields.io/badge/big data service-2-brightgreen"> <img src="https://img.shields.io/badge/text classification-2-brightgreen"> <img src="https://img.shields.io/badge/nlp-2-brightgreen"> <img src="https://img.shields.io/badge/regression-2-brightgreen"> <img src="https://img.shields.io/badge/language services-2-brightgreen"> <img src="https://img.shields.io/badge/string manipulation-2-brightgreen"> <img src="https://img.shields.io/badge/regex-2-brightgreen"> <img src="https://img.shields.io/badge/regular expression-2-brightgreen"> <img src="https://img.shields.io/badge/natural language processing-2-brightgreen"> <img src="https://img.shields.io/badge/NLP-2-brightgreen"> <img src="https://img.shields.io/badge/part of speech tagging-2-brightgreen"> <img src="https://img.shields.io/badge/named entity recognition-2-brightgreen"> <img src="https://img.shields.io/badge/sentiment analysis-2-brightgreen"> <img src="https://img.shields.io/badge/custom plugins-2-brightgreen"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen"> <img src="https://img.shields.io/badge/classification-2-brightgreen"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen"> <img src="https://img.shields.io/badge/intel-1-brightgreen"> <img src="https://img.shields.io/badge/intel extension-1-brightgreen"> <img src="https://img.shields.io/badge/scikit learn-1-brightgreen"> 
 
 ## Contents
  - [Audi Autonomous Driving Dataset Repository](#audi-autonomous_driving-oracle_open_data.ipynb)
+ - [Building a Forecaster using AutoMLx](#automlx-forecasting.ipynb)
+ - [Building and Explaining a Classifier using AutoMLx](#automlx-classifier.ipynb)
+ - [Building and Explaining a Regressor using AutoMLx](#automlx-regression.ipynb)
+ - [Building and Explaining a Text Classifier using AutoMLx](#automlx-text_classification.ipynb)
+ - [Building and Explaining an Anomaly Detector using AutoMLx - Experimental](#automlx-anomaly_detection.ipynb)
  - [Caltech Pedestrian Detection Benchmark Repository](#caltech-pedestrian_detection-oracle_open_data.ipynb)
  - [Connect to Oracle Big Data Service](#big_data_service-(BDS)-kerberos.ipynb)
  - [How to Read Data with fsspec from Oracle Big Data Service (BDS)](#read-write-big_data_service-(BDS).ipynb)
@@ -49,6 +54,70 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Notebooks
+### <a name="automlx-anomaly_detection.ipynb"></a> - Building and Explaining an Anomaly Detector using AutoMLx - Experimental
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-anomaly_detection.ipynb`](automlx-anomaly_detection.ipynb)
+
+ 
+Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+
+ 
+`automlx`  `anomaly detection`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="automlx-classifier.ipynb"></a> - Building and Explaining a Classifier using AutoMLx
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-classifier.ipynb`](automlx-classifier.ipynb)
+
+ 
+Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+
+ 
+`automlx`  `classification`  `classifier`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="automlx-regression.ipynb"></a> - Building and Explaining a Regressor using AutoMLx
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-regression.ipynb`](automlx-regression.ipynb)
+
+ 
+Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+
+ 
+`automlx`  `regression`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="automlx-text_classification.ipynb"></a> - Building and Explaining a Text Classifier using AutoMLx
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-text_classification.ipynb`](automlx-text_classification.ipynb)
+
+ 
+build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+
+ 
+`automlx`  `text classification`  `text classifier`
+
+<sub>Universal Permissive License v 1.0.</sup>
+
+---
 ### <a name="audi-autonomous_driving-oracle_open_data.ipynb"></a> - Audi Autonomous Driving Dataset Repository
 
 <sub>Updated: 12/22/2022</sub>
@@ -65,22 +134,6 @@ This notebook was developed on the conda pack with slug: `computervision_p37_cpu
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="read-write-big_data_service-(BDS).ipynb"></a> - How to Read Data with fsspec from Oracle Big Data Service (BDS)
-
-<sub>Updated: 12/22/2022</sub>
-#### [`read-write-big_data_service-(BDS).ipynb`](read-write-big_data_service-(BDS).ipynb)
-
- 
-Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
-
-This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
-
- 
-`bds`  `fsspec`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### <a name="big_data_service-(BDS)-livy.ipynb"></a> - Using Livy on the Big Data Service
 
 <sub>Updated: 12/22/2022</sub>
@@ -93,6 +146,22 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 
  
 `bds`  `big data service`  `livy`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="read-write-big_data_service-(BDS).ipynb"></a> - How to Read Data with fsspec from Oracle Big Data Service (BDS)
+
+<sub>Updated: 12/22/2022</sub>
+#### [`read-write-big_data_service-(BDS).ipynb`](read-write-big_data_service-(BDS).ipynb)
+
+ 
+Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
+
+This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
+
+ 
+`bds`  `fsspec`
 
 <sub>Universal Permissive License v 1.0</sup>
 
@@ -257,6 +326,22 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
+### <a name="automlx-forecasting.ipynb"></a> - Building a Forecaster using AutoMLx
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-forecasting.ipynb`](automlx-forecasting.ipynb)
+
+ 
+Use Oracle AutoMLx to build a forecast model with real-world data sets.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+
+ 
+`language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### <a name="train-register-deploy-lightgbm.ipynb"></a> - Train, Register, and Deploy a LightGBM Model
 
 <sub>Updated: 12/22/2022</sub>
@@ -369,15 +454,15 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="pyspark-data_flow_studio-spark_nlp.ipynb"></a> - Spark NLP within Oracle Cloud Infrastructure Data Flow Studio
+### <a name="pyspark-data_flow-application.ipynb"></a> - PySpark
 
 <sub>Updated: 12/22/2022</sub>
-#### [`pyspark-data_flow_studio-spark_nlp.ipynb`](pyspark-data_flow_studio-spark_nlp.ipynb)
+#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
 
  
-Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.
+Develop local PySpark applications and work with remote clusters using Data Flow.
 
-This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v1`
+This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
 
  
 `pyspark`  `data flow`
@@ -401,15 +486,15 @@ This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v2`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="pyspark-data_flow-application.ipynb"></a> - PySpark
+### <a name="pyspark-data_flow_studio-spark_nlp.ipynb"></a> - Spark NLP within Oracle Cloud Infrastructure Data Flow Studio
 
 <sub>Updated: 12/22/2022</sub>
-#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
+#### [`pyspark-data_flow_studio-spark_nlp.ipynb`](pyspark-data_flow_studio-spark_nlp.ipynb)
 
  
-Develop local PySpark applications and work with remote clusters using Data Flow.
+Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.
 
-This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v1`
 
  
 `pyspark`  `data flow`
@@ -419,7 +504,7 @@ This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
 ---
 ### <a name="train-register-deploy-pytorch.ipynb"></a> - Train, Register, and Deploy a PyTorch Model
 
-<sub>Updated: 12/22/2022</sub>
+<sub>Updated: 02/10/2023</sub>
 #### [`train-register-deploy-pytorch.ipynb`](train-register-deploy-pytorch.ipynb)
 
  
