@@ -40,7 +40,7 @@ def fill_aspect_sentiment(Data):
     max_batch_record = 100
 
     for idx in range(Data[column_name_review].size):
-        record = oci.ai_language.models.SentimentsDocument(text=Data.iat[idx, Data.columns.get_loc(column_name_review)][0:1000],
+        record = oci.ai_language.models.TextDocument(text=Data.iat[idx, Data.columns.get_loc(column_name_review)][0:1000],
                                                            key=str(Data.index[idx]),
                                                            language_code="en")
         record_chars = len(record.text)
