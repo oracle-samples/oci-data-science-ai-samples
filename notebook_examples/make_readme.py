@@ -41,8 +41,8 @@ def parse_bibblock(input: str) -> dict:
     must_have = ["filename", "title", "summary", "developed on", "keywords", "license"]
 
     # assert all the must_have fields are present in the results dictionary
-    assert all(
-        x in must_have for x in results.keys()
+    assert set(must_have).issubset(
+        set(results.keys())
     ), f"Missing fields in {results['filename']}: {set(must_have) - set(results.keys())}"
 
     assert len(results["keywords"]), f"Must have at least one keyword"
@@ -111,7 +111,9 @@ def make_readme_and_index():
             # notebook_metadata["time_created"] = datetime.fromtimestamp(
             #     os.path.getmtime(notebook_file)
             # ).isoformat()
-            notebook_metadata["time_created"] = find_git_last_commit_time_in_iso_str_format(notebook_file)
+            notebook_metadata[
+                "time_created"
+            ] = find_git_last_commit_time_in_iso_str_format(notebook_file)
             notebook_metadata["size"] = os.path.getsize(notebook_file)
 
             all_notebooks[notebook_file] = notebook_metadata

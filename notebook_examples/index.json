@@ -1,5 +1,63 @@
 [
   {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-anomaly_detection.ipynb",
+    "keywords": [
+      "automlx",
+      "anomaly detection"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_AnomalyDetection.ipynb",
+    "size": 116269,
+    "summary": "Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.",
+    "time_created": "2023-03-06T11:46:35",
+    "title": "Building and Explaining an Anomaly Detector using AutoMLx - Experimental"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-classifier.ipynb",
+    "keywords": [
+      "automlx",
+      "classification",
+      "classifier"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification.ipynb",
+    "size": 555882,
+    "summary": "Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.",
+    "time_created": "2023-03-06T11:46:35",
+    "title": "Building and Explaining a Classifier using AutoMLx"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-regression.ipynb",
+    "keywords": [
+      "automlx",
+      "regression"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Regression.ipynb",
+    "size": 388959,
+    "summary": "Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.",
+    "time_created": "2023-03-06T11:46:35",
+    "title": "Building and Explaining a Regressor using AutoMLx"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-text_classification.ipynb",
+    "keywords": [
+      "automlx",
+      "text classification",
+      "text classifier"
+    ],
+    "license": "Universal Permissive License v 1.0.",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification_Text.ipynb",
+    "size": 31674,
+    "summary": "build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset",
+    "time_created": "2023-03-06T11:46:35",
+    "title": "Building and Explaining a Text Classifier using AutoMLx"
+  },
+  {
     "developed_on": "computervision_p37_cpu_v1",
     "filename": "audi-autonomous_driving-oracle_open_data.ipynb",
     "keywords": [
@@ -198,6 +256,28 @@
     "summary": "Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.",
     "time_created": "2022-12-22T14:27:22",
     "title": "Natural Language Processing"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-forecasting.ipynb",
+    "keywords": [
+      "language services",
+      "string manipulation",
+      "regex",
+      "regular expression",
+      "natural language processing",
+      "NLP",
+      "part-of-speech tagging",
+      "named entity recognition",
+      "sentiment analysis",
+      "custom plugins"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Forecasting.ipynb",
+    "size": 36763,
+    "summary": "Use Oracle AutoMLx to build a forecast model with real-world data sets.",
+    "time_created": "2023-03-06T12:23:56",
+    "title": "Building a Forecaster using AutoMLx"
   },
   {
     "developed_on": "generalml_p38_cpu_v1",

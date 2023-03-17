@@ -16,6 +16,11 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 ## Contents
  - [Audi Autonomous Driving Dataset Repository](#audi-autonomous_driving-oracle_open_data.ipynb)
+ - [Building a Forecaster using AutoMLx](#automlx-forecasting.ipynb)
+ - [Building and Explaining a Classifier using AutoMLx](#automlx-classifier.ipynb)
+ - [Building and Explaining a Regressor using AutoMLx](#automlx-regression.ipynb)
+ - [Building and Explaining a Text Classifier using AutoMLx](#automlx-text_classification.ipynb)
+ - [Building and Explaining an Anomaly Detector using AutoMLx - Experimental](#automlx-anomaly_detection.ipynb)
  - [Caltech Pedestrian Detection Benchmark Repository](#caltech-pedestrian_detection-oracle_open_data.ipynb)
  - [Connect to Oracle Big Data Service](#big_data_service-(BDS)-kerberos.ipynb)
  - [How to Read Data with fsspec from Oracle Big Data Service (BDS)](#read-write-big_data_service-(BDS).ipynb)
@@ -50,6 +55,70 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Notebooks
+### <a name="automlx-anomaly_detection.ipynb"></a> - Building and Explaining an Anomaly Detector using AutoMLx - Experimental
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-anomaly_detection.ipynb`](automlx-anomaly_detection.ipynb)
+
+ 
+Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+
+ 
+`automlx`  `anomaly detection`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="automlx-classifier.ipynb"></a> - Building and Explaining a Classifier using AutoMLx
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-classifier.ipynb`](automlx-classifier.ipynb)
+
+ 
+Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+
+ 
+`automlx`  `classification`  `classifier`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="automlx-regression.ipynb"></a> - Building and Explaining a Regressor using AutoMLx
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-regression.ipynb`](automlx-regression.ipynb)
+
+ 
+Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+
+ 
+`automlx`  `regression`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="automlx-text_classification.ipynb"></a> - Building and Explaining a Text Classifier using AutoMLx
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-text_classification.ipynb`](automlx-text_classification.ipynb)
+
+ 
+build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+
+ 
+`automlx`  `text classification`  `text classifier`
+
+<sub>Universal Permissive License v 1.0.</sup>
+
+---
 ### <a name="audi-autonomous_driving-oracle_open_data.ipynb"></a> - Audi Autonomous Driving Dataset Repository
 
 <sub>Updated: 12/22/2022</sub>
@@ -267,6 +336,22 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.
 
 This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+
+ 
+`language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="automlx-forecasting.ipynb"></a> - Building a Forecaster using AutoMLx
+
+<sub>Updated: 03/06/2023</sub>
+#### [`automlx-forecasting.ipynb`](automlx-forecasting.ipynb)
+
+ 
+Use Oracle AutoMLx to build a forecast model with real-world data sets.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
 
  
 `language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
