@@ -47,3 +47,11 @@ This project welcomes contributions from the community. Before submitting a pull
 ## Security
 
 The [Security Guide](./SECURITY.md) contains information about security vulnerability disclosure process. If you discover a vulnerability, consider filing an [issue](https://github.com/oracle/oci-data-science-ai-samples/issues).
+
+## License
+
+Copyright (c) 2021, 2023 Oracle and/or its affiliates.
+
+Released under the Universal Permissive License v1.0 as shown at
+<https://oss.oracle.com/licenses/upl/>.
+
