@@ -24,7 +24,9 @@ The [Model Catalog](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/user
 
 ### [Jobs](jobs/)
 
-The Oracle Cloud Infrastructure [Data Science Jobs](https://docs.oracle.com/en-us/iaas/data-science/using/jobs-about.htm) enables you to define and run a repeatable machine learning task on a fully managed infrastructure. Jobs allow custom tasks, so you can apply any use case you may have, such as data preparation, model training, hyperparameter optimization, batch inference, and more.
+Oracle Cloud Infrastructure (OCI) [Data Science Jobs](https://docs.oracle.com/en-us/iaas/data-science/using/jobs-about.htm) is a powerful tool that allows you to define and run repeatable machine learning tasks on a fully managed infrastructure. With Jobs, you have the flexibility to apply custom tasks to meet your specific use cases, such as data preparation, model training, hyperparameter optimization, batch inference, large model training and more.
+
+On-demand jobs and batch processing are especially important for businesses that need to process large volumes of data on a regular basis, as they enable companies to automate data processing workflows, reduce the need for manual intervention, and save costs associated with running compute resources for extended periods of time. With the ability to define and schedule jobs to run at specific times, businesses can automate their data processing workflows and reduce the need for manual intervention. This helps to improve efficiency, reduce errors, and save valuable time and resources. Additionally, by using a fully managed infrastructure, businesses can ensure that their data processing workflows are secure and compliant with industry regulations. Overall, OCI Data Science Jobs is a powerful tool that can help businesses to scale their machine learning workflows and improve their data processing capabilities.
 
 ### [Distributed Training](distributed_training/)
 
