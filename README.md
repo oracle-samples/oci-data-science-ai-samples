@@ -14,10 +14,6 @@ The [Accelerated Data Science (ADS) SDK](https://docs.oracle.com/en-us/iaas/tool
 
 The [OCI Data Science service](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) uses [conda environments](https://docs.conda.io/projects/conda/en/latest/index.html) to manage available libraries that a notebook can use. OCI Data Science provides several conda environments designed to offer the best libraries for common data science tasks. Each family of conda environments has notebooks that demonstrate how to perform various data science tasks. This section is organized around these conda environment families and provides notebooks to help you get started quickly.
 
-### [Knowledge Base](./knowledge_base/)
-
-If you're struggling with a problem, check out the Knowledge Base, which has a growing collection of articles on how to solve common problems you may encounter.
-
 ### [Labs](./labs/)
 
 This section provides examples of how to train machine learning models and deploy them on the OCI Data Science service, making it ideal for anyone looking to walk through an end-to-end problem.
