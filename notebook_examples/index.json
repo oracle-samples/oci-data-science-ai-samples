@@ -1,20 +1,6 @@
 [
   {
     "developed_on": "automlx_p38_cpu_v2",
-    "filename": "automlx-anomaly_detection.ipynb",
-    "keywords": [
-      "automlx",
-      "anomaly detection"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_AnomalyDetection.ipynb",
-    "size": 116269,
-    "summary": "Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.",
-    "time_created": "2023-03-17T13:21:00",
-    "title": "Building and Explaining an Anomaly Detector using AutoMLx - Experimental"
-  },
-  {
-    "developed_on": "automlx_p38_cpu_v2",
     "filename": "automlx-classifier.ipynb",
     "keywords": [
       "automlx",
@@ -23,24 +9,10 @@
     ],
     "license": "Universal Permissive License v 1.0",
     "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification.ipynb",
-    "size": 555882,
+    "size": 6713293,
     "summary": "Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.",
-    "time_created": "2023-03-17T13:21:00",
+    "time_created": "2023-03-26T22:36:52",
     "title": "Building and Explaining a Classifier using AutoMLx"
-  },
-  {
-    "developed_on": "automlx_p38_cpu_v2",
-    "filename": "automlx-regression.ipynb",
-    "keywords": [
-      "automlx",
-      "regression"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Regression.ipynb",
-    "size": 388959,
-    "summary": "Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.",
-    "time_created": "2023-03-17T13:21:00",
-    "title": "Building and Explaining a Regressor using AutoMLx"
   },
   {
     "developed_on": "automlx_p38_cpu_v2",
@@ -52,10 +24,38 @@
     ],
     "license": "Universal Permissive License v 1.0.",
     "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification_Text.ipynb",
-    "size": 31674,
+    "size": 4586506,
     "summary": "build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset",
-    "time_created": "2023-03-17T13:21:00",
+    "time_created": "2023-03-26T22:36:52",
     "title": "Building and Explaining a Text Classifier using AutoMLx"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-regression.ipynb",
+    "keywords": [
+      "automlx",
+      "regression"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Regression.ipynb",
+    "size": 750238,
+    "summary": "Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.",
+    "time_created": "2023-03-26T22:36:52",
+    "title": "Building and Explaining a Regressor using AutoMLx"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-anomaly_detection.ipynb",
+    "keywords": [
+      "automlx",
+      "anomaly detection"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_AnomalyDetection.ipynb",
+    "size": 4923344,
+    "summary": "Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.",
+    "time_created": "2023-03-26T22:36:52",
+    "title": "Building and Explaining an Anomaly Detector using AutoMLx - Experimental"
   },
   {
     "developed_on": "computervision_p37_cpu_v1",
@@ -175,9 +175,9 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 44631,
+    "size": 21028,
     "summary": "Train, register, and deploy a generic model",
-    "time_created": "2022-12-22T14:27:22",
+    "time_created": "2023-03-18T23:04:01",
     "title": "Train, Register, and Deploy a Generic Model"
   },
   {
@@ -190,9 +190,9 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 16212,
+    "size": 15957,
     "summary": "Train, register, and deploy a huggingface pipeline.",
-    "time_created": "2023-03-06T09:05:53",
+    "time_created": "2023-03-18T23:10:07",
     "title": "Train, register, and deploy HuggingFace Pipeline"
   },
   {
@@ -237,6 +237,28 @@
     "title": "Connect to Oracle Big Data Service"
   },
   {
+    "developed_on": "automlx_p38_cpu_v2",
+    "filename": "automlx-forecasting.ipynb",
+    "keywords": [
+      "language services",
+      "string manipulation",
+      "regex",
+      "regular expression",
+      "natural language processing",
+      "NLP",
+      "part-of-speech tagging",
+      "named entity recognition",
+      "sentiment analysis",
+      "custom plugins"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Forecasting.ipynb",
+    "size": 5285019,
+    "summary": "Use Oracle AutoMLx to build a forecast model with real-world data sets.",
+    "time_created": "2023-03-26T22:36:52",
+    "title": "Building a Forecaster using AutoMLx"
+  },
+  {
     "developed_on": "nlp_p37_cpu_v2",
     "filename": "natural_language_processing.ipynb",
     "keywords": [
@@ -258,28 +280,6 @@
     "title": "Natural Language Processing"
   },
   {
-    "developed_on": "automlx_p38_cpu_v2",
-    "filename": "automlx-forecasting.ipynb",
-    "keywords": [
-      "language services",
-      "string manipulation",
-      "regex",
-      "regular expression",
-      "natural language processing",
-      "NLP",
-      "part-of-speech tagging",
-      "named entity recognition",
-      "sentiment analysis",
-      "custom plugins"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Forecasting.ipynb",
-    "size": 36763,
-    "summary": "Use Oracle AutoMLx to build a forecast model with real-world data sets.",
-    "time_created": "2023-03-17T13:21:00",
-    "title": "Building a Forecaster using AutoMLx"
-  },
-  {
     "developed_on": "generalml_p38_cpu_v1",
     "filename": "train-register-deploy-lightgbm.ipynb",
     "keywords": [
@@ -289,9 +289,9 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 12453,
+    "size": 12216,
     "summary": "Train, register, and deploy a LightGBM model.",
-    "time_created": "2022-12-22T14:27:22",
+    "time_created": "2023-03-18T22:59:08",
     "title": "Train, Register, and Deploy a LightGBM Model"
   },
   {
@@ -398,7 +398,7 @@
     "license": "Universal Permissive License v 1.0",
     "size": 885240,
     "summary": "Use Oracle's Graph Analytics libraries to demonstrate graph algorithms, graph machine learning models, and use the property graph query language (PGQL)",
-    "time_created": "2023-03-13T01:55:31",
+    "time_created": "2023-03-17T14:46:39",
     "title": "Graph Analytics and Graph Machine Learning with PyPGX"
   },
   {
@@ -450,9 +450,9 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 708243,
+    "size": 708060,
     "summary": "Train, register, and deploy a PyTorch model.",
-    "time_created": "2023-02-10T02:56:38",
+    "time_created": "2023-03-18T23:04:01",
     "title": "Train, Register, and Deploy a PyTorch Model"
   },
   {
@@ -465,9 +465,9 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 13067,
+    "size": 12896,
     "summary": "Train, register, and deploy an scikit-learn model.",
-    "time_created": "2022-12-22T14:27:22",
+    "time_created": "2023-03-18T22:59:08",
     "title": "Train, register, and deploy Sklearn Model"
   },
   {
@@ -506,9 +506,9 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 26241,
+    "size": 25991,
     "summary": "Train, register, and deploy a TensorFlow model.",
-    "time_created": "2022-12-22T14:27:22",
+    "time_created": "2023-03-18T23:04:01",
     "title": "Train, Register, and Deploy a TensorFlow Model"
   },
   {
@@ -525,21 +525,6 @@
     "title": "Text Extraction Using the Accelerated Data Science (ADS) SDK"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
-    "filename": "train-register-deploy-xgboost.ipynb",
-    "keywords": [
-      "xgboost",
-      "deploy model",
-      "register model",
-      "train model"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 12159,
-    "summary": "Train, register, and deploy an XGBoost model.",
-    "time_created": "2022-12-22T14:27:22",
-    "title": "Train, Register, and Deploy an XGBoost Model"
-  },
-  {
     "developed_on": "rapids2110_p37_gpu_v1",
     "filename": "xgboost-with-rapids.ipynb",
     "keywords": [
@@ -554,5 +539,20 @@
     "summary": "Compare training time between CPU and GPU trained models using XGBoost",
     "time_created": "2022-12-22T14:27:22",
     "title": "XGBoost with RAPIDS"
+  },
+  {
+    "developed_on": "generalml_p38_cpu_v1",
+    "filename": "train-register-deploy-xgboost.ipynb",
+    "keywords": [
+      "xgboost",
+      "deploy model",
+      "register model",
+      "train model"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 11999,
+    "summary": "Train, register, and deploy an XGBoost model.",
+    "time_created": "2023-03-18T23:04:01",
+    "title": "Train, Register, and Deploy an XGBoost Model"
   }
 ]
