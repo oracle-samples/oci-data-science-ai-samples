@@ -38,7 +38,7 @@ def parse_bibblock(input: str) -> dict:
             k.strip() for k in results["keywords"].split(",") if len(k.strip()) > 0
         ]
 
-    must_have = ["filename", "title", "summary", "developed on", "keywords", "license"]
+    must_have = ["filename", "title", "summary", "developed_on", "keywords", "license"]
 
     # assert all the must_have fields are present in the results dictionary
     assert set(must_have).issubset(
