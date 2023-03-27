@@ -1,4 +1,5 @@
 # Annotate bulk number of records in OCI Data Labeling Service (DLS)
+Introduction to Bulk Labeling Utility [demo video](https://otube.oracle.com/media/Bulk+Labeling+Utility/1_6jv76ouj)
 
 ## Data Labeling Service (DLS) Bulk-Labeling tool
 
@@ -74,13 +75,50 @@ For Bounding-Box type annotation
     label: the label of the record in the list format. e.g. the label can be ["dog"] or
            even multiple labels can be provided in the list ["dog", "pup"]
     ```
+**3. Remove labels of records in Data Labeling Service**
+
+**RemoveLabelScript:** This script takes REMOVE_LABEL_PREFIX as input and remove the labels from records which are matching with REMOVE_LABEL_PREFIX.
+REMOVE_LABEL_PREFIX will be a label name, or label name prefix or '*'.
+
+If '*' is given as REMOVE_LABEL_PREFIX then it will remove all labels from all records.
+
+```
+Consider a dataset having following records:
+cat1.jpeg, cat2.jpeg, dog1.jpeg, dog2.jpeg
+Labels in dataset: dog, pup, cat, kitten
+    cat1.jpeg will be labeled with cat label
+    cat2.jpeg will be labeled with cat and kitten labels
+    dog1.png will be labeled with dog label
+    dog2.png will be labeled with dog and pup labels
+    
+1. If REMOVE_LABEL_PREFIX = 'c' then it will remove label 'cat' from all labeled records. Dataset will be as folows :
+    cat1.jpeg -> unlabeled
+    cat2.jpeg will be labeled with kitten labels
+    dog1.png will be labeled with dog label
+    dog2.png will be labeled with dog and pup labels
+    
+2. If REMOVE_LABEL_PREFIX = 'd' then it will remove label 'dog' from all labeled records. Dataset will be as folows :
+    cat1.jpeg will be labeled with cat label
+    cat2.jpeg will be labeled with kitten labels
+    dog1.png -> unlabeled
+    dog2.png will be labeled with dog and pup labels
+
+3. If REMOVE_LABEL_PREFIX = '*' then it will remove all labels from all labeled records. Dataset will be as folows :
+    cat1.jpeg -> unlabeled
+    cat2.jpeg -> unlabeled
+    dog1.png -> unlabeled
+    dog2.png -> unlabeled
+```
 ### Requirements
 1. An Oracle Cloud Infrastructure account. <br/>
 2. A user created in that account, in a group with a policy that grants the desired permissions. This can be a user for yourself, or another person/system that needs to call the API. <br/>
 3. A key pair used for signing API requests, with the public key uploaded to Oracle. Only the user calling the API should be in possession of the private key. For more information, see [Configuring the SDK](https://docs.oracle.com/en-us/iaas/tools/python/2.62.0/installation.html#install). <br/> 
 4. Python 3.0.0+ <br/>
-
-For more information [SDK for Python](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm)
+5. Follow this link to setup [SDK for Python](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm). This link will help you to install python, setup virtual environment, PyPi etc. 
+6. Install Pandas using PIP. Run below command in terminal :
+    ```
+   pip install pandas
+   ```
 
 ### Configurations
 
@@ -143,3 +181,29 @@ LABEL_MAP = {"dog/": ["dog", "pup"], "cat/": ["cat", "kitten"]}
 # the path of the csv file
 PATH = "/Users/puneetmittal/Desktop/input_data.csv"
 ```
+
+### Running the Utility
+1. Open Terminal on your system. 
+2. Clone the repository.
+```
+git clone https://github.com/oracle-samples/oci-data-science-ai-samples.git
+```
+3. Go to data_labeling_examples/bulk_labeling_python directory
+```
+cd data_labeling_examples/bulk_labeling_python
+```
+4. Run the below script to upload files to object storage bucket.
+```
+python3 upload_files_script.py
+```
+5. Run the below script to bulk label by "FIRST_LETTER_MATCH"/"FIRST_REGEX_MATCH"/"CUSTOM_LABELS_MATCH" labeling algorithm.
+```
+python3 bulk_labeling_script.py
+```
+
+6. Run the below script to remove labels from records
+```
+python3 remove_label_script.py
+```
+
+Note : Before running any of the above script please ensure to set the required configuration in config.py, classification_config.py and bounding_box_config.py.

@@ -62,10 +62,10 @@ public class SingleLabelDatasetBulkLabelingScript extends DLSScript {
 		log.info("Starting Bulk Labeling for dataset: {}", dataset.getDisplayName());
 		Boolean isUnlabeledRecordAvailable = true;
 		int recordCount = 0;
-
-		while (isUnlabeledRecordAvailable) {
+		String page = null;
+		do {
 			ListRecordsRequest listRecordsRequest = ListRecordsRequest.builder().datasetId(datasetId)
-					.compartmentId(dataset.getCompartmentId()).lifecycleState(LifecycleState.Active).isLabeled(false)
+					.compartmentId(dataset.getCompartmentId()).lifecycleState(LifecycleState.Active).isLabeled(false).page(page)
 					.limit(DataLabelingConstants.MAX_LIST_RECORDS_LIMITS).build();
 			ListRecordsResponse response = Config.INSTANCE.getDlsDpClient().listRecords(listRecordsRequest);
 			assert response.get__httpStatusCode__() == 200 : "List Record Response Error";
@@ -87,11 +87,8 @@ public class SingleLabelDatasetBulkLabelingScript extends DLSScript {
 						.allOf(completableFutures.toArray(new CompletableFuture[0]));
 				combinedFuture.get();
 			}
-			
-			if (response.getRecordCollection().getItems().size() == 0) {
-				isUnlabeledRecordAvailable = false;
-			}
-		}
+			page = response.getOpcNextPage();
+		}while(page != null);
 
 		executorService.shutdown();
 		log.info("Time Taken for datasetId {}", datasetId);

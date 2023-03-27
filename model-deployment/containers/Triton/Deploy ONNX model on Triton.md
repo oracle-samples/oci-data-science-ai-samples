@@ -48,8 +48,8 @@ CONTAINER_TYPE = TRITON
 ```
 
 #### Using python sdk
-**Create a model configuration details object**
 ```
+# Create a model configuration details object
 model_config_details = ModelConfigurationDetails(
     model_id= <model_id>,
     bandwidth_mbps = <bandwidth_mbps>,
@@ -57,7 +57,7 @@ model_config_details = ModelConfigurationDetails(
     scaling_policy = <scaling_policy>
 )
   
-**Create the container environment configuration**
+# Create the container environment configuration
 environment_config_details = OcirModelDeploymentEnvironmentConfigurationDetails(
     environment_configuration_type="OCIR_CONTAINER",
     environment_variables={'CONTAINER_TYPE': 'TRITON'},

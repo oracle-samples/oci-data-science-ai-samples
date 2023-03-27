@@ -69,6 +69,8 @@ public enum Config {
 	private String objectStorageBucket;
 	private String datasetDirectory;
 
+	private String removeLabelPrefix;
+
 	private Config() {
 		try {
 			Properties config = new Properties();
@@ -128,6 +130,9 @@ public enum Config {
 			datasetDirectory = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.DATASET_DIRECTORY_PATH))
 					? config.getProperty(DataLabelingConstants.DATASET_DIRECTORY_PATH)
 					: System.getProperty(DataLabelingConstants.DATASET_DIRECTORY_PATH);
+			removeLabelPrefix = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.REMOVE_LABEL_PREFIX))
+					? config.getProperty(DataLabelingConstants.REMOVE_LABEL_PREFIX)
+					: System.getProperty(DataLabelingConstants.REMOVE_LABEL_PREFIX);
 			String threadConfig = StringUtils.isEmpty(System.getProperty(DataLabelingConstants.THREAD_COUNT))
 					? config.getProperty(DataLabelingConstants.THREAD_COUNT)
 					: System.getProperty(DataLabelingConstants.THREAD_COUNT);
@@ -159,6 +164,10 @@ public enum Config {
 			case DataLabelingConstants.OBJECT_STORAGE:
 				performAssertionOnObjectStorageInput();
 				initializeObjectStorageClient();
+				break;
+			case DataLabelingConstants.REMOVE_LABEL:
+				performAssertionOnRemoveLabelInput();
+				initializeDpClient();
 		}
 	}
 
@@ -173,6 +182,12 @@ public enum Config {
 		assert dpEndpoint != null : "DLS DP URL cannot be empty";
 		assert datasetId != null : "Dataset Id cannot be empty";
 		assert labelingAlgorithm != null : "Labeling Strategy cannot be empty";
+	}
+
+	private void performAssertionOnRemoveLabelInput(){
+		assert dpEndpoint != null : "DLS DP URL cannot be empty";
+		assert datasetId != null : "Dataset Id cannot be empty";
+		assert removeLabelPrefix != null : "Remove Label Prefix cannot be empty";
 	}
 
 	private void initializeLabelingStrategy() {

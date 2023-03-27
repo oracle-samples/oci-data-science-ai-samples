@@ -31,4 +31,6 @@ public class DataLabelingConstants {
 	public static final String TENANT = "TENANT";
 	public static final String DLS = "DLS";
 	public static final String OBJECT_STORAGE = "OBJECT_STORAGE";
+	public static final String REMOVE_LABEL = "REMOVE_LABEL";
+	public static final String REMOVE_LABEL_PREFIX = "REMOVE_LABEL_PREFIX";
 }
