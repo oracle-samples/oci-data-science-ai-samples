@@ -14,7 +14,15 @@ import metric_query
 from ads.common.oci_datascience import OCIDataScienceMixin
 from ads.common.oci_resource import OCIResource
 from ads.jobs import DataScienceJobRun, Job, DataScienceJob
-from flask import Flask, request, abort, jsonify, render_template, make_response, redirect
+from flask import (
+    Flask,
+    request,
+    abort,
+    jsonify,
+    render_template,
+    make_response,
+    redirect,
+)
 
 
 SERVICE_METRICS_NAMESPACE = "oci_datascience_jobrun"
@@ -37,7 +45,7 @@ if "LOG_LEVEL" in os.environ and hasattr(logging, os.environ["LOG_LEVEL"]):
     LOG_LEVEL = getattr(logging, os.environ["LOG_LEVEL"])
 else:
     LOG_LEVEL = logging.INFO
-flask_log = logging.getLogger('werkzeug')
+flask_log = logging.getLogger("werkzeug")
 flask_log.setLevel(LOG_LEVEL)
 logging.lastResort.setLevel(LOG_LEVEL)
 logging.getLogger("telemetry").setLevel(LOG_LEVEL)
@@ -52,7 +60,9 @@ if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
     logger.info(f"Using OCI API Key config: {OCI_KEY_CONFIG_LOCATION}")
     logger.info(f"Using OCI API Key profile: {OCI_KEY_PROFILE_NAME}")
 # Flask templates location
-app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), "templates"))
+app = Flask(
+    __name__, template_folder=os.path.join(os.path.dirname(__file__), "templates")
+)
 
 
 def abort_with_json_error(code, message):
@@ -64,7 +74,7 @@ def instance_principal_available():
         requests.get(
             oci.auth.signers.InstancePrincipalsSecurityTokenSigner.GET_REGION_URL,
             headers=oci.auth.signers.InstancePrincipalsDelegationTokenSigner.METADATA_AUTH_HEADERS,
-            timeout=1
+            timeout=1,
         )
         return True
     except:
@@ -94,11 +104,13 @@ def get_authentication():
     if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
         auth = dict(
             config=oci.config.from_file(
-                file_location=OCI_KEY_CONFIG_LOCATION,
-                profile_name=OCI_KEY_PROFILE_NAME
+                file_location=OCI_KEY_CONFIG_LOCATION, profile_name=OCI_KEY_PROFILE_NAME
             )
         )
-    elif oci.auth.signers.resource_principals_signer.OCI_RESOURCE_PRINCIPAL_VERSION in os.environ:
+    elif (
+        oci.auth.signers.resource_principals_signer.OCI_RESOURCE_PRINCIPAL_VERSION
+        in os.environ
+    ):
         config = {}
         signer = oci.auth.signers.get_resource_principals_signer()
         auth = dict(config=config, signer=signer)
@@ -113,28 +125,32 @@ def get_authentication():
 
 auth = get_authentication()
 if auth["config"]:
-    ads.set_auth(oci_config_location=OCI_KEY_CONFIG_LOCATION, profile=OCI_KEY_PROFILE_NAME)
+    ads.set_auth(
+        oci_config_location=OCI_KEY_CONFIG_LOCATION, profile=OCI_KEY_PROFILE_NAME
+    )
 else:
-    ads.set_auth('resource_principal')
+    ads.set_auth(**auth)
 
 
 def check_ocid(ocid):
-    if not re.match(r'ocid[0-9].[a-z]+.oc[0-9].[a-z]{3}.[a-z0-9]+', ocid):
+    if not re.match(r"ocid[0-9].[a-z]+.oc[0-9].[a-z]{3}.[a-z0-9]+", ocid):
         abort_with_json_error(404, f"Invalid OCID: {ocid}")
 
 
 def check_project_id(project_id):
-    if not re.match(r'ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+', project_id):
+    if not re.match(
+        r"ocid[0-9].datascienceproject.oc[0-9].[a-z]{3}.[a-z0-9]+", project_id
+    ):
         abort_with_json_error(404, f"Invalid Project OCID: {project_id}")
 
 
 def check_compartment_id(compartment_id):
-    if not re.match(r'ocid[0-9].compartment.oc[0-9]..[a-z0-9]+', compartment_id):
+    if not re.match(r"ocid[0-9].compartment.oc[0-9]..[a-z0-9]+", compartment_id):
         abort_with_json_error(404, f"Invalid Compartment OCID: {compartment_id}")
 
 
 def is_valid_ocid(resource_type, ocid):
-    if re.match(r'ocid[0-9].' + resource_type + r'.oc[0-9].[a-z]{3}.[a-z0-9]+', ocid):
+    if re.match(r"ocid[0-9]." + resource_type + r".oc[0-9].[a-z]{3}.[a-z0-9]+", ocid):
         return True
     return False
 
@@ -172,7 +188,7 @@ def list_all_sub_compartments(client: oci.identity.IdentityClient, compartment_i
         client.list_compartments,
         compartment_id=compartment_id,
         compartment_id_in_subtree=True,
-        access_level="ANY"
+        access_level="ANY",
     ).data
     return compartments
 
@@ -190,7 +206,9 @@ def init_components(compartment_id, project_id):
     endpoint = check_endpoint()
 
     if project_id:
-        compartment_id, project_id = check_compartment_project(compartment_id, project_id)
+        compartment_id, project_id = check_compartment_project(
+            compartment_id, project_id
+        )
     else:
         compartment_id = None
 
@@ -207,25 +225,37 @@ def init_components(compartment_id, project_id):
     compartments = []
     # User may not have permissions to list compartment.
     try:
-        compartments.extend(list_all_sub_compartments(client, compartment_id=tenancy_id))
+        compartments.extend(
+            list_all_sub_compartments(client, compartment_id=tenancy_id)
+        )
     except Exception as ex:
         traceback.print_exc()
-        logger.error("ERROR: Unable to list all sub compartment in tenancy %s.", tenancy_id)
+        logger.error(
+            "ERROR: Unable to list all sub compartment in tenancy %s.", tenancy_id
+        )
         try:
-            compartments.append(list_all_child_compartments(client, compartment_id=tenancy_id))
+            compartments.append(
+                list_all_child_compartments(client, compartment_id=tenancy_id)
+            )
         except Exception as ex:
             traceback.print_exc()
-            logger.error("ERROR: Unable to list all child compartment in tenancy %s.", tenancy_id)
+            logger.error(
+                "ERROR: Unable to list all child compartment in tenancy %s.", tenancy_id
+            )
     try:
         root_compartment = client.get_compartment(tenancy_id).data
         compartments.insert(0, root_compartment)
     except Exception as ex:
         traceback.print_exc()
-        logger.error("ERROR: Unable to get details of the root compartment %s.", tenancy_id)
-        compartments.insert(0, oci.identity.models.Compartment(
-            id=tenancy_id,
-            name=" ** Root - Name N/A **"
-        ))
+        logger.error(
+            "ERROR: Unable to get details of the root compartment %s.", tenancy_id
+        )
+        compartments.insert(
+            0,
+            oci.identity.models.Compartment(
+                id=tenancy_id, name=" ** Root - Name N/A **"
+            ),
+        )
     context = dict(
         compartment_id=compartment_id,
         project_id=project_id,
@@ -244,10 +274,8 @@ def job_monitor(compartment_id=None, project_id=None):
         return redirect("https://www.oracle.com/favicon.ico")
 
     context = init_components(compartment_id, project_id)
-    return render_template(
-        'job_monitor.html',
-        **context
-    )
+    return render_template("job_monitor.html", **context)
+
 
 @app.route("/jobs/<compartment_id>/<project_id>")
 def list_jobs(compartment_id, project_id):
@@ -256,17 +284,20 @@ def list_jobs(compartment_id, project_id):
     endpoint = check_endpoint()
 
     # Calling OCI API here instead of ADS API is faster :)
-    jobs = oci.data_science.DataScienceClient(
-        service_endpoint=endpoint,
-        **get_authentication()
-    ).list_jobs(
-        compartment_id=compartment_id,
-        project_id=project_id,
-        lifecycle_state="ACTIVE",
-        sort_by="timeCreated",
-        sort_order="DESC",
-        limit=int(limit) + 5
-    ).data[:int(limit)]
+    jobs = (
+        oci.data_science.DataScienceClient(
+            service_endpoint=endpoint, **get_authentication()
+        )
+        .list_jobs(
+            compartment_id=compartment_id,
+            project_id=project_id,
+            lifecycle_state="ACTIVE",
+            sort_by="timeCreated",
+            sort_order="DESC",
+            limit=int(limit) + 5,
+        )
+        .data[: int(limit)]
+    )
 
     job_list = []
     for job in jobs:
@@ -275,13 +306,10 @@ def list_jobs(compartment_id, project_id):
             id=job.id,
             ocid=job.id,
             time_created=job.time_created.timestamp(),
-            html=render_template("job_accordion.html", job=job)
+            html=render_template("job_accordion.html", job=job),
         )
         job_list.append(job_data)
-    return jsonify({
-        "limit": limit,
-        "jobs": job_list
-    })
+    return jsonify({"limit": limit, "jobs": job_list})
 
 
 @app.route("/job_runs/<job_id>")
@@ -292,15 +320,15 @@ def list_job_runs(job_id):
     runs = job.run_list()
     run_list = []
     for run in runs:
+        if run.status == "DELETED":
+            continue
         run_data = {
             "ocid": run.id,
             "job_ocid": job.id,
-            "html": render_template("job_run_template.html", run=run, job=job)
+            "html": render_template("job_run_template.html", run=run, job=job),
         }
         run_list.append(run_data)
-    return jsonify({
-        "runs": run_list
-    })
+    return jsonify({"runs": run_list})
 
 
 @app.route("/projects/<compartment_id>")
@@ -308,21 +336,19 @@ def list_projects(compartment_id):
     endpoint = check_endpoint()
     logger.debug(f"Getting projects in compartment {compartment_id}")
     ds_client = oci.data_science.DataScienceClient(
-        service_endpoint=endpoint,
-        **get_authentication()
+        service_endpoint=endpoint, **get_authentication()
     )
     projects = oci.pagination.list_call_get_all_results(
-        ds_client.list_projects,
-        compartment_id=compartment_id,
-        sort_by="displayName"
+        ds_client.list_projects, compartment_id=compartment_id, sort_by="displayName"
     ).data
     # projects = sorted(projects, key=lambda x: x.display_name)
     logger.debug(f"{len(projects)} projects")
     context = {
         "compartment_id": compartment_id,
         "projects": [
-            {"display_name": project.display_name, "ocid": project.id} for project in projects
-        ]
+            {"display_name": project.display_name, "ocid": project.id}
+            for project in projects
+        ],
     }
     return jsonify(context)
 
@@ -354,7 +380,9 @@ def get_logs(job_run_ocid):
         "logs": logs,
         "status": run.lifecycle_state,
         "statusDetails": run.lifecycle_details,
-        "stopped": True if run.lifecycle_state in DataScienceJobRun.TERMINAL_STATES else False
+        "stopped": True
+        if run.lifecycle_state in DataScienceJobRun.TERMINAL_STATES
+        else False,
     }
     return jsonify(context)
 
@@ -367,22 +395,23 @@ def delete_job(ocid):
         try:
             job.delete()
             error = None
+            logger.info("Deleted Job: %s", ocid)
         except oci.exceptions.ServiceError as ex:
             error = ex.message
-        logger.info(f"Deleted Job: {ocid}")
+
     elif is_valid_ocid("datasciencejobrun", ocid):
         run = DataScienceJobRun.from_ocid(ocid)
         try:
+            if run.status not in run.TERMINAL_STATES:
+                run.cancel()
+                logger.info("Cancelled Job Run: %s", ocid)
             run.delete()
             error = None
+            logger.info("Deleted Job Run: %s", ocid)
         except oci.exceptions.ServiceError as ex:
             error = ex.message
-        logger.info(f"Deleted Job Run: {ocid}")
 
-    return jsonify({
-        "ocid": ocid,
-        "error": error
-    })
+    return jsonify({"ocid": ocid, "error": error})
 
 
 @app.route("/download/url/<path:url>")
@@ -397,13 +426,9 @@ def load_yaml_list(uri):
         return {"yaml": yaml_files}
     for filename in os.listdir(uri):
         if filename.endswith(".yaml") or filename.endswith(".yml"):
-            yaml_files.append({
-                "filename": filename
-            })
+            yaml_files.append({"filename": filename})
     yaml_files.sort(key=lambda x: x.get("filename"))
-    return {
-        "yaml": yaml_files
-    }
+    return {"yaml": yaml_files}
 
 
 @app.route("/yaml")
@@ -413,10 +438,7 @@ def load_yaml(filename=None):
         return jsonify(load_yaml_list(YAML_DIR))
     with open(os.path.join(YAML_DIR, filename)) as f:
         content = f.read()
-    return jsonify({
-        "filename": filename,
-        "content": content
-    })
+    return jsonify({"filename": filename, "content": content})
 
 
 @app.route("/run", methods=["POST"])
@@ -429,7 +451,7 @@ def run():
     if not auth["config"]:
         abort_with_json_error(
             403,
-            "Starting a workflow is only available when you launch the app locally with OCI API key."
+            "Starting a workflow is only available when you launch the app locally with OCI API key.",
         )
     try:
         workflow = yaml.safe_load(urllib.parse.unquote(request.data[5:].decode()))
@@ -444,6 +466,7 @@ def run():
         else:
             # Running an opctl workflow require additional dependencies for ADS
             from ads.opctl.cmds import run as opctl_run
+
             kwargs = {}
             kwargs["tag"] = None
             kwargs["registry"] = None
@@ -458,9 +481,11 @@ def run():
             info = opctl_run(workflow, **kwargs)
             job_id = info[0].id
 
-        return jsonify({
-            "job": job_id,
-        })
+        return jsonify(
+            {
+                "job": job_id,
+            }
+        )
     except Exception as ex:
         traceback.print_exc()
         abort_with_json_error(500, str(ex))
@@ -477,20 +502,19 @@ def list_metrics(ocid):
     custom_metric_namespace = get_custom_metrics_namespace(job_run)
     client = oci.monitoring.MonitoringClient(**get_authentication())
     service_metrics = metric_query.list_job_run_metrics(
-        job_run,
-        SERVICE_METRICS_NAMESPACE,
-        SERVICE_METRICS_DIMENSION,
-        client
+        job_run, SERVICE_METRICS_NAMESPACE, SERVICE_METRICS_DIMENSION, client
     )
     custom_metrics = metric_query.list_job_run_metrics(
         job_run,
         custom_metric_namespace,
         metric_query.CUSTOM_METRIC_OCID_DIMENSION,
-        client
+        client,
     )
-    return jsonify({
-        "metrics": service_metrics + custom_metrics,
-    })
+    return jsonify(
+        {
+            "metrics": service_metrics + custom_metrics,
+        }
+    )
 
 
 @app.route("/metrics/<name>/<ocid>")
@@ -515,10 +539,12 @@ def get_metrics(name, ocid):
         )
         if results:
             for result in results:
-                run_metrics.append([
-                    {"timestamp": p.timestamp, "value": p.value }
-                    for p in result.aggregated_datapoints
-                ])
+                run_metrics.append(
+                    [
+                        {"timestamp": p.timestamp, "value": p.value}
+                        for p in result.aggregated_datapoints
+                    ]
+                )
     timestamps = set()
     datasets = []
     for metric in run_metrics:
@@ -530,21 +556,24 @@ def get_metrics(name, ocid):
     for dataset in datasets:
         values.append([dataset.get(timestamp) for timestamp in timestamps])
     datasets = [{"label": f"#{i}", "data": v} for i, v in enumerate(values, start=1)]
-    return jsonify({
-        "metrics": run_metrics,
-        "timestamps": timestamps,
-        "datasets": datasets
-    })
+    return jsonify(
+        {"metrics": run_metrics, "timestamps": timestamps, "datasets": datasets}
+    )
+
 
 @app.route("/shapes/<compartment_ocid>")
 def supported_shapes(compartment_ocid):
     supported_shapes = [
-        shape.name for shape in DataScienceJob.instance_shapes(compartment_id=compartment_ocid)
+        shape.name
+        for shape in DataScienceJob.instance_shapes(compartment_id=compartment_ocid)
     ]
     fast_launch_shapes = [
-        shape.shape_name for shape in DataScienceJob.fast_launch_shapes(compartment_id=compartment_ocid)
+        shape.shape_name
+        for shape in DataScienceJob.fast_launch_shapes(compartment_id=compartment_ocid)
     ]
-    return jsonify({
-        "supported_shapes": supported_shapes,
-        "fast_launch_shapes": fast_launch_shapes,
-    })
+    return jsonify(
+        {
+            "supported_shapes": supported_shapes,
+            "fast_launch_shapes": fast_launch_shapes,
+        }
+    )
