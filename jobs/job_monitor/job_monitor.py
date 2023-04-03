@@ -535,7 +535,10 @@ def get_metrics(name, ocid):
             metric_namespace,
             dimension,
             client,
-            job_run.time_started,
+            start=job_run.time_started,
+            end=job_run.time_finished
+            if job_run.time_finished
+            else datetime.datetime.now(datetime.timezone.utc),
         )
         if results:
             for result in results:

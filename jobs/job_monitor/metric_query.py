@@ -6,12 +6,18 @@ SERVICE_METRIC_NAMESPACE = "oci_datascience_jobrun"
 SERVICE_METRIC_OCID_DIMENSION = "resourceId"
 CUSTOM_METRIC_OCID_DIMENSION = "job_run_ocid"
 CUSTOM_METRIC_DEFAULT_DIMENSIONS = ["job_run_ocid", "job_ocid"]
+SECONDS_IN_A_HOUR = 3600
+SECONDS_IN_A_DAY = SECONDS_IN_A_HOUR * 24
+SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7
+SECONDS_IN_30_DAYS = SECONDS_IN_A_DAY * 30
 
 
-def list_job_run_metrics(job_run: oci.data_science.models.JobRun,
-                         namespace: str,
-                         ocid_dimension: str,
-                         monitoring_client: oci.monitoring.MonitoringClient) -> list:
+def list_job_run_metrics(
+    job_run: oci.data_science.models.JobRun,
+    namespace: str,
+    ocid_dimension: str,
+    monitoring_client: oci.monitoring.MonitoringClient,
+) -> list:
     """
     Lists the metrics available for the specified job run in the specified compartment and namespace
 
@@ -32,8 +38,7 @@ def list_job_run_metrics(job_run: oci.data_science.models.JobRun,
         A list of available metrics for the job run.
     """
     list_details = oci.monitoring.models.ListMetricsDetails(
-        namespace=namespace,
-        dimension_filters={ocid_dimension: job_run.id}
+        namespace=namespace, dimension_filters={ocid_dimension: job_run.id}
     )
     metrics = monitoring_client.list_metrics(job_run.compartment_id, list_details).data
     metric_names = []
@@ -43,13 +48,15 @@ def list_job_run_metrics(job_run: oci.data_science.models.JobRun,
     return metric_names
 
 
-def get_metric_values(job_run: oci.data_science.models.JobRun,
-                      name: str,
-                      namespace: str,
-                      ocid_dimension: str,
-                      monitoring_client: oci.monitoring.MonitoringClient,
-                      start: datetime.datetime = None,
-                      end: datetime.datetime = None) -> list:
+def get_metric_values(
+    job_run: oci.data_science.models.JobRun,
+    name: str,
+    namespace: str,
+    ocid_dimension: str,
+    monitoring_client: oci.monitoring.MonitoringClient,
+    start: datetime.datetime = None,
+    end: datetime.datetime = None,
+) -> list:
     """
     Gets the metric values for the specified metric in the given time interval
 
@@ -75,13 +82,25 @@ def get_metric_values(job_run: oci.data_science.models.JobRun,
     list
         The metric values. There will be one metric summary per unique combination of dimension values.
     """
+    # OCI will only return 3 hours of data if the end time is not specified.
+    # See limits: https://docs.oracle.com/en-us/iaas/Content/Monitoring/Reference/mql.htm#Interval
+    interval = (end - start).total_seconds()
+    if interval < SECONDS_IN_A_HOUR:
+        resolution = "1m"
+    elif interval < SECONDS_IN_A_DAY:
+        resolution = "5m"
+    elif interval < SECONDS_IN_A_WEEK:
+        resolution = "20m"
+    else:
+        resolution = "1h"
     response = monitoring_client.summarize_metrics_data(
         compartment_id=job_run.compartment_id,
         summarize_metrics_data_details=oci.monitoring.models.SummarizeMetricsDataDetails(
             namespace=namespace,
-            query=f"{name}[1m]{{{ocid_dimension} = \"{job_run.id}\"}}.mean()",
+            resolution=resolution,
+            query=f'{name}[{resolution}]{{{ocid_dimension} = "{job_run.id}"}}.mean()',
             start_time=start,
-            end_time=end
-        )
+            end_time=end,
+        ),
     )
     return response.data if response.data else []
