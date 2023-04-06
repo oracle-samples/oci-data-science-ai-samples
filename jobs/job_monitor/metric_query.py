@@ -84,15 +84,18 @@ def get_metric_values(
     """
     # OCI will only return 3 hours of data if the end time is not specified.
     # See limits: https://docs.oracle.com/en-us/iaas/Content/Monitoring/Reference/mql.htm#Interval
-    interval = (end - start).total_seconds()
-    if interval < SECONDS_IN_A_HOUR:
-        resolution = "1m"
-    elif interval < SECONDS_IN_A_DAY:
-        resolution = "5m"
-    elif interval < SECONDS_IN_A_WEEK:
-        resolution = "20m"
+    if start and end:
+        interval = (end - start).total_seconds()
+        if interval < SECONDS_IN_A_HOUR:
+            resolution = "1m"
+        elif interval < SECONDS_IN_A_DAY:
+            resolution = "5m"
+        elif interval < SECONDS_IN_A_WEEK:
+            resolution = "20m"
+        else:
+            resolution = "1h"
     else:
-        resolution = "1h"
+        resolution = "1m"
     response = monitoring_client.summarize_metrics_data(
         compartment_id=job_run.compartment_id,
         summarize_metrics_data_details=oci.monitoring.models.SummarizeMetricsDataDetails(

@@ -527,7 +527,7 @@ def get_metrics(name, ocid):
         metric_namespace = "oci_datascience_jobrun"
         dimension = SERVICE_METRICS_DIMENSION
     run_metrics = []
-    if metric_namespace:
+    if metric_namespace and job_run.time_started:
         client = oci.monitoring.MonitoringClient(**get_authentication())
         results = metric_query.get_metric_values(
             job_run,
