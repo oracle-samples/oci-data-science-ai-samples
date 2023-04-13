@@ -13,7 +13,7 @@ RUN python -m pip install \
 
 # python container does not have curl
 RUN apt update
-RUN apt-get install -y curl wget gpg
+RUN apt-get install -y curl wget gpg git htop vim
 
 FROM base AS run-type-local
 # nothing to see here
