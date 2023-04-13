@@ -1,6 +1,6 @@
 ## Sensitivity Auto Tuning based on Labeled Data
 
-Anomaly Detection Univariate Inference Workflow API provides a sensitivity parameter to move the decision boundary based on which we classify whether a timestamp is an anomaly. In other words, it is a parameter to tradeoff between False Positive Rate and True Positive Rate.
+Anomaly Detection API provides a sensitivity parameter to move the decision boundary based on which we classify whether a timestamp is an anomaly. In other words, it is a parameter to tradeoff between False Positive Rate and True Positive Rate.
 Other Anomaly Detection Service features also offer the sensitivity parameter and this solution can be extended to those features as well.
 
 
@@ -51,12 +51,13 @@ The script supports following params:
 * 100 inference calls are sent with each sample sensitivity value. Each call calculates the TPR and FPR by comparing the labeled data and the results produced from the inference calls.
     ```python
     for sensitivity_sample in sensitivity_samples:
-    res = get_inference_results(label_df=label_df, 
-                           window_size=window_size, 
-                           sensitivity=sensitivity_sample,
-                           local_mode=True,
-                           request=univariate_inline_signal_request_data)
-    results=results.append(res, ignore_index=True) ```
+      res = get_inference_results(label_df=label_df,
+                                    sensitivity=sensitivity_sample,
+                                    ad_client=ad_client,
+                                    data=payloadData,
+                                    model_id=model_id,
+                                    signal_names=signal_names)
+      results=results.append(res, ignore_index=True) ```
         
 * This results in the construction of a dataframe that holds a column for TPR, FPR, and Sensitivity values.  
     
@@ -68,8 +69,8 @@ The script supports following params:
 
 * The desired metrics bounds are applied to the results
     ```python 
-       results = results.loc[(results['TPR'] >= DES_TPR)]
-       best_FPR = results.loc[(results['FPR'] <= DES_FPR)] 
+       results = results.loc[(results['TPR'] >= des_tpr)]
+       best_FPR = results.loc[(results['FPR'] <= des_fpr)] 
     ```    
 * We first check whether we are able to meet the FPR metric. If we are unable to meet the FPR metric, we will optimize to get the lowest possible FPR that corresponds to a TPR value that meets the TPR metric.  
     If we are able to meet the FPR metric then we find the sensitivity value with the best value for the function "TPR \* (1 - FPR)" . This will give us a TPR that is good enough while also not sacrificing the FPR too much.  

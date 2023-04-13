@@ -40,6 +40,10 @@ Pipelines are essential for complex machine learning and data science tasks as t
 
 The [data labeling service](https://docs.oracle.com/en-us/iaas/data-labeling/data-labeling/using/home.htm) helps identify properties (labels) of documents, text, and images (records) and annotates (labels) them with those properties. This section contains Python and Java scripts to annotate bulk numbers of records in OCI Data Labeling Service (DLS).
 
+### [Notebook Lifecycle Script Examples](notebook_lifecycle_scripts_examples/)
+
+The [OCI Data Science service](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) offers managed notebook(jupyterlab) sessions. Notebook lifecycle script features execute the customer provided scripts during CREATE/ACTIVATE/DEACTIVATE/DELETE notebook session lifecycle. This folder contains the examples script which needs little to no editing and ready to be used as lifecycle scripts input.
+
 ## Resources
 
 Check out the following resources for more information about the OCI Data Science and AI services:

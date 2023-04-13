@@ -3,54 +3,55 @@ import pandas as pd
 import argparse
 import numpy as np
 
-from oci.ai_anomaly_detection.models import UnivariateModelTrainingRequestDetails, \
-    UnivariateInlineSignalRequestData, UnivariateInlineSignalValueRequestData, \
-    InlineUnivariateInferenceWorkflowRequestDetails
+from oci.ai_anomaly_detection.models import DataItem, InlineDetectAnomaliesRequest
 import time
 from sklearn import metrics
 from oci.ai_anomaly_detection import AnomalyDetectionClient
 
 
+def remove_nan(val):
+    if val != val:
+        return "0"
+    elif val == 1:
+        return 1
+
 def get_inference_results(label_df: pd.DataFrame,
-                          window_size: int,
                           sensitivity: float,
                           ad_client: AnomalyDetectionClient,
-                          request: UnivariateInlineSignalRequestData) -> dict:
-    univariate_model_training_request_details = UnivariateModelTrainingRequestDetails(window_size=window_size)
-    univariate_iw_request = InlineUnivariateInferenceWorkflowRequestDetails(
-        are_all_data_points_required=True,
-        training_request_details=univariate_model_training_request_details,
+                          data: list,
+                          model_id: str,
+                          signal_names: list) -> dict:
+    inline_req = InlineDetectAnomaliesRequest(
+        model_id=model_id,
         request_type="INLINE",
+        signal_names=signal_names,
         sensitivity=sensitivity,
-        signal_data=[request])
+        data=data)
 
-    detect_response = ad_client.univariate_inference_workflow_request(univariate_iw_request)
-
-    window_size = detect_response.data.training_result_details.signal_result_details[0].window_size
+    window_size = ad_client.get_model(model_id).data.model_training_results.window_size
+    detect_response = ad_client.detect_anomalies(detect_anomalies_details=inline_req)
     anomaly_data = detect_response.data.detection_results
     ret = pd.DataFrame(
-        columns=["timestamp", "signalname", "anomaly_score", "actual_value", "estimated_value", "is_anomaly"])
+        columns=["date", "signalname", "anomaly_score", "actual_value", "estimated_value", "is_anomaly"])
+
     # Adding detected anomaly labels
     i = 0
-    signal_name = anomaly_data[0].signal_name
-    for anomaly in anomaly_data[0].values:
-        row = [str(anomaly.timestamp)[:-6],
-               signal_name,
-               anomaly.anomaly_score,
-               anomaly.actual_value,
-               anomaly.estimated_value,
-               anomaly.is_anomaly]
-        i += 1
-        ret.loc[len(ret)] = row
+    for a in anomaly_data:
+        for anomaly in a.anomalies:
+            row = [str(a.timestamp).replace(" ","T")[:-6],
+                   anomaly.signal_name,
+                   anomaly.anomaly_score,
+                   anomaly.actual_value,
+                   anomaly.estimated_value,
+                   1]
+            i += 1
+            ret.loc[len(ret)] = row
+    ret = pd.merge(label_df, ret, how="outer")
+    ret['is_anomaly'] = ret.apply(lambda row : remove_nan(row['is_anomaly']), axis=1)
 
     # Create report
-
     y_true = label_df.anomaly.iloc[window_size - 1:].reset_index(drop=True).squeeze()
-    y_pred = ret['is_anomaly'].astype(int).to_numpy()
-
-
-    # TPR (TP/(TP+FN)) is >= 80%
-    # FPR (FP/(FP+TN)) is <= 15%
+    y_pred = ret.is_anomaly.iloc[window_size - 1:].reset_index(drop=True).squeeze().astype(int).to_numpy()
 
     cm = metrics.confusion_matrix(y_true, y_pred)
     tpr = metrics.recall_score(y_true, y_pred)
@@ -95,23 +96,22 @@ def tune_sensitivity(results: pd.DataFrame,
 
 
 def find_best_sensitivity(des_tpr: float,
-          des_fpr: float,
-          label_df: pd.DataFrame,
-          ad_client: AnomalyDetectionClient,
-          window_size: int) -> float:
-
+                          des_fpr: float,
+                          label_df: pd.DataFrame,
+                          ad_client: AnomalyDetectionClient,
+                          model_id) -> float:
     # Generate sensitivity samples
-    sensitivity_samples = np.arange(0, 1, 0.01)
-    # sensitivity_samples = [0.6601652074029946, 0.23891188415967424]
+    sensitivity_samples = np.arange(0.0, 1, 0.01)
 
     # Prepare inline request data
-    signal_names = 'value'
-    value = []
+    signal_names = ['value']
+    payloadData = []
     for index, row in label_df.iterrows():
-        requestData = {"timestamp": row['timestamp'], "value": row['value']}
-        value.append(UnivariateInlineSignalValueRequestData(**requestData))
+        timestamp = row['date']
+        values = list(row[signal_names])
+        dItem = DataItem(timestamp=timestamp, values=values)
+        payloadData.append(dItem)
 
-    univariate_inline_signal_request_data = UnivariateInlineSignalRequestData(signal_name=signal_names, values=value)
     results = pd.DataFrame(columns=['TPR',
                                     'FPR',
                                     'Sensitivity'])
@@ -120,10 +120,11 @@ def find_best_sensitivity(des_tpr: float,
     total_start_time = time.time()
     for sensitivity_sample in sensitivity_samples:
         res = get_inference_results(label_df=label_df,
-                                    window_size=window_size,
                                     sensitivity=sensitivity_sample,
                                     ad_client=ad_client,
-                                    request=univariate_inline_signal_request_data)
+                                    data=payloadData,
+                                    model_id=model_id,
+                                    signal_names=signal_names)
         results = pd.concat([results, pd.DataFrame.from_records([res])], ignore_index=True)
 
     total_end_time = time.time()
@@ -134,10 +135,10 @@ def find_best_sensitivity(des_tpr: float,
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Sensitivity Auto Tuner')
     parser.add_argument('--des_tpr', type=float, default=0.80)
-    parser.add_argument('--des_fpr', type=float, default=0.15)
+    parser.add_argument('--des_fpr', type=float, default=0.25)
     parser.add_argument('--dataset_path', type=str, default='~/')
-    parser.add_argument('--window_size', type=int, default=None)
     parser.add_argument('--config_path', type=str, default='~/.oci/config')
+    parser.add_argument('--model_id', type=str)
     args = parser.parse_args()
 
     # Setting up AnomalyDetectionClient
@@ -147,4 +148,4 @@ if __name__ == "__main__":
     # Read input dataset into DataFrame
     label_df = pd.read_csv(args.dataset_path)
 
-    find_best_sensitivity(args.des_tpr, args.des_fpr, label_df, ad_client, args.window_size)
+    find_best_sensitivity(args.des_tpr, args.des_fpr, label_df, ad_client, args.model_id)
