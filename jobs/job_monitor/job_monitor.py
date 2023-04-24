@@ -28,6 +28,7 @@ from flask import (
 SERVICE_METRICS_NAMESPACE = "oci_datascience_jobrun"
 SERVICE_METRICS_DIMENSION = "resourceId"
 CUSTOM_METRICS_NAMESPACE_ENV = "METRICS_NAMESPACE"
+CUSTOM_METRICS_DEFAULT_NAMESPACE = "jobrun_gpu"
 CUSTOM_METRICS_DIMENSION = metric_query.CUSTOM_METRIC_OCID_DIMENSION
 
 
@@ -493,11 +494,10 @@ def run():
 
 def get_custom_metrics_namespace(job_run):
     job_envs = job_run.job.runtime.envs
-    return job_envs.get(CUSTOM_METRICS_NAMESPACE_ENV)
+    return job_envs.get(CUSTOM_METRICS_NAMESPACE_ENV, CUSTOM_METRICS_DEFAULT_NAMESPACE)
 
 
-@app.route("/metrics/<ocid>")
-def list_metrics(ocid):
+def get_metrics_list(ocid):
     job_run = DataScienceJobRun.from_ocid(ocid)
     custom_metric_namespace = get_custom_metrics_namespace(job_run)
     client = oci.monitoring.MonitoringClient(**get_authentication())
@@ -510,9 +510,32 @@ def list_metrics(ocid):
         metric_query.CUSTOM_METRIC_OCID_DIMENSION,
         client,
     )
+    metrics = service_metrics + custom_metrics
+    if "gpu.gpu_utilization" in metrics and "GpuUtilization" in metrics:
+        metrics.remove("GpuUtilization")
+    metric_display_name = {
+        "CpuUtilization": "CPU Utilization (%)",
+        "GpuUtilization": "GPU Utilization (%)",
+        "DiskUtilization": "Disk Utilization (%)",
+        "MemoryUtilization": "Memory Utilization (%)",
+        "NetworkBytesIn": "Network Bytes In",
+        "NetworkBytesOut": "Network Bytes Out",
+        "gpu.gpu_utilization": "GPU Utilization (%)",
+        "gpu.memory_usage": "GPU Memory (%)",
+        "gpu.power_draw": "GPU Power (W)",
+        "gpu.temperature": "GPU Temperature (&#8451;)",
+    }
+    return [
+        {"key": metric, "display": metric_display_name.get(metric, metric)}
+        for metric in metrics
+    ]
+
+
+@app.route("/metrics/<ocid>")
+def list_metrics(ocid):
     return jsonify(
         {
-            "metrics": service_metrics + custom_metrics,
+            "metrics": get_metrics_list(ocid),
         }
     )
 
@@ -560,7 +583,11 @@ def get_metrics(name, ocid):
         values.append([dataset.get(timestamp) for timestamp in timestamps])
     datasets = [{"label": f"#{i}", "data": v} for i, v in enumerate(values, start=1)]
     return jsonify(
-        {"metrics": run_metrics, "timestamps": timestamps, "datasets": datasets}
+        {
+            "metrics": get_metrics_list(ocid),
+            "timestamps": timestamps,
+            "datasets": datasets,
+        }
     )
 
 
