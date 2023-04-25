@@ -8,13 +8,13 @@ GPT-2 is a transformer based model capable to generating texts from an input tex
 
 1. Encoder - The encoder part of the pipeline converts the user input text corpus to word embedding vectors
 
-2. GPT2 - The core unsuperviosed model that can generate the most probable output token from given word embedding vectors
+2. GPT2 - The core unsupervised model that can generate the most probable output token from given word embedding vectors
 
 3. Decoder - The decoder part converts the input + generated token embeddings to output text
 
-![input-output](./images/in_out.drawio.png)
+![input-output](./images/in_out.drawio_11.png)
 
-# Model Deployment Multi Compute Backends (CPU-GPU) and Nividia Triton Inference Server
+# Model Deployment Multi Compute Backends (CPU-GPU) and Nvidia Triton Inference Server
 
 We can utilize Nvidia Triton Inference Server's model ensemble capablity to break the model's components and deploy it in OCI Model Deployment's multi compute backends option to get the following computation graph, where encoder and decoder utilizes the CPU while GPT-2 uses GPU for inference compuation
 
@@ -234,9 +234,9 @@ print("Out Seq::", gen_sentence)
 
 ```
 
-You will see 10 generated tokens from in case of above test input.
+You will see 50 generated tokens from in case of above test input.
 
 ```
-Input Seq:: My dog is cute, but he barks a lot.
-Out Seq:: My dog is cute, but he barks a lot. He 's a little bit of a bully , and
+Input Seq:: Machine learning is a field of computer science.
+Out Seq:: Machine learning is a field of computer science. It is a field of applied mathematics that is not only applied to the problem of learning , but also to the problem of learning in general
 ```
