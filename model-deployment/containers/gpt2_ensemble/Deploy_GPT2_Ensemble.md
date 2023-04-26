@@ -103,8 +103,9 @@ model_repository
 ```
 
 ### Build Triton Server
+
 ```
-docker build -t triton-server:1.0.0 . -f Dockerfile 
+docker build -t triton-server:1.0.0 . -f Dockerfile
 ```
 
 ### Upload NVIDIA base triton server image to OCI Container Registry
@@ -177,8 +178,6 @@ Please make sure that you choose a GPU instance shape in instance configuration 
 import requests
 import oci
 from oci.signer import Signer
-
-data = "My dog is cute, but he barks a lot."
 
 md_ocid = "<<MD_OCID>>"
 url = f"https://<<get_the_endpoint_from_model_deployment>>/{md_ocid1}/predict"
