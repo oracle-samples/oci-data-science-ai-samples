@@ -102,16 +102,17 @@ model_repository
     +-- config.pbtxt
 ```
 
+### Build Triton Server
+```
+docker build -t triton-server:1.0.0 . -f Dockerfile 
+```
+
 ### Upload NVIDIA base triton server image to OCI Container Registry
 
 ```
 docker login $(OCIR_REGION).ocir.io
-mkdir -p tritonServer
-cd tritonServer
-git clone https://github.com/triton-inference-server/server.git -b v2.30.0 --depth 1
-cd server
-python compose.py --backend onnxruntime --repoagent checksum --output-name $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/onnx-runtime:1.0.0
-docker push $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/onnx-runtime:1.0.0
+docker tag triton-server:1.0.0 $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/$(REPOSITORY_NAME)/onnx-runtime:1.0.0
+docker push $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/$(REPOSITORY_NAME)/onnx-runtime:1.0.0
 ```
 
 ### Upload model artifact to Model catalog
@@ -194,7 +195,7 @@ auth = Signer(
    private_key_file_location=config['key_file'],
    pass_phrase=config['pass_phrase'])
 
-data = "My dog is cute, but he barks a lot."
+data = "Machine learning is a field of computer science"
 
 
 count = 0
