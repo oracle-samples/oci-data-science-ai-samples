@@ -9,14 +9,23 @@ custom_metric_dir = os.path.join(dir, "custom_metrics")
 sys.path.append(custom_metric_dir)
 from custom_metrics_provider import Metric
 
+METRIC_NAMESPACE=''
+
+# let's set default namespace if not done so
 if "METRICS_NAMESPACE" not in os.environ:
-    raise RuntimeError("Required environment variable METRICS_NAMESPACE not set. Metrics will not be emitted.")
+    METRIC_NAMESPACE='default_custom_metrics'
+else:
+    METRIC_NAMESPACE = os.environ.get("METRICS_NAMESPACE")
 
-if "JOB_RUN_COMPARTMENT_OCID" not in os.environ:
-    raise RuntimeError("This script must be run as part of a job run.")
+# METRIC_COMPARTMENT = os.environ.get("JOB_RUN_COMPARTMENT_OCID")
+# Make it work with notebooks!
+if os.environ.get("JOB_RUN_COMPARTMENT_OCID"):
+    METRIC_COMPARTMENT = os.environ["JOB_RUN_COMPARTMENT_OCID"]
+elif os.environ.get("NB_SESSION_COMPARTMENT_OCID"):
+    METRIC_COMPARTMENT = os.environ["NB_SESSION_COMPARTMENT_OCID"]
+else:
+    raise RuntimeError("This script must be run as part of a job run or a notebook.")
 
-METRIC_NAMESPACE = os.environ.get("METRICS_NAMESPACE")
-METRIC_COMPARTMENT = os.environ.get("JOB_RUN_COMPARTMENT_OCID")
 
 # When querying metrics, the smallest aggregation interval allowed is 1 minute.
 # See https://docs.oracle.com/iaas/Content/Monitoring/Reference/mql.htm#Interval
@@ -51,8 +60,19 @@ def convert_to_metric_data_details(metric: Metric, timestamp: datetime.datetime)
         The oci.monitoring.models.MetricDataDetails object containing the metric details
     """
     dimensions = metric.dimensions
-    dimensions["job_run_ocid"] = os.environ.get("JOB_RUN_OCID")
-    dimensions["job_ocid"] = os.environ.get("JOB_OCID")
+
+    # let's make it work for notebooks and jobs
+    if os.environ.get("JOB_OCID"):
+        dimensions["job_run_ocid"] = os.environ.get("JOB_RUN_OCID")
+        dimensions["job_ocid"] = os.environ.get("JOB_OCID")        
+    elif os.environ.get("NB_SESSION_OCID"):
+        dimensions["nb_ocid"] = os.environ.get("NB_SESSION_OCID")
+        dimensions["nb_project_ocid"] = os.environ.get("PROJECT_OCID")
+    else:
+        raise RuntimeError("This script must be run as part of a job run or a notebook.")
+
+
+
     return oci.monitoring.models.MetricDataDetails(
         namespace=METRIC_NAMESPACE,
         compartment_id=METRIC_COMPARTMENT,
