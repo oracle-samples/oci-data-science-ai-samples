@@ -113,7 +113,7 @@ docker build -t triton-server:1.0.0 . -f Dockerfile
 ```
 docker login $(OCIR_REGION).ocir.io
 docker tag triton-server:1.0.0 $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/$(REPOSITORY_NAME)/onnx-runtime:1.0.0
-docker push $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/$(REPOSITORY_NAME)/onnx-runtime:1.0.0
+docker push $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/$(REPOSITORY_NAME)/triton-server:1.0.0
 ```
 
 ### Upload model artifact to Model catalog
@@ -143,15 +143,16 @@ model_config_details = ModelConfigurationDetails(
 environment_config_details = OcirModelDeploymentEnvironmentConfigurationDetails(
     environment_configuration_type="OCIR_CONTAINER",
     environment_variables={'CONTAINER_TYPE': 'TRITON'},
-    image="iad.ocir.io/testtenancy/oci-datascience-triton-server/onnx-runtime:1.0.0",
+    image="$(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/$(REPOSITORY_NAME)/triton-server:1.0.0",
     image_digest=<image_digest>,
     cmd=[
-        "/opt/nvidia/nvidia_entrypoint.sh",
-        "tritonserver",
-        "--model-repository=/opt/ds/model/deployed_model/model_repository"
+        "/entrypoint.sh",
+        "/opt/ds/model/deployed_model"
+        "None",
+        "5000"
     ],
-    server_port=8000,
-    health_check_port=8000
+    server_port=5000,
+    health_check_port=5000
 )
 
 # create a model type deployment
