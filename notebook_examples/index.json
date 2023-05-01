@@ -1,17 +1,18 @@
 [
   {
     "developed_on": "automlx_p38_cpu_v3",
-    "filename": "automlx-anomaly_detection.ipynb",
+    "filename": "automlx-classifier.ipynb",
     "keywords": [
       "automlx",
-      "anomaly detection"
+      "classification",
+      "classifier"
     ],
     "license": "Universal Permissive License v 1.0",
-    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_AnomalyDetection.ipynb",
-    "size": 5596347,
-    "summary": "Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.",
-    "time_created": "2023-04-30T19:50:33",
-    "title": "Building and Explaining an Anomaly Detector using AutoMLx - Experimental\\n"
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification.ipynb",
+    "size": 6922776,
+    "summary": "Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.",
+    "time_created": "2023-04-30T20:12:45",
+    "title": "Building and Explaining a Classifier using AutoMLx"
   },
   {
     "developed_on": "automlx_p38_cpu_v3",
@@ -58,18 +59,17 @@
   },
   {
     "developed_on": "automlx_p38_cpu_v3",
-    "filename": "automlx-classifier.ipynb",
+    "filename": "automlx-anomaly_detection.ipynb",
     "keywords": [
       "automlx",
-      "classification",
-      "classifier"
+      "anomaly detection"
     ],
     "license": "Universal Permissive License v 1.0",
-    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification.ipynb",
-    "size": 6922776,
-    "summary": "Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.",
-    "time_created": "2023-04-30T20:12:45",
-    "title": "Building and Explaining a Classifier using AutoMLx"
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_AnomalyDetection.ipynb",
+    "size": 5596354,
+    "summary": "Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.",
+    "time_created": "2023-04-30T19:50:33",
+    "title": "Building and Explaining an Anomaly Detector using AutoMLx - Experimental"
   },
   {
     "developed_on": "computervision_p37_cpu_v1",

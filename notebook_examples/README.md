@@ -20,7 +20,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Building and Explaining a Classifier using AutoMLx](#automlx-classifier.ipynb)
  - [Building and Explaining a Regressor using AutoMLx](#automlx-regression.ipynb)
  - [Building and Explaining a Text Classifier using AutoMLx](#automlx-text_classification.ipynb)
- - [Building and Explaining an Anomaly Detector using AutoMLx - Experimental\n](#automlx-anomaly_detection.ipynb)
+ - [Building and Explaining an Anomaly Detector using AutoMLx - Experimental](#automlx-anomaly_detection.ipynb)
  - [Caltech Pedestrian Detection Benchmark Repository](#caltech-pedestrian_detection-oracle_open_data.ipynb)
  - [Connect to Oracle Big Data Service](#big_data_service-(BDS)-kerberos.ipynb)
  - [Fairness with AutoMLx](#automlx-fairness.ipynb)
@@ -57,18 +57,18 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Notebooks
-### <a name="automlx-anomaly_detection.ipynb"></a> - Building and Explaining an Anomaly Detector using AutoMLx - Experimental\n
+### <a name="automlx-classifier.ipynb"></a> - Building and Explaining a Classifier using AutoMLx
 
 <sub>Updated: 04/30/2023</sub>
-#### [`automlx-anomaly_detection.ipynb`](automlx-anomaly_detection.ipynb)
+#### [`automlx-classifier.ipynb`](automlx-classifier.ipynb)
 
  
-Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.
+Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.
 
 This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 
  
-`automlx`  `anomaly detection`
+`automlx`  `classification`  `classifier`
 
 <sub>Universal Permissive License v 1.0</sup>
 
@@ -121,18 +121,18 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 <sub>Universal Permissive License v 1.0.</sup>
 
 ---
-### <a name="automlx-classifier.ipynb"></a> - Building and Explaining a Classifier using AutoMLx
+### <a name="automlx-anomaly_detection.ipynb"></a> - Building and Explaining an Anomaly Detector using AutoMLx - Experimental
 
 <sub>Updated: 04/30/2023</sub>
-#### [`automlx-classifier.ipynb`](automlx-classifier.ipynb)
+#### [`automlx-anomaly_detection.ipynb`](automlx-anomaly_detection.ipynb)
 
  
-Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.
+Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.
 
 This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 
  
-`automlx`  `classification`  `classifier`
+`automlx`  `anomaly detection`
 
 <sub>Universal Permissive License v 1.0</sup>
 
