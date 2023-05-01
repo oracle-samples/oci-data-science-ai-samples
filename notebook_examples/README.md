@@ -123,7 +123,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 ---
 ### <a name="automlx-anomaly_detection.ipynb"></a> - Building and Explaining an Anomaly Detector using AutoMLx - Experimental
 
-<sub>Updated: 04/30/2023</sub>
+<sub>Updated: 05/01/2023</sub>
 #### [`automlx-anomaly_detection.ipynb`](automlx-anomaly_detection.ipynb)
 
  
