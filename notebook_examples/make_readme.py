@@ -137,7 +137,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
             file=f,
         )
 
-        # badges for the tags https://img.shields.io/badge/tensorflow-3-brightgreen
+        # badges for the tags https://img.shields.io/badge/tensorflow-3-brightgreen?style=for-the-badge&logo=pypi&logoColor=white
 
         tags = Counter([])
         for _, notebook_metadata in all_notebooks.items():
