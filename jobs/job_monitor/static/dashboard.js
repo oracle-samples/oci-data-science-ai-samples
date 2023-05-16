@@ -253,7 +253,7 @@ function updateMetrics(ocid) {
     const metricDropdown = $(ctx).closest(".job-run-metrics").find(".dropdown-menu");
     $.each(data.metrics, function (i, metric) {
       if (metricDropdown.find("[data-val='" + metric.key + "']").length == 0) {
-        metricDropdown.append('<li"><a class="dropdown-item" data-val="' + metric.key + '" href="#">' + metric.display + '</a></li>');
+        metricDropdown.append('<li><a class="dropdown-item" data-val="' + metric.key + '" href="#">' + metric.display + '</a></li>');
       }
     })
     var chart = Chart.getChart(canvasId);
