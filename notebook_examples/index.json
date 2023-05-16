@@ -92,9 +92,9 @@
       "fsspec"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 21300,
+    "size": 21304,
     "summary": "Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.",
-    "time_created": "2023-03-27T11:14:06",
+    "time_created": "2023-03-29T11:04:51",
     "title": "How to Read Data with fsspec from Oracle Big Data Service (BDS)"
   },
   {
@@ -181,6 +181,19 @@
     "title": "Train, Register, and Deploy a Generic Model"
   },
   {
+    "developed_on": "pypgx2310_p38_cpu_v1",
+    "filename": "graph_insight-autonomous_database.ipynb",
+    "keywords": [
+      "graph_insight",
+      "autonomous_database"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 121461,
+    "summary": "Access",
+    "time_created": "2023-05-15T23:58:54.638565",
+    "title": "Bank Graph Example Notebook"
+  },
+  {
     "developed_on": "pytorch110_p38_cpu_v1",
     "filename": "train-register-deploy-huggingface-pipeline.ipynb",
     "keywords": [
@@ -237,6 +250,27 @@
     "title": "Connect to Oracle Big Data Service"
   },
   {
+    "developed_on": "nlp_p37_cpu_v2",
+    "filename": "natural_language_processing.ipynb",
+    "keywords": [
+      "language services",
+      "string manipulation",
+      "regex",
+      "regular expression",
+      "natural language processing",
+      "NLP",
+      "part-of-speech tagging",
+      "named entity recognition",
+      "sentiment analysis",
+      "custom plugins"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 36063,
+    "summary": "Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.",
+    "time_created": "2023-03-26T22:51:01",
+    "title": "Natural Language Processing"
+  },
+  {
     "developed_on": "automlx_p38_cpu_v2",
     "filename": "automlx-forecasting.ipynb",
     "keywords": [
@@ -257,27 +291,6 @@
     "summary": "Use Oracle AutoMLx to build a forecast model with real-world data sets.",
     "time_created": "2023-03-26T22:51:01",
     "title": "Building a Forecaster using AutoMLx"
-  },
-  {
-    "developed_on": "nlp_p37_cpu_v2",
-    "filename": "natural_language_processing.ipynb",
-    "keywords": [
-      "language services",
-      "string manipulation",
-      "regex",
-      "regular expression",
-      "natural language processing",
-      "NLP",
-      "part-of-speech tagging",
-      "named entity recognition",
-      "sentiment analysis",
-      "custom plugins"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 36063,
-    "summary": "Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.",
-    "time_created": "2023-03-26T22:51:01",
-    "title": "Natural Language Processing"
   },
   {
     "developed_on": "generalml_p38_cpu_v1",
@@ -402,19 +415,6 @@
     "title": "Graph Analytics and Graph Machine Learning with PyPGX"
   },
   {
-    "developed_on": "pyspark24_p37_cpu_v3",
-    "filename": "pyspark-data_flow-application.ipynb",
-    "keywords": [
-      "pyspark",
-      "data flow"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 13085,
-    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
-    "time_created": "2023-03-30T10:01:38",
-    "title": "PySpark"
-  },
-  {
     "developed_on": "pyspark32_p38_cpu_v2",
     "filename": "pyspark-data_flow_studio-introduction.ipynb",
     "keywords": [
@@ -439,6 +439,19 @@
     "summary": "Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.",
     "time_created": "2023-03-26T22:51:01",
     "title": "Spark NLP within Oracle Cloud Infrastructure Data Flow Studio"
+  },
+  {
+    "developed_on": "pyspark24_p37_cpu_v3",
+    "filename": "pyspark-data_flow-application.ipynb",
+    "keywords": [
+      "pyspark",
+      "data flow"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 13085,
+    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
+    "time_created": "2023-03-30T10:01:38",
+    "title": "PySpark"
   },
   {
     "developed_on": "pytorch110_p38_cpu_v1",
