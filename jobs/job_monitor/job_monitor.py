@@ -146,7 +146,9 @@ def check_project_id(project_id):
 
 
 def check_compartment_id(compartment_id):
-    if not re.match(r"ocid[0-9].compartment.oc[0-9]..[a-z0-9]+", compartment_id):
+    if not re.match(
+        r"ocid[0-9].(compartment|tenancy).oc[0-9]..[a-z0-9]+", compartment_id
+    ):
         abort_with_json_error(404, f"Invalid Compartment OCID: {compartment_id}")
 
 
