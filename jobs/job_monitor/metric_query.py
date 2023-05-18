@@ -44,7 +44,7 @@ def list_job_run_metrics(
     metric_names = []
     # The service response will include one item per unique combination of dimension values. We just want the unique
     # metric names here.
-    [metric_names.append(m.name) for m in metrics if m.name not in metric_names]
+    metric_names.extend([m.name for m in metrics if m.name not in metric_names])
     return metric_names
 
 

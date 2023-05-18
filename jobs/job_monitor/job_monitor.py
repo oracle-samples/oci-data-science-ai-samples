@@ -28,14 +28,13 @@ from flask import (
 SERVICE_METRICS_NAMESPACE = "oci_datascience_jobrun"
 SERVICE_METRICS_DIMENSION = "resourceId"
 CUSTOM_METRICS_NAMESPACE_ENV = "METRICS_NAMESPACE"
-CUSTOM_METRICS_DEFAULT_NAMESPACE = "jobrun_gpu"
 CUSTOM_METRICS_DIMENSION = metric_query.CUSTOM_METRIC_OCID_DIMENSION
 
 
 # Load config
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.json")
 if os.path.exists(CONFIG_FILE):
-    with open(CONFIG_FILE) as f:
+    with open(CONFIG_FILE, encoding="utf-8") as f:
         config = json.load(f)
 else:
     config = {}
@@ -496,7 +495,7 @@ def run():
 
 def get_custom_metrics_namespace(job_run):
     job_envs = job_run.job.runtime.envs
-    return job_envs.get(CUSTOM_METRICS_NAMESPACE_ENV, CUSTOM_METRICS_DEFAULT_NAMESPACE)
+    return job_envs.get(CUSTOM_METRICS_NAMESPACE_ENV)
 
 
 def get_metrics_list(ocid):
@@ -506,12 +505,15 @@ def get_metrics_list(ocid):
     service_metrics = metric_query.list_job_run_metrics(
         job_run, SERVICE_METRICS_NAMESPACE, SERVICE_METRICS_DIMENSION, client
     )
-    custom_metrics = metric_query.list_job_run_metrics(
-        job_run,
-        custom_metric_namespace,
-        metric_query.CUSTOM_METRIC_OCID_DIMENSION,
-        client,
-    )
+    if custom_metric_namespace:
+        custom_metrics = metric_query.list_job_run_metrics(
+            job_run,
+            custom_metric_namespace,
+            metric_query.CUSTOM_METRIC_OCID_DIMENSION,
+            client,
+        )
+    else:
+        custom_metrics = []
     metrics = service_metrics + custom_metrics
     if "gpu.gpu_utilization" in metrics and "GpuUtilization" in metrics:
         metrics.remove("GpuUtilization")
