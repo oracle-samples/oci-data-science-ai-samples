@@ -10,10 +10,7 @@ import ads
 import oci
 import requests
 import yaml
-import metric_query
-from ads.common.oci_datascience import OCIDataScienceMixin
-from ads.common.oci_resource import OCIResource
-from ads.jobs import DataScienceJobRun, Job, DataScienceJob
+
 from flask import (
     Flask,
     request,
@@ -23,6 +20,11 @@ from flask import (
     make_response,
     redirect,
 )
+
+import metric_query
+from ads.common.oci_datascience import OCIDataScienceMixin
+from ads.common.oci_resource import OCIResource
+from ads.jobs import DataScienceJobRun, Job, DataScienceJob
 
 
 SERVICE_METRICS_NAMESPACE = "oci_datascience_jobrun"
@@ -57,8 +59,8 @@ logger.setLevel(LOG_LEVEL)
 OCI_KEY_CONFIG_LOCATION = os.environ.get("OCI_KEY_LOCATION", "~/.oci/config")
 OCI_KEY_PROFILE_NAME = os.environ.get("OCI_KEY_PROFILE", "DEFAULT")
 if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
-    logger.info(f"Using OCI API Key config: {OCI_KEY_CONFIG_LOCATION}")
-    logger.info(f"Using OCI API Key profile: {OCI_KEY_PROFILE_NAME}")
+    logger.info("Using OCI API Key config: %s", OCI_KEY_CONFIG_LOCATION)
+    logger.info("Using OCI API Key profile: %s", OCI_KEY_PROFILE_NAME)
 # Flask templates location
 app = Flask(
     __name__, template_folder=os.path.join(os.path.dirname(__file__), "templates")
@@ -102,7 +104,7 @@ def get_authentication():
         When no authentication method is available.
     """
     if os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
-        auth = dict(
+        oci_auth = dict(
             config=oci.config.from_file(
                 file_location=OCI_KEY_CONFIG_LOCATION, profile_name=OCI_KEY_PROFILE_NAME
             )
@@ -111,16 +113,16 @@ def get_authentication():
         oci.auth.signers.resource_principals_signer.OCI_RESOURCE_PRINCIPAL_VERSION
         in os.environ
     ):
-        config = {}
+        oci_config = {}
         signer = oci.auth.signers.get_resource_principals_signer()
-        auth = dict(config=config, signer=signer)
+        oci_auth = dict(config=oci_config, signer=signer)
     elif instance_principal_available():
-        config = {}
+        oci_config = {}
         signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
-        auth = dict(config=config, signer=signer)
+        oci_auth = dict(config=oci_config, signer=signer)
     else:
-        raise Exception("Cannot determine authentication method.")
-    return auth
+        raise EnvironmentError("Cannot determine authentication method.")
+    return oci_auth
 
 
 auth = get_authentication()
@@ -444,7 +446,7 @@ def load_yaml(filename=None):
 
 
 @app.route("/run", methods=["POST"])
-def run():
+def run_workload():
     auth = get_authentication()
     # The following config check is added for security reason.
     # When the app is started with resource principal or instance principal,
@@ -461,9 +463,9 @@ def run():
         if workflow.get("kind") == "job":
             job = Job.from_dict(workflow)
             job.create()
-            logger.info(f"Created Job: {job.id}")
+            logger.info("Created Job: %s", job.id)
             job_run = job.run()
-            logger.info(f"Created Job Run: {job_run.id}")
+            logger.info("Created Job Run: %s", job_run.id)
             job_id = job.id
         else:
             # Running an opctl workflow require additional dependencies for ADS
@@ -597,7 +599,7 @@ def get_metrics(name, ocid):
 
 @app.route("/shapes/<compartment_ocid>")
 def supported_shapes(compartment_ocid):
-    supported_shapes = [
+    shapes = [
         shape.name
         for shape in DataScienceJob.instance_shapes(compartment_id=compartment_ocid)
     ]
@@ -607,7 +609,7 @@ def supported_shapes(compartment_ocid):
     ]
     return jsonify(
         {
-            "supported_shapes": supported_shapes,
+            "supported_shapes": shapes,
             "fast_launch_shapes": fast_launch_shapes,
         }
     )
