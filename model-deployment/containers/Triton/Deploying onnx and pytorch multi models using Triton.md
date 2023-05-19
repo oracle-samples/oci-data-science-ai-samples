@@ -1,8 +1,9 @@
-Overview
+#Deploying onnx and pytorch multi models using Triton[WIP]
+##Overview
 In this sample, we will deploy 2 models on NVIDIA Triton Inference Server using OCI Data Science Model Deployment. One model is a DenseNet model in an ONNX format, the other model is a ResNet model on PyTorch. The purpose of this sample is to showcase the ability of Triton Inference Server to deploy multiple models on the same server, even when they are using different frameworks.
 
-Step 1: Set up Triton Inference Server
-Step 1.1: Create Model Artifact
+##Step 1: Set up Triton Inference Server
+###Step 1.1: Create Model Artifact
 To use Triton, we need to build a model repository. The structure of the repository as follows:
 
 ```
@@ -31,14 +32,14 @@ mkdir -p models/densenet_onnx/
 mkdir -p models/resnet/1
 ```
 
-DenseNet Model
+####DenseNet Model
 ```
 wget -O model_repository/densenet_onnx/1/model.onnx \
 
      https://contentmamluswest001.blob.core.windows.net/content/14b2744cf8d6418c87ffddc3f3127242/9502630827244d60a1214f250e3bbca7/08aed7327d694b8dbaee2c97b8d0fcba/densenet121-1.2.onnx
  ```
 
-Resnet Model
+####Resnet Model
 
 ```
 Creating resnet50 model
@@ -66,7 +67,9 @@ cp model.pt models/resnet/1
 
 
 
-Creating config.pbtxt for Resnet model
+####Creating config.pbtxt for Resnet model
+
+```
 name: "resnet"
 platform: "pytorch_libtorch"
 max_batch_size: 1
@@ -92,13 +95,15 @@ instance_group [
 kind: KIND_CPU
 }
 ]
+```
 
-
+```
 cp config.pbtxt models/resnet
+```
 
-Step 1.2  Upload NVIDIA based triton server image to OCI Container Registry (OCIR)
-
-
+###Step 1.2  Upload NVIDIA based triton server image to OCI Container Registry (OCIR)
+Refer  https://docs.oracle.com/en-us/iaas/data-science/using/mod-dep-byoc.htm#construct-container for details
+```
 docker login $(OCIR_REGION).ocir.io
 mkdir -p tritonServer
 cd tritonServer
@@ -106,22 +111,25 @@ git clone https://github.com/triton-inference-server/server.git -b v2.30.0 --dep
 cd server
 python compose.py --backend onnxruntime --backend pytorch --repoagent checksum --output-name $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/onnx-pytorch-runtime:1.0.0
 docker push $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/onnx-runtime:1.0.0
+```
 
 
-
+```
 Step 1.3 Upload model artifact to Model catalog
+```
 Compress model_repository folder created in Step 1.1 in zip format and upload it to model catalog via python sdk. Refer https://docs.oracle.com/en-us/iaas/data-science/using/models_saving_catalog.htm for details
 
 
 
-Step 1.4 Create Model Deployment
+###Step 1.4 Create Model Deployment
 OCI Data Science Model Deployment supports Triton Inference Server as a special container, mapping the service-mandated endpoints to the Triton's inference and health HTTP/REST endpoint to free you from having to do so. To Enable it, set the following environment variable when creating the Model Deployment:
 
 CONTAINER_TYPE = TRITON
 
 
-Using python sdk
+####Using python sdk
 
+```
 # create a model configuration details object
 model_config_details = ModelConfigurationDetails(
 model_id= <model_id>,
@@ -159,16 +167,20 @@ model_deployment_configuration_details = single_model_deployment_config_details,
 compartment_id = <compartment_id>,
 project_id = <project_id>
 )
+```
 
-Step 1.5 Update Model Deployment
+###Step 1.5 Update Model Deployment
 OCI Data Science Model Deployment supports the zero downtime update of individual models without changing the version structure. However,  If user perform update_zdt for triton based model deployments, version structure should be unchanged for underlying model else it will result in downtime.
 
+```
 CONTAINER_TYPE = TRITON
+```
 
 set the following environment variable when updating  the Model Deployment:
 
-Using python sdk
+####Using python sdk
 
+```
 # create a model configuration details object
 model_config_details = ModelConfigurationDetails(
 model_id= <model_id>,
@@ -206,18 +218,21 @@ model_deployment_configuration_details = single_model_deployment_config_details,
 compartment_id = <compartment_id>,
 project_id = <project_id>
 )
-
-Step 2: Using python-sdk to query  the Inference Server
+```
+## Step 2: Using python-sdk to query  the Inference Server
 Install dependencies & download an example image to test inference.
-
+```
 wget  -O ${HOME}/img1.jpg "https://www.hakaimagazine.com/wp-content/uploads/header-gulf-birds.jpg"
+```
 
 
 
 Firstly, specify the json inference payload with input and output layers for the model as well as describe the shape and datatype of the expected input and output.
 
 
-Inference request for densenet onnx model
+####Inference request for densenet onnx model
+
+```
 from PIL import Image
 import numpy as np
 import json
@@ -236,20 +251,22 @@ input_data = input_data.astype(np.float32).toList()
 request_body = {"inputs": [{"name": "data_0", "shape": [1,3,224,224], "datatype": "FP32", "data": final_data}], "outputs": [{"name": "fc6_1", "shape":[1,1000],"datatype": "FP32"}]}
 
 request_body = json.dumps(request_body)
+```
 
 
 
 Secondly, specify the request headers indicating model name and version
 
+```
 request_headers = {"model_name":"densenet_onnx", "model_version":"1"}
-
+```
 
 
 Lastly, we send an inference request to the Triton Inference Server
 
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
-
+```
 import requests
 import oci
 from oci.signer import Signer
@@ -265,16 +282,21 @@ pass_phrase=config['pass_phrase'])
 endpoint = <modelDeploymentEndpoint>
 
 inference_output = requests.request('POST',endpoint, data=request_body, auth=auth, headers=request_headers).json()['outputs'][0]['data'][:5]
+```
 
 
 
 The output of the same should look like below:
 
+```
 [-7.781406879425049, 8.147658348083496, -5.036427021026611, -31.72595977783203, -19.792512893676758]
+```
 
 
 
-Inference request for resnet model
+####Inference request for resnet model
+
+```
 from PIL import Image
 
 from torchvision import transforms
@@ -291,17 +313,20 @@ img = preprocess(img).numpy().tolist()
 body ={"inputs": [{"name": "input", "shape": [1,3,224,224], "datatype": "FP32", "data": img}], "outputs": [{"name": "output", "shape":[1,1000],"datatype": "FP32"}]}
 
 request_body = json.dumps(request_body)
-
+```
 
 
 Secondly, specify the request headers indicating model name and version
 
+```
 request_headers = {"model_name":"resnet", "model_version":"1"}
+```
 
 
 
 Lastly, we send an inference request to the Triton Inference Server
 
+```
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
 
@@ -320,12 +345,14 @@ pass_phrase=config['pass_phrase'])
 endpoint = <modelDeploymentEndpoint>
 
 inference_output = requests.request('POST',endpoint, data=request_body, auth=auth, headers=request_headers).json()['outputs'][0]['data'][:5]
-
+```
 
 
 The output of the same should look like below:
 
+```
 [-0.26288753747940063, 4.352395534515381, -2.0595359802246094, -2.0003817081451416, -3.181145191192627]
+```
 
 
 
