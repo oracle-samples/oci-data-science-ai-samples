@@ -41,10 +41,9 @@ def list_job_run_metrics(
         namespace=namespace, dimension_filters={ocid_dimension: job_run.id}
     )
     metrics = monitoring_client.list_metrics(job_run.compartment_id, list_details).data
-    metric_names = []
     # The service response will include one item per unique combination of dimension values. We just want the unique
     # metric names here.
-    metric_names.extend([m.name for m in metrics if m.name not in metric_names])
+    metric_names = list(set([m.name for m in metrics]))
     return metric_names
 
 
