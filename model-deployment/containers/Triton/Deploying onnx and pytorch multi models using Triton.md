@@ -41,8 +41,9 @@ wget -O model_repository/densenet_onnx/1/model.onnx \
 
 ####Resnet Model
 
+#####Creating resnet50 model
+
 ```
-Creating resnet50 model
 import torch
 
 # Load the PyTorch model
@@ -67,7 +68,7 @@ cp model.pt models/resnet/1
 
 
 
-####Creating config.pbtxt for Resnet model
+#####Creating config.pbtxt for Resnet model
 
 ```
 name: "resnet"
@@ -102,21 +103,21 @@ cp config.pbtxt models/resnet
 ```
 
 ###Step 1.2  Upload NVIDIA based triton server image to OCI Container Registry (OCIR)
-Refer  https://docs.oracle.com/en-us/iaas/data-science/using/mod-dep-byoc.htm#construct-container for details
+
+####Creating image locally
 ```
-docker login $(OCIR_REGION).ocir.io
 mkdir -p tritonServer
 cd tritonServer
 git clone https://github.com/triton-inference-server/server.git -b v2.30.0 --depth 1
 cd server
 python compose.py --backend onnxruntime --backend pytorch --repoagent checksum --output-name $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/onnx-pytorch-runtime:1.0.0
-docker push $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/onnx-runtime:1.0.0
 ```
+Refer  https://docs.oracle.com/en-us/iaas/data-science/using/mod-dep-byoc.htm#construct-container for details on uploading image to OCIR
 
 
-```
-Step 1.3 Upload model artifact to Model catalog
-```
+
+###Step 1.3 Upload model artifact to Model catalog
+
 Compress model_repository folder created in Step 1.1 in zip format and upload it to model catalog via python sdk. Refer https://docs.oracle.com/en-us/iaas/data-science/using/models_saving_catalog.htm for details
 
 
@@ -124,7 +125,9 @@ Compress model_repository folder created in Step 1.1 in zip format and upload it
 ###Step 1.4 Create Model Deployment
 OCI Data Science Model Deployment supports Triton Inference Server as a special container, mapping the service-mandated endpoints to the Triton's inference and health HTTP/REST endpoint to free you from having to do so. To Enable it, set the following environment variable when creating the Model Deployment:
 
+```
 CONTAINER_TYPE = TRITON
+```
 
 
 ####Using python sdk
@@ -230,7 +233,7 @@ wget  -O ${HOME}/img1.jpg "https://www.hakaimagazine.com/wp-content/uploads/head
 Firstly, specify the json inference payload with input and output layers for the model as well as describe the shape and datatype of the expected input and output.
 
 
-####Inference request for densenet onnx model
+###Inference request for densenet onnx model
 
 ```
 from PIL import Image
@@ -294,7 +297,7 @@ The output of the same should look like below:
 
 
 
-####Inference request for resnet model
+###Inference request for resnet model
 
 ```
 from PIL import Image
@@ -356,6 +359,6 @@ The output of the same should look like below:
 
 
 
-Conclusion
+##Conclusion
 This sample guides you through the deployment of 2 different models from 2 different frameworks onto a Triton Inference Server. You can extend this example to deploy more models from more frameworks into the same Triton Inference Server.
 
