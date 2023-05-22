@@ -17,6 +17,7 @@ from flask import (
     abort,
     jsonify,
     render_template,
+    render_template_string,
     make_response,
     redirect,
 )
@@ -123,6 +124,15 @@ def get_authentication():
     else:
         raise EnvironmentError("Cannot determine authentication method.")
     return oci_auth
+
+
+def load_oci_config():
+    if not os.path.exists(os.path.expanduser(OCI_KEY_CONFIG_LOCATION)):
+        return {}
+    oci_config = oci.config.from_file(
+        file_location=OCI_KEY_CONFIG_LOCATION, profile_name=OCI_KEY_PROFILE_NAME
+    )
+    return oci_config
 
 
 auth = get_authentication()
@@ -440,25 +450,27 @@ def load_yaml_list(uri):
 def load_yaml(filename=None):
     if not filename:
         return jsonify(load_yaml_list(YAML_DIR))
-    with open(os.path.join(YAML_DIR, filename)) as f:
+    with open(os.path.join(YAML_DIR, filename), encoding="utf-8") as f:
         content = f.read()
     return jsonify({"filename": filename, "content": content})
 
 
 @app.route("/run", methods=["POST"])
 def run_workload():
-    auth = get_authentication()
+    oci_auth = get_authentication()
     # The following config check is added for security reason.
     # When the app is started with resource principal or instance principal,
     # this will restrict the app to only monitor job runs and status.
     # Without the following restriction, anyone have access to the website could use it to run large workflow.
-    if not auth["config"]:
+    if not oci_auth["config"]:
         abort_with_json_error(
             403,
             "Starting a workflow is only available when you launch the app locally with OCI API key.",
         )
     try:
-        workflow = yaml.safe_load(urllib.parse.unquote(request.data[5:].decode()))
+        yaml_string = urllib.parse.unquote(request.data[5:].decode())
+        yaml_string = render_template_string(yaml_string, **load_oci_config())
+        workflow = yaml.safe_load(yaml_string)
 
         if workflow.get("kind") == "job":
             job = Job.from_dict(workflow)
