@@ -1,8 +1,10 @@
 # Deploying onnx and pytorch multi models using Triton
+
 ## Overview
 In this sample, we will deploy 2 models on NVIDIA Triton Inference Server using OCI Data Science Model Deployment. One model is a DenseNet model in an ONNX format, the other model is a ResNet model on PyTorch. The purpose of this sample is to showcase the ability of Triton Inference Server to deploy multiple models on the same server, even when they are using different frameworks.
 
 ## Step 1: Set up Triton Inference Server
+
 ### Step 1.1: Create Model Artifact
 To use Triton, we need to build a model repository. The structure of the repository as follows:
 
