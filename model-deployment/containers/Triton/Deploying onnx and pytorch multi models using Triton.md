@@ -172,56 +172,7 @@ project_id = <project_id>
 )
 ```
 
-###Step 1.5 Update Model Deployment
-OCI Data Science Model Deployment supports the zero downtime update of individual models without changing the version structure. However,  If user perform update_zdt for triton based model deployments, version structure should be unchanged for underlying model else it will result in downtime.
 
-```
-CONTAINER_TYPE = TRITON
-```
-
-set the following environment variable when updating  the Model Deployment:
-
-####Using python sdk
-
-```
-# create a model configuration details object
-model_config_details = ModelConfigurationDetails(
-model_id= <model_id>,
-bandwidth_mbps = <bandwidth_mbps>,
-instance_configuration = <instance_configuration>,
-scaling_policy = <scaling_policy>
-)
-
-# create the container environment configuration
-environment_config_details = OcirModelDeploymentEnvironmentConfigurationDetails(
-environment_configuration_type="OCIR_CONTAINER",
-environment_variables={'CONTAINER_TYPE': 'TRITON'},
-image="iad.ocir.io/testtenancy/oci-datascience-triton-server/onnx-runtime:1.0.0",
-image_digest="sha256:aa32690a166b09015d34c9372812ee9c878cbdc75649f7be6e4465b5eb9ad290",
-cmd=[
-"/opt/nvidia/nvidia_entrypoint.sh",
-"tritonserver",
-"--model-repository=/opt/ds/model/deployed_model"
-],
-server_port=8000,
-health_check_port=8000
-)
-
-# update a model type deployment
-single_model_deployment_config_details = data_science.models.SingleModelDeploymentConfigurationDetails(
-deployment_type="SINGLE_MODEL",
-model_configuration_details=model_config_details,
-environment_configuration_details=environment_config_details
-)
-
-# set up parameters required to update a model deployment.
-update_model_deployment_details = UpdateModelDeploymentDetails(
-display_name= <deployment_name>,
-model_deployment_configuration_details = single_model_deployment_config_details,
-compartment_id = <compartment_id>,
-project_id = <project_id>
-)
-```
 ## Step 2: Using python-sdk to query  the Inference Server
 Install dependencies & download an example image to test inference.
 ```
@@ -267,9 +218,9 @@ request_headers = {"model_name":"densenet_onnx", "model_version":"1"}
 
 Lastly, we send an inference request to the Triton Inference Server
 
-# The OCI SDK must be installed for this example to function properly.
-# Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
 ```
+The OCI SDK must be installed for this example to function properly.
+Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
 import requests
 import oci
 from oci.signer import Signer
@@ -357,7 +308,56 @@ The output of the same should look like below:
 [-0.26288753747940063, 4.352395534515381, -2.0595359802246094, -2.0003817081451416, -3.181145191192627]
 ```
 
+##Update Model Deployment
+OCI Data Science Model Deployment supports the zero downtime update of individual models without changing the version structure. However,  If user perform update_zdt for triton based model deployments, version structure should be unchanged for underlying model else it will result in downtime.
 
+```
+CONTAINER_TYPE = TRITON
+```
+
+set the following environment variable when updating  the Model Deployment:
+
+####Using python sdk
+
+```
+# create a model configuration details object
+model_config_details = ModelConfigurationDetails(
+model_id= <model_id>,
+bandwidth_mbps = <bandwidth_mbps>,
+instance_configuration = <instance_configuration>,
+scaling_policy = <scaling_policy>
+)
+
+# create the container environment configuration
+environment_config_details = OcirModelDeploymentEnvironmentConfigurationDetails(
+environment_configuration_type="OCIR_CONTAINER",
+environment_variables={'CONTAINER_TYPE': 'TRITON'},
+image="iad.ocir.io/testtenancy/oci-datascience-triton-server/onnx-runtime:1.0.0",
+image_digest="sha256:aa32690a166b09015d34c9372812ee9c878cbdc75649f7be6e4465b5eb9ad290",
+cmd=[
+"/opt/nvidia/nvidia_entrypoint.sh",
+"tritonserver",
+"--model-repository=/opt/ds/model/deployed_model"
+],
+server_port=8000,
+health_check_port=8000
+)
+
+# update a model type deployment
+single_model_deployment_config_details = data_science.models.SingleModelDeploymentConfigurationDetails(
+deployment_type="SINGLE_MODEL",
+model_configuration_details=model_config_details,
+environment_configuration_details=environment_config_details
+)
+
+# set up parameters required to update a model deployment.
+update_model_deployment_details = UpdateModelDeploymentDetails(
+display_name= <deployment_name>,
+model_deployment_configuration_details = single_model_deployment_config_details,
+compartment_id = <compartment_id>,
+project_id = <project_id>
+)
+```
 
 ##Conclusion
 This sample guides you through the deployment of 2 different models from 2 different frameworks onto a Triton Inference Server. You can extend this example to deploy more models from more frameworks into the same Triton Inference Server.
