@@ -1,9 +1,9 @@
-#Deploying onnx and pytorch multi models using Triton[WIP]
-##Overview
+# Deploying onnx and pytorch multi models using Triton
+## Overview
 In this sample, we will deploy 2 models on NVIDIA Triton Inference Server using OCI Data Science Model Deployment. One model is a DenseNet model in an ONNX format, the other model is a ResNet model on PyTorch. The purpose of this sample is to showcase the ability of Triton Inference Server to deploy multiple models on the same server, even when they are using different frameworks.
 
-##Step 1: Set up Triton Inference Server
-###Step 1.1: Create Model Artifact
+## Step 1: Set up Triton Inference Server
+### Step 1.1: Create Model Artifact
 To use Triton, we need to build a model repository. The structure of the repository as follows:
 
 ```
@@ -32,16 +32,16 @@ mkdir -p models/densenet_onnx/
 mkdir -p models/resnet/1
 ```
 
-####DenseNet Model
+#### DenseNet Model
 ```
 wget -O model_repository/densenet_onnx/1/model.onnx \
 
      https://contentmamluswest001.blob.core.windows.net/content/14b2744cf8d6418c87ffddc3f3127242/9502630827244d60a1214f250e3bbca7/08aed7327d694b8dbaee2c97b8d0fcba/densenet121-1.2.onnx
  ```
 
-####Resnet Model
+#### Resnet Model
 
-#####Creating resnet50 model
+##### Creating resnet50 model
 
 ```
 import torch
@@ -68,7 +68,7 @@ cp model.pt models/resnet/1
 
 
 
-#####Creating config.pbtxt for Resnet model
+##### Creating config.pbtxt for Resnet model
 
 ```
 name: "resnet"
@@ -102,9 +102,9 @@ kind: KIND_CPU
 cp config.pbtxt models/resnet
 ```
 
-###Step 1.2  Upload NVIDIA based triton server image to OCI Container Registry (OCIR)
+### Step 1.2  Upload NVIDIA based triton server image to OCI Container Registry (OCIR)
 
-####Creating image locally
+#### Creating image locally
 ```
 mkdir -p tritonServer
 cd tritonServer
@@ -116,13 +116,13 @@ Refer  https://docs.oracle.com/en-us/iaas/data-science/using/mod-dep-byoc.htm#co
 
 
 
-###Step 1.3 Upload model artifact to Model catalog
+### Step 1.3 Upload model artifact to Model catalog
 
 Compress model_repository folder created in Step 1.1 in zip format and upload it to model catalog via python sdk. Refer https://docs.oracle.com/en-us/iaas/data-science/using/models_saving_catalog.htm for details
 
 
 
-###Step 1.4 Create Model Deployment
+### Step 1.4 Create Model Deployment
 OCI Data Science Model Deployment supports Triton Inference Server as a special container, mapping the service-mandated endpoints to the Triton's inference and health HTTP/REST endpoint to free you from having to do so. To Enable it, set the following environment variable when creating the Model Deployment:
 
 ```
@@ -130,7 +130,7 @@ CONTAINER_TYPE = TRITON
 ```
 
 
-####Using python sdk
+#### Using python sdk
 
 ```
 # create a model configuration details object
@@ -184,7 +184,7 @@ wget  -O ${HOME}/img1.jpg "https://www.hakaimagazine.com/wp-content/uploads/head
 Firstly, specify the json inference payload with input and output layers for the model as well as describe the shape and datatype of the expected input and output.
 
 
-###Inference request for densenet onnx model
+### Inference request for densenet onnx model
 
 ```
 from PIL import Image
@@ -248,7 +248,7 @@ The output of the same should look like below:
 
 
 
-###Inference request for resnet model
+### Inference request for resnet model
 
 ```
 from PIL import Image
@@ -308,7 +308,7 @@ The output of the same should look like below:
 [-0.26288753747940063, 4.352395534515381, -2.0595359802246094, -2.0003817081451416, -3.181145191192627]
 ```
 
-##Update Model Deployment
+## Update Model Deployment
 OCI Data Science Model Deployment supports the zero downtime update of individual models without changing the version structure. However,  If user perform update_zdt for triton based model deployments, version structure should be unchanged for underlying model else it will result in downtime.
 
 ```
@@ -317,7 +317,7 @@ CONTAINER_TYPE = TRITON
 
 set the following environment variable when updating  the Model Deployment:
 
-####Using python sdk
+#### Using python sdk
 
 ```
 # create a model configuration details object
@@ -359,6 +359,6 @@ project_id = <project_id>
 )
 ```
 
-##Conclusion
+## Conclusion
 This sample guides you through the deployment of 2 different models from 2 different frameworks onto a Triton Inference Server. You can extend this example to deploy more models from more frameworks into the same Triton Inference Server.
 
