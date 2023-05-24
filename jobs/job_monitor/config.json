@@ -1,4 +1,4 @@
 {
     "version": 1,
-    "yaml_dir": "./yaml"
+    "yaml_dir": "./job_yaml"
 }
