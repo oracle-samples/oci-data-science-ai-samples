@@ -10,23 +10,8 @@
     "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_AnomalyDetection.ipynb",
     "size": 1817110,
     "summary": "Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.",
-    "time_created": "2023-05-29T13:27:59",
+    "time_created": "2023-05-29T15:52:02",
     "title": "Building and Explaining an Anomaly Detector using AutoMLx - Experimental"
-  },
-  {
-    "developed_on": "automlx_p38_cpu_v3",
-    "filename": "automlx-text_classification.ipynb",
-    "keywords": [
-      "automlx",
-      "text classification",
-      "text classifier"
-    ],
-    "license": "Universal Permissive License v 1.0.",
-    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification_Text.ipynb",
-    "size": 4614269,
-    "summary": "build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset",
-    "time_created": "2023-05-29T13:27:59",
-    "title": "Building and Explaining a Text Classifier using AutoMLx"
   },
   {
     "developed_on": "automlx_p38_cpu_v3",
@@ -40,22 +25,8 @@
     "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification.ipynb",
     "size": 7045225,
     "summary": "Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.",
-    "time_created": "2023-05-29T13:27:59",
+    "time_created": "2023-05-29T15:52:02",
     "title": "Building and Explaining a Classifier using AutoMLx"
-  },
-  {
-    "developed_on": "automlx_p38_cpu_v3",
-    "filename": "automlx-regression.ipynb",
-    "keywords": [
-      "automlx",
-      "regression"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Regression.ipynb",
-    "size": 7466599,
-    "summary": "Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.",
-    "time_created": "2023-05-29T14:32:40",
-    "title": "Building and Explaining a Regressor using AutoMLx"
   },
   {
     "developed_on": "automlx_p38_cpu_v3",
@@ -68,8 +39,37 @@
     "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Fairness.ipynb",
     "size": 5277687,
     "summary": "Develop a model and evaluate its fairness",
-    "time_created": "2023-05-29T14:32:40",
+    "time_created": "2023-05-29T15:52:02",
     "title": "Fairness with AutoMLx"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v3",
+    "filename": "automlx-regression.ipynb",
+    "keywords": [
+      "automlx",
+      "regression"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Regression.ipynb",
+    "size": 7466599,
+    "summary": "Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.",
+    "time_created": "2023-05-29T15:52:02",
+    "title": "Building and Explaining a Regressor using AutoMLx"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v3",
+    "filename": "automlx-text_classification.ipynb",
+    "keywords": [
+      "automlx",
+      "text classification",
+      "text classifier"
+    ],
+    "license": "Universal Permissive License v 1.0.",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification_Text.ipynb",
+    "size": 4614269,
+    "summary": "build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset",
+    "time_created": "2023-05-29T15:52:02",
+    "title": "Building and Explaining a Text Classifier using AutoMLx"
   },
   {
     "developed_on": "computervision_p37_cpu_v1",
@@ -195,6 +195,19 @@
     "title": "Train, Register, and Deploy a Generic Model"
   },
   {
+    "developed_on": "pypgx2310_p38_cpu_v1",
+    "filename": "graph_insight-autonomous_database.ipynb",
+    "keywords": [
+      "graph_insight",
+      "autonomous_database"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 121229,
+    "summary": "Access",
+    "time_created": "2023-06-02T08:21:55",
+    "title": "Bank Graph Example Notebook"
+  },
+  {
     "developed_on": "pytorch110_p38_cpu_v1",
     "filename": "train-register-deploy-huggingface-pipeline.ipynb",
     "keywords": [
@@ -251,6 +264,28 @@
     "title": "Connect to Oracle Big Data Service"
   },
   {
+    "developed_on": "automlx_p38_cpu_v3",
+    "filename": "automlx-forecasting.ipynb",
+    "keywords": [
+      "language services",
+      "string manipulation",
+      "regex",
+      "regular expression",
+      "natural language processing",
+      "NLP",
+      "part-of-speech tagging",
+      "named entity recognition",
+      "sentiment analysis",
+      "custom plugins"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Forecasting.ipynb",
+    "size": 5638148,
+    "summary": "Use Oracle AutoMLx to build a forecast model with real-world data sets.",
+    "time_created": "2023-05-29T15:52:02",
+    "title": "Building a Forecaster using AutoMLx"
+  },
+  {
     "developed_on": "nlp_p37_cpu_v2",
     "filename": "natural_language_processing.ipynb",
     "keywords": [
@@ -270,28 +305,6 @@
     "summary": "Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.",
     "time_created": "2023-03-26T22:51:01",
     "title": "Natural Language Processing"
-  },
-  {
-    "developed_on": "automlx_p38_cpu_v3",
-    "filename": "automlx-forecasting.ipynb",
-    "keywords": [
-      "language services",
-      "string manipulation",
-      "regex",
-      "regular expression",
-      "natural language processing",
-      "NLP",
-      "part-of-speech tagging",
-      "named entity recognition",
-      "sentiment analysis",
-      "custom plugins"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Forecasting.ipynb",
-    "size": 5638148,
-    "summary": "Use Oracle AutoMLx to build a forecast model with real-world data sets.",
-    "time_created": "2023-05-29T13:27:59",
-    "title": "Building a Forecaster using AutoMLx"
   },
   {
     "developed_on": "generalml_p38_cpu_v1",
@@ -416,6 +429,19 @@
     "title": "Graph Analytics and Graph Machine Learning with PyPGX"
   },
   {
+    "developed_on": "pyspark24_p37_cpu_v3",
+    "filename": "pyspark-data_flow-application.ipynb",
+    "keywords": [
+      "pyspark",
+      "data flow"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 13085,
+    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
+    "time_created": "2023-03-30T10:01:38",
+    "title": "PySpark"
+  },
+  {
     "developed_on": "pyspark32_p38_cpu_v2",
     "filename": "pyspark-data_flow_studio-introduction.ipynb",
     "keywords": [
@@ -440,19 +466,6 @@
     "summary": "Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.",
     "time_created": "2023-03-26T22:51:01",
     "title": "Spark NLP within Oracle Cloud Infrastructure Data Flow Studio"
-  },
-  {
-    "developed_on": "pyspark24_p37_cpu_v3",
-    "filename": "pyspark-data_flow-application.ipynb",
-    "keywords": [
-      "pyspark",
-      "data flow"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 13085,
-    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
-    "time_created": "2023-03-30T10:01:38",
-    "title": "PySpark"
   },
   {
     "developed_on": "pytorch110_p38_cpu_v1",
