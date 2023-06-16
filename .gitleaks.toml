@@ -22,7 +22,7 @@ useDefault = true
         '''CONTRIBUTING.md''',
         '''LICENSE.txt''',
         '''package.json''',
-        '''README.md''',
+        '''^README.md''',
         '''SECURITY.md''',
         '''THIRD_PARTY_LICENSES.TXT''',
     ]
@@ -42,9 +42,9 @@ useDefault = true
     description = "Generic secret"
     id = "generic-secret"
     path = '''notebook_examples'''
-    regex = '''(?i)((key|api|token|secret|passwd|password|psw|)[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([0-9a-zA-Z!@#$%^&*<>\-_=]{6,25})['\"]'''
-    entropy = 2.5
+    regex = '''(?i)((key|api|token|secret|passwd|password|psw|pass)[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([0-9a-zA-Z!@#$%^&*<>\\\-_.=]{3,100})['\"]'''
+    entropy = 0
     secretGroup = 4
     keywords = [
-        "key","api","token","secret","passwd","password", "psw"
+        "key","api","token","secret","passwd","password", "psw", "pass"
     ]
