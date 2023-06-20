@@ -95,6 +95,15 @@ public class MLJobs {
         envVariables.put("CONDA_ENV_TYPE", "service");
         envVariables.put("CONDA_ENV_SLUG", "generalml_p38_cpu_v1");
 
+        // mounts storages - coming soon
+//        List<JobStorageMountConfigurationDetails> jobStorageMountConfigurationDetails = new ArrayList<>();
+//        jobStorageMountConfigurationDetails.add(
+//                ObjectStorageMountConfigurationDetails
+//                        .builder()
+//                        .bucket("beta")
+//                        .namespace("bucket-namespace")
+//                        .destinationDirectoryName("beta").build());
+
         CreateJobDetails jobRequestDetails = CreateJobDetails.builder()
                 .displayName(jobName)
                 .projectId(projectUuid)
@@ -104,6 +113,7 @@ public class MLJobs {
                                 .builder()
                                 .environmentVariables(envVariables)
                                 .build())
+//                .jobStorageMountConfigurationDetailsList(jobStorageMountConfigurationDetails)
                 .jobInfrastructureConfigurationDetails(
                         StandaloneJobInfrastructureConfigurationDetails
                                 .builder()
