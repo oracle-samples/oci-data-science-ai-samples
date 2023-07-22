@@ -12,7 +12,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Topics
-<img src="https://img.shields.io/badge/deploy model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/register model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/train model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/automlx-5-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/data flow-4-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/bds-3-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/classification-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/language services-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/string manipulation-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regex-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regular expression-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/natural language processing-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/NLP-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/part of speech tagging-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/named entity recognition-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/sentiment analysis-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/custom plugins-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regression-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/text classification-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/big data service-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/nlp-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/intel-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/intel extension-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/scikit learn-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> 
+<img src="https://img.shields.io/badge/deploy model-8-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/register model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/train model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/automlx-5-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/data flow-4-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/bds-3-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/big data service-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/nlp-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/language services-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/string manipulation-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regex-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regular expression-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/natural language processing-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/NLP-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/part of speech tagging-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/named entity recognition-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/sentiment analysis-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/custom plugins-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/text classification-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/classification-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regression-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/intel-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/intel extension-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/scikit learn-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> 
 
 ## Contents
  - [Audi Autonomous Driving Dataset Repository](#audi-autonomous_driving-oracle_open_data.ipynb)
@@ -36,6 +36,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Loading Data With Pandas & Dask](#load_data-object_storage-hive-autonomous-database.ipynb)
  - [Model Evaluation with ADSEvaluator](#model_evaluation-with-ADSEvaluator.ipynb)
  - [Natural Language Processing](#natural_language_processing.ipynb)
+ - [ONNX Integration with the Accelerated Data Science (ADS) SDK](#onnx-integration-ads.ipynb)
  - [PySpark](#pyspark-data_flow-application.ipynb)
  - [Spark NLP within Oracle Cloud Infrastructure Data Flow Studio](#pyspark-data_flow_studio-spark_nlp.ipynb)
  - [Text Classification and Model Explanations using LIME](#text_classification-model_explanation-lime.ipynb)
@@ -284,7 +285,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 ---
 ### <a name="graph_insight-autonomous_database.ipynb"></a> - Bank Graph Example Notebook
 
-<sub>Updated: 06/02/2023</sub>
+<sub>Updated: 06/05/2023</sub>
 #### [`graph_insight-autonomous_database.ipynb`](graph_insight-autonomous_database.ipynb)
 
  
@@ -362,22 +363,6 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="automlx-forecasting.ipynb"></a> - Building a Forecaster using AutoMLx
-
-<sub>Updated: 05/29/2023</sub>
-#### [`automlx-forecasting.ipynb`](automlx-forecasting.ipynb)
-
- 
-Use Oracle AutoMLx to build a forecast model with real-world data sets.
-
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
-
- 
-`language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### <a name="natural_language_processing.ipynb"></a> - Natural Language Processing
 
 <sub>Updated: 03/26/2023</sub>
@@ -387,6 +372,22 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.
 
 This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+
+ 
+`language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="automlx-forecasting.ipynb"></a> - Building a Forecaster using AutoMLx
+
+<sub>Updated: 05/29/2023</sub>
+#### [`automlx-forecasting.ipynb`](automlx-forecasting.ipynb)
+
+ 
+Use Oracle AutoMLx to build a forecast model with real-world data sets.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 
  
 `language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
@@ -490,6 +491,22 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 <sub>Universal Permissive License v 1.0 (https://oss.oracle.com/licenses/upl/)</sup>
 
 ---
+### <a name="onnx-integration-ads.ipynb"></a> - ONNX Integration with the Accelerated Data Science (ADS) SDK
+
+<sub>Updated: 07/17/2023</sub>
+#### [`onnx-integration-ads.ipynb`](onnx-integration-ads.ipynb)
+
+ 
+Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.
+
+This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+
+ 
+`onnx`  `deploy model`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### <a name="pipelines-ml_lifecycle.ipynb"></a> - Working with Pipelines
 
 <sub>Updated: 03/26/2023</sub>
@@ -522,22 +539,6 @@ This notebook was developed on the conda pack with slug: `pypgx2310_p38_cpu_v1`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="pyspark-data_flow-application.ipynb"></a> - PySpark
-
-<sub>Updated: 03/30/2023</sub>
-#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
-
- 
-Develop local PySpark applications and work with remote clusters using Data Flow.
-
-This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
-
- 
-`pyspark`  `data flow`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### <a name="pyspark-data_flow_studio-introduction.ipynb"></a> - Introduction to the Oracle Cloud Infrastructure Data Flow Studio
 
 <sub>Updated: 03/26/2023</sub>
@@ -563,6 +564,22 @@ This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v2`
 Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.
 
 This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v1`
+
+ 
+`pyspark`  `data flow`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="pyspark-data_flow-application.ipynb"></a> - PySpark
+
+<sub>Updated: 06/02/2023</sub>
+#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
+
+ 
+Develop local PySpark applications and work with remote clusters using Data Flow.
+
+This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
 
  
 `pyspark`  `data flow`
