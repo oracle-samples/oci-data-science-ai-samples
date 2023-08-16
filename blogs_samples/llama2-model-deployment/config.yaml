@@ -1,0 +1,11 @@
+models:
+  meta-llama/Llama-2-7b-chat-hf: 
+    endpoint: https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaay75uckqay7so6w2bpwreqxisognml72kdqi4qcjdtnpfykh4xtsq/predict
+    template: prompt-templates/llama.txt
+  meta-llama/Llama-2-13b-chat-hf: 
+    endpoint: https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaay75uckqaj5a53ebpi2zutlf733n22us2lgycd4xesvsn6pzecisa/predict
+    template: prompt-templates/llama.txt
+  bigcode/santacoder: 
+    endpoint: https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaay75uckqa5isa5vrwzmbcho3qmltlaq3zm2z63pxb674xajg3z5ya/predict
+oci:
+  profile: DEFAULT

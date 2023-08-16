@@ -1,0 +1,25 @@
+FROM ghcr.io/huggingface/text-generation-inference:0.9.3
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get -y install tzdata && apt-get install -y nginx && apt-get install -y curl
+
+RUN mkdir -p /home/datascience
+
+RUN ln -s /home/datascience /data
+
+ENV NGINX_ROOT=/etc/nginx
+ENV NGINX_PID=/var/run/nginx.pid
+ENV NGINX_BIN=/usr/sbin/nginx
+ENV NGINX_USER=root
+
+COPY start-tgi.sh /etc/
+RUN chmod a+x /etc/start-tgi.sh
+
+EXPOSE 5001
+
+COPY nginx.conf /etc/nginx/nginx.conf
+
+RUN pip install flask
+
+ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
+CMD ["/etc/start-tgi.sh"]
