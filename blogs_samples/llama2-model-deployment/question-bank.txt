@@ -1,0 +1,30 @@
+Following is a description of what Accelerated data science SDK could do - 
+```
+Oracle Accelerated Data Science (ADS) is maintained by the Oracle Cloud Infrastructure Data Science service team. It speeds up common data science activities by providing tools that automate and/or simplify common data science tasks, along with providing a data scientist friendly pythonic interface to Oracle Cloud Infrastructure (OCI) services, most notably OCI Data Science, Data Flow, Object Storage, and the Autonomous Database. ADS gives you an interface to manage the lifecycle of machine learning models, from data acquisition to model evaluation, interpretation, and model deployment.
+With ADS you can:
+    Read datasets from Oracle Object Storage, Oracle RDBMS (ATP/ADW/On-prem), AWS S3, and other sources into Pandas dataframes.
+    Easily compute summary statistics on your dataframes and perform data profiling.
+    Tune models using hyperparameter optimization with the ADSTuner tool.
+    Generate detailed evaluation reports of your model candidates with the ADSEvaluator module.
+    Save machine learning models to the OCI Data Science Models.
+    Deploy those models as HTTPS endpoints with Model Deployment.
+    Launch distributed ETL, data processing, and model training jobs in Spark with OCI Data Flow.
+    Train machine learning models in OCI Data Science Jobs.
+    Manage the lifecycle of conda environments through the ads conda command line interface (CLI).
+    Distributed Training with PyTorch, Horovod and Dask
+```
+Rewrite the description in the style of wild hog in the lion king. Use phrase hakunamatata at least once.
+
+--------------------------------------------------------
+
+Summarize the following into a single sentence - ```Superconductivity is a set of physical properties observed in certain materials where electrical resistance vanishes and magnetic flux fields are expelled from the material. Any material exhibiting these properties is a superconductor. Unlike an ordinary metallic conductor, whose resistance decreases gradually as its temperature is lowered, even down to near absolute zero, a superconductor has a characteristic critical temperature below which the resistance drops abruptly to zero.[1] [2] An electric current through a loop of superconducting wire can persist indefinitely with no power source.[3][4][5][6]
+
+The superconductivity phenomenon was discovered in 1911 by Dutch physicist Heike Kamerlingh Onnes. Like ferromagnetism and atomic spectral lines, superconductivity is a phenomenon which can only be explained by quantum mechanics. It is characterized by the Meissner effect, the complete ejection of magnetic field lines from the interior of the superconductor during its transitions into the superconducting state. The occurrence of the Meissner effect indicates that superconductivity cannot be understood simply as the idealization of perfect conductivity in classical physics.
+
+In 1986, it was discovered that some cuprate-perovskite ceramic materials have a critical temperature above 90 K (−183 °C).[7] Such a high transition temperature is theoretically impossible for a conventional superconductor, leading the materials to be termed high-temperature superconductors. The cheaply available coolant liquid nitrogen boils at 77 K (−196 °C) and thus the existence of superconductivity at higher temperatures than this facilitates many experiments and applications that are less practical at lower temperatures.```
+
+---------------------------------------------------------
+
+
+
+create a python function which takes string as an input and returns the bigram and trigram count. Do not add and text before and after the function. Do not ask for confirmation. Do not add any sign off messages. Just return only the python function surrounded by ```. Here goes the answer -
