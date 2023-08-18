@@ -62,7 +62,7 @@ def create_security_token_signer():
         generic_headers=SECURITY_TOKEN_GENERIC_HEADERS,
         body_headers=SECURITY_TOKEN_BODY_HEADERS,
     )
-    
+
     return auth
 
 
@@ -98,7 +98,7 @@ def query(prompt, max_tokens=200, **kwargs):
     auth = create_default_signer()
 
     data = requests.post(endpoint, json=body, auth=auth, headers=headers).json()
-    
+
     # return model generated response, or any error as a string
     return str(data.get("generated_text", data))
 
