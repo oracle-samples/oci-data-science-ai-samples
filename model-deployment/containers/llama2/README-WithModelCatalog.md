@@ -5,7 +5,7 @@ This repo provides two approaches to deploy the Llama-2 LLM:
 * [Text Generation Inference](https://github.com/huggingface/text-generation-inference) from HuggingFace.
 * [vLLM](https://github.com/vllm-project/vllm) developed at UC Berkeley
 
-The models are gated models, so they need to be requested access via Meta and Huggingface portals. Once acces is granted and email communication has bee received, we will create a model catalog item by following mentioned steps.
+The models are gated models, so they need to be requested access via Meta and Huggingface portals. Once acces is granted and email communication has been received, we will create a model catalog item by following mentioned steps.
 
 ## Prerequisite
 
@@ -87,8 +87,8 @@ Following outlines the steps needed to build the container which will be used fo
       * set custom environment variable key `PARAMS` with value `--model-id /opt/ds/model/deployed_model --max-batch-prefill-tokens 1024`
     * for `13b llama2` parameter model use the following environment variables, notice this deployment uses quantization
       * set custom environment variable key `PARAMS` with value `--model-id /opt/ds/model/deployed_model --max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096`
-    * By default Model Deploy VM has limited disk space. Best to add custom storage disk space for deploying model, using another configuration paramter under `Defaul Configuration`
-      * Key: STORAGE_SIZE_IN_GB, Value: 100-200 for 7b and 300-500 for 13b, depending on what all files we are bundling inside the model catalog item.
+    * by default Model Deploy VM has limited disk space. Best to add custom storage disk space for deploying model, using another configuration paramter under `Default Configuration`
+      * Key: `STORAGE_SIZE_IN_GB`, Value: `100-200` for 7b and `300-500` for 13b, depending on what all files we are bundling inside the model catalog item.
     * under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
     * under `Networking` select the VCN and subnet we created in the previous step, specifically the subnet with the `10.0.0.0/19` CIDR
