@@ -15,13 +15,17 @@ The models are gated models, so they need to be requested access via Meta and Hu
 ## Model Catalog Steps
 
 * Download/Clone the model's repository that we are targetting to deploy, from huggingface repository.
+     ```bash
+    git lfs install
+    git clone https://huggingface.co/meta-llama/Llama-2-13b-hf
+    ```
 * Zip all items of the folder using zip/tar utility, preferrably using below command to avoid creating another hierarchy of folder structure inside zipped file.
     ```bash
     zip <Filename>.zip * -0
     ```
 * Upload the zipped artifact created in an object storage bucket in your tenancy. Tools like [rclone](https://rclone.org/), can help speed this upload.
 * Next step is to create a model catalog item, using python script [create-large-modelcatalog.py](./create-large-modelcatalog.py). This script needs few inputs from users like Compartment OCID, Project OCID & Bucket details where we uploaded this model. There are multiple language SDK alternatives available as well, other than python.
-* Depending on the size of the model, model catalog item will take time to be prepared before it can be utilised to be deployed using Model Deploy service.
+* Depending on the size of the model, model catalog item will take time to be prepared before it can be utilised to be deployed using Model Deploy service. The script above will return the status SUCCEEDED, once the model is completely uploaded and ready to be used in Model Deploy service.
 
 ## Model Deployment Steps
 
