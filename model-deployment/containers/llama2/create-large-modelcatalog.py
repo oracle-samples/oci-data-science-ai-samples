@@ -46,19 +46,24 @@ def export_model_artifact(data_science, model_id, namespace, source_bucket, sour
   # Get the data from response
   return export_model_artifact_response
 
+# Get upload artifact work request status for 1 hour or finished status
 def get_upload_status(data_science, workRequestId):
   # Reference: https://docs.oracle.com/en-us/iaas/api/#/en/data-science/20190101/WorkRequest/GetWorkRequest
   exit = False
   # Sleep 30 seconds in between attempts
   sleepTimer = 30
+  # Max 1 hour we will poll for work request. After this user can manually check with work request id.
+  maxAttempts = 120
+  attempts = 0
   get_work_request_response = {}
   while exit != True:
-    print("I will keep checking status of your work request every 30 seconds, until a concluding status. Interrupt process to exit.")
+    print("Keep polling work request status every 30 seconds for an hour for a concluding status. Interrupt process to exit.")
     get_work_request_response = data_science.get_work_request(
       work_request_id=workRequestId
     )
+    attempts+=1
     print("Percentage completed: ", get_work_request_response.data.percent_complete)
-    if get_work_request_response.data.status != "ACCEPTED" and get_work_request_response.data.status != "IN_PROGRESS":
+    if (get_work_request_response.data.status != "ACCEPTED" and get_work_request_response.data.status != "IN_PROGRESS") or (attempts == maxAttempts):
       exit = True
       break
     time.sleep(sleepTimer)
