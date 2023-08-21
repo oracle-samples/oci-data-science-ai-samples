@@ -57,7 +57,7 @@ def get_upload_status(data_science, workRequestId):
   attempts = 0
   get_work_request_response = {}
   while exit != True:
-    print("Keep polling work request status every 30 seconds for an hour for a concluding status. Interrupt process to exit.")
+    print("Keep polling work request status every 30 seconds for an hour, for a concluding status. Interrupt process to exit.")
     get_work_request_response = data_science.get_work_request(
       work_request_id=workRequestId
     )
