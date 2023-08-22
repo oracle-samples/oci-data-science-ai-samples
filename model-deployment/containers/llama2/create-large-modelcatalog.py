@@ -81,7 +81,6 @@ if __name__ == '__main__':
   model_display_name = <OPTIONAL MODEL NAME>
  
   ## Add inputs for model export
-  artifact_source_type="ORACLE_OBJECT_STORAGE"    # Static value - DO NOT CHANGE
   namespace = <BUCKET_NAMESPACE_HOSTING_MODEL_ZIP>
   source_bucket = <BUCKET_HOSTING_MODEL_ZIP>
   source_object_name = <MODEL_OBJECT_ZIP_NAME>
@@ -98,4 +97,6 @@ if __name__ == '__main__':
   print(export_model_artifact_response.headers)
 
   # Get status of work request ID. Need data-science-work-requests policy for the principal
+  # Example: allow group <group_name> to manage data-science-work-requests in compartment <compartment_name>
+  # Refer page for more details: https://docs.oracle.com/en-us/iaas/data-science/using/policies.htm
   get_upload_status(data_science, export_model_artifact_response.headers["opc-work-request-id"])
