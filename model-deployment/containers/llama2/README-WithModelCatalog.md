@@ -23,8 +23,8 @@ The models are gated models, so they need to be requested access via Meta and Hu
     ```bash
     zip <Filename>.zip * -0
     ```
-* Upload the zipped artifact created in an object storage bucket in your tenancy. Tools like [rclone](https://rclone.org/), can help speed this upload.
-* Next step is to create a model catalog item, using python script [create-large-modelcatalog.py](./create-large-modelcatalog.py). This script needs few inputs from users like Compartment OCID, Project OCID & Bucket details where we uploaded this model. There are multiple language SDK alternatives available as well, other than python.
+* Upload the zipped artifact created in an object storage bucket in your tenancy. Tools like [rclone](https://rclone.org/), can help speed this upload. Using rclone with OCI can be referred from [here](https://docs.oracle.com/en/solutions/move-data-to-cloud-storage-using-rclone/configure-rclone-object-storage.html#GUID-8471A9B3-F812-4358-945E-8F7EEF115241)
+* Next step is to create a model catalog item, using python script [create-large-modelcatalog.py](./create-large-modelcatalog.py). This script needs few inputs from users like Compartment OCID, Project OCID & Bucket details where we uploaded the model. There are multiple language SDK alternatives available as well, other than python.
 * Depending on the size of the model, model catalog item will take time to be prepared before it can be utilised to be deployed using Model Deploy service. The script above will return the status SUCCEEDED, once the model is completely uploaded and ready to be used in Model Deploy service.
 
 ## Model Deployment Steps
@@ -92,7 +92,7 @@ Following outlines the steps needed to build the container which will be used fo
     * for `13b llama2` parameter model use the following environment variables, notice this deployment uses quantization
       * set custom environment variable key `PARAMS` with value `--model-id /opt/ds/model/deployed_model --max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096`
     * by default Model Deploy VM has limited disk space. Best to add custom storage disk space for deploying model, using another configuration paramter under `Default Configuration`
-      * Key: `STORAGE_SIZE_IN_GB`, Value: `100-200` for 7b and `300-500` for 13b, depending on what all files we are bundling inside the model catalog item.
+      * Key: `STORAGE_SIZE_IN_GB`, Value: `200-300` for 7b and `300-500` for 13b, depending on what all files we are bundling inside the model catalog item.
     * under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
     * under `Networking` select the VCN and subnet we created in the previous step, specifically the subnet with the `10.0.0.0/19` CIDR
