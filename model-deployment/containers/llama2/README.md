@@ -153,10 +153,10 @@ Once you build and pushed the TGI or the vLLM container you can now use the Brin
   * under `Default configuration` set following custom environment variables
     * for `7b llama2` parameter model use the following environment variables
       * set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`
-      * set custom environment variable key `PARAMS` with value `--model-id meta-llama/Llama-2-7b-chat-hf --max-batch-prefill-tokens 1024`
+      * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-7b-chat-hf --max-batch-prefill-tokens 1024`
     * for `13b llama2` parameter model use the following environment variables, notice this deployment uses quantization
       * set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`
-      * set custom environment variable key `PARAMS` with value `--model-id meta-llama/Llama-2-13b-chat-hf --max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096`
+      * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-13b-chat-hf --max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096`
     * under `Models` click on the `Select` button and select the Model Catalog entry we created earlier with the `token.zip` file
     * under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
     * under `Networking` select the VCN and subnet we created in the previous step, specifically the subnet with the `10.0.0.0/19` CIDR
@@ -179,7 +179,7 @@ Once you build and pushed the TGI or the vLLM container you can now use the Brin
   * install the dependencies
 
     ```bash
-    pip install gradio loguru
+    pip install -r requirements.txt
     ```
 
   * run the Gradio application with
