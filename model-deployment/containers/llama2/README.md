@@ -49,6 +49,15 @@ To construct the required containers for this deployment and retain the necessar
   * under `Model artifact` click on the `Select` button and locate the `token.zip` file, then click `Upload`
   * click on `Create` to store the artifact
 
+* create logging for the model deployment (if you have to already created, you can skip this step)
+  * go to the [OCI Logging Service](https://cloud.oracle.com/logging/log-groups) and select `Log Groups`
+  * either select one of the existing Log Groups or create a new one
+  * in the log group create ***two*** `Log`, one predict log and one access log, like:
+    * click on the `Create custom log`
+    * specify a name (predict|access) and select the log group you want to use
+    * under `Create agent configuration` select `Add configuration later`
+    * then click `Create agent configuration`
+
 * create a subnet for the model deployment
   * go to the [Virtual Cloud Network](https://cloud.oracle.com/networking/vcns) in your Tenancy
   * select one of your existing VCNs
@@ -68,6 +77,8 @@ To construct the required containers for this deployment and retain the necessar
     ```
 
 ## Deploy with TGI Container
+
+You can find the official documentation about OCI Data Science Model Deployment: [https://docs.oracle.com/en-us/iaas/data-science/using/model_dep_create.htm]
 
 * build the TGI container image, this step would take awhile
 
@@ -96,16 +107,9 @@ To construct the required containers for this deployment and retain the necessar
     make push.tgi
     ```
 
-* create logging for the model deployment
-  * go to the [OCI Logging Service](https://cloud.oracle.com/logging/log-groups) and select `Log Groups`
-  * either select one of the existing Log Groups or create a new one
-  * in the log group create ***two*** `Log`, one predict log and one access log, like:
-    * click on the `Create custom log`
-    * specify a name (predict|access) and select the log group you want to use
-    * under `Create agent configuration` select `Add configuration later`
-    * then click `Create agent configuration`
-
 ## Deploy with vLLM Container
+
+You can find the official documentation about OCI Data Science Model Deployment: [https://docs.oracle.com/en-us/iaas/data-science/using/model_dep_create.htm]
 
 * build the vLLM container image, this step would take awhile
 
@@ -134,39 +138,36 @@ To construct the required containers for this deployment and retain the necessar
     make push.vllm
     ```
 
-* create logging for the model deployment
-  * go to the [OCI Logging Service](https://cloud.oracle.com/logging/log-groups) and select `Log Groups`
-  * either select one of the existing Log Groups or create a new one
-  * in the log group create ***two*** `Log`, one predict log and one access log, like:
-    * click on the `Create custom log`
-    * specify a name (predict|access) and select the log group you want to use
-    * under `Create agent configuration` select `Add configuration later`
-    * then click `Create agent configuration`
-
 ## Deploy on OCI Data Science Model Deployment
 
 Once you build and pushed the TGI or the vLLM container you can now use the Bring Your Own Container Deployment in OCI Data Science to the deploy the Llama2 model.
 
-* to deploy the model now in the console, go to back your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
+* to deploy the model now in the console, go back your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
   * select the project you created earlier and than select `Model Deployment`
   * click on `Create model deployment`
-  * under `Default configuration` set following custom environment variables
-    * for `7b llama2` parameter model use the following environment variables
-      * set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`
-      * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-7b-chat-hf --tensor-parallel-size 4`
-    * for `13b llama2` parameter model use the following environment variables, notice this deployment uses quantization
-      * set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`
-      * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-13b-chat-hf --tensor-parallel-size 4`
-    * under `Models` click on the `Select` button and select the Model Catalog entry we created earlier with the `token.zip` file
-    * under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
-    * under `Networking` select the VCN and subnet we created in the previous step, specifically the subnet with the `10.0.0.0/19` CIDR
-    * under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
-    * click on `Show advanced options` at the bottom
-    * select the checkbox `Use a custom container image`
-    * select the OCIR repository and image we pushed earlier
-    * select 5001 as ports for both health and predict
-    * leave CMD and Entrypoint blank
-    * click on `Create` button to create the model deployment
+  * `TGI Container` deployment
+    * under `Default configuration` set following custom environment variables
+      * for `7b llama2` parameter model use the following environment variables
+        * set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`
+        * set custom environment variable key `PARAMS` with value `--model-id meta-llama/Llama-2-7b-chat-hf --max-batch-prefill-tokens 1024`
+      * for `13b llama2` parameter model use the following environment variables, notice this deployment uses quantization
+        * set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`
+        * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-13b-chat-hf --max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096`
+  * `vLLM Container` deployment
+    * under `Default configuration` set following custom environment variables
+      * for `7b llama2` parameter model use the following environment variables
+        * set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`
+        * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-7b-chat-hf --tensor-parallel-size 2`
+  * under `Models` click on the `Select` button and select the Model Catalog entry we created earlier with the `token.zip` file
+  * under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
+  * under `Networking` select the VCN and subnet we created in the previous step, specifically the subnet with the `10.0.0.0/19` CIDR
+  * under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
+  * click on `Show advanced options` at the bottom
+  * select the checkbox `Use a custom container image`
+  * select the OCIR repository and image we pushed earlier
+  * select 5001 as ports for both health and predict
+  * leave CMD and Entrypoint blank
+  * click on `Create` button to create the model deployment
 
 ## Inference
 
