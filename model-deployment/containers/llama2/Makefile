@@ -15,9 +15,19 @@ token:=${PWD}/token
 target_token:=/opt/ds/model/deployed_model/token
 model:=meta-llama/Llama-2-7b-chat-hf
 
+check-env:
+	@if [[ -z "$${TENANCY_NAME}" ]]; then \
+		echo "TENANCY_NAME is not set or is empty"; \
+		exit 1; \
+	fi
+	@if [[ -z "$${REGION_KEY}" ]]; then \
+		echo "REGION_KEY is not set or is empty"; \
+		exit 1; \
+	fi
+	@echo "Both TENANCY_NAME and REGION_KEY are set and have values."
 build.tgi:
 	docker build --network host -t ${TGI_INFERENCE_IMAGE} -f Dockerfile.tgi .
-build.vllm:
+build.vllm: check-env
 	docker build --network host -t ${VLLM_INFERENCE_IMAGE} -f Dockerfile.vllm .
 run.tgi:
 	docker run --rm -it --gpus all --shm-size 1g -p 5001:5001 -e TOKEN_FILE=${target_token} -e PARAMS="--model-id ${model}" -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${TGI_CONTAINER_NAME} ${TGI_INFERENCE_IMAGE}
