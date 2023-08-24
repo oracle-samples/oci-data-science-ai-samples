@@ -5,7 +5,7 @@ This repo provides two approaches to deploy the Llama-2 LLM:
 * [Text Generation Inference](https://github.com/huggingface/text-generation-inference) from HuggingFace.
 * [vLLM](https://github.com/vllm-project/vllm) developed at UC Berkeley
 
-The models are gated models, so they need to be requested access via Meta and Huggingface portals. Once acces is granted and email communication has been received, we will create a model catalog item by following mentioned steps.
+The models are gated models, so they need to be requested access via Meta and Huggingface portals. Once access is granted and email communication has been received, we will create a model catalog item by following mentioned steps.
 
 ## Prerequisite
 
@@ -34,12 +34,7 @@ Following outlines the steps needed to build the container which will be used fo
 ## Deploy with TGI
 
 * checkout this repository
-* enter the `llama2-model-deployment` folder:
-
-    ```bash
-    cd llama2-model-deployment/
-    ```
-
+* enter the `model-deployment/containers/llama2-hf` folder:
 * this example uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image required for the deployment. Open the `Makefile` and change the following variables placeholders to point to your Oracle Cloud Container Registry. Replace `<your-tenancy-name>` with the name of your tenancy, which you can find under your [account settings](https://cloud.oracle.com/tenancy) and the `region` with the 3 letter name of your tenancy region, you consider to use for this example, for example IAD for Ashburn, or FRA for Frankfurt. You can find the region keys in our public documentation for [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm)
 
     ```bash
@@ -109,7 +104,7 @@ Following outlines the steps needed to build the container which will be used fo
   * under the left side under `Resources` select `Invoking your model`
   * you will see the model endpoint under `Your model HTTP endpoint` copy it
   * open the `config.yaml` file
-  * depending on which model you decided to deploy the 7b or 14b change the endpoint URL with the one you've just copied
+  * depending on which model you decided to deploy the 7b or 13b change the endpoint URL with the one you've just copied
   * install the dependencies
 
     ```bash
@@ -160,25 +155,21 @@ ads opctl run -f ads-md-deploy-vllm.yaml
 
 ## Additional Make Commands
 
-### TGI containers
+### TGI containers in TGI folder
 
-`make build.tgi` to build the container
+`make build` to build the container
 
-`make run.tgi` to run the container
+`make run` to run the container
 
-`make shell.tgi` to launch container with shell prompt
+`make push` to push the image
 
-`make stop.tgi` to stop the running container
+### vLLM containers in vllm folder
 
-### vLLM containers
+`make build` to build the container
 
-`make build.vllm` to build the container
+`make run` to run the container
 
-`make run.vllm` to run the container
-
-`make shell.vllm` to launch container with shell prompt
-
-`make stop.vllm` to stop the running container
+`make push` to push the image
 
 ## Gradio
 
