@@ -244,13 +244,3 @@ ads opctl run -f ads-md-deploy-vllm.yaml
 `make shell.vllm` to launch container with shell prompt
 
 `make stop.vllm` to stop the running container
-
-## Gradio
-
-Let's try the deployed model with Gradio
-
-* install following libraries
-
-    ```bash
-    pip install gradio loguru
-    ```
