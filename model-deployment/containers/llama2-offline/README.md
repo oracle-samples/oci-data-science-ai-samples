@@ -33,29 +33,29 @@ Following outlines the steps needed to build the container which will be used fo
 
 ## Deploy with TGI
 
-* checkout this repository
-* enter the `model-deployment/containers/llama2-offline/tgi` folder:
-* this example uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image required for the deployment. Open the `Makefile` and change the following variables placeholders to point to your Oracle Cloud Container Registry. Replace `<your-tenancy-name>` with the name of your tenancy, which you can find under your [account settings](https://cloud.oracle.com/tenancy) and the `region` with the 3 letter name of your tenancy region, you consider to use for this example, for example IAD for Ashburn, or FRA for Frankfurt. You can find the region keys in our public documentation for [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm)
+* Checkout this repository
+* Enter the `model-deployment/containers/llama2-offline/tgi` folder:
+* This example uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image required for the deployment. Open the `Makefile` and change the following variables placeholders to point to your Oracle Cloud Container Registry. Replace `<your-tenancy-name>` with the name of your tenancy, which you can find under your [account settings](https://cloud.oracle.com/tenancy) and the `region` with the 3 letter name of your tenancy region, you consider to use for this example, for example IAD for Ashburn, or FRA for Frankfurt. You can find the region keys in our public documentation for [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm)
 
     ```bash
     export TENANCY_NAME=<your-tenancy-name>
     export REGION_KEY=<region-key>
     ```
 
-* build the deployment container image, this step would take awhile
+* Build the deployment container image, this step would take awhile
 
     ```bash
     make build
     ```
 
-* before we can push the newly build container make sure that you've created the `text-generation-interface-odsc` repository in your tenancy.
+* Before we can push the newly build container make sure that you've created the `text-generation-interface-odsc` repository in your tenancy.
   * Go to your tenancy [Container Registry](https://cloud.oracle.com/compute/registry/containers)
   * Click on the `Create repository` button
   * Select `Private` under Access types
   * Set `text-generation-interface-odsc` as a `Repository name`
   * Click on `Create` button
 
-* you may need to `docker login` to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before been able to push the image. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
+* You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before been able to push the image. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
 
     ```bash
     docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
@@ -63,50 +63,50 @@ Following outlines the steps needed to build the container which will be used fo
 
     If `your tenancy` is **federated** with Oracle Identity Cloud Service, use the format `<tenancy-namespace>/oracleidentitycloudservice/<username>`
 
-* push the container image to the OCIR
+* Push the container image to the OCIR
 
     ```bash
     make push
     ```
 
-* create logging for the model deployment, as an optional but helpful step
-  * go to the [OCI Logging Service](https://cloud.oracle.com/logging/log-groups) and select `Log Groups`
-  * either select one of the existing Log Groups or create a new one
-  * in the log group create ***two*** `Log`, one predict log and one access log, like:
-    * click on the `Create custom log`
-    * specify a name (predict|access) and select the log group you want to use
-    * under `Create agent configuration` select `Add configuration later`
-    * then click `Create agent configuration`
+* Create logging for the model deployment, as an optional but helpful step
+  * Go to the [OCI Logging Service](https://cloud.oracle.com/logging/log-groups) and select `Log Groups`
+  * Either select one of the existing Log Groups or create a new one
+  * In the log group create ***two*** `Log`, one predict log and one access log, like:
+    * Click on the `Create custom log`
+    * Specify a name (predict|access) and select the log group you want to use
+    * Under `Create agent configuration` select `Add configuration later`
+    * Then click `Create agent configuration`
 
-* to deploy the model now in the console, go to back your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
-  * select the project you created earlier and than select `Model Deployment`
-  * click on `Create model deployment`
-  * models downloaded from model catalog, will be mounted and made avilable to the model server container at location: /opt/ds/model/deployed_model as part of Model Deploy BYOC contract. So under `Default configuration` set following custom environment variables
-    * for `7b llama2` parameter model use the following environment variables
+* To deploy the model now in the console, go to back your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
+  * Select the project you created earlier and than select `Model Deployment`
+  * Click on `Create model deployment`
+  * Models downloaded from model catalog, will be mounted and made avilable to the model server container at location: /opt/ds/model/deployed_model as part of Model Deploy BYOC contract. So under `Default configuration` set following custom environment variables
+    * For `7b llama2` parameter model use the following environment variables
       * default PARAMS are going as `--max-batch-prefill-tokens 1024`, for custom requirement, set custom environment variable key `PARAMS` with value `--max-batch-prefill-tokens 1024` as needed.
-    * for `13b llama2` parameter model use the following environment variables, notice this deployment uses quantization
+    * For `13b llama2` parameter model use the following environment variables, notice this deployment uses quantization
       * set custom environment variable key `PARAMS` with value `--max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096`
     * Since TGI by default works on /generate for prediction endpoint and /status for health endpoint, we need to map these custom endpoints to model deploy service oriented endpoints. We can achieve this by mentioning following environment variables in configuration section
       * Key: `PREDICT_ENDPOINT`, Value: `/generate`
       * Key: `HEALTH_ENDPOINT`, Value: `/status`
-    * under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
-    * under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
-    * under `Networking` leave the Default option
-    * under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
-    * click on `Show advanced options` at the bottom
-    * select the checkbox `Use a custom container image`
-    * select the OCIR repository and image we pushed earlier
+    * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
+    * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
+    * Under `Networking` leave the Default option
+    * Under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
+    * Click on `Show advanced options` at the bottom
+    * Select the checkbox `Use a custom container image`
+    * Select the OCIR repository and image we pushed earlier
     * No need to change port, as default port is mentioned 8080. But is is available as ENV variable in Dockerfile, so feel free to change as needed.
-    * leave CMD and Entrypoint blank
-    * click on `Create` button to create the model deployment
+    * Leave CMD and Entrypoint blank
+    * Click on `Create` button to create the model deployment
 
-* once the model is deployed and shown as `Active` you can execute inference against it, the easier way to do it would be to use the integrated `Gradio` application in this example
-  * go to the model you've just deployed and click on it
-  * under the left side under `Resources` select `Invoking your model`
-  * you will see the model endpoint under `Your model HTTP endpoint` copy it
-  * open the `config.yaml` file
-  * depending on which model you decided to deploy the 7b or 13b change the endpoint URL with the one you've just copied
-  * install the dependencies
+* Once the model is deployed and shown as `Active`, you can execute inference against it, the easier way to do it would be to use the integrated `Gradio` application in this example
+  * Go to the model you've just deployed and click on it
+  * Under the left side under `Resources` select `Invoking your model`
+  * You will see the model endpoint under `Your model HTTP endpoint` copy it
+  * Open the `config.yaml` file
+  * Depending on which model you decided to deploy the 7b or 13b change the endpoint URL with the one you've just copied
+  * Install the dependencies
 
     ```bash
     pip install gradio loguru
@@ -118,9 +118,9 @@ Following outlines the steps needed to build the container which will be used fo
     make app
     ```
 
-    * you should be able to open the application now on your machine under `http://127.0.0.1:7861/` and use start chatting against the deployed model on OCI Data Science Service.
+    * You should be able to open the application now on your machine under `http://127.0.0.1:7861/` and use start chatting against the deployed model on OCI Data Science Service.
 
-* alternatively you can run inference against the deployed model with oci cli
+* Alternatively you can run inference against the deployed model with oci cli
 
 ```bash
 oci raw-request --http-method POST --target-uri https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaan/predict --request-body '{"inputs":"Write a python program to randomly select item from a predefined list?","parameters":{"max_new_tokens":200}}' --auth resource_principal
@@ -129,27 +129,27 @@ oci raw-request --http-method POST --target-uri https://modeldeployment.eu-frank
 ## Deploy with vLLM
 Container creation process is going to be same as TGI. All associated files are present in vllm directory. Once the container is pushed on OCIR, follow below steps:
 
-* to deploy the model now in the console, go to back your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
-  * select the project you created earlier and than select `Model Deployment`
-  * click on `Create model deployment`
-  * models downloaded from model catalog, will be mounted and made avilable to the model server container at location: /opt/ds/model/deployed_model as part of Model Deploy BYOC contract. So under `Default configuration` set following custom environment variables
-    * for `7b llama2` model, use the following environment variables
-      * default values in docker file are sufficient to handle the model deployment with tensor parallelism as 1
-    * for `13b llama2` model, use the custom environment variable to override the default tensor parallelism as 2, to shard the model on 2 GPU cards.
-      * set custom environment variable key `TENSOR_PARALLELISM` with value `2`
+* To deploy the model now in the console, go to back your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
+  * Select the project you created earlier and than select `Model Deployment`
+  * Click on `Create model deployment`
+  * Models downloaded from model catalog, will be mounted and made avilable to the model server container at location: /opt/ds/model/deployed_model as part of Model Deploy BYOC contract. So under `Default configuration` set following custom environment variables
+    * For `7b llama2` model, use the following environment variables
+      * Default values in docker file are sufficient to handle the model deployment with tensor parallelism as 1
+    * For `13b llama2` model, use the custom environment variable to override the default tensor parallelism as 2, to shard the model on 2 GPU cards.
+      * Set custom environment variable key `TENSOR_PARALLELISM` with value `2`
     * Since in api server file, we have already changed the prediction endpoint to /predict, we don't need any other overrides.
-    * under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
-    * under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
-    * under `Networking` leave the Default option
-    * under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
-    * click on `Show advanced options` at the bottom
-    * select the checkbox `Use a custom container image`
-    * select the OCIR repository and image we pushed earlier
+    * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
+    * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
+    * Under `Networking` leave the Default option
+    * Under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
+    * Click on `Show advanced options` at the bottom
+    * Select the checkbox `Use a custom container image`
+    * Select the OCIR repository and image we pushed earlier
     * No need to change port, as default port is mentioned 8080. But is is available as ENV variable in Dockerfile, so feel free to change as needed.
-    * leave CMD and Entrypoint blank
-    * click on `Create` button to create the model deployment
+    * Leave CMD and Entrypoint blank
+    * Click on `Create` button to create the model deployment
 
-* once the model is deployed and shown as `Active` you can execute inference against it.
+* Once the model is deployed and shown as `Active`, you can execute inference against it.
 
 ## Deploying using ADS
 
