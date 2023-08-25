@@ -7,7 +7,7 @@ VLLM_CONTAINER_NAME:=vllm-odsc
 SOURCE_MODEL_DIR=/model
 TARGET_MODEL_DIR=/opt/ds/model/deployed_model
 TENSOR_PARALLELISM=2
-PORT=9090
+PORT=8080
 
 build:
 	docker build -t ${VLLM_INFERENCE_IMAGE} -f Dockerfile .
