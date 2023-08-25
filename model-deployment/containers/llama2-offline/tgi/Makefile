@@ -16,3 +16,6 @@ push:
 
 run:
 	docker run -e PORT=${PORT} -e MODEL=${TARGET_MODEL_DIR} --shm-size=1gb -p ${PORT}:${PORT} -v ${SOURCE_MODEL_DIR}:${TARGET_MODEL_DIR}:Z -it --gpus all ${TGI_INFERENCE_IMAGE}
+
+app:
+	MODEL=${TARGET_MODEL_DIR} gradio app.py
