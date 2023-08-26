@@ -86,9 +86,8 @@ Following outlines the steps needed to build the container which will be used fo
       * default PARAMS are going as `--max-batch-prefill-tokens 1024`, for custom requirement, set custom environment variable key `PARAMS` with value `--max-batch-prefill-tokens 1024` as needed.
     * For `13b llama2` parameter model use the following environment variables, notice this deployment uses quantization
       * set custom environment variable key `PARAMS` with value `--max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096`
-    * Since TGI by default works on /generate for prediction endpoint and /status for health endpoint, we need to map these custom endpoints to model deploy service oriented endpoints. We can achieve this by mentioning following environment variables in configuration section
+    * Since TGI by default works on /generate for prediction endpoint, we need to map this custom endpoints to model deploy service oriented endpoint. We can achieve this by mentioning following environment variables in configuration section
       * Key: `PREDICT_ENDPOINT`, Value: `/generate`
-      * Key: `HEALTH_ENDPOINT`, Value: `/status`
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
     * Under `Networking` leave the Default option
