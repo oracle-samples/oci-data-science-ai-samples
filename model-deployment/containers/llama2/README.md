@@ -157,7 +157,7 @@ Once you build and pushed the TGI or the vLLM container you can now use the Brin
     * under `Default configuration` set following custom environment variables
       * for `7b llama2` parameter model use the following environment variables
         * set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`
-        * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-7b-chat-hf --tensor-parallel-size 2`
+        * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-7b-chat-hf`
   * under `Models` click on the `Select` button and select the Model Catalog entry we created earlier with the `token.zip` file
   * under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
   * under `Networking` select the VCN and subnet we created in the previous step, specifically the subnet with the `10.0.0.0/19` CIDR
@@ -193,9 +193,35 @@ Once you build and pushed the TGI or the vLLM container you can now use the Brin
 
 * alternatively you can run inference against the deployed model with oci cli from your OCI Data Science Notebook or you local environment
 
-```bash
-oci raw-request --http-method POST --target-uri https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaan/predict --request-body '{"inputs":"Write a python program to randomly select item from a predefined list?","parameters":{"max_new_tokens":200}}' --auth resource_principal
-```
+  * TGI Inference
+
+    ```bash
+    oci raw-request \
+      --http-method POST \
+      --target-uri "https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaanif7xwiahljboucy47byny5xffyc3zbkpfk4jtcdrtycjb6p2tsa/predict" \
+      --request-body '{
+        "inputs": "Write a python program to randomly select item from a predefined list?",
+        "parameters": {
+          "max_new_tokens": 200
+        }
+      }' \
+      --auth resource_principal
+    ```
+
+  * vLLM Inference
+
+    ```bash
+    oci raw-request \
+      --http-method POST \
+      --target-uri "https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaanif7xwiaje3uc4c5igep2ppcefnyzuab3afufefgepicpl5whm6q/predict" \
+      --request-body '{
+        "prompt": "are you smart?",
+        "use_beam_search": true,
+        "n": 4,
+        "temperature": 0
+      }' \
+      --auth resource_principal
+    ```
 
 ## Deploying using ADS
 
