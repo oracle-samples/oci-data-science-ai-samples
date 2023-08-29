@@ -12,6 +12,8 @@ RUN pip install fschat
 RUN pip install GPUtil
 RUN pip install vllm
 
+ENV TMPDIR=/home/datascience
+
 # Default location where downloaded models are mapped on model container. No need to override.
 ENV MODEL /opt/ds/model/deployed_model
 
