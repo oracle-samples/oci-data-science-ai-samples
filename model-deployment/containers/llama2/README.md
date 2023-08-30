@@ -157,7 +157,7 @@ Once you build and pushed the TGI or the vLLM container you can now use the Brin
     * under `Default configuration` set following custom environment variables
       * for `7b llama2` parameter model use the following environment variables
         * set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`
-        * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-7b-chat-hf --tensor-parallel-size 2`
+        * set custom environment variable key `PARAMS` with value `--model meta-llama/Llama-2-7b-chat-hf`
   * under `Models` click on the `Select` button and select the Model Catalog entry we created earlier with the `token.zip` file
   * under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
   * under `Networking` select the VCN and subnet we created in the previous step, specifically the subnet with the `10.0.0.0/19` CIDR
@@ -193,9 +193,35 @@ Once you build and pushed the TGI or the vLLM container you can now use the Brin
 
 * alternatively you can run inference against the deployed model with oci cli from your OCI Data Science Notebook or you local environment
 
-```bash
-oci raw-request --http-method POST --target-uri https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaan/predict --request-body '{"inputs":"Write a python program to randomly select item from a predefined list?","parameters":{"max_new_tokens":200}}' --auth resource_principal
-```
+  * TGI Inference
+
+    ```bash
+    oci raw-request \
+      --http-method POST \
+      --target-uri "https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaanif7xwiahljboucy47byny5xffyc3zbkpfk4jtcdrtycjb6p2tsa/predict" \
+      --request-body '{
+        "inputs": "Write a python program to randomly select item from a predefined list?",
+        "parameters": {
+          "max_new_tokens": 200
+        }
+      }' \
+      --auth resource_principal
+    ```
+
+  * vLLM Inference
+
+    ```bash
+    oci raw-request \
+      --http-method POST \
+      --target-uri "https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaanif7xwiaje3uc4c5igep2ppcefnyzuab3afufefgepicpl5whm6q/predict" \
+      --request-body '{
+        "prompt": "are you smart?",
+        "use_beam_search": true,
+        "n": 4,
+        "temperature": 0
+      }' \
+      --auth resource_principal
+    ```
 
 ## Deploying using ADS
 
@@ -222,6 +248,48 @@ ads opctl run -f ads-md-deploy-tgi.yaml
 ```bash
 ads opctl run -f ads-md-deploy-vllm.yaml
 ```
+
+## Debugging
+
+You could debug the code in the container utilizing the [Visual Studio Code Remote - Tunnels](https://code.visualstudio.com/docs/remote/tunnels) extension, which lets you connect to a remote machine, like a desktop PC or virtual machine (VM), via a secure tunnel. You can connect to that machine from a VS Code client anywhere, without the requirement of setting up your own SSH, including also using the Oracle Cloud Infrastructure Data Science Jobs.
+
+The tunneling securely transmits data from one network to another. This can eliminate the need for the source code to be on your VS Code client machine since the extension runs commands and other extensions directly on the OCI Data Science Job remote machine.
+
+### Requirements
+
+To use the debugging you have to finalize the steps of building and pushing the container of your choice to the Oracle Cloud Container Registry.
+
+## Run for Debugging
+
+For debugging purposes we will utilize the OCI Data Science Jobs service. Once the TGI or the vLLM container was build and published to the OCIR, we can run it as a Job, which would enable us take advance of the VSCode Remote Tunneling. To do so follow the steps:
+
+* in your [OCI Data Science](https://cloud.oracle.com/data-science/projects) section, select the project you've created for deployment
+* under the `Resources` section select `Jobs`
+* click on `Create job` button
+* under the `Default Configuration` select the checkbox for `Bring your own container`
+  * set following environment variables:
+  * `CONTAINER_CUSTOM_IMAGE` with the value to the OCI Container Registry Repository location where you pushed your container, for example: `<your-region>.ocir.io/<your-tenancy-name>/vllm-odsc:0.1.3`
+  * `CONTAINER_ENTRYPOINT` with the value `"/bin/bash", "--login",  "-c"`
+  * `CONTAINER_CMD` with the value `/aiapps/runner.sh`
+  * the above values will override the default values set in the `Dockerfile` and would enable to launch the tunneling
+* under `Compute shape` select `Custom configuration` and then `Specialty and previous generation` and select the `VM.GPU.A10.2` shape
+* under `Logging` select the log group you've created for the model deployment and keep the option `Enable automatic log creation`
+* under `Storage` set 500GB+ of storage
+* under `Networking` keep the `Default networking` configuration
+
+With this we are now ready to start the job
+
+* select the newly created job, if you have not done so
+* click on the `Start a job run` 
+* keep all settings by default and click on `Start` button at the bottom left
+
+Once the job is up and running, you will notice in the logs, the authentication code appears, you can copied and use it to authorize the tunnel, few seconds later the link for the tunnel would appear.
+
+![vscode tunnel in the oci job](../../../jobs/tutorials/assets/images/vscde-server-tunnel-job.png)
+
+Copy the link and open it in a browser, which should load the VSCode Editor and reveals the code inside the job, enabling direct debugging and coding.
+
+`Notice` that you can also use your local VSCode IDE for the same purpose via the [Visual Studio Code Remote - Tunnels](https://code.visualstudio.com/docs/remote/tunnels) extension
 
 ## Additional Make Commands
 
