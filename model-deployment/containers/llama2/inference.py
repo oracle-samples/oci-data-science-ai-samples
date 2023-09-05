@@ -96,9 +96,7 @@ def query(prompt, max_tokens=200, **kwargs):
 
     # create auth using one of the oci signers
     auth = create_default_signer()
-
     data = requests.post(endpoint, json=body, auth=auth, headers=headers).json()
-
     # return model generated response, or any error as a string
     return str(data.get("generated_text", data))
 
