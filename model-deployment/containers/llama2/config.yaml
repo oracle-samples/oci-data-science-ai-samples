@@ -1,6 +1,6 @@
 models:
   meta-llama/Llama-2-7b-chat-hf:
-    endpoint: https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaanif7xwia2asvvau7sz6xu7bxdq34laa2rngyheqtdeihsrhdy4ga/predict
+    endpoint: https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaan/predict
     template: prompt-templates/llama.txt
   meta-llama/Llama-2-13b-chat-hf:
     endpoint: https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaay/predict
