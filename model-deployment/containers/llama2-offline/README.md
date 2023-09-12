@@ -138,7 +138,7 @@ Container creation process is going to be same as TGI. All associated files are 
       * Set custom environment variable key `TENSOR_PARALLELISM` with value `2`
     * Since in api server file, we have already changed the prediction endpoint to /predict, we don't need any other overrides.
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
-    * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
+    * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU3.2` instance
     * Under `Networking` leave the Default option
     * Under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
     * Click on `Show advanced options` at the bottom
