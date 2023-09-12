@@ -14,7 +14,7 @@ The models are gated models, so they need to be requested access via Meta and Hu
 
 ## Model Catalog Steps
 
-* Download/Clone the model's repository that we are targetting to deploy, from huggingface repository.
+* Download/Clone the model's repository that we are targetting to deploy, from huggingface repository. This can be done in Notebooks session for faster downloads and upload to bucket.
      ```bash
     git lfs install
     git clone https://huggingface.co/meta-llama/Llama-2-13b-hf
@@ -24,7 +24,10 @@ The models are gated models, so they need to be requested access via Meta and Hu
     zip <Filename>.zip * -0
     ```
 * Upload the zipped artifact created in an object storage bucket in your tenancy. Tools like [rclone](https://rclone.org/), can help speed this upload. Using rclone with OCI can be referred from [here](https://docs.oracle.com/en/solutions/move-data-to-cloud-storage-using-rclone/configure-rclone-object-storage.html#GUID-8471A9B3-F812-4358-945E-8F7EEF115241)
-* Next step is to create a model catalog item, using python script [create-large-modelcatalog.py](./create-large-modelcatalog.py). This script needs few inputs from users like Compartment OCID, Project OCID & Bucket details where we uploaded the model. There are multiple language SDK alternatives available as well, other than python.
+* Next step is to create a model catalog item, using python script [create-large-modelcatalog.py](./create-large-modelcatalog.py). This script needs few inputs from users like Compartment OCID, Project OCID & Bucket details where we uploaded the model. You can run this script either from Notebook session using resource principal, or using config file with user credentails with necessary policies. There are multiple language SDK alternatives available as well, other than python.
+    ```bash
+    python create-large-modelcatalog.py
+    ```
 * Depending on the size of the model, model catalog item will take time to be prepared before it can be utilised to be deployed using Model Deploy service. The script above will return the status SUCCEEDED, once the model is completely uploaded and ready to be used in Model Deploy service.
 
 ## Model Deployment Steps
@@ -122,10 +125,11 @@ Following outlines the steps needed to build the container which will be used fo
 * Alternatively you can run inference against the deployed model with oci cli
 
 ```bash
-oci raw-request --http-method POST --target-uri https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaan/predict --request-body '{"inputs":"Write a python program to randomly select item from a predefined list?","parameters":{"max_new_tokens":200}}' --auth resource_principal
+oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict  --request-body '{"inputs":"Tell me about Data Science","parameters":{"max_new_tokens":20}}'
 ```
 
 ## Deploy with vLLM
+Model Catalog steps will be common for vLLM. Users can use python script [create-large-modelcatalog.py](./create-large-modelcatalog.py) and execute as a python excutable after inputting required values like compartment OCID, project OCID and source bucket details.
 Container creation process is going to be same as TGI. All associated files are present in vllm directory. Once the container is pushed on OCIR, follow below steps:
 
 * To deploy the model now in the console, go to back your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
@@ -149,6 +153,9 @@ Container creation process is going to be same as TGI. All associated files are 
     * Click on `Create` button to create the model deployment
 
 * Once the model is deployed and shown as `Active`, you can execute inference against it.
+```bash
+oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --request-body '{"prompt": "Tell me about Data Science"}'
+```
 
 ## Deploying using ADS
 
