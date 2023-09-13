@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.oracle.datalabelingservicesamples.requests.DLSScript;
 import org.apache.commons.lang3.StringUtils;
 
 import com.oracle.bmc.datalabelingservicedataplane.model.CreateAnnotationDetails;
@@ -52,7 +53,7 @@ import lombok.extern.slf4j.Slf4j;
  * 
  */
 @Slf4j
-public class CustomBulkLabelingScript {
+public class CustomBulkLabelingScript extends DLSScript {
 
 	static ExecutorService executorService;
 	static Dataset dataset;
@@ -82,7 +83,7 @@ public class CustomBulkLabelingScript {
 			if (response.getRecordCollection().getItems().size() > 0) {
 				List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
 				for (RecordSummary record : response.getRecordCollection().getItems()) {
-					List<String> label = Config.INSTANCE.getLabelingStrategy().getLabel(record);
+					List<String> label = Config.INSTANCE.getRuleBasedLabelingStrategy().getLabel(record);
 					if (null != label) {
 						CompletableFuture<Void> future = CompletableFuture
 								.runAsync(() -> processAnnotationForRecord(record, label), executorService);

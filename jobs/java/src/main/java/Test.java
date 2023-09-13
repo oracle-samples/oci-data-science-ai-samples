@@ -27,6 +27,10 @@ public class Test {
         System.out.println("* INIT");
         MLJobs client = new MLJobs(CONFIG_LOCATION,CONFIG_PROFILE,COMPARTMENT_OCID,PROJECT_OCID,SUBNET_OCID,LOG_GROUP_UUID);
 
+        // get limits example
+        client.getLimits();
+        client.getLimitsDefinitions();
+
         // Create Job with Managed Egress
         System.out.println("* CREATE JOB - MANAGED EGRESS");
         CreateJobResponse jobManagedEgress = client.createJobWithManagedEgress("Java Job - Managed Egress", COMPARTMENT_OCID, PROJECT_OCID);

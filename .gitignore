@@ -29,3 +29,9 @@ __pycache__/
 *.log
 .ipynb_checkpoints
 
+jobs/ts+js/downloaded_artifact.py
+jobs/Fn/.oci/
+node_modules
+jobs/tutorials/standbyjob/code/
+jobs/tutorials/standbyjob-with-git/code/
+model-deployment/containers/llama2/token.zip

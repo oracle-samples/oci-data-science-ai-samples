@@ -28,7 +28,7 @@ retry_strategy = oci.retry.DEFAULT_RETRY_STRATEGY
 dls_dp_client = init_dls_dp_client(config_file, SERVICE_ENDPOINT_DP, retry_strategy)
 
 
-def dls_list_records(compartment_id):
+def dls_list_records(compartment_id,page):
     """ The function is used to list all the records in the dataset
 
     :param compartment_id: the ocid of compartment in which dataset is present
@@ -37,7 +37,7 @@ def dls_list_records(compartment_id):
     try:
         # limit parameter has an implicit value of 10 if not included
         anno_response = dls_dp_client.list_records(compartment_id=compartment_id, dataset_id=DATASET_ID,
-                                                   is_labeled=False, limit=LIST_RECORDS_LIMIT)
+                                                   is_labeled=False, limit=LIST_RECORDS_LIMIT, page=page)
     except Exception as error:
         anno_response = error
         print(anno_response)
@@ -49,7 +49,11 @@ def dls_list_records(compartment_id):
 
     # ocid of each record
     ids = [dls_dataset_record["id"] for dls_dataset_record in data["items"]]
-    return names, ids, len(ids)
+    if anno_response.has_next_page:
+        page = anno_response.next_page
+    else:
+        page = None
+    return names, ids, len(ids), page
 
 
 def dls_create_annotation(label, record_id, compartment_id):
@@ -260,6 +264,7 @@ def main():
     if response.status == 200:
         logger.info("Fetching Dataset Successful")
         compartment_id = response.data.compartment_id
+        page = None
         start = time.perf_counter()
         num_records = LIST_RECORDS_LIMIT
         pool = mp.Pool(NO_OF_PROCESSORS)
@@ -273,9 +278,11 @@ def main():
             end = time.perf_counter()
             print(f'Finished in {round(end - start, 2)} second(s)')
         elif ANNOTATION_TYPE == "CLASSIFICATION":
-            while num_records == LIST_RECORDS_LIMIT:
-                names, ids, num_records = dls_list_records(compartment_id=compartment_id)
+            while True:
+                names, ids, num_records,page = dls_list_records(compartment_id=compartment_id,page=page)
                 pool.starmap(label_record, zip(names, ids, repeat(LABELING_ALGORITHM), repeat(compartment_id), repeat(logger)))
+                if not page:
+                    break
             pool.close()
             end = time.perf_counter()
             print(f'Finished in {round(end - start, 2)} second(s)')

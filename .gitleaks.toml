@@ -1,0 +1,50 @@
+title = "Gitleaks Config"
+
+# Gitleaks feature, extending the existing base config from:
+# https://github.com/zricethezav/gitleaks/blob/master/config/gitleaks.toml
+[extend]
+useDefault = true
+
+# Allowlist's 'stopwords' and 'regexes' excludes any secrets or mathching patterns from the current repository.
+# Paths listed in allowlist will not be scanned.
+[allowlist]
+    description = "Global allow list"
+    stopwords = ["test_password", "sample_key"]
+    regexes = [
+        '''example-password''',
+        '''this-is-not-the-secret''',
+        '''<redacted>'''
+    ]
+    paths = [
+        '''^(actions|ai_services|data|distributed|jobs|labs|model|notebook_lifecycle|pipelines|use_cases)''',
+        '''^(.git|.pre-commit)''',
+        '''CODE_OF_CONDUCT.md''',
+        '''CONTRIBUTING.md''',
+        '''LICENSE.txt''',
+        '''package.json''',
+        '''^README.md''',
+        '''SECURITY.md''',
+        '''THIRD_PARTY_LICENSES.TXT''',
+    ]
+
+# Describe rule to search real ocids
+[[rules]]
+    description = "Real ocids"
+    id = "ocid"
+    path = '''notebook_examples'''
+    regex = '''ocid[123]\.[a-z1-9A-Z]*\.oc\d\.[a-z1-9A-Z]*\.[a-z1-9A-Z]+'''
+    keywords = [
+        "ocid"
+    ]
+
+# Describe rule to search generic secrets
+[[rules]]
+    description = "Generic secret"
+    id = "generic-secret"
+    path = '''notebook_examples'''
+    regex = '''(?i)((key|api|token|secret|passwd|password|psw|pass|pswd)[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([0-9a-zA-Z!@#$%^&*<>\\\-_.=]{3,100})['\"]'''
+    entropy = 0
+    secretGroup = 4
+    keywords = [
+        "key","api","token","secret","passwd","password", "psw", "pass", "pswd"
+    ]

@@ -27,6 +27,7 @@ import com.oracle.bmc.datalabelingservicedataplane.responses.ListRecordsResponse
 import com.oracle.datalabelingservicesamples.constants.DataLabelingConstants;
 import com.oracle.datalabelingservicesamples.requests.Config;
 
+import com.oracle.datalabelingservicesamples.requests.DLSScript;
 import lombok.extern.slf4j.Slf4j;
 
 /*
@@ -42,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Slf4j
-public class SingleLabelDatasetBulkLabelingScript {
+public class SingleLabelDatasetBulkLabelingScript extends DLSScript {
 
 	static ExecutorService executorService;
 	static Dataset dataset;
@@ -61,10 +62,10 @@ public class SingleLabelDatasetBulkLabelingScript {
 		log.info("Starting Bulk Labeling for dataset: {}", dataset.getDisplayName());
 		Boolean isUnlabeledRecordAvailable = true;
 		int recordCount = 0;
-
-		while (isUnlabeledRecordAvailable) {
+		String page = null;
+		do {
 			ListRecordsRequest listRecordsRequest = ListRecordsRequest.builder().datasetId(datasetId)
-					.compartmentId(dataset.getCompartmentId()).lifecycleState(LifecycleState.Active).isLabeled(false)
+					.compartmentId(dataset.getCompartmentId()).lifecycleState(LifecycleState.Active).isLabeled(false).page(page)
 					.limit(DataLabelingConstants.MAX_LIST_RECORDS_LIMITS).build();
 			ListRecordsResponse response = Config.INSTANCE.getDlsDpClient().listRecords(listRecordsRequest);
 			assert response.get__httpStatusCode__() == 200 : "List Record Response Error";
@@ -72,7 +73,7 @@ public class SingleLabelDatasetBulkLabelingScript {
 			if (response.getRecordCollection().getItems().size() > 0) {
 				List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
 				for (RecordSummary record : response.getRecordCollection().getItems()) {
-					List<String> label = Config.INSTANCE.getLabelingStrategy().getLabel(record);
+					List<String> label = Config.INSTANCE.getRuleBasedLabelingStrategy().getLabel(record);
 					if (null != label) {
 						CompletableFuture<Void> future = CompletableFuture
 								.runAsync(() -> processAnnotationForRecord(record, label), executorService);
@@ -86,11 +87,8 @@ public class SingleLabelDatasetBulkLabelingScript {
 						.allOf(completableFutures.toArray(new CompletableFuture[0]));
 				combinedFuture.get();
 			}
-			
-			if (response.getRecordCollection().getItems().size() == 0) {
-				isUnlabeledRecordAvailable = false;
-			}
-		}
+			page = response.getOpcNextPage();
+		}while(page != null);
 
 		executorService.shutdown();
 		log.info("Time Taken for datasetId {}", datasetId);

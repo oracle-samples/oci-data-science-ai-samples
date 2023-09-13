@@ -1,0 +1,19 @@
+# ------------------------------------------------------------
+# Modules directly imported:
+# ------------------------------------------------------------
+oracle-ads >=               2.8.0
+branca >=                   0.6.0
+dataenforce >=              0.1.2
+folium >=                   0.14.0
+ipymarkup                   # NA
+IPython >=                  8.11.0
+ipywidgets >=               7.5.1
+matplotlib >=               3.3.3
+numpy >=                    1.24.0
+oci >=                      2.91.0
+pandas >=                   1.5.3
+pytest >=                   7.1.2
+seaborn >=                  0.11.1
+session_info >=             1.0.0
+tqdm >=                     4.64.1
+wordcloud >=                1.8.2.2
