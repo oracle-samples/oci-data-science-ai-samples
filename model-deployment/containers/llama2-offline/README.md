@@ -11,7 +11,7 @@ The models are gated models, so they need to be requested access via Meta and Hu
 
 * Configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) to be able to run and test your code locally
 * Install [Docker](https://docs.docker.com/get-docker) or [Rancher Desktop](https://rancherdesktop.io/) as docker alternative
-* This is Limited Available feature. Please reach out to Oracle support to enable it in your your tenancy.
+* This is Limited Available feature. Please reach out to us via email `ask-oci-data-science_grp@oracle.com`  to ask to be allowlisted for this LA feature.
 
 ## Model Catalog Steps
 
