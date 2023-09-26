@@ -1,18 +1,17 @@
-FROM nvcr.io/nvidia/pytorch:22.12-py3
-ENV DEBIAN_FRONTEND noninteractive
-RUN pip uninstall -y torch
-RUN pip install --upgrade pip
-RUN pip install ninja psutil ray sentencepiece numpy
-RUN pip install torch>=2.0.0
-RUN pip install transformers>=4.28.0
-RUN pip install xformers>=0.0.19
-RUN pip install fastapi uvicorn
-RUN pip install pydantic==1.10.11
-RUN pip install fschat
-RUN pip install GPUtil
-RUN pip install vllm
+FROM nvidia/cuda:11.8.0-base-ubuntu20.04 as base
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get -y install tzdata && apt-get install -y nginx && apt-get install -y curl && apt-get install -y git
+RUN curl -L https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh >> miniconda.sh
+RUN bash ./miniconda.sh -b -p /miniconda; rm ./miniconda.sh;
+ENV PATH="/miniconda/bin:$PATH"
+RUN mkdir -p /opt/vllm
+
+ARG INSTALL_DIR=/opt/vllm
+COPY vllm-env.yaml /opt/vllm/environment.yaml
+RUN conda env create --name vllm -f ${INSTALL_DIR}/environment.yaml
 
 ENV TMPDIR=/home/datascience
+WORKDIR /home/datascience
 
 # Default location where downloaded models are mapped on model container. No need to override.
 ENV MODEL /opt/ds/model/deployed_model
@@ -23,7 +22,6 @@ ENV TENSOR_PARALLELISM 1
 # Custom port for model container. No need to override.
 ENV PORT 8080
 
-WORKDIR /home/datascience
 COPY api-server.py api-server.py
 COPY start.sh /etc/start.sh
 RUN chmod a+x /etc/start.sh

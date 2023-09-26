@@ -11,6 +11,7 @@ The models are gated models, so they need to be requested access via Meta and Hu
 
 * Configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) to be able to run and test your code locally
 * Install [Docker](https://docs.docker.com/get-docker) or [Rancher Desktop](https://rancherdesktop.io/) as docker alternative
+* This is Limited Available feature. Please reach out to us via email `ask-oci-data-science_grp@oracle.com`  to ask to be allowlisted for this LA feature.
 
 ## Model Catalog Steps
 
@@ -88,7 +89,7 @@ Following outlines the steps needed to build the container which will be used fo
     * For `7b llama2` parameter model use the following environment variables
       * default PARAMS are going as `--max-batch-prefill-tokens 1024`, for custom requirement, set custom environment variable key `PARAMS` with value `--max-batch-prefill-tokens 1024` as needed.
     * For `13b llama2` parameter model use the following environment variables, notice this deployment uses quantization
-      * set custom environment variable key `PARAMS` with value `--max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096`
+      * set custom environment variable key `PARAMS` with value `--max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096`. More details can be referred from official [doc](https://huggingface.co/docs/text-generation-inference/basic_tutorials/using_cli).
     * Since TGI by default works on /generate for prediction endpoint, we need to map this custom endpoints to model deploy service oriented endpoint. We can achieve this by mentioning following environment variables in configuration section
       * Key: `MODEL_DEPLOY_PREDICT_ENDPOINT`, Value: `/generate`
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
@@ -140,6 +141,7 @@ Container creation process is going to be same as TGI. All associated files are 
       * Default values in docker file are sufficient to handle the model deployment with tensor parallelism as 1
     * For `13b llama2` model, use the custom environment variable to override the default tensor parallelism as 2, to shard the model on 2 GPU cards.
       * Set custom environment variable key `TENSOR_PARALLELISM` with value `2`
+      * You can override more vllm bootstrapping configuration using `PARAMS` environment configuration. For details of configurations, please refer the official vLLM [doc](https://vllm.readthedocs.io/en/latest/getting_started/quickstart.html).
     * Since in api server file, we have already changed the prediction endpoint to /predict, we don't need any other overrides.
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU3.2` instance
