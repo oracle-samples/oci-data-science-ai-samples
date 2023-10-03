@@ -1,26 +1,41 @@
-FROM nvcr.io/nvidia/pytorch:22.12-py3
+FROM nvidia/cuda:11.8.0-base-ubuntu20.04 as base
+
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN pip uninstall -y torch && pip install vllm flask
+RUN apt-get update && apt-get -y install tzdata && apt-get install -y nginx && apt-get install -y curl && apt-get install -y git
 
-RUN apt-get update && apt-get -y install tzdata && apt-get install -y nginx && apt-get install -y curl
+RUN curl -L https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh >> miniconda.sh
+RUN bash ./miniconda.sh -b -p /miniconda; rm ./miniconda.sh;
+ENV PATH="/miniconda/bin:$PATH"
+RUN mkdir -p /opt/vllm
+
+ARG INSTALL_DIR=/opt/vllm
+COPY vllm-env.yaml /opt/vllm/environment.yaml
+RUN conda env create --name vllm -f ${INSTALL_DIR}/environment.yaml
 
 ENV NGINX_ROOT=/etc/nginx
 ENV NGINX_PID=/var/run/nginx.pid
 ENV NGINX_BIN=/usr/sbin/nginx
 ENV NGINX_USER=root
 
-COPY start-vllm.sh /etc/start.sh
-RUN chmod a+x /etc/start.sh
-COPY vllm-log-config.yaml /etc/vllm-log-config.yaml
-ENV UVICORN_LOG-CONFIG=/etc/vllm-log-config.yaml
-ENV UVICORN_LOG_CONFIG=/etc/vllm-log-config.yaml
+COPY start-vllm.sh ${INSTALL_DIR}/start.sh
+RUN chmod a+x ${INSTALL_DIR}/start.sh
+COPY vllm-log-config.yaml ${INSTALL_DIR}/vllm-log-config.yaml
+ENV UVICORN_LOG-CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
+ENV UVICORN_LOG_CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
 
 EXPOSE 5001
 
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY vllm-api-server.py /etc/vllm-api-server.py
+COPY vllm-api-server.py ${INSTALL_DIR}/vllm-api-server.py
+
+RUN mkdir -p /aiapps
+COPY runner.sh /aiapps/
+RUN chmod +x /aiapps/runner.sh
+
 WORKDIR /home/datascience
 
+ENV VLLM_DIR=${INSTALL_DIR}
+
 ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
-CMD ["/etc/start.sh"]
+CMD ["$VLLM_DIR/start.sh"]

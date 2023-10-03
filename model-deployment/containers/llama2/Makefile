@@ -4,7 +4,7 @@ CONTAINER_REGISTRY:=${REGION_KEY}.ocir.io
 TGI_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/text-generation-interface-odsc:0.9.3
 TGI_CONTAINER_NAME:=tgi-odsc
 
-VLLM_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/vllm-odsc:0.1.3
+VLLM_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/vllm-odsc:0.1.4
 VLLM_CONTAINER_NAME:=vllm-odsc
 
 MODEL_DIR:=${PWD}/hfdata
@@ -18,9 +18,19 @@ port:=8080
 params:="--max-batch-prefill-tokens 1024"
 local_model:=/opt/ds/model/deployed_model
 
+check-env:
+	@if [[ -z "$${TENANCY_NAME}" ]]; then \
+		echo "TENANCY_NAME is not set or is empty"; \
+		exit 1; \
+	fi
+	@if [[ -z "$${REGION_KEY}" ]]; then \
+		echo "REGION_KEY is not set or is empty"; \
+		exit 1; \
+	fi
+	@echo "Both TENANCY_NAME and REGION_KEY are set and have values."
 build.tgi:
 	docker build --network host -t ${TGI_INFERENCE_IMAGE} -f Dockerfile.tgi .
-build.vllm:
+build.vllm: check-env
 	docker build --network host -t ${VLLM_INFERENCE_IMAGE} -f Dockerfile.vllm .
 run.tgi.hf:
 	docker run --rm -it --gpus all --shm-size 1g -p PORT=${port} -e TOKEN_FILE=${target_token} -e PARAMS="${params}" -e MODEL=${model} -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${TGI_CONTAINER_NAME} ${TGI_INFERENCE_IMAGE}
