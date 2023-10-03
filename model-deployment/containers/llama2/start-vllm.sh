@@ -20,7 +20,7 @@ fi
 
 echo "Starting vllm engine..."
 source activate vllm
-WEB_CONCURRENCY=1 python $INSTALL_DIR/vllm-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $INSTALL_DIR/vllm-log-config.yaml --model ${MODEL} --tensor-parallel-size ${TENSOR_PARALLELISM} ${PARAMS}
+WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model ${MODEL} --tensor-parallel-size ${TENSOR_PARALLELISM} ${PARAMS}
 
 
 echo "Exiting vLLM. Here is the disk utilization of /home/datascience - "

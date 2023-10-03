@@ -29,8 +29,8 @@ ENV TENSOR_PARALLELISM 1
 # Custom port for model container. No need to override.
 ENV PORT 8080
 EXPOSE ${PORT}
-
-COPY vllm-api-server.py ${INSTALL_DIR}/vllm-api-server.py
+ENV VLLM_DIR=${INSTALL_DIR}
+COPY vllm-api-server.py ${VLLM_DIR}/vllm-api-server.py
 
 ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
-CMD ["$INSTALL_DIR/start.sh"]
+CMD ["$VLLM_DIR/start.sh"]
