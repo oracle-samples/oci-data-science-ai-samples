@@ -16,7 +16,7 @@ The models are downloaded from the internet during the deployment process, which
 ## Methods for model weight downloads
 
 ### Direct Download
-As the model will be donwloaded at container startup time, we just need to provide authentication token to connect to model repository. Follow below steps to host the token:
+The model will be downloaded at container startup time, we just need to provide authentication token to connect to model repository. Follow below steps to host the token:
 * Create a file called `token` in the same folder and store your Hugging Face user access token inside, which you can locate under your [Hugging Face Setting](https://huggingface.co/settings/tokens)
 
     ```bash
