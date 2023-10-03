@@ -20,7 +20,11 @@ TIMEOUT_TO_PREVENT_DEADLOCK = 1  # seconds.
 app = FastAPI()
 
 
-@app.post("/generate")
+@app.get("/health")
+async def health():
+    return {"status":"success"}
+
+@app.post("/predict")
 async def generate(request: Request) -> Response:
     """Generate completion for the request. The specification is same as Text Generation Inference
 
