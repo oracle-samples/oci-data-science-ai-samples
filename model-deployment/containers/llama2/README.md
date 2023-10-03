@@ -244,7 +244,7 @@ Container creation process is going to be same as TGI. All associated files are 
 
 * Once the model is deployed and shown as `Active`, you can execute inference against it.
 ```bash
-oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --request-body '{"prompt": "Tell me about Data Science"}'
+oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --request-body '{"inputs": "Tell me about Data Science"}'
 ```
 
 ## Inference
@@ -293,7 +293,7 @@ oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --requ
       --http-method POST \
       --target-uri "https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaanif7xwiaje3uc4c5igep2ppcefnyzuab3afufefgepicpl5whm6q/predict" \
       --request-body '{
-        "prompt": "are you smart?",
+        "inputs": "are you smart?",
         "use_beam_search": true,
         "n": 4,
         "temperature": 0
