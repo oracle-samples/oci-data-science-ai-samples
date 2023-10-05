@@ -24,11 +24,13 @@ spec:
     spec:
       modelUri: ocid1.datasciencemodel.oc1.<UNIQUE_ID>
       image: <UNIQUE_ID>
-      serverPort: 5001
-      healthCheckPort: 5001
+      serverPort: 8080
+      healthCheckPort: 8080
       env:
         TOKEN: "/opt/ds/model/deployed_model/token"
-        PARAMS: "--model-id meta-llama/Llama-2-7b-chat-hf --max-batch-prefill-tokens 1024"
+        MODEL: "meta-llama/Llama-2-7b-chat-hf"
+        PARAMS: "--max-batch-prefill-tokens 1024"
+        STORAGE_SIZE_IN_GB: "950"
       region: us-ashburn-1
       overwriteExistingArtifact: True
       removeExistingArtifact: True

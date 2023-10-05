@@ -24,14 +24,12 @@ spec:
     spec:
       modelUri: ocid1.datasciencemodel.oc1.<UNIQUE_ID>
       image: <UNIQUE_ID>
-      serverPort: 5001
-      healthCheckPort: 5001
+      serverPort: 8080
+      healthCheckPort: 8080
       env:
-        PARAMS: "--model meta-llama/Llama-2-7b-chat-hf"
-        HUGGINGFACE_HUB_CACHE: "/home/datascience/.cache"
+        MODEL: "meta-llama/Llama-2-7b-chat-hf"
         TOKEN_FILE: /opt/ds/model/deployed_model/token
         STORAGE_SIZE_IN_GB: "950"
-        WEB_CONCURRENCY:  1
       region: us-ashburn-1
       overwriteExistingArtifact: True
       removeExistingArtifact: True
