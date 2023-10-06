@@ -27,7 +27,7 @@ spec:
       serverPort: 8080
       healthCheckPort: 8080
       env:
-        TOKEN: "/opt/ds/model/deployed_model/token"
+        TOKEN_FILE: "/opt/ds/model/deployed_model/token"
         MODEL: "meta-llama/Llama-2-7b-chat-hf"
         PARAMS: "--max-batch-prefill-tokens 1024"
         STORAGE_SIZE_IN_GB: "950"

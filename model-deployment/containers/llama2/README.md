@@ -177,6 +177,7 @@ Once you build and pushed the TGI or the vLLM container, you can now use the `Br
     * If you are downloading models directly from source, we will need these additional environment variable configurations:
       * Set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`, as the token will be available at this path.
       * Set custom environment variable key `MODEL` with value `meta-llama/Llama-2-13b-hf`, this is the model that will be downloaded during container start.
+      * Set custom environment variable key `STORAGE_SIZE_IN_GB` with value `950` for 7b model. This is required as model will be downloaded at runtime, so we need to keep extra storage size to accomodate various model sizes.
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
     * Under `Networking` leave the Default option
@@ -230,6 +231,7 @@ Container creation process is going to be same as TGI. All associated files are 
     * If you are downloading models directly from source, we will need these additional environment variable configurations:
       * Set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`, as the token will be available at this path.
       * Set custom environment variable key `MODEL` with value `meta-llama/Llama-2-13b-hf`, this is the model that will be downloaded during container start.
+      * Set custom environment variable key `STORAGE_SIZE_IN_GB` with value `950` for 7b model. This is required as model will be downloaded at runtime, so we need to keep extra storage size to accomodate various model sizes.
     * Since in api server file, we have already changed the prediction endpoint to /predict, we don't need any other overrides.
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU3.2` instance
