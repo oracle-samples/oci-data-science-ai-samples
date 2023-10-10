@@ -14,6 +14,10 @@ HF_DIR=/home/datascience/.cache
 token:=${PWD}/token
 target_token:=/opt/ds/model/deployed_model/token
 model:=meta-llama/Llama-2-7b-chat-hf
+port:=8080
+params:="--max-batch-prefill-tokens 1024"
+local_model:=/opt/ds/model/deployed_model
+tensor_parallelism:=1
 
 check-env:
 	@if [[ -z "$${TENANCY_NAME}" ]]; then \
@@ -29,22 +33,21 @@ build.tgi:
 	docker build --network host -t ${TGI_INFERENCE_IMAGE} -f Dockerfile.tgi .
 build.vllm: check-env
 	docker build --network host -t ${VLLM_INFERENCE_IMAGE} -f Dockerfile.vllm .
-run.tgi:
-	docker run --rm -it --gpus all --shm-size 1g -p 5001:5001 -e TOKEN_FILE=${target_token} -e PARAMS="--model-id ${model}" -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${TGI_CONTAINER_NAME} ${TGI_INFERENCE_IMAGE}
-run.vllm:
-	docker run --rm -d --gpus all --shm-size 1g -p 5001:5001 -e UVICORN_NO_USE_COLORS=1 -e TOKEN_FILE=${target_token} -e PARAMS="--model ${model}" -e HUGGINGFACE_HUB_CACHE=${HF_DIR} -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${VLLM_CONTAINER_NAME} ${VLLM_INFERENCE_IMAGE}
+run.tgi.hf:
+	docker run --rm -it --gpus all --shm-size 1g -p ${port}:${port} -e PORT=${port} -e TOKEN_FILE=${target_token} -e PARAMS=${params} -e MODEL=${model} -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${TGI_CONTAINER_NAME} ${TGI_INFERENCE_IMAGE}
+run.tgi.oci:
+	docker run --rm -it --gpus all --shm-size 1g -p ${port}:${port} -e PORT=${port} -e PARAMS=${params} -e MODEL=${local_model} -v ${MODEL_DIR}:${TARGET_DIR} --name ${TGI_CONTAINER_NAME} ${TGI_INFERENCE_IMAGE}
+run.vllm.hf:
+	docker run --rm -it --gpus all --shm-size 1g -p ${port}:${port} -e PORT=${port} -e UVICORN_NO_USE_COLORS=1 -e TOKEN_FILE=${target_token} -e MODEL=${model} -e TENSOR_PARALLELISM=${tensor_parallelism} -e HUGGINGFACE_HUB_CACHE=${HF_DIR} -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${VLLM_CONTAINER_NAME} ${VLLM_INFERENCE_IMAGE}
+run.vllm.oci:
+	docker run --rm -d --gpus all --shm-size 1g -p ${port}:${port} -e PORT=${port} -e UVICORN_NO_USE_COLORS=1 -e MODEL=${local_model} -e TENSOR_PARALLELISM=${tensor_parallelism} -v ${MODEL_DIR}:${TARGET_DIR} --name ${VLLM_CONTAINER_NAME} ${VLLM_INFERENCE_IMAGE}
 stop.tgi:
 	docker stop ${TGI_CONTAINER_NAME}
 stop.vllm:
 	docker stop ${VLLM_CONTAINER_NAME}
-shell.tgi:
-	docker run --rm -it --shm-size=1g --net host -p 5001:5001 -e TOKEN_FILE=${target_token} -e PARAMS="--model-id ${model}" --entrypoint bash -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${TGI_CONTAINER_NAME} ${TGI_INFERENCE_IMAGE}
-shell.vllm:
-	docker run --rm -it --shm-size=1g --net host -p 5001:5001 -e TOKEN_FILE=${target_token} -e PARAMS="--model ${model}" -e HUGGINGFACE_HUB_CACHE=${HF_DIR} --entrypoint bash -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${VLLM_CONTAINER_NAME} ${	docker run --rm -d --gpus all --shm-size 1g -p 5001:5001 -e UVICORN_NO_USE_COLORS=1 -e TOKEN_FILE=${target_token} -e PARAMS="--model ${model}" -e HUGGINGFACE_HUB_CACHE=${HF_DIR} -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${VLLM_CONTAINER_NAME} ${VLLM_INFERENCE_IMAGE}}
 push.tgi:
 	docker push ${TGI_INFERENCE_IMAGE}
 push.vllm:
 	docker push ${VLLM_INFERENCE_IMAGE}
 app:
 	MODEL=${model} gradio app.py
-

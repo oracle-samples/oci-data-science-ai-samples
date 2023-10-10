@@ -12,3 +12,5 @@ dependencies:
     - vllm
     - transformers
     - pandas
+    - flask
+    - GPUtil
