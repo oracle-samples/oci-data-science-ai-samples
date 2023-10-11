@@ -40,11 +40,50 @@ To construct the required containers for this deployment and retain the necessar
     export REGION_KEY=<region-key>
     ```
 
+## Required IAM Policies
+
+Public [documentation](https://docs.oracle.com/en-us/iaas/data-science/using/policies.htm).
+
+### Generic Model Deployment policies
+allow group <group-name> to manage data-science-model-deployments in compartment <compartment-name>
+allow dynamic-group <dynamic-group-name> to manage  data-science-model-deployments in compartment <compartment-name>
+
+### Allows a model deployment to emit logs to the Logging service. You need this policy if you’re using Logging in a model deployment
+allow any-user to use log-content in tenancy where ALL {request.principal.type = 'datasciencemodeldeployment'}
+
+### Bring your own container [policies](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-policies-auth.htm#model_dep_policies_auth__access-logging-service#model_dep_policies_auth__access-custom-container)
+ALL { resource.type = 'datasciencemodeldeployment' }
+
+allow dynamic-group <dynamic-group-name> to read repos in compartment <compartment-name> where ANY {request.operation='ReadDockerRepositoryMetadata',request.operation='ReadDockerRepositoryManifest',request.operation='PullDockerLayer' }
+
+#### If the repository is in the root compartment, allow read for the tenancy
+
+allow dynamic-group <dynamic-group-name> to read repos in tenancy where ANY {
+    request.operation='ReadDockerRepositoryMetadata',
+    request.operation='ReadDockerRepositoryManifest',
+    request.operation='PullDockerLayer'
+}
+
+#### For user level policies
+
+allow any-user to read repos in tenancy where ALL { request.principal.type = 'datasciencemodeldeployment' }
+allow any-user to read repos in compartment <compartment-name> where ALL { request.principal.type = 'datasciencemodeldeployment'}
+
+### Model Store [export API](https://docs.oracle.com/en-us/iaas/data-science/using/large-model-artifact-export.htm#large-model-artifact-export) for creating model artifacts greater than 6 GB in size
+
+allow service datascience to manage object-family in compartment <compartment> where ALL {target.bucket.name='<bucket_name>'} 
+
+allow service objectstorage-<region> to manage object-family in compartment <compartment> where ALL {target.bucket.name='<bucket_name>'} 
+
+### Check Data Science work requests
+allow group <group_name> to manage data-science-work-requests in compartment <compartment_name>
+
+
 ## Methods for model weight downloads
 
 ### Direct Download
 
-If you are choosing to download the model directly from source repository at container startup time, you will need to configure a VCN with access to internet. Create a subnet for the model deployment
+If you are choosing to download the model directly from HuggingFace repository at container startup time, you will need to configure a VCN with access to internet. Create a subnet for the model deployment
   * Go to the [Virtual Cloud Network](https://cloud.oracle.com/networking/vcns) in your Tenancy
   * Select one of your existing VCNs
   * Click on `Create subnet` button
