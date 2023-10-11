@@ -9,9 +9,47 @@ The models are downloaded from the internet during the deployment process, which
 
 ## Prerequisites
 
+* This is Limited Available feature. Please reach out to us via email `ask-oci-data-science_grp@oracle.com`  to ask to be allowlisted for this LA feature.
 * Configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) to be able to run and test your code locally.
 * Install [Docker](https://docs.docker.com/get-docker) or [Rancher Desktop](https://rancherdesktop.io/) as docker alternative.
-* This is Limited Available feature. Please reach out to us via email `ask-oci-data-science_grp@oracle.com`  to ask to be allowlisted for this LA feature.
+
+## Requirements
+
+To construct the required containers for this deployment and retain the necessary information, please complete the following steps:
+
+* Checkout this repository
+* Enter the path `model-deployment/containers/llama2`
+
+    ```bash
+    cd model-deployment/containers/llama2
+    ```
+
+* Create logging for the model deployment (if you have to already created, you can skip this step)
+  * Go to the [OCI Logging Service](https://cloud.oracle.com/logging/log-groups) and select `Log Groups`
+  * Either select one of the existing Log Groups or create a new one
+  * In the log group create ***two*** `Log`, one predict log and one access log, like:
+    * Click on the `Create custom log`
+    * Specify a name (predict|access) and select the log group you want to use
+    * Under `Create agent configuration` select `Add configuration later`
+    * Then click `Create agent configuration`
+
+* If you are choosing to download the model directly from source, you will need to configure a VCN with access to internet. Create a subnet for the model deployment
+  * Go to the [Virtual Cloud Network](https://cloud.oracle.com/networking/vcns) in your Tenancy
+  * Select one of your existing VCNs
+  * Click on `Create subnet` button
+  * Specify a name
+  * As `Subnet type` select `Regional`
+  * As IP CIDR block set `10.0.32.0/19`
+  * Under `Route Table` select the routing table for private subnet
+  * Under `Subnet Access` select `Private Subnet`
+  * Click on `Create Subnet` to create it
+
+* This example uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image required for the deployment. For the `Makefile` to execute the container build and push process to Oracle Cloud Container Registry, you have to setup in your local terminal the  `TENANCY_NAME` and `REGION_KEY` environment variables.`TENANCY_NAME` is the name of your tenancy, which you can find under your [account settings](https://cloud.oracle.com/tenancy) and the `REGION_KEY` is a 3 letter name of your tenancy region, you consider to use for this example, for example IAD for Ashburn, or FRA for Frankfurt. You can find the region keys in our public documentation for [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm)
+
+    ```bash
+    export TENANCY_NAME=<your-tenancy-name>
+    export REGION_KEY=<region-key>
+    ```
 
 ## Methods for model weight downloads
 
@@ -55,45 +93,6 @@ The model will be downloaded at container startup time, we just need to provide 
     python create-large-modelcatalog.py
     ```
 * Depending on the size of the model, model catalog item will take time to be prepared before it can be utilised to be deployed using Model Deploy service. The script above will return the status SUCCEEDED, once the model is completely uploaded and ready to be used in Model Deploy service.
-
-
-## Requirements
-
-To construct the required containers for this deployment and retain the necessary information, please complete the following steps:
-
-* Checkout this repository
-* Enter the path `model-deployment/containers/llama2`
-
-    ```bash
-    cd model-deployment/containers/llama2
-    ```
-
-* Create logging for the model deployment (if you have to already created, you can skip this step)
-  * Go to the [OCI Logging Service](https://cloud.oracle.com/logging/log-groups) and select `Log Groups`
-  * Either select one of the existing Log Groups or create a new one
-  * In the log group create ***two*** `Log`, one predict log and one access log, like:
-    * Click on the `Create custom log`
-    * Specify a name (predict|access) and select the log group you want to use
-    * Under `Create agent configuration` select `Add configuration later`
-    * Then click `Create agent configuration`
-
-* If you are choosing to download the model directly from source, you will need to configure a VCN with access to internet. Create a subnet for the model deployment
-  * Go to the [Virtual Cloud Network](https://cloud.oracle.com/networking/vcns) in your Tenancy
-  * Select one of your existing VCNs
-  * Click on `Create subnet` button
-  * Specify a name
-  * As `Subnet type` select `Regional`
-  * As IP CIDR block set `10.0.32.0/19`
-  * Under `Route Table` select the routing table for private subnet
-  * Under `Subnet Access` select `Private Subnet`
-  * Click on `Create Subnet` to create it
-
-* This example uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image required for the deployment. For the `Makefile` to execute the container build and push process to Oracle Cloud Container Registry, you have to setup in your local terminal the  `TENANCY_NAME` and `REGION_KEY` environment variables.`TENANCY_NAME` is the name of your tenancy, which you can find under your [account settings](https://cloud.oracle.com/tenancy) and the `REGION_KEY` is a 3 letter name of your tenancy region, you consider to use for this example, for example IAD for Ashburn, or FRA for Frankfurt. You can find the region keys in our public documentation for [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm)
-
-    ```bash
-    export TENANCY_NAME=<your-tenancy-name>
-    export REGION_KEY=<region-key>
-    ```
 
 ## Build TGI Container
 
@@ -329,47 +328,64 @@ ads opctl run -f ads-md-deploy-tgi.yaml
 ads opctl run -f ads-md-deploy-vllm.yaml
 ```
 
-## Debugging
+## Troubleshooting
 
-You could debug the code in the container utilizing the [Visual Studio Code Remote - Tunnels](https://code.visualstudio.com/docs/remote/tunnels) extension, which lets you connect to a remote machine, like a desktop PC or virtual machine (VM), via a secure tunnel. You can connect to that machine from a VS Code client anywhere, without the requirement of setting up your own SSH, including also using the Oracle Cloud Infrastructure Data Science Jobs.
+Following are identified as the most probable failure cases while deploying large models.
 
-The tunneling securely transmits data from one network to another. This can eliminate the need for the source code to be on your VS Code client machine since the extension runs commands and other extensions directly on the OCI Data Science Job remote machine.
+### Create/Update Model deployment failure
 
-### Requirements
+#### Reason
+Insufficient model deployment timeout.
 
-To use the debugging you have to finalize the steps of building and pushing the container of your choice to the Oracle Cloud Container Registry.
+#### Symptoms
+The Work Request logs will show the following error:
+Workflow timed out. Maximum runtime was: <deployment_timeout> minutes.
 
-## Run for Debugging
+#### Mitigation
+If model loading takes more time than service calculated, user can override deployment timeout with default configuration override by using below key value pair
+`DEPLOYMENT_TIMEOUT_IN_MINUTES`: `60`
 
-For debugging purposes we will utilize the OCI Data Science Jobs service. Once the TGI or the vLLM container was build and published to the OCIR, we can run it as a Job, which would enable us take advance of the VSCode Remote Tunneling. To do so follow the steps:
+Max value allowed is 240
 
-* In your [OCI Data Science](https://cloud.oracle.com/data-science/projects) section, select the project you've created for deployment
-* Under the `Resources` section select `Jobs`
-* Click on `Create job` button
-* Under the `Default Configuration` select the checkbox for `Bring your own container`
-  * Set following environment variables:
-  * `CONTAINER_CUSTOM_IMAGE` with the value to the OCI Container Registry Repository location where you pushed your container, for example: `<your-region>.ocir.io/<your-tenancy-name>/vllm-odsc:0.1.3`
-  * `CONTAINER_ENTRYPOINT` with the value `"/bin/bash", "--login",  "-c"`
-  * `CONTAINER_CMD` with the value `/aiapps/runner.sh`
-  * The above values will override the default values set in the `Dockerfile` and would enable to launch the tunneling
-* Under `Compute shape` select `Custom configuration` and then `Specialty and previous generation` and select the `VM.GPU.A10.2` shape
-* Under `Logging` select the log group you've created for the model deployment and keep the option `Enable automatic log creation`
-* Under `Storage` set 500GB+ of storage
-* Under `Networking` keep the `Default networking` configuration
+### Create/Update Model deployment failure
 
-With this we are now ready to start the job
+#### Reason
+Insufficient boot volume storage.
 
-* Select the newly created job, if you have not done so
-* Click on the `Start a job run` 
-* Keep all settings by default and click on `Start` button at the bottom left
+#### Symptoms
+The Work Request logs will show the following error: Errors occurred while bootstrapping the Model Deployment.
+The customer should investigate further to determine that the failure was due to lack of sufficient boot volume size.
 
-Once the job is up and running, you will notice in the logs, the authentication code appears, you can copied and use it to authorize the tunnel, few seconds later the link for the tunnel would appear.
+#### Mitigation
+If model zip compression rate is too high and service failed to download and unzip the artifact, user can override volume size with default configuration override by using below key value pair.
+`STORAGE_SIZE_IN_GB`: `1000`
 
-![vscode tunnel in the oci job](../../../jobs/tutorials/assets/images/vscde-server-tunnel-job.png)
+Max value allowed as high as max boot volumes allowed.
 
-Copy the link and open it in a browser, which should load the VSCode Editor and reveals the code inside the job, enabling direct debugging and coding.
+### Create/Update Model deployment failure
 
-`Notice` that you can also use your local VSCode IDE for the same purpose via the [Visual Studio Code Remote - Tunnels](https://code.visualstudio.com/docs/remote/tunnels) extension
+#### Reason
+Customer code inside inference container trying to access external resources through default egress.
+
+#### Symptoms
+The Work Request logs will show the following error: Errors occurred while bootstrapping the Model Deployment
+The customer should investigate further to determine that the failure was due the BYOC container trying to access external repository through default egress.
+
+#### Mitigation
+For customers who prefers to deploy model from external repositories like Hugging face, The default egress networking for model deployment does not allow internet access. Model deployment custom egress feature helps customers configure their own networking to enable such use cases. If health endpoint runs on any other endpoint than /health, user can override volume size with default configuration override by using below key value pair. 
+Example:
+`MODEL_DEPLOY_HEALTH_ENDPOINT`: `/ping`
+
+### Create/Update Model deployment failure
+
+#### Reason
+Container timeout.
+
+#### Symptoms
+The Work Request logs will show the following error: Errors occurred while bootstrapping the Model Deployment
+
+#### Mitigation
+Customer should check the predict and health check endpoints, if defined through environment variables, are valid for container image specified. They can also check the predict and access logs for more information.
 
 ## Additional Make Commands
 
