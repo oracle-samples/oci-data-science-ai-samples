@@ -33,17 +33,6 @@ To construct the required containers for this deployment and retain the necessar
     * Under `Create agent configuration` select `Add configuration later`
     * Then click `Create agent configuration`
 
-* If you are choosing to download the model directly from source, you will need to configure a VCN with access to internet. Create a subnet for the model deployment
-  * Go to the [Virtual Cloud Network](https://cloud.oracle.com/networking/vcns) in your Tenancy
-  * Select one of your existing VCNs
-  * Click on `Create subnet` button
-  * Specify a name
-  * As `Subnet type` select `Regional`
-  * As IP CIDR block set `10.0.32.0/19`
-  * Under `Route Table` select the routing table for private subnet
-  * Under `Subnet Access` select `Private Subnet`
-  * Click on `Create Subnet` to create it
-
 * This example uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image required for the deployment. For the `Makefile` to execute the container build and push process to Oracle Cloud Container Registry, you have to setup in your local terminal the  `TENANCY_NAME` and `REGION_KEY` environment variables.`TENANCY_NAME` is the name of your tenancy, which you can find under your [account settings](https://cloud.oracle.com/tenancy) and the `REGION_KEY` is a 3 letter name of your tenancy region, you consider to use for this example, for example IAD for Ashburn, or FRA for Frankfurt. You can find the region keys in our public documentation for [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm)
 
     ```bash
@@ -54,6 +43,18 @@ To construct the required containers for this deployment and retain the necessar
 ## Methods for model weight downloads
 
 ### Direct Download
+
+If you are choosing to download the model directly from source repository at container startup time, you will need to configure a VCN with access to internet. Create a subnet for the model deployment
+  * Go to the [Virtual Cloud Network](https://cloud.oracle.com/networking/vcns) in your Tenancy
+  * Select one of your existing VCNs
+  * Click on `Create subnet` button
+  * Specify a name
+  * As `Subnet type` select `Regional`
+  * As IP CIDR block set `10.0.32.0/19`
+  * Under `Route Table` select the routing table for private subnet
+  * Under `Subnet Access` select `Private Subnet`
+  * Click on `Create Subnet` to create it
+
 The model will be downloaded at container startup time, we just need to provide authentication token to connect to model repository. Follow below steps to host the token:
 * Create a file called `token` in the same folder and store your Hugging Face user access token inside, which you can locate under your [Hugging Face Setting](https://huggingface.co/settings/tokens)
 
