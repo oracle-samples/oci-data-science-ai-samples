@@ -13,16 +13,8 @@ The models are downloaded from the internet during the deployment process, which
 * Configure your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) to be able to run and test your code locally.
 * Install [Docker](https://docs.docker.com/get-docker) or [Rancher Desktop](https://rancherdesktop.io/) as docker alternative.
 
-## Requirements
-
-To construct the required containers for this deployment and retain the necessary information, please complete the following steps:
-
-* Checkout this repository
-* Enter the path `model-deployment/containers/llama2`
-
-    ```bash
-    cd model-deployment/containers/llama2
-    ```
+## OCI Logging
+When experimenting with new frameworks and models, it is highly advisable to attach log groups to model deployment in order to enable self assistance in debugging. Follow below steps to create log groups.
 
 * Create logging for the model deployment (if you have to already created, you can skip this step)
   * Go to the [OCI Logging Service](https://cloud.oracle.com/logging/log-groups) and select `Log Groups`
@@ -33,50 +25,43 @@ To construct the required containers for this deployment and retain the necessar
     * Under `Create agent configuration` select `Add configuration later`
     * Then click `Create agent configuration`
 
-* This example uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image required for the deployment. For the `Makefile` to execute the container build and push process to Oracle Cloud Container Registry, you have to setup in your local terminal the  `TENANCY_NAME` and `REGION_KEY` environment variables.`TENANCY_NAME` is the name of your tenancy, which you can find under your [account settings](https://cloud.oracle.com/tenancy) and the `REGION_KEY` is a 3 letter name of your tenancy region, you consider to use for this example, for example IAD for Ashburn, or FRA for Frankfurt. You can find the region keys in our public documentation for [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm)
-
-    ```bash
-    export TENANCY_NAME=<your-tenancy-name>
-    export REGION_KEY=<region-key>
-    ```
-
 ## Required IAM Policies
 
 Public [documentation](https://docs.oracle.com/en-us/iaas/data-science/using/policies.htm).
 
 ### Generic Model Deployment policies
-allow group <group-name> to manage data-science-model-deployments in compartment <compartment-name>
-allow dynamic-group <dynamic-group-name> to manage  data-science-model-deployments in compartment <compartment-name>
+`allow group <group-name> to manage data-science-model-deployments in compartment <compartment-name>`
+`allow dynamic-group <dynamic-group-name> to manage  data-science-model-deployments in compartment <compartment-name>`
 
 ### Allows a model deployment to emit logs to the Logging service. You need this policy if you’re using Logging in a model deployment
-allow any-user to use log-content in tenancy where ALL {request.principal.type = 'datasciencemodeldeployment'}
+`allow any-user to use log-content in tenancy where ALL {request.principal.type = 'datasciencemodeldeployment'}`
 
 ### Bring your own container [policies](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-policies-auth.htm#model_dep_policies_auth__access-logging-service#model_dep_policies_auth__access-custom-container)
-ALL { resource.type = 'datasciencemodeldeployment' }
+`ALL { resource.type = 'datasciencemodeldeployment' }`
 
-allow dynamic-group <dynamic-group-name> to read repos in compartment <compartment-name> where ANY {request.operation='ReadDockerRepositoryMetadata',request.operation='ReadDockerRepositoryManifest',request.operation='PullDockerLayer' }
+`allow dynamic-group <dynamic-group-name> to read repos in compartment <compartment-name> where ANY {request.operation='ReadDockerRepositoryMetadata',request.operation='ReadDockerRepositoryManifest',request.operation='PullDockerLayer' }`
 
 #### If the repository is in the root compartment, allow read for the tenancy
 
-allow dynamic-group <dynamic-group-name> to read repos in tenancy where ANY {
+`allow dynamic-group <dynamic-group-name> to read repos in tenancy where ANY {
     request.operation='ReadDockerRepositoryMetadata',
     request.operation='ReadDockerRepositoryManifest',
     request.operation='PullDockerLayer'
-}
+}`
 
 #### For user level policies
 
-allow any-user to read repos in tenancy where ALL { request.principal.type = 'datasciencemodeldeployment' }
-allow any-user to read repos in compartment <compartment-name> where ALL { request.principal.type = 'datasciencemodeldeployment'}
+`allow any-user to read repos in tenancy where ALL { request.principal.type = 'datasciencemodeldeployment' }`
+`allow any-user to read repos in compartment <compartment-name> where ALL { request.principal.type = 'datasciencemodeldeployment'}`
 
 ### Model Store [export API](https://docs.oracle.com/en-us/iaas/data-science/using/large-model-artifact-export.htm#large-model-artifact-export) for creating model artifacts greater than 6 GB in size
 
-allow service datascience to manage object-family in compartment <compartment> where ALL {target.bucket.name='<bucket_name>'} 
+`allow service datascience to manage object-family in compartment <compartment> where ALL {target.bucket.name='<bucket_name>'}`
 
-allow service objectstorage-<region> to manage object-family in compartment <compartment> where ALL {target.bucket.name='<bucket_name>'} 
+`allow service objectstorage-<region> to manage object-family in compartment <compartment> where ALL {target.bucket.name='<bucket_name>'}`
 
-### Check Data Science work requests
-allow group <group_name> to manage data-science-work-requests in compartment <compartment_name>
+### Policy to check Data Science work requests
+`allow group <group_name> to manage data-science-work-requests in compartment <compartment_name>`
 
 
 ## Methods for model weight downloads
@@ -135,6 +120,20 @@ The model will be downloaded at container startup time, we just need to provide 
 * Depending on the size of the model, model catalog item will take time to be prepared before it can be utilised to be deployed using Model Deploy service. The script above will return the status SUCCEEDED, once the model is completely uploaded and ready to be used in Model Deploy service.
 
 ## Build TGI Container
+To construct the required containers for this deployment and retain the necessary information, please complete the following steps:
+
+* Checkout this repository
+* Enter the path `model-deployment/containers/llama2`
+
+    ```bash
+    cd model-deployment/containers/llama2
+    ```
+* This example uses [OCI Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm) to store the container image required for the deployment. For the `Makefile` to execute the container build and push process to Oracle Cloud Container Registry, you have to setup in your local terminal the  `TENANCY_NAME` and `REGION_KEY` environment variables.`TENANCY_NAME` is the name of your tenancy, which you can find under your [account settings](https://cloud.oracle.com/tenancy) and the `REGION_KEY` is a 3 letter name of your tenancy region, you consider to use for this example, for example IAD for Ashburn, or FRA for Frankfurt. You can find the region keys in our public documentation for [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm)
+
+    ```bash
+    export TENANCY_NAME=<your-tenancy-name>
+    export REGION_KEY=<region-key>
+    ```
 
 You can find the official documentation about OCI Data Science Model Deployment: [https://docs.oracle.com/en-us/iaas/data-science/using/model_dep_create.htm]
 
@@ -426,6 +425,8 @@ The Work Request logs will show the following error: Errors occurred while boots
 
 #### Mitigation
 Customer should check the predict and health check endpoints, if defined through environment variables, are valid for container image specified. They can also check the predict and access logs for more information.
+
+For more detailed level of debugging, user can refer [README-DEBUG.md](./README-DEBUG.md).
 
 ## Additional Make Commands
 
