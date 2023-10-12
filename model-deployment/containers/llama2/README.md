@@ -31,6 +31,7 @@ Public [documentation](https://docs.oracle.com/en-us/iaas/data-science/using/pol
 
 ### Generic Model Deployment policies
 `allow group <group-name> to manage data-science-model-deployments in compartment <compartment-name>`
+
 `allow dynamic-group <dynamic-group-name> to manage  data-science-model-deployments in compartment <compartment-name>`
 
 ### Allows a model deployment to emit logs to the Logging service. You need this policy if you’re using Logging in a model deployment
@@ -52,6 +53,7 @@ Public [documentation](https://docs.oracle.com/en-us/iaas/data-science/using/pol
 #### For user level policies
 
 `allow any-user to read repos in tenancy where ALL { request.principal.type = 'datasciencemodeldeployment' }`
+
 `allow any-user to read repos in compartment <compartment-name> where ALL { request.principal.type = 'datasciencemodeldeployment'}`
 
 ### Model Store [export API](https://docs.oracle.com/en-us/iaas/data-science/using/large-model-artifact-export.htm#large-model-artifact-export) for creating model artifacts greater than 6 GB in size
