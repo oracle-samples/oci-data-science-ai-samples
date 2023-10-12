@@ -6,6 +6,15 @@ import com.oracle.bmc.datascience.DataScienceClient;
 import com.oracle.bmc.datascience.model.*;
 import com.oracle.bmc.datascience.requests.*;
 import com.oracle.bmc.datascience.responses.*;
+import com.oracle.bmc.limits.LimitsClient;
+import com.oracle.bmc.limits.model.LimitDefinitionSummary;
+import com.oracle.bmc.limits.model.ServiceSummary;
+import com.oracle.bmc.limits.requests.GetResourceAvailabilityRequest;
+import com.oracle.bmc.limits.requests.ListLimitDefinitionsRequest;
+import com.oracle.bmc.limits.requests.ListServicesRequest;
+import com.oracle.bmc.limits.responses.GetResourceAvailabilityResponse;
+import com.oracle.bmc.limits.responses.ListLimitDefinitionsResponse;
+import com.oracle.bmc.limits.responses.ListServicesResponse;
 
 import java.io.*;
 import java.nio.file.StandardCopyOption;
@@ -24,6 +33,7 @@ public class MLJobs {
     String LOG_GROUP_UUID = "";
 
     DataScienceClient clientDataScience = null;
+    LimitsClient limitsClient = null;
 
     MLJobs(String configLocation, String configProfile, String compartmentOCID, String projectOCID, String subnetOCID, String logGroupOCID) throws IOException {
         CONFIG_LOCATION = configLocation;
@@ -43,6 +53,27 @@ public class MLJobs {
          clientDataScience.setRegion(Region.US_ASHBURN_1);
         */
         clientDataScience = DataScienceClient.builder().region(Region.US_ASHBURN_1).build(provider);
+        limitsClient = LimitsClient.builder().region(Region.US_ASHBURN_1).build(provider);
+    }
+
+    public void getLimitsDefinitions() {
+        ListLimitDefinitionsResponse listLimitDefinitionsResponse= limitsClient.listLimitDefinitions(ListLimitDefinitionsRequest.builder().compartmentId("ocid1.tenancy.oc1..aaaaaaaa25c5a2zpfki3wo4ofza5l72aehvwkjbuavpnzqtmr4nigdgzi57a").build());
+        List<LimitDefinitionSummary> l = listLimitDefinitionsResponse.getItems();
+        for (LimitDefinitionSummary summary : l) {
+            System.out.println("Name: " + summary.getName() + " - Service Name: " + summary.getServiceName());
+        }
+    }
+    public void getLimits() {
+        // compartmentId is the tenancy id
+        GetResourceAvailabilityResponse r = limitsClient.getResourceAvailability(GetResourceAvailabilityRequest
+                .builder()
+                .compartmentId("ocid1.tenancy.oc1..aaaaaaaa")
+                .serviceName("data-science")
+                .limitName("ds-gpu-a10-count")
+                .build()
+        );
+
+        System.out.println(r.getResourceAvailability().toString());
     }
 
     public CreateProjectResponse createProject() {
@@ -95,6 +126,15 @@ public class MLJobs {
         envVariables.put("CONDA_ENV_TYPE", "service");
         envVariables.put("CONDA_ENV_SLUG", "generalml_p38_cpu_v1");
 
+        // mounts storages - coming soon
+//        List<JobStorageMountConfigurationDetails> jobStorageMountConfigurationDetails = new ArrayList<>();
+//        jobStorageMountConfigurationDetails.add(
+//                ObjectStorageMountConfigurationDetails
+//                        .builder()
+//                        .bucket("beta")
+//                        .namespace("bucket-namespace")
+//                        .destinationDirectoryName("beta").build());
+
         CreateJobDetails jobRequestDetails = CreateJobDetails.builder()
                 .displayName(jobName)
                 .projectId(projectUuid)
@@ -104,6 +144,7 @@ public class MLJobs {
                                 .builder()
                                 .environmentVariables(envVariables)
                                 .build())
+//                .jobStorageMountConfigurationDetailsList(jobStorageMountConfigurationDetails)
                 .jobInfrastructureConfigurationDetails(
                         StandaloneJobInfrastructureConfigurationDetails
                                 .builder()

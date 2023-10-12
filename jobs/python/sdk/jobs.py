@@ -206,14 +206,18 @@ class MJobs:
 
         return self.dsc.list_job_shapes(compartment_id=compartment_id)
 
-    # List all avaialble fast launch shapes in given region
+    # List all available fast launch shapes in given region
     def list_fast_job_shapes(self, compartment_id):
         logging.info("*** List Fast Job Shapes ...")
 
         return self.dsc.list_fast_launch_job_configs(compartment_id=compartment_id)
 
     def run_job(
-        self, compartment_id, project_id, job_id, job_run_name="Job Run",
+        self,
+        compartment_id,
+        project_id,
+        job_id,
+        job_run_name="Job Run",
     ):
         logging.info("*** Run Job  ...")
 
