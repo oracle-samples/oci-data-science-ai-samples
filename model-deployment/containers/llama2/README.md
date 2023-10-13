@@ -5,8 +5,6 @@ This repo provides two approaches to deploy the Llama-2 LLM:
 * [Text Generation Inference](https://github.com/huggingface/text-generation-inference) from HuggingFace.
 * [vLLM](https://github.com/vllm-project/vllm) developed at UC Berkeley
 
-The models are downloaded from the internet during the deployment process, which requires custom networking setup while creating Oracle Cloud Infrastructure Data Science Model Deployment.
-
 ## Prerequisites
 
 * This is Limited Available feature. Please reach out to us via email `ask-oci-data-science_grp@oracle.com`  to ask to be allowlisted for this LA feature.
