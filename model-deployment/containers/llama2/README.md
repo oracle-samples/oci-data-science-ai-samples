@@ -406,20 +406,6 @@ Max value allowed as high as max boot volumes allowed.
 ### Create/Update Model deployment failure
 
 #### Reason
-Customer code inside inference container trying to access external resources through default egress.
-
-#### Symptoms
-The Work Request logs will show the following error: Errors occurred while bootstrapping the Model Deployment
-The customer should investigate further to determine that the failure was due the BYOC container trying to access external repository through default egress.
-
-#### Mitigation
-For customers who prefers to deploy model from external repositories like Hugging face, The default egress networking for model deployment does not allow internet access. Model deployment custom egress feature helps customers configure their own networking to enable such use cases. If health endpoint runs on any other endpoint than /health, user can override volume size with default configuration override by using below key value pair. 
-Example:
-`MODEL_DEPLOY_HEALTH_ENDPOINT`: `/ping`
-
-### Create/Update Model deployment failure
-
-#### Reason
 Container timeout.
 
 #### Symptoms
@@ -428,6 +414,7 @@ The Work Request logs will show the following error: Errors occurred while boots
 #### Mitigation
 Customer should check the predict and health check endpoints, if defined through environment variables, are valid for container image specified. They can also check the predict and access logs for more information.
 
+### Advanced debugging options: Code debugging inside the container using job
 For more detailed level of debugging, user can refer [README-DEBUG.md](./README-DEBUG.md).
 
 ## Additional Make Commands
