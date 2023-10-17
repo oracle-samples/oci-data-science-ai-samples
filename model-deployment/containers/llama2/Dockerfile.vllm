@@ -1,0 +1,36 @@
+FROM nvidia/cuda:11.8.0-base-ubuntu20.04 as base
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get -y install tzdata && apt-get install -y curl && apt-get install -y git
+RUN curl -L https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh >> miniconda.sh
+RUN bash ./miniconda.sh -b -p /miniconda; rm ./miniconda.sh;
+ENV PATH="/miniconda/bin:$PATH"
+RUN mkdir -p /opt/vllm
+
+ARG INSTALL_DIR=/opt/vllm
+COPY vllm-env.yaml /opt/vllm/environment.yaml
+RUN conda env create --name vllm -f ${INSTALL_DIR}/environment.yaml
+
+ENV TMPDIR=/home/datascience
+WORKDIR /home/datascience
+
+COPY start-vllm.sh ${INSTALL_DIR}/start.sh
+RUN chmod a+x ${INSTALL_DIR}/start.sh
+COPY vllm-log-config.yaml ${INSTALL_DIR}/vllm-log-config.yaml
+ENV UVICORN_LOG-CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
+ENV UVICORN_LOG_CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
+
+# Default location where downloaded models are mapped on model container. No need to override, if using model catalog.
+ENV MODEL /opt/ds/model/deployed_model
+
+# Tensor parallelism required by the model
+ENV TENSOR_PARALLELISM 1
+
+# Custom port for model container. No need to override.
+ENV PORT 8080
+EXPOSE ${PORT}
+ENV VLLM_DIR=${INSTALL_DIR}
+COPY vllm-api-server.py ${VLLM_DIR}/vllm-api-server.py
+
+ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
+CMD ["$VLLM_DIR/start.sh"]

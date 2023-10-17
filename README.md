@@ -44,7 +44,7 @@ The [data labeling service](https://docs.oracle.com/en-us/iaas/data-labeling/dat
 
 The [OCI Data Science service](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) offers managed notebook(jupyterlab) sessions. Notebook lifecycle script features execute the customer provided scripts during CREATE/ACTIVATE/DEACTIVATE/DELETE notebook session lifecycle. This folder contains the examples script which needs little to no editing and ready to be used as lifecycle scripts input.
 
-## Resources
+## Documentation
 
 Check out the following resources for more information about the OCI Data Science and AI services:
 

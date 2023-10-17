@@ -37,6 +37,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Loading Data With Pandas & Dask](#load_data-object_storage-hive-autonomous-database.ipynb)
  - [Model Evaluation with ADSEvaluator](#model_evaluation-with-ADSEvaluator.ipynb)
  - [Natural Language Processing](#natural_language_processing.ipynb)
+ - [ONNX Integration with the Accelerated Data Science (ADS) SDK](#onnx-integration-ads.ipynb)
  - [PySpark](#pyspark-data_flow-application.ipynb)
  - [Spark NLP within Oracle Cloud Infrastructure Data Flow Studio](#pyspark-data_flow_studio-spark_nlp.ipynb)
  - [Text Classification and Model Explanations using LIME](#text_classification-model_explanation-lime.ipynb)
@@ -505,6 +506,22 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 `object annotation`  `genome visualization`  `oracle open data`
 
 <sub>Universal Permissive License v 1.0 (https://oss.oracle.com/licenses/upl/)</sup>
+
+---
+### <a name="onnx-integration-ads.ipynb"></a> - ONNX Integration with the Accelerated Data Science (ADS) SDK
+
+<sub>Updated: 07/17/2023</sub>
+#### [`onnx-integration-ads.ipynb`](onnx-integration-ads.ipynb)
+
+ 
+Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.
+
+This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+
+ 
+`onnx`  `deploy model`
+
+<sub>Universal Permissive License v 1.0</sup>
 
 ---
 ### <a name="pipelines-ml_lifecycle.ipynb"></a> - Working with Pipelines

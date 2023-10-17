@@ -414,6 +414,19 @@
     "title": "Visual Genome Repository"
   },
   {
+    "developed_on": "nlp_p37_cpu_v2",
+    "filename": "onnx-integration-ads.ipynb",
+    "keywords": [
+      "onnx",
+      "deploy model"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 15896,
+    "summary": "Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.",
+    "time_created": "2023-07-17T22:35:37",
+    "title": "ONNX Integration with the Accelerated Data Science (ADS) SDK"
+  },
+  {
     "developed_on": "generalml_p38_cpu_v1",
     "filename": "pipelines-ml_lifecycle.ipynb",
     "keywords": [
@@ -594,5 +607,74 @@
     "summary": "Compare training time between CPU and GPU trained models using XGBoost",
     "time_created": "2023-03-30T10:01:38",
     "title": "XGBoost with RAPIDS"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v1",
+    "filename": "feature_store_quickstart.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "machine learning",
+      "feature transformation",
+      "feature storage",
+      "feature validation",
+      "feature statistics"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Introduction to the Oracle Cloud Infrastructure Feature Store.Use feature store for feature ingestion and feature querying",
+    "time_created": "2023-03-29T11:04:51",
+    "title": "Feature Store Quickstart"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v1",
+    "filename": "feature_store_querying.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature querying",
+      "feature transformation",
+      "feature storage",
+      "feature validation",
+      "feature statistics"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Explore Feature Store Functionalities.Transform, Store your Data in Feature Store.Query your data using Feature Store using pandas like interface to query and join",
+    "time_created": "2023-03-29T11:04:51",
+    "title": "Feature store handling querying operations"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v1",
+    "filename": "feature_store_schema_evolution.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature storage",
+      "schema evolution"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Perform Schema Enforcement and Schema Evolution in Feature Store when materialising the data",
+    "time_created": "2023-03-29T11:04:51",
+    "title": "Schema Enforcement and Schema Evolution in Feature Store"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v1",
+    "filename": "feature_store_spark_magic.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature storage",
+      "schema evolution",
+      "data flow"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Run Feature Store on interactive Spark workloads on a long lasting Data Flow Cluster",
+    "time_created": "2023-03-29T11:04:51",
+    "title": "Data Flow Studio : Big Data Operations in Feature Store"
   }
 ]
