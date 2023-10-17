@@ -121,7 +121,6 @@ Following YAML is example for `meta-llama/Llama-2-7b-hf` fine-tuning.
 Save the YAML file as `llama2-7b-hf-ft-job.yaml`
 
 ```yaml
-```yaml
 kind: job
 apiVersion: v1.0
 spec:
@@ -229,7 +228,7 @@ job = (
         .with_compartment_id("<compartment_ocid>")
         .with_project_id("<project_ocid>")
         .with_subnet_id("<subnet_ocid>")
-        .with_shape_name("VM.GPU.A10.1")
+        .with_shape_name("VM.GPU.A10.2")
         .with_block_storage_size(256)
     )
     .with_runtime(
