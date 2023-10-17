@@ -114,9 +114,9 @@ spec:
           value: finetune_llama2_13b_hf_peft_lora
 ```
 
-#### Llama2-7b Fine-Tuning 
+#### Llama2-7b Fine-Tuning
 
-Following YAML is example for `meta-llama/Llama-2-7b-hf` fine-tuning. With 6xVM.GPU.A10.2 nodes the 13b Llama2 parameter model takes about 2.5 hours to complete for 3 epochs.
+Following YAML is example for `meta-llama/Llama-2-7b-hf` fine-tuning.
 
 Save the YAML file as `llama2-7b-hf-ft-job.yaml`
 
@@ -314,7 +314,29 @@ Note that in the `torchrun` training command, there is no need to specify the nu
 
 ## Monitoring
 
+They are various monitoring tools and features in ADS and OCI that can be used to monitor the fine-tuning process. If you used to run the fine-tuning using the YAML approach, you can monitor the job logs with the `ads opctl watch` command:
 
+![ads-opctl-watch](images/ads-opct-watch.png)
+
+... after awhile you will see the logs in the terminal:
+
+![ads-opctl-watch-llama2-ft-logs](images/ads-opctl-watch-jobrun-llama2-ft.png)
+
+You can also observe the fine-tuning process in the Oracle Cloud Console:
+
+![oci-console-job-llama2-ft](images/oci-console-job-llama2-ft.png)
+
+You could also observe the individual run metrics under the job run itself:
+
+![llama2-ft-jobrun-metrics](images/llama2-ft-jobrun-metrics.png)
+
+Additionally under the OCI Monitoring Service, if you enabled the `OCI__METRICS_NAMESPACE` you can observe the GPU power draw:
+
+![llama2-ft-jobrun-gpu-powerdraw](images/llama2-ft-jobrun-gpu-powerdraw.png)
+
+... or memory consumption
+
+![llama2-ft-jobrun-gpu-memory](images/llama2-ft-jobrun-gpu-memory.png)
 
 ## Merging the fine-tuned weights and uploading the model to model catalog
 
