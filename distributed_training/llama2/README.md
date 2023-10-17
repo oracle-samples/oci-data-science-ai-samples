@@ -36,30 +36,29 @@ There are two ways to proceed with the fine-tuning, either by using the ADS Pyth
 
 ### YAML
 
-Prepare a yaml file that describes the infrastructure and the job parameters. Use the template below and customize it with the resource IDs under infrastructure block. The shape name provided should be an instance with A10 or A100. Save the yaml file as `llama2-ft-job.yaml`
+Prepare a YAML file that describes the infrastructure and the job parameters. Use the template below and add your resource IDs under infrastructure block. The shape name provided should be an instance with A10 or A100. 
 
 You can configure the number of nodes by changing the `replicas` attribute under `runtime` spec.
 
-With 6 nodes and 13b parameter model, it will take about 2.5 hours to complete 3 epochs.
+#### Llama2-13b Fine-Tuning 
+
+Following YAML is example for `meta-llama/Llama-2-13b-hf` fine-tuning. With 6xVM.GPU.A10.2 nodes the 13b Llama2 parameter model takes about 2.5 hours to complete for 3 epochs.
+
+Save the YAML file as `llama2-13b-hf-ft-job.yaml`
 
 ```yaml
 kind: job
 apiVersion: v1.0
 spec:
-  name: LLAMA2-Fine-Tuning-lora-samsum-13b
+  name: LLAMA2-Fine-Tuning-v13b-hf-v1
   infrastructure:
     kind: infrastructure
     spec:
-      blockStorageSize: 256
-      compartmentId: ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxxxxx
-      logGroupId: ocid1.loggroup.oc1.xx-xxx.xxxxxxxxxxxxxxxxxx
-      logId: ocid1.log.oc1.xxx.xxxxxxxxxxxxxxxxxxx
-      projectId: ocid1.datascienceproject.oc1.xxx.xxxxxxxxxxxxxxx
-      subnetId: ocid1.subnet.oc1.xxx.xxxxxxxxxxxxxxxxxxxxxxxx
+      blockStorageSize: 512
+      logGroupId: ocid1.loggroup.<>
+      logId: ocid1.log.<>
+      subnetId: ocid1.subnet.<>
       shapeName: VM.GPU.A10.2
-      storageMount:
-      - dest: outputs
-        src: oci://<bucket-to-save-finetuned-weights>@<namespace>/llama2-ft-lora-13b/
     type: dataScienceJob
   runtime:
     kind: runtime
@@ -67,6 +66,7 @@ spec:
     spec:
       git:
         url: https://github.com/facebookresearch/llama-recipes.git
+        commit: 1aecd00924738239f8d86f342b36bacad180d2b3
       command: >-
         torchrun examples/finetuning.py
         --enable_fsdp
@@ -75,9 +75,9 @@ spec:
         --pure_bf16
         --mixed_precision
         --batch_size_training 4
-        --model_name meta-llama/Llama-2-13b-hf
-        --output_dir /mnt/outputs
-        --num_epochs 3
+        --model_name $MODEL_NAME
+        --output_dir /home/datascience/outputs
+        --num_epochs 1
         --save_model
       replicas: 6
       conda:
@@ -85,49 +85,127 @@ spec:
         slug: pytorch20_p39_gpu_v2
       dependencies:
         pipPackages: >-
+          --extra-index-url https://download.pytorch.org/whl/cu118 torch==2.1.0
           'accelerate>=0.21.0'
-          appdirs
-          loralib
+          appdirs==1.4.4
+          loralib==0.1.2
           bitsandbytes==0.39.1
-          black
+          black==23.9.1
           'black[jupyter]'
-          datasets
-          fire
-          'git+https://github.com/huggingface/peft.git'
-          --extra-index-url
-          https://download.pytorch.org/whl/test/cu118
-          'llama-recipes'
-          'transformers>=4.31.0'
-          sentencepiece
-          py7zr
-          scipy
-          optimum
+          datasets==2.12.0
+          fire==0.5.0
+          'git+https://github.com/huggingface/peft.git@15a013af5ff5660b9377af24d3eee358213d72d4'
+          'llama-recipes==0.0.1'
+          'transformers>=4.31.0,<4.34'
+          sentencepiece==0.1.99
+          py7zr==0.20.6
+          scipy==1.10.0
+          optimum==1.13.1
+      outputDir: /home/datascience/outputs
+      outputUri: oci://<bucket-for-finetuned-model>@<namespace>/$JOB_OCID
       env:
+        - name: MODEL_NAME
+          value: meta-llama/Llama-2-13b-hf
+        - name: HUGGING_FACE_HUB_TOKEN
+          value: <your-hugging-face-token>
         - name: LD_LIBRARY_PATH
           value: /usr/local/nvidia/lib:/usr/local/nvidia/lib64:/opt/conda/lib
-        - name: OCI_LOG_LEVEL
-          value: DEBUG
-        - name: HUGGING_FACE_HUB_TOKEN
-          value: <your huggingface token>
         - name: OCI__METRICS_NAMESPACE
-          value: finetune_llama2_13b
+          value: finetune_llama2_13b_hf_peft_lora
 ```
 
-Replace the spec variables like `compartmentId`, `logGroupId`, `logId` etc. with the one from your Oracle Cloud Tenancy. Notice additionally the `outputUri` which should point to your object storage bucket where the fine-tuned model should be stored. Additionally you have to replace the `<your huggingface token>` with your token to access the Llama2 model from HuggingFace.
+#### Llama2-7b Fine-Tuning 
 
-In this example, we have set up the `OCI__METRICS_NAMESPACE` to monitor closely the GPU utilization with the OCI Monitoring Service. The `replicas` specifies the number of instance that should be used, in this case `6xVM.GPU.A10.2` which would result in `12xA10` GPUs.
+Following YAML is example for `meta-llama/Llama-2-7b-hf` fine-tuning. With 6xVM.GPU.A10.2 nodes the 13b Llama2 parameter model takes about 2.5 hours to complete for 3 epochs.
 
-Notice, we used directly the [finetuning.py](https://github.com/facebookresearch/llama-recipes/blob/main/examples/finetuning.py) example as provided from the Meta Llama2 repository without additional configurations, all the Fine-Tuning Examples in the repository should work without modifications required.
+Save the YAML file as `llama2-7b-hf-ft-job.yaml`
 
-To launch the distributed fine-tuning, open a Terminal in your OCI Data Science Notebook, install and activate a Conda environment with the latest Oracle ADS Library and then run the ADS OPCTL CLI:
+```yaml
+```yaml
+kind: job
+apiVersion: v1.0
+spec:
+  name: LLAMA2-Fine-Tuning-v7b-hf-v1
+  infrastructure:
+    kind: infrastructure
+    spec:
+      blockStorageSize: 512
+      logGroupId: ocid1.loggroup.<>
+      logId: ocid1.log.<>
+      subnetId: ocid1.subnet.<>
+      shapeName: VM.GPU.A10.2
+    type: dataScienceJob
+  runtime:
+    kind: runtime
+    type: pyTorchDistributed
+    spec:
+      git:
+        url: https://github.com/facebookresearch/llama-recipes.git
+        commit: 1aecd00924738239f8d86f342b36bacad180d2b3
+      command: >-
+        torchrun examples/finetuning.py
+        --enable_fsdp
+        --use_peft
+        --peft_method lora
+        --pure_bf16
+        --mixed_precision
+        --batch_size_training 4
+        --model_name $MODEL_NAME
+        --output_dir /home/datascience/outputs
+        --num_epochs 1
+        --save_model
+      replicas: 3
+      conda:
+        type: service
+        slug: pytorch20_p39_gpu_v2
+      dependencies:
+        pipPackages: >-
+          --extra-index-url https://download.pytorch.org/whl/cu118 torch==2.1.0
+          'accelerate>=0.21.0'
+          appdirs==1.4.4
+          loralib==0.1.2
+          bitsandbytes==0.39.1
+          black==23.9.1
+          'black[jupyter]'
+          datasets==2.12.0
+          fire==0.5.0
+          'git+https://github.com/huggingface/peft.git@15a013af5ff5660b9377af24d3eee358213d72d4'
+          'llama-recipes==0.0.1'
+          'transformers>=4.31.0,<4.34'
+          sentencepiece==0.1.99
+          py7zr==0.20.6
+          scipy==1.10.0
+          optimum==1.13.1
+      outputDir: /home/datascience/outputs
+      outputUri: oci://<bucket-for-finetuned-model>@<namespace>/$JOB_OCID
+      env:
+        - name: MODEL_NAME
+          value: meta-llama/Llama-2-7b-hf
+        - name: HUGGING_FACE_HUB_TOKEN
+          value: <your-hugging-face-token>
+        - name: LD_LIBRARY_PATH
+          value: /usr/local/nvidia/lib:/usr/local/nvidia/lib64:/opt/conda/lib
+        - name: OCI__METRICS_NAMESPACE
+          value: finetune_llama2_7b_hf_peft_lora
+```
+
+#### Launch the distributed fine-tuning
+
+Replace the spec variables like `compartmentId`, `logGroupId`, `logId` etc. with the one from your Oracle Cloud Tenancy. Notice additionally the `outputUri` which should point to your object storage bucket where the fine-tuned model should be stored. Additionally you have to replace the `<your-hugging-face-token>` under the `HUGGING_FACE_HUB_TOKEN` environment variables with your token to access the Llama2 model from HuggingFace.
+
+In these examples, we have set up the `OCI__METRICS_NAMESPACE` to monitor closely the GPU utilization with the OCI Monitoring Service. The `replicas` specifies the number of instance that should be used, in this case either `6` or `3` x `VM.GPU.A10.2` which would result in `6xA10` or `12xA10` GPUs.
+
+Notice, we used directly the [finetuning.py](https://github.com/facebookresearch/llama-recipes/blob/main/examples/finetuning.py) example as provided from the Meta Llama2 repository without additional changes, all the Fine-Tuning examples in the repository should work without modifications required.
+
+To launch the distributed fine-tuning, open a Terminal in your OCI Data Science Notebook, install and activate a Conda environment with the latest Oracle ADS Library and then run the ADS OPCTL CLI. For example to launch the 7b model fine-tuning:
 
 ```bash
 odsc conda install -s pytorch20_p39_gpu_v2
 activate /home/datascience/conda/pytorch20_p39_gpu_v2
-ads opctl run -f llama2-ft-job.yaml
+ads opctl run -f llama2-7b-hf-ft-job.yaml
 ```
 
-Once the job is submitted, you should see there are `6xJobRun's` created under Job named - `LLAMA2-Fine-Tuning-lora-samsum-13b`
+Once the job is submitted, you should see there are `3xJobRun's` created under Job named - `LLAMA2-Fine-Tuning-v7b-hf-v1`
 
 Check the progress of the training by running in the Notebook Terminal:
 
@@ -137,7 +215,7 @@ ads opctl watch <job run ocid of job-run-ocid>
 
 ### ADS Python API
 
-As we mention you could also run the fine-tuning process directly via the ADS Python API. Here the examples for fine-tuning full parameters of the [7B model](https://huggingface.co/meta-llama/Llama-2-7b-hf) using [FSDP](https://engineering.fb.com/2021/07/15/open-source/fsdp/).
+As we mention you could also run the distributed fine-tuning process directly via the ADS Python API. Here the examples for fine-tuning full parameters of the [7B model](https://huggingface.co/meta-llama/Llama-2-7b-hf) using [FSDP](https://engineering.fb.com/2021/07/15/open-source/fsdp/).
 
 ```python
 from ads.jobs import Job, DataScienceJob, PyTorchDistributedRuntime
@@ -156,32 +234,34 @@ job = (
     )
     .with_runtime(
         PyTorchDistributedRuntime()
-        # Specify the service conda environment by slug name.
-        .with_service_conda("pytorch20_p39_gpu_v1")
+        .with_service_conda("pytorch20_p39_gpu_v2")
         .with_git(
-          url="https://github.com/facebookresearch/llama-recipes.git"
+          url="https://github.com/facebookresearch/llama-recipes.git",
+          commit: "1aecd00924738239f8d86f342b36bacad180d2b3"
         )
         .with_dependency(
           pip_pkg=" ".join([
-            "'accelerate>=0.21.0'",
-            "appdirs",
-            "loralib",
+            "--extra-index-url https://download.pytorch.org/whl/cu118 torch==2.1.0",
+            "accelerate>=0.21.0",
+            "appdirs==1.4.4",
+            "loralib==0.1.2",
             "bitsandbytes==0.39.1",
-            "black",
-            "'black[jupyter]'",
-            "datasets",
-            "fire",
-            "'git+https://github.com/huggingface/peft.git'",
-            "'transformers>=4.31.0'",
-            "sentencepiece",
-            "py7zr",
-            "scipy",
-            "optimum"
+            "black==23.9.1",
+            "black[jupyter]",
+            "datasets==2.12.0",
+            "fire==0.5.0",
+            "git+https://github.com/huggingface/peft.git@15a013af5ff5660b9377af24d3eee358213d72d4",
+            "llama-recipes==0.0.1",
+            "transformers>=4.31.0,<4.34",
+            "sentencepiece==0.1.99",
+            "py7zr==0.20.6",
+            "scipy==1.10.0",
+            "optimum==1.13.1"
           ])
         )
         .with_output("/home/datascience/outputs", "oci://bucket@namespace/outputs/")
         .with_command(" ".join([
-          "torchrun llama_finetuning.py",
+          "torchrun examples/finetuning.py",
           "--enable_fsdp",
           "--pure_bf16",
           "--batch_size_training 1",
@@ -190,14 +270,33 @@ job = (
           "--dist_checkpoint_root_folder /home/datascience/outputs",
           "--dist_checkpoint_folder fine-tuned"
         ]))
-        .with_replica(2)
+        .with_replica(3)
         .with_environment_variable(
           MODEL_NAME="meta-llama/Llama-2-7b-hf",
           HUGGING_FACE_HUB_TOKEN="<access_token>",
           LD_LIBRARY_PATH="/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/opt/conda/lib",
+          OCI__METRICS_NAMESPACE="finetune_llama2_7b_hf_peft_lora"
         )
     )
 )
+```
+
+To create a the job with the above code run:
+
+```python
+job.create()
+```
+
+To run the fine-tuning job:
+
+```python
+run = job.run()
+```
+
+To see the logs:
+
+```python
+run.watch()
 ```
 
 ## The Process
@@ -212,6 +311,10 @@ Regardless of whether you used the CLI or the Python API approach, the distribut
 Note that in the `torchrun` training command, there is no need to specify the number of nodes, the number of GPUs and the IP address of he main job. ADS will automatically configure those base on the `replica` and `shape` you specified, as shown on Figure 2 below.
 
 ![Oracle Cloud Infrastructure Data Science Distributed Jobs Process with ADS and PyTorch](images/jobs-distributed-training.002.png)
+
+## Monitoring
+
+
 
 ## Merging the fine-tuned weights and uploading the model to model catalog
 
