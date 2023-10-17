@@ -63,6 +63,7 @@ Public [documentation](https://docs.oracle.com/en-us/iaas/data-science/using/pol
 ### Policy to check Data Science work requests
 `allow group <group_name> to manage data-science-work-requests in compartment <compartment_name>`
 
+For all other Data Science policies, please refer these [details](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/distributed_training/README.md#3-oci-policies).
 
 ## Methods for model weight downloads
 
