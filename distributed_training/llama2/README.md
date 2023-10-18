@@ -11,7 +11,7 @@ You can select your preferred Llama2 model size in the setup configuration betwe
 
 ## Prerequisite
 
-The key prerequisites that you would need to set tup before you can proceed to run the distributed fine-tuning process on Oracle Cloud Infrastructure Data Science Service.
+The key prerequisites that you would need to setup before you can proceed to run the distributed fine-tuning process on Oracle Cloud Infrastructure Data Science Service.
 
 * [Configure custom subnet](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/distributed_training#1-networking) - with security list to allow ingress into any port from the IPs originating within the CIDR block of the subnet. This is to ensure that the hosts on the subnet can connect to each other during distributed training.
 * [Create an object storage bucket](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/distributed_training#2-object-storage) - to save the fine tuned weights
@@ -90,8 +90,6 @@ spec:
           appdirs==1.4.4
           loralib==0.1.2
           bitsandbytes==0.39.1
-          black==23.9.1
-          'black[jupyter]'
           datasets==2.12.0
           fire==0.5.0
           'git+https://github.com/huggingface/peft.git@15a013af5ff5660b9377af24d3eee358213d72d4'
@@ -128,7 +126,7 @@ spec:
   infrastructure:
     kind: infrastructure
     spec:
-      blockStorageSize: 512
+      blockStorageSize: 256
       logGroupId: ocid1.loggroup.<>
       logId: ocid1.log.<>
       subnetId: ocid1.subnet.<>
@@ -148,7 +146,7 @@ spec:
         --peft_method lora
         --pure_bf16
         --mixed_precision
-        --batch_size_training 4
+        --batch_size_training 1
         --model_name $MODEL_NAME
         --output_dir /home/datascience/outputs
         --num_epochs 1
@@ -164,8 +162,6 @@ spec:
           appdirs==1.4.4
           loralib==0.1.2
           bitsandbytes==0.39.1
-          black==23.9.1
-          'black[jupyter]'
           datasets==2.12.0
           fire==0.5.0
           'git+https://github.com/huggingface/peft.git@15a013af5ff5660b9377af24d3eee358213d72d4'
@@ -176,7 +172,7 @@ spec:
           scipy==1.10.0
           optimum==1.13.1
       outputDir: /home/datascience/outputs
-      outputUri: oci://<bucket-for-finetuned-model>@<namespace>/$JOB_OCID
+      outputUri: oci://llama2@bigdatadatasciencelarge/outputs/lvp-7b/$JOB_OCID
       env:
         - name: MODEL_NAME
           value: meta-llama/Llama-2-7b-hf
@@ -214,7 +210,7 @@ ads opctl watch <job run ocid of job-run-ocid>
 
 ### ADS Python API
 
-As we mention you could also run the distributed fine-tuning process directly via the ADS Python API. Here the examples for fine-tuning full parameters of the [7B model](https://huggingface.co/meta-llama/Llama-2-7b-hf) using [FSDP](https://engineering.fb.com/2021/07/15/open-source/fsdp/).
+As we mention you could also run the distributed fine-tuning process directly via the ADS Python API. Here the examples for fine-tuning full parameters of the [7B model](https://huggingface.co/meta-llama/Llama-2-7b-hf) using [FSDP](https://engineering.fb.com/2021/07/15/open-source/fsdp/). Notice that in the following example we used `--dist_checkpoint_root_folder` and `--dist_checkpoint_folder` as those are required when only FSDP fine-tuning process is executed.
 
 ```python
 from ads.jobs import Job, DataScienceJob, PyTorchDistributedRuntime
@@ -245,8 +241,6 @@ job = (
             "appdirs==1.4.4",
             "loralib==0.1.2",
             "bitsandbytes==0.39.1",
-            "black==23.9.1",
-            "black[jupyter]",
             "datasets==2.12.0",
             "fire==0.5.0",
             "git+https://github.com/huggingface/peft.git@15a013af5ff5660b9377af24d3eee358213d72d4",
@@ -264,7 +258,6 @@ job = (
           "--enable_fsdp",
           "--pure_bf16",
           "--batch_size_training 1",
-          "--micro_batch_size 1",
           "--model_name $MODEL_NAME",
           "--dist_checkpoint_root_folder /home/datascience/outputs",
           "--dist_checkpoint_folder fine-tuned"
@@ -274,7 +267,7 @@ job = (
           MODEL_NAME="meta-llama/Llama-2-7b-hf",
           HUGGING_FACE_HUB_TOKEN="<access_token>",
           LD_LIBRARY_PATH="/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/opt/conda/lib",
-          OCI__METRICS_NAMESPACE="finetune_llama2_7b_hf_peft_lora"
+          OCI__METRICS_NAMESPACE="finetune_llama2_7b_hf_fsdp"
         )
     )
 )
@@ -341,10 +334,17 @@ Additionally under the OCI Monitoring Service, if you enabled the `OCI__METRICS_
 
 After the fine-tuning process is complete, to test the new model, we have to merge the weights to the base model and upload to the OCI Data Science Model Catalog.
 
+### PEFT Weights Merging
+
 1. Create a notebook session with VM.GPU.A10.2 shape or higher. Specify the object storage location where the fine-tuned weights are saved in the mount path while creating the notebook session.
 2. Upload `lora-model-merge.ipynb` notebook to the notebook session
-3. Run the notebook for verifying the fine tuned weights.
+3. Run the notebook for verifying the fine-tuned weights.
 4. The notebook also has code to upload the fine tuned model to model catalog.
+
+### FSDP Weights Merging
+
+1. Create a notebook session with VM.GPU.A10.2 shape or higher. Specify the object storage location where the fine-tuned weights are saved in the mount path while creating the notebook session.
+2. Upload `load-back-FSDP-checkpoints` notebook to the notebook session and follow the instructions.
 
 ## Deployment
 
