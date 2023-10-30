@@ -1,0 +1,28 @@
+FROM ghcr.io/huggingface/text-generation-inference:0.9.3
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get -y install tzdata && apt-get install -y curl
+RUN pip install flask
+
+WORKDIR /home/datascience
+RUN ln -s /home/datascience /data
+
+COPY start-tgi.sh /etc/
+RUN chmod a+x /etc/start-tgi.sh
+
+ENV PORT 8080
+ENV MODEL /opt/ds/model/deployed_model
+
+# llama2-7b-hf with A10 shape
+ENV PARAMS "--max-batch-prefill-tokens 1024"
+
+# llama2-13b-hf with A10 shape
+# ENV PARAMS "--max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096"
+
+# llama2-70b-hf with A100 shape
+# ENV PARAMS "-max-batch-prefill-tokens 1024 --quantize bitsandbytes --max-batch-total-tokens 4096 --num-shard <NUMBER_OF_ALLOWED_GPUS or WORLD_SIZE>"
+
+EXPOSE ${PORT}
+
+ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
+CMD ["/etc/start-tgi.sh"]
