@@ -17,7 +17,7 @@ config = oci.config.from_file(
     "~/.oci/config", profile_name=profile
 )  # replace with the location of your oci config file
 
-model = os.environ.get("MODEL", "meta-llama/Llama-2-7b-chat-hf")
+model = os.environ.get("MODEL", "mistralai/Mistral-7B-Instruct-v0.1")
 template_file = app_config["models"][model].get("template")
 prompt_template = string.Template(
     open(template_file).read() if template_file else "$prompt"
@@ -94,11 +94,35 @@ def query(prompt, max_tokens=200, **kwargs):
         },
     }
 
+    if os.environ.get("VLLM"):
+        if  os.environ.get("API_SPEC")=="openai":
+            temperature = kwargs.get('temperature',0.7)
+            top_p = kwargs.get('top_p',0.8)
+            body = {
+                        "prompt": prompt_template.substitute({"prompt": prompt}),
+                        "max_tokens": max_tokens,
+                        "model": model,
+                        "temperature": temperature,
+                        "top_p":top_p 
+                    }
+        else:
+            body["parameters"].pop("watermark", None)
+            body["parameters"].pop("seed", None)
+            body["parameters"].pop("return_full_text", None)
+
     # create auth using one of the oci signers
     auth = create_default_signer()
     data = requests.post(endpoint, json=body, auth=auth, headers=headers).json()
     # return model generated response, or any error as a string
-    return str(data.get("generated_text", data))
+    if os.environ.get("VLLM"):
+        if os.environ.get("API_SPEC")=="openai":
+            response_text_key = "choices"
+            response =  data.get(response_text_key, data)[0]
+            response = response.get("text", data)
+    else:
+        response_text_key = 'generated_text'
+        response =  data.get(response_text_key, data)
+    return str(response)
 
 
 if __name__ == "__main__":

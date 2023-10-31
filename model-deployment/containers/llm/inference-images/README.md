@@ -1,6 +1,6 @@
 # Overview
 
-This repo provides two approaches to manage the inference server to manage LLM deployment in OCI Data Science:
+This repo provides two approaches to manage the inference server for LLM deployment in OCI Data Science:
 
 * [Text Generation Inference](https://github.com/huggingface/text-generation-inference) from HuggingFace.
 * [vLLM](https://github.com/vllm-project/vllm) developed at UC Berkeley
