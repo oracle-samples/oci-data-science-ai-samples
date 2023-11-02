@@ -45,6 +45,9 @@ Public [documentation](https://docs.oracle.com/en-us/iaas/data-science/using/pol
 ### Policy to check Data Science work requests
 `allow group <group_name> to manage data-science-work-requests in compartment <compartment_name>`
 
+### Policy to access Model deployment end-point in Container Instance
+`allow dynamic-group <group_name> to manage {DATA_SCIENCE_MODEL_DEPLOYMENT_PREDICT} in compartment <compartment_name>`
+
 For all other Data Science policies, please refer these [details](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/distributed_training/README.md#3-oci-policies).
 
 ## Methods for model weight downloads
@@ -89,7 +92,7 @@ The model will be downloaded at container startup time, we just need to provide 
 * Download/Clone the model's repository that we are targetting to deploy, from huggingface repository. This can be done in Notebooks session for faster downloads and upload to bucket.
      ```bash
     git lfs install
-    git clone https://huggingface.co/meta-llama/Llama-2-13b-hf
+    git clone https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1
     ```
 * Zip all items of the folder using zip/tar utility, preferrably using below command to avoid creating another hierarchy of folder structure inside zipped file.
     ```bash
@@ -179,13 +182,13 @@ Container creation process is going to be same as TGI. All associated files are 
       * Set custom environment variable key `STORAGE_SIZE_IN_GB` with value `950` for 7b model. This is required as model will be downloaded at runtime, so we need to keep extra storage size to accomodate various model sizes.
     * Since in api server file, we have already changed the prediction endpoint to /predict, we don't need any other overrides.
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
-    * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU3.2` instance
+    * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
     * Under `Networking` leave the Default option
     * Under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
     * Click on `Show advanced options` at the bottom
     * Select the checkbox `Use a custom container image`
     * Select the OCIR repository and image we pushed earlier
-    * To use vLLM as Openai-copmatibel server we need to mention the healthcheck port.
+    * To use vLLM as OpenAI-compatible server we need to mention the healthcheck port.
      * Key: `healthCheckPort`, Value: 5002
       No need to change port for running vLLM as default server, as default port is mentioned 8080. But is is available as ENV variable in Dockerfile, so feel free to change as needed.
     * Leave CMD and Entrypoint blank
@@ -195,6 +198,14 @@ Container creation process is going to be same as TGI. All associated files are 
 ```bash
 oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --request-body '{"inputs": "Tell me about Data Science"}'
 ```
+  To execute OpenAI-compatible inference, you can run below command.
+  ```bash
+oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --request-body '{"model": "/opt/ds/model/deployed_model",
+        "prompt":"what are some good skills deep learning expert. Give us some tips on how to structure interview with some coding example?",
+        "max_tokens":250, 
+        "temperature": 0.7,
+        "top_p":0.8}'
+```
 
 ## Inference
 
@@ -203,7 +214,7 @@ oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --requ
   * Under the left side under `Resources` select `Invoking your model`
   * You will see the model endpoint under `Your model HTTP endpoint` copy it
   * Open the `config.yaml` file
-  * Depending on which model you decided to deploy the 7b or 14b change the endpoint URL with the one you've just copied
+  * Change the endpoint URL for the model with the one you've just copied
   * Install the dependencies
 
     ```bash
@@ -225,7 +236,7 @@ oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --requ
     ```bash
     oci raw-request \
       --http-method POST \
-      --target-uri "https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaanif7xwiahljboucy47byny5xffyc3zbkpfk4jtcdrtycjb6p2tsa/predict" \
+      --target-uri "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaav66vvniam45ujbnig43wiltlf6h2p4ohrauk7kq5tspnn427pkra/predict" \
       --request-body '{
         "inputs": "Write a python program to randomly select item from a predefined list?",
         "parameters": {
@@ -236,18 +247,17 @@ oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --requ
     ```
 
   * vLLM Inference
-
+  
+    * OpenAI compatible server
     ```bash
-    oci raw-request \
-      --http-method POST \
-      --target-uri "https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaanif7xwiaje3uc4c5igep2ppcefnyzuab3afufefgepicpl5whm6q/predict" \
-      --request-body '{
-        "inputs": "are you smart?",
-        "use_beam_search": true,
-        "n": 4,
-        "temperature": 0
-      }' \
-      --auth resource_principal
+    oci raw-request 
+    --http-method POST 
+    --target-uri "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaav66vvniabq7ahm2h2pbvh6ti37svti5n5fk7jirucxdtdfcuo22q/predict"
+    --request-body '{"model": "/opt/ds/model/deployed_model",
+        "prompt":"what are some good skills deep learning expert. Give us some tips on how to structure interview with some coding example?",
+        "max_tokens":250, 
+        "temperature": 0.7,
+        "top_p":0.8}'
     ```
 
 ## Deploying using ADS
@@ -324,24 +334,3 @@ Customer should check the predict and health check endpoints, if defined through
 ### Advanced debugging options: Code debugging inside the container using job
 For more detailed level of debugging, user can refer [README-DEBUG.md](./README-DEBUG.md).
 
-## Additional Make Commands
-
-### TGI containers
-
-`make build.tgi` to build the container
-
-`make run.tgi` to run the container
-
-`make shell.tgi` to launch container with shell prompt
-
-`make stop.tgi` to stop the running container
-
-### vLLM containers
-
-`make build.vllm` to build the container
-
-`make run.vllm` to run the container
-
-`make shell.vllm` to launch container with shell prompt
-
-`make stop.vllm` to stop the running container
