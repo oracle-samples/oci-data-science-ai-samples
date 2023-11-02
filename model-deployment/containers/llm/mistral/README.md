@@ -209,6 +209,8 @@ oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --requ
 
 ## Inference
 
+### Local Inference
+
 * Once the model is deployed and shown as `Active` you can execute inference against it, the easier way to do it would be to use the integrated `Gradio` application in this example
   * Go to the model you've just deployed and click on it
   * Under the left side under `Resources` select `Invoking your model`
@@ -260,6 +262,49 @@ oci raw-request --http-method POST --target-uri https://<MD_OCID>/predict --requ
         "top_p":0.8}'
     ```
 
+  ### Using OCI Container Instance
+   
+  * Once you have tested the inference locally. You can build Gradio container by running:
+    ```bash
+    make build.app
+    ```
+  * Before we can push the newly build container make sure that you've created the `gradio-odsc` repository in your tenancy.
+  * Go to your tenancy [Container Registry](https://cloud.oracle.com/compute/registry/containers)
+  * Click on the `Create repository` button
+  * Select `Private` under Access types
+  * Set `gradio-odsc` as a `Repository name`
+  * Click on `Create` button
+
+* You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before been able to push the image. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
+
+    ```bash
+    docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
+    ```
+
+    If `your tenancy` is **federated** with Oracle Identity Cloud Service, use the format `<tenancy-namespace>/oracleidentitycloudservice/<username>`
+
+* Push the container image to the OCIR
+
+    ```bash
+    make push.app
+    ```
+* To run a Container Instance go to [Container Instance](https://console.us-ashburn-1.oraclecloud.com/container-instances)
+    * Click on the `Create container instance`
+    * Select the compartment in `Create in compartment` option
+    * Leave `Placement` and `Shape` as default option
+    * Within `Network` select your `Virtual cloud network` and `Subnet`
+    * Click on `Next` at the bottom, it redirects to `Configure containers` page
+    * Select the OCIR repository and image we pushed earlier under `Image`
+    * Provide custom ENV variable for Gradio app in `Environmental variables` section
+      * Key: `PORT`, Value: `5000` (Port at which you want to run the app)\
+      * Key: `MODEL`, Value: `mistralai/Mistral-7B-Instruct-v0.1`
+      * Key: `OCI_IAM_TYPE`, Value: `resource_principal`
+      * Key: `VLLM`, Value: `1` (For VLLM Inference end-point)
+      * Key: `API_SPEC` Value: `openai` (For VLLM OpenAI Inference end-point)
+    * Click on `Next` at the bottom to review the configuration and then click `Create`
+
+* Once container is up you should be able to open the application now on `http://<Private IP address>:<PORT>/` and use start chatting against the deployed model on OCI Data Science Service.
+
 ## Deploying using ADS
 
 Instead of using the console, you can also deploy using the ADS from your local machine. Make sure that you've also created and setup your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) to execute the commands below.
@@ -295,7 +340,7 @@ Following are identified as the most probable failure cases while deploying larg
 #### Reason
 Insufficient model deployment timeout.
 
-#### Symptoms
+#### Symptom
 The Work Request logs will show the following error:
 Workflow timed out. Maximum runtime was: <deployment_timeout> minutes.
 
