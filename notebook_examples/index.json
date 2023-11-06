@@ -663,5 +663,22 @@
     "summary": "Run Feature Store on interactive Spark workloads on a long lasting Data Flow Cluster",
     "time_created": "2023-03-29T11:04:51",
     "title": "Data Flow Studio : Big Data Operations in Feature Store"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v1",
+    "filename": "feature_store_embeddings.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to convert words to embeddings using transformation",
+    "time_created": "2023-11-01T11:04:51",
+    "title": "Feature store embeddings using transformation"
   }
 ]
