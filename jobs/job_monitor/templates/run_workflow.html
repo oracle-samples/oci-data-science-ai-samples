@@ -1,0 +1,140 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newWorkflowModal">
+  Run A New Job ...
+</button>
+<!-- Modal YAML -->
+<div id="newWorkflowModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Run A New Workflow</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <label for="templates" class="col-sm-2 col-form-label">YAML</label>
+          <div class="col-sm-8">
+            <select class="form-control" name="templates" id="yaml-selector">
+              <option value="" selected="selected">--- To load YAML files, set yaml_dir in config.json and restart the
+                app ---</option>
+            </select>
+          </div>
+          <div class="col-sm-2">
+            <button id="load-yaml" class="form-control btn btn-primary">Load</button>
+          </div>
+        </div>
+        <hr />
+        <!-- https://stackoverflow.com/questions/63179813/how-to-run-the-monaco-editor-from-a-cdn-like-cdnjs -->
+        <div id="container" style="height:800px; border:1px solid black;"></div>
+        <script>
+          var require = { paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' } }
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js"></script>
+        <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/editor/editor.main.nls.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/editor/editor.main.js"></script>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSupportedShapes">
+          Show Supported Shapes
+        </button>
+        <button class="btn btn-light" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseFastLaunchShapes">
+          Show Fast Launch Shapes
+        </button>
+        <button id="run-job" type="button" class="btn btn-danger" data-bs-dismiss="modal">Run</button>
+        <div style="width: 100%;">
+          <div class="collapse" id="collapseSupportedShapes">
+            <div class="card card-body">
+              <p>Supported Shapes</p>
+              <p class="shape-names"></p>
+            </div>
+          </div>
+          <div class="collapse" id="collapseFastLaunchShapes">
+            <div class="card card-body">
+              <p>Fast Launch Shapes</p>
+              <p class="shape-names"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        function loadYamlList() {
+          $.get("/yaml", function (data) {
+            var yamlSelector = $("#yaml-selector");
+            yamlSelector.empty();
+            yamlSelector.append('<option value="" selected="selected">--- Select YAML to Load ---</option>');
+            data.yaml.forEach(element => {
+              yamlSelector.append('<option value="' + element.filename + '">' + element.filename + '</option>');
+            });
+          });
+        }
+
+        function initEditor() {
+          return monaco.editor.create(document.getElementById('container'), {
+            value: 'kind: job\nspec:\n  infrastructure:\n    type: dataScienceJob\n',
+            language: 'yaml',
+            theme: 'vs-dark',
+            automaticLayout: true
+          });
+        }
+
+        function loadYamlContent(uri, editor) {
+          $.get("/yaml/" + uri, function (data) {
+            console.log(data)
+            const lineCount = editor.getModel().getLineCount();
+            const lastLineLength = editor.getModel().getLineMaxColumn(lineCount);
+            const range = new monaco.Range(1, 1, lineCount, lastLineLength)
+            editor.executeEdits("Load " + uri, [{
+              range: range,
+              text: data.content
+            }]);
+            toastMessage("YAML Loaded", uri);
+          });
+        }
+
+        $(document).ready(function () {
+          loadYamlList();
+          var editor = initEditor();
+
+          $.get("/shapes/" + $("#compartments").val(), function (data) {
+            $("#collapseSupportedShapes").find(".shape-names").text(data.supported_shapes.join(", "));
+            $("#collapseFastLaunchShapes").find(".shape-names").text(data.fast_launch_shapes.join(", "));
+          })
+
+          $("#load-yaml").click(function () {
+            var filename = $("#yaml-selector").val()
+            console.log("Loading " + filename);
+            loadYamlContent(filename, editor);
+          });
+
+          $("#run-job").click(function () {
+            try {
+              var workflow = jsyaml.load(editor.getValue());
+              toastMessage("Creating Workflow ...", workflow.kind + " - " + workflow.spec.infrastructure.type);
+            } catch (err) {
+              toastMessage(err);
+              return;
+            }
+
+            $.ajax({
+              type: "POST",
+              contentType: "application/json",
+              url: "/run",
+              data: { yaml: editor.getValue() },
+            }).fail(function (data) {
+              toastMessage("Error", data.responseJSON.error);
+            }).done(function (data) {
+              toastMessage(
+                "Job Created",
+                "Job OCID: " + data.job
+              )
+            });
+          });
+        })
+      </script>
+    </div>
+  </div>
+</div>

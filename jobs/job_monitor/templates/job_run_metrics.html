@@ -1,0 +1,9 @@
+<div class="btn-group">
+  <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    CPU Utilization (%)
+  </button>
+  <ul class="dropdown-menu">
+    <li class="d-none"><a class="dropdown-item" data-val="CpuUtilization" href="#">CPU Utilization (%)</a></li>
+  </ul>
+</div>
+<div><canvas id="metrics-{{ run.id|replace('.', '') }}"></canvas></div>

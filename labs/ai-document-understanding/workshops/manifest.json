@@ -1,0 +1,36 @@
+{
+    "workshoptitle": "Introduction to OCI Document Understanding",
+    "include": {"starter-file.sql":"../../data-load/files/starter-file.sql",
+                "sample.json":"../../data-load/files/sample.json",
+                "step2.md":"../../data-load/files/step2.md"},
+    "help": "livelabs-help-na-cloud_us@oracle.com",
+    "tutorials": [
+      {
+          "title": "Get Started",
+          "description": "This is the prerequisites for customers using Free Trial and Paid tenancies, and Always Free accounts (if applicable). The title of the lab and the Contents Menu title (the title above) match for Prerequisite lab. This lab is always first.",
+          "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/cloud-login.md"
+      },
+        {
+            "title": "Introduction: Use the OCI Document Understanding Service",
+            "description": "Learn about the features provided by OCI Document Understanding Service",
+            "filename": "intro.md"
+        }
+        ,
+
+        {
+            "title": "Lab 1: Configure OCI Document Understanding",
+            "description": "",
+            "filename": "../../dls-bulk-label/dls-bulk-label.md"
+        },
+        {
+            "title": "Lab 2: Use OCI Document Understanding in the Console",
+            "filename": "../../custom-model/custom-model.md"
+        },
+
+        {
+            "title": "Need Help?",
+            "description": "Solutions to Common Problems and Directions for Receiving Live Help",
+            "filename":"https://oracle-livelabs.github.io/common/labs/need-help/need-help-freetier.md"
+        }
+    ]
+}

@@ -12,18 +12,25 @@ You can invoke OCI Language capabilities through the OCI SDKs.
 
 Download and install the OCI Java SDK so you have access to the libraries you need to use, as described in [this article](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkgettingstarted.htm). 
 
-For the sample in this directory, I relied on Maven get the libraries I needed:  **oci-java-sdk-ailanguage** and **oci-java-sdk-common**. This is what the dependencies sections looked like in my [pom.xml](pom.xml):
+For the sample in this directory, I relied on Maven get the libraries I needed:  **oci-java-sdk-ailanguage**, **oci-java-sdk-common** and **oci-java-sdk-common-httpclient-jersey**. This is what the dependencies sections looked like in my [pom.xml](pom.xml):
 
 ```xml
  <dependencies>
     <dependency>
         <groupId>com.oracle.oci.sdk</groupId>
         <artifactId>oci-java-sdk-ailanguage</artifactId>
-        <version>2.12.0</version>
+        <version>LATEST</version>
     </dependency>
     <dependency>
         <groupId>com.oracle.oci.sdk</groupId>
         <artifactId>oci-java-sdk-common</artifactId>
+        <version>LATEST</version>
+    </dependency>
+    <dependency>
+        <!-- Since this is the "application" pom.xml, we do want to
+             choose the httpclient to use. -->
+        <groupId>com.oracle.oci.sdk</groupId>
+        <artifactId>oci-java-sdk-common-httpclient-jersey</artifactId>
         <version>LATEST</version>
     </dependency>
 </dependencies>
@@ -53,6 +60,11 @@ In order for your local code to have the rights to use your OCI services, it nee
             final AuthenticationDetailsProvider provider =
                 new ConfigFileAuthenticationDetailsProvider(configFile);
 ```
+
+OCI SDK provides some other Authentication methods as well and sample for these methods can found below in links below.
+* Instance Principal Authentication - https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/InstancePrincipalsAuthenticationDetailsProviderExample.java
+* Resource Principal Authentication - https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/FunctionsEphemeralResourcePrincipalAuthenticationDetailsProviderExample.java
+* Simple Authentication - https://github.com/oracle/oci-java-sdk/blob/master/bmc-examples/src/main/java/SimpleAuthenticationDetailsProviderExample.java
 
 ## Using OCI Language from Java
 

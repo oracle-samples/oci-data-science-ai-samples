@@ -1,0 +1,6 @@
+-  id: check-copyright
+   name: check-copyright
+   description: Validate Oracle copyright and license statements
+   entry: .pre-commit-scripts/check-copyright.py
+   language: script
+   types_or: ['python', 'shell', 'bash']

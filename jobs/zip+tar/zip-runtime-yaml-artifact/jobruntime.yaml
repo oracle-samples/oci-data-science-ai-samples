@@ -1,5 +1,5 @@
 CONDA_ENV_TYPE: service
-CONDA_ENV_SLUG: dataexpl_p37_cpu_v2
+CONDA_ENV_SLUG: generalml_p38_cpu_v1
 JOB_RUN_ENTRYPOINT: conda_pack_test.py
 KEY1: value1
 KEY2: 123123

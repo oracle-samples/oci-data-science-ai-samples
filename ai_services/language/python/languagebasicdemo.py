@@ -8,7 +8,6 @@ text = "Zoom interface is really simple and easy to use. The learning curve is v
 
 ai_client = oci.ai_language.AIServiceLanguageClient(oci.config.from_file())
 
-
 #Detect Entities
 detect_language_entities_details = oci.ai_language.models.DetectLanguageEntitiesDetails(text=text)
 output = ai_client.detect_language_entities(detect_language_entities_details)

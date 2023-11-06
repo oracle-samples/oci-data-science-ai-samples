@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "oci-sdk": "^2.50.3"
+  }
+}

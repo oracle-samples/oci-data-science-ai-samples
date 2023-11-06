@@ -61,3 +61,11 @@ Once you have activated your environment, install the OCI SDK by running:
 **languagebasicdemo.py** showcases how to call single record APIs.
 
 **languagebatchdemo.py** reads a set of reviews from a CSV file with reviews, uses batching API to do aspect based sentiment analysis and outputs a CSV for all the sentiments found. This is a good example on how to call batch APIs efficiently. 
+
+**languageBatchSamples.py** showcases how to call Batch record APIs.
+
+**languageCustomNERSample.py** showcase creating and training of Named entity recognition custom model
+
+**languageCustomTXTCSample.py** showcase creating and training of Text classification custom model
+
+**languageTranslation.py** showcase text translation.

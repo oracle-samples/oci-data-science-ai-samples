@@ -1,0 +1,149 @@
+{
+  "documentMetadata" : {
+    "pageCount" : 1,
+    "mimeType" : "image/png"
+  },
+  "pages" : [ {
+    "pageNumber" : 1,
+    "dimensions" : null,
+    "detectedDocumentTypes" : null,
+    "detectedLanguages" : null,
+    "words" : null,
+    "lines" : null,
+    "tables" : null,
+    "documentFields" : [ {
+      "fieldType" : "KEY_VALUE",
+      "fieldLabel" : {
+        "name" : "Recipient",
+        "confidence" : 0.4857722
+      },
+      "fieldName" : null,
+      "fieldValue" : {
+        "valueType" : "STRING",
+        "text" : null,
+        "confidence" : null,
+        "boundingPolygon" : {
+          "normalizedVertices" : [ {
+            "x" : 0.060382916053019146,
+            "y" : 0.327639751552795
+          }, {
+            "x" : 0.15316642120765833,
+            "y" : 0.327639751552795
+          }, {
+            "x" : 0.15316642120765833,
+            "y" : 0.37422360248447206
+          }, {
+            "x" : 0.060382916053019146,
+            "y" : 0.37422360248447206
+          } ]
+        },
+        "wordIndexes" : [ 38, 39 ],
+        "normalizedValue" : null,
+        "normalizedConfidence" : null,
+        "value" : "John Doe"
+      }
+    }, {
+      "fieldType" : "KEY_VALUE",
+      "fieldLabel" : {
+        "name" : "Carrier Name",
+        "confidence" : 0.48229554
+      },
+      "fieldName" : null,
+      "fieldValue" : {
+        "valueType" : "STRING",
+        "text" : null,
+        "confidence" : null,
+        "boundingPolygon" : {
+          "normalizedVertices" : [ {
+            "x" : 0.14285714285714285,
+            "y" : 0.15062111801242237
+          }, {
+            "x" : 0.2812960235640648,
+            "y" : 0.15062111801242237
+          }, {
+            "x" : 0.2812960235640648,
+            "y" : 0.19254658385093168
+          }, {
+            "x" : 0.14285714285714285,
+            "y" : 0.19254658385093168
+          } ]
+        },
+        "wordIndexes" : [ 9, 10 ],
+        "normalizedValue" : null,
+        "normalizedConfidence" : null,
+        "value" : "Sample carrier"
+      }
+    }, {
+      "fieldType" : "KEY_VALUE",
+      "fieldLabel" : {
+        "name" : "Shipping ID",
+        "confidence" : 0.67397696
+      },
+      "fieldName" : null,
+      "fieldValue" : {
+        "valueType" : "STRING",
+        "text" : null,
+        "confidence" : null,
+        "boundingPolygon" : {
+          "normalizedVertices" : [ {
+            "x" : 0.5552282768777614,
+            "y" : 0.15062111801242237
+          }, {
+            "x" : 0.9337260677466863,
+            "y" : 0.15062111801242237
+          }, {
+            "x" : 0.9337260677466863,
+            "y" : 0.23136645962732919
+          }, {
+            "x" : 0.5552282768777614,
+            "y" : 0.23136645962732919
+          } ]
+        },
+        "wordIndexes" : [ 12, 23 ],
+        "normalizedValue" : null,
+        "normalizedConfidence" : null,
+        "value" : "555-666-7777 6F4G6F5G66FG"
+      }
+    }, {
+      "fieldType" : "KEY_VALUE",
+      "fieldLabel" : {
+        "name" : "Trailer Number",
+        "confidence" : 0.8647281
+      },
+      "fieldName" : null,
+      "fieldValue" : {
+        "valueType" : "STRING",
+        "text" : null,
+        "confidence" : null,
+        "boundingPolygon" : {
+          "normalizedVertices" : [ {
+            "x" : 0.6362297496318114,
+            "y" : 0.36490683229813664
+          }, {
+            "x" : 0.6524300441826215,
+            "y" : 0.36490683229813664
+          }, {
+            "x" : 0.6524300441826215,
+            "y" : 0.4114906832298137
+          }, {
+            "x" : 0.6362297496318114,
+            "y" : 0.4114906832298137
+          } ]
+        },
+        "wordIndexes" : [ 43 ],
+        "normalizedValue" : null,
+        "normalizedConfidence" : null,
+        "value" : "5"
+      }
+    } ]
+  } ],
+  "detectedDocumentTypes" : null,
+  "detectedLanguages" : null,
+  "documentClassificationModelVersion" : null,
+  "languageClassificationModelVersion" : null,
+  "textExtractionModelVersion" : null,
+  "keyValueExtractionModelVersion" : "custom-kv-preview",
+  "tableExtractionModelVersion" : null,
+  "errors" : null,
+  "searchablePdf" : null
+}

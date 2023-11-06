@@ -1,0 +1,25 @@
+name:"decoder"
+backend:"python"
+
+input [
+    {
+        name:"logits",
+        data_type:TYPE_FP32,
+        dims:[-1,-1,50257]
+    },
+    {
+        name:"past_key_values",
+        data_type:TYPE_FP32,
+        dims:[12,2,-1,12,-1,64]
+    }
+]
+
+output:[
+    {
+        name:"out",
+        data_type:TYPE_STRING,
+        dims:[-1]
+    }
+]
+
+instance_group [{ kind: KIND_CPU }]
