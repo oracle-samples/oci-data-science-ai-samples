@@ -184,7 +184,7 @@ Now that the model is saved to the disk, we can see that its size is about 34.1G
 
 We can load the quantized model back without the max_memory limit:
 ```python
-tokenizer = AutoTokenizer.from_pretrained(save_folder)
+tokenizer_q = AutoTokenizer.from_pretrained(save_folder)
 model_quantized = AutoModelForCausalLM.from_pretrained(
     save_folder,
     device_map="auto",
@@ -282,3 +282,34 @@ By checking the device map, we see the entire model is loaded into GPUs:
 </details>
 
 ## Testing the model
+We can use the Huggingface pipeline to test the model inference.
+
+```python
+import time
+from transformers import pipeline
+ 
+def generate(prompt, model, tokenizer, **kwargs):
+    """Creates a text generation pipeline, generate the completion and track the time used for the generation."""
+    generator = pipeline("text-generation", model=model, tokenizer=tokenizer, max_new_tokens=256, return_full_text=False)
+     
+    # warm up
+    generator("How are you?")
+    generator("Oracle is a great company.")
+     
+    time_started = time.time()
+    completion = generator(prompt)[0]['generated_text']
+    seconds_used = time.time() - time_started
+    print(completion)
+    per_token = seconds_used / len(generator.tokenizer(completion)["input_ids"])
+    print(f"******\nTime used: {seconds_used:.3f} seconds, {per_token:.3f} s/token")
+```
+
+Test the full model:
+generate("What's LLM quantization?", model_full, tokenizer)
+Output:
+TBA
+
+Test the quantized model:
+generate("What's LLM quantization?", model_quantized, tokenizer_q)
+Output:
+TBA
