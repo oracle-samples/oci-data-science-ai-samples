@@ -316,6 +316,10 @@ In the 1960s, AI researchers began to focus on developing systems that could und
 In the 1970s, AI researchers began to focus on developing systems that could learn from data. This led to the development of the first expert system, named MYCIN. MYCIN was able to diagnose diseases by analyzing data from medical records.
 ******
 Time used: 28.659 seconds
+
 Number of tokens: 176 
+
 Throughput: 9.00 Tokens/sec 
+
 Latency: 162.83 ms/token
+
