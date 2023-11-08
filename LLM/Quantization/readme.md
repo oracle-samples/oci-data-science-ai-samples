@@ -303,7 +303,7 @@ def generate(prompt, model, tokenizer, **kwargs):
     num_tokens = len(completion.split())
     latency = seconds_used*1000 / num_tokens
     token_per_sec = len(generator.tokenizer(completion)["input_ids"]) / seconds_used
-    print(f"******\nTime used: {seconds_used:.3f} \nNumber of tokens: {num_tokens} \nseconds \nThroughput: {token_per_sec:.2f} Tokens/sec \nLatency: {latency:.2f} ms/token")
+    print(f"******\nTotal time: {seconds_used:.3f} \nNumber of tokens: {num_tokens} \nseconds \nThroughput: {token_per_sec:.2f} Tokens/sec \nLatency: {latency:.2f} ms/token")
 ```
 
 Test the quantized model:
