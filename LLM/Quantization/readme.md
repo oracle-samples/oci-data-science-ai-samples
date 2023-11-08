@@ -300,16 +300,22 @@ def generate(prompt, model, tokenizer, **kwargs):
     completion = generator(prompt)[0]['generated_text']
     seconds_used = time.time() - time_started
     print(completion)
-    per_token = seconds_used / len(generator.tokenizer(completion)["input_ids"])
-    print(f"******\nTime used: {seconds_used:.3f} seconds, {per_token:.3f} s/token")
+    num_tokens = len(completion.split())
+    latency = seconds_used*1000 / num_tokens
+    token_per_sec = len(generator.tokenizer(completion)["input_ids"]) / seconds_used
+    print(f"******\nTime used: {seconds_used:.3f} \nNumber of tokens: {num_tokens} \nseconds \nThroughput: {token_per_sec:.2f} Tokens/sec \nLatency: {latency:.2f} ms/token")
 ```
 
-Test the full model:
-generate("What's LLM quantization?", model_full, tokenizer)
-Output:
-TBA
-
 Test the quantized model:
-generate("What's LLM quantization?", model_quantized, tokenizer_q)
+generate("What's AI?", model_quantized, tokenizer_q)
+
 Output:
-TBA
+The AI 101 series is a collection of articles that will introduce you to the basics of artificial intelligence (AI). In this first article, we're going to talk about the history of AI, and how it has evolved over the years.
+The first AI system was created in the 1950s, and it was called the Logic Theorist. This system was able to solve mathematical problems using a set of rules. The Logic Theorist was followed by other AI systems, such as the General Problem Solver and the Game of Checkers.
+In the 1960s, AI researchers began to focus on developing systems that could understand natural language. This led to the development of the first chatbot, named ELIZA. ELIZA was able to hold a conversation with a human user by responding to their questions with pre-programmed responses.
+In the 1970s, AI researchers began to focus on developing systems that could learn from data. This led to the development of the first expert system, named MYCIN. MYCIN was able to diagnose diseases by analyzing data from medical records.
+******
+Time used: 28.659 seconds
+Number of tokens: 176 
+Throughput: 9.00 Tokens/sec 
+Latency: 162.83 ms/token
