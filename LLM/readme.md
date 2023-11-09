@@ -12,3 +12,4 @@ This page curates the links to some common use cases for LLMs.
 [Deploy Mistral 7B](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/model-deployment/containers/llm/mistral)
 
 [Deploy GPT-2 using NVidia Triton Inference Server](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/model-deployment/containers/Triton/gpt2_ensemble/Deploy_GPT2_Ensemble.md)
+
