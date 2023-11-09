@@ -321,5 +321,5 @@ Number of tokens: 176
 
 Throughput: 9.00 Tokens/sec 
 
-Latency: 162.83 ms/token
+Latency: 111.11 ms/token
 
