@@ -720,7 +720,26 @@
     "summary": "Use feature store to perform PII data redaction, summarization, translation using openai and redact",
     "time_created": "2023-11-05T11:04:51",
     "title": "Feature store to perform PII data redaction, summarization, translation using openai and redact"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v1",
+    "filename": "feature_store_embeddings_openai.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm",
+      "pii data redaction",
+      "summarization",
+      "translation",
+      "openai"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to keep open ai embeddings using openai.Embedding.create",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Use feature store to keep open ai embeddings using openai.Embedding.create"
   }
-
-
 ]
