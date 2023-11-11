@@ -1,0 +1,37 @@
+FROM ghcr.io/oracle/oraclelinux8-instantclient:21
+
+RUN rm -rf /var/cache/yum/* && yum clean all && yum install -y gcc make patch vim iproute net-tools git && rm -rf /var/cache/yum/*
+RUN curl -L https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh >> miniconda.sh
+RUN bash ./miniconda.sh -b -p /miniconda; rm ./miniconda.sh;
+ENV PATH="/miniconda/bin:$PATH"
+
+USER root
+
+# Create sync directory and expose as environment variable
+
+ARG CONDA_ENV_FILE=environment.yaml
+ARG CONDA_ENV_NAME=odsc
+ARG ODSC_DIR=/opt/odsc
+ARG RND
+
+COPY ${CONDA_ENV_FILE} /opt/env.yaml
+RUN conda env create -f /opt/env.yaml --name ${CONDA_ENV_NAME} && conda clean -afy
+ENV PATH="/miniconda/envs/${CONDA_ENV_NAME}}/bin:$PATH"
+
+RUN conda init bash && source ~/.bashrc && conda activate ${CONDA_ENV_NAME}
+
+RUN mkdir ${ODSC_DIR}
+COPY tr.py ${ODSC_DIR}/
+COPY app.py ${ODSC_DIR}/
+COPY config.yaml ${ODSC_DIR}/
+COPY prompt-templates ${ODSC_DIR}/prompt-templates
+
+ENV ODSC_DIR=${ODSC_DIR}
+
+EXPOSE 5000
+
+RUN echo "conda activate odsc">>/root/.bashrc
+SHELL ["/bin/bash", "--login", "-c"]
+
+ENTRYPOINT [ "bash", "--login" , "-c"]
+CMD ["python $ODSC_DIR/app.py"]
