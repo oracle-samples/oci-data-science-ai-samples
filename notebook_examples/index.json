@@ -680,5 +680,23 @@
     "summary": "Use feature store to convert words to embeddings using transformation",
     "time_created": "2023-11-01T11:04:51",
     "title": "Feature store embeddings using transformation"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v1",
+    "filename": "feature_store_medical_synthetic_data_openai.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm",
+      "synthetic data generation"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to perform synthetic data generation using openai",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Feature store to perform synthetic data generation using openai"
   }
 ]
