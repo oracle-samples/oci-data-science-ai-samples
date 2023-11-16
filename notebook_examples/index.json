@@ -741,5 +741,20 @@
     "summary": "Use feature store to keep open ai embeddings using openai.Embedding.create",
     "time_created": "2023-11-05T11:04:51",
     "title": "Use feature store to keep open ai embeddings using openai.Embedding.create"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v1",
+    "filename": "feature_store_ehr_data.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 429056,
+    "summary": "Use feature store transformations to perform feature engineering",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Use feature store transformations to perform feature engineering"
   }
 ]
