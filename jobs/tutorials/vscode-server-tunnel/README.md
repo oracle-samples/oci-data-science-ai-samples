@@ -70,7 +70,7 @@ To run the job on the OCI Data Science Service
 
 #### OCIR Login
 
-You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before, to been able to push the image. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
+You may need to `docker login` to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before, to been able to push the image. To login you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once. You can find all the Oracle Cloud Regions Keys at [Regions Documentation Page](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm)
 
 ```bash
 docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
