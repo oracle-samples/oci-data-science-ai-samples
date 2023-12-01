@@ -11,18 +11,30 @@ This folder contains following samples:
 - fail-code-exit.py - set your own error code
 - shell-with-exit.sh - demonstrates exit code usage in shell script
 
-Build to test and run locally
+## Local Machine Test
 
 ```bash
 docker build --build-arg type=local -t exit-code .
 docker run --rm -v $PWD:/app exit-code python /app/fail-with-code.py
 ```
 
-Build to run as a job
+On Apple Silicon (M1...M3)
+```bash
+docker buildx build --platform linux/amd64 --build-arg type=local -t exit-code .
+docker run --rm -v $PWD:/app exit-code python /app/fail-with-code.py
+```
+
+## Build for OCI DataScience Jobs
 
 ```bash
 docker build --build-arg type=remote -t exit-code .
 docker run --rm -v $PWD:/app exit-code
+```
+
+On Apple Silicon (M1...M3)
+```bash
+docker buildx build --platform linux/amd64 --build-arg type=remote -t exit-code .
+docker run --rm -v $PWD:/app exit-code python /app/fail-with-code.py
 ```
 
 Tag and push to OCIR
