@@ -1,10 +1,24 @@
+# Initial setup to create the version file if it doesn't exist
+init:
+	@if [ ! -f version.txt ]; then \
+		echo 0 > version.txt; \
+	fi
+
+increment_version:
+	@echo "Reading current version..."
+	$(eval VERSION=$(shell cat version.txt || echo "0"))
+	@echo "Current version is $(VERSION)"
+	$(eval NEW_VERSION=$(shell echo $$(($(VERSION) + 1))))
+	@echo $(NEW_VERSION) > version.txt
+	@echo "Version incremented to $(NEW_VERSION)"
+
 TENANCY:=${TENANCY_NAME}
 CONTAINER_REGISTRY:=${REGION_KEY}.ocir.io
 
 TGI_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/text-generation-interface-odsc:0.9.3
 TGI_CONTAINER_NAME:=tgi-odsc
 
-VLLM_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/vllm-odsc:0.1.4
+VLLM_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/vllm-odsc:0.2.2-v
 VLLM_CONTAINER_NAME:=vllm-odsc
 
 MODEL_DIR:=${PWD}/hfdata
@@ -31,8 +45,8 @@ check-env:
 	@echo "Both TENANCY_NAME and REGION_KEY are set and have values."
 build.tgi:
 	docker build --network host -t ${TGI_INFERENCE_IMAGE} -f Dockerfile.tgi .
-build.vllm: check-env
-	docker build --network host -t ${VLLM_INFERENCE_IMAGE} -f Dockerfile.vllm .
+build.vllm: check-env init increment_version
+	docker build --network host -t ${VLLM_INFERENCE_IMAGE}$(shell cat version.txt) -f Dockerfile.vllm .
 run.tgi.hf:
 	docker run --rm -it --gpus all --shm-size 1g -p ${port}:${port} -e PORT=${port} -e TOKEN_FILE=${target_token} -e PARAMS=${params} -e MODEL=${model} -v ${MODEL_DIR}:${TARGET_DIR} -v ${token}:${target_token} --name ${TGI_CONTAINER_NAME} ${TGI_INFERENCE_IMAGE}
 run.tgi.oci:
@@ -48,6 +62,6 @@ stop.vllm:
 push.tgi:
 	docker push ${TGI_INFERENCE_IMAGE}
 push.vllm:
-	docker push ${VLLM_INFERENCE_IMAGE}
+	docker push ${VLLM_INFERENCE_IMAGE}$(shell cat version.txt)
 app:
 	MODEL=${model} gradio app.py
