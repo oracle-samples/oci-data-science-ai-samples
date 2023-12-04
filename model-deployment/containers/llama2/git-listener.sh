@@ -43,7 +43,7 @@ run_script
 
 # Monitoring loop
 while true; do
-    sleep 30 # Delay for checking updates
+    sleep 30
     git -C "${REPO_NAME}" fetch
     LOCAL=$(git -C "${REPO_NAME}" rev-parse @)
     REMOTE=$(git -C "${REPO_NAME}" rev-parse @{u})
@@ -52,7 +52,9 @@ while true; do
     if [ "${LOCAL}" != "${REMOTE}" ]; then
         echo "New commit detected. Updating and running script."
         update_repo
+        echo "kill the running script"
         pkill -f "${REPO_NAME}/${SCRIPT_PATH}" # Kill the running script
+        echo "run the script again"
         run_script
     fi
 done
