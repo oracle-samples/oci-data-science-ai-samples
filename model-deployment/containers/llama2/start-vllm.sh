@@ -32,7 +32,7 @@ else
   echo "No bucket or authentication token is provided. Weights are assumed to be downloaded from OCI Model Catalog."
 fi
 
-echo "Starting vllm engine..."
+echo "Starting vllm engine v40..."
 source activate vllm
 echo "Running command: WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model ${MODEL} --tensor-parallel-size ${TENSOR_PARALLELISM}"
 WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model ${MODEL} --tensor-parallel-size ${TENSOR_PARALLELISM}
