@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "start-vllm.sh"
+
 echo "select authentication method"
 if [[ -z "${MODEL_DEPLOYMENT_OCID}" ]]; then
   auth_method=instance_principal
@@ -9,12 +11,12 @@ fi
 
 echo "authentication method: ${auth_method}"
 
-if [ -n "\$BUCKET" ]; then
+if [ -n "$BUCKET" ]; then
   echo "BUCKET variable are set: $BUCKET"
   #oci os object sync --auth resource_principal --bucket-name genai --dest-dir /home/datascience/llma2/
   /root/bin/oci os object sync --auth $auth_method --bucket-name $BUCKET --dest-dir /home/datascience/model/
   MODEL="/home/datascience/model/$MODEL"  
-elif [ -n "\$TOKEN_FILE" ]; then
+elif [ -n "$TOKEN_FILE" ]; then
   export HUGGING_FACE_HUB_TOKEN=$(cat $TOKEN_FILE)
   echo "The md5 of token is $(md5sum $TOKEN_FILE)"
   mkdir -p /home/datascience/.cache/huggingface
