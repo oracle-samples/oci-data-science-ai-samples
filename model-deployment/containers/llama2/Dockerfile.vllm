@@ -32,7 +32,11 @@ ENV UVICORN_LOG_CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
 # for debugging 
 RUN mkdir -p /aiapps
 COPY runner.sh /aiapps/
+COPY git-listener.sh /aiapps/ 
 RUN chmod +x /aiapps/runner.sh
+
+COPY git-listener.sh ${INSTALL_DIR}/listener.sh
+RUN chmod +x ${INSTALL_DIR}/listener.sh
 
 # Default location where downloaded models are mapped on model container. No need to override, if using model catalog.
 ENV MODEL /opt/ds/model/deployed_model
@@ -47,4 +51,4 @@ ENV VLLM_DIR=${INSTALL_DIR}
 COPY vllm-api-server.py ${VLLM_DIR}/vllm-api-server.py
 
 ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
-CMD ["$VLLM_DIR/start.sh"]
+CMD ["$VLLM_DIR/listener.sh"]
