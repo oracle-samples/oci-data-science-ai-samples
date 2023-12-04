@@ -29,6 +29,7 @@ update_repo() {
 # Run script from repository function
 run_script() {
     /bin/bash "${REPO_NAME}/${SCRIPT_PATH}" &
+    echo $! > script_pid
 }
 
 echo "set repo base name"
@@ -53,7 +54,8 @@ while true; do
         echo "New commit detected. Updating and running script."
         update_repo
         echo "kill the running script"
-        pkill -f "${REPO_NAME}/${SCRIPT_PATH}" # Kill the running script
+        # pkill -f "${REPO_NAME}/${SCRIPT_PATH}" # Kill the running script
+        kill $(cat script_pid)
         echo "run the script again"
         run_script
     fi
