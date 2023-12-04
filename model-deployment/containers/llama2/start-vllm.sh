@@ -10,7 +10,7 @@ fi
 echo "authentication method: ${auth_method}"
 
 if [ -n "\$BUCKET" ]; then
-  echo "BUCKET variable are set."
+  echo "BUCKET variable are set: $BUCKET"
   #oci os object sync --auth resource_principal --bucket-name genai --dest-dir /home/datascience/llma2/
   /root/bin/oci os object sync --auth $auth_method --bucket-name $BUCKET --dest-dir /home/datascience/model/
   MODEL="/home/datascience/model/$MODEL"  
