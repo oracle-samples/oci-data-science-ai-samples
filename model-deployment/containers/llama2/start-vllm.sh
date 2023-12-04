@@ -34,11 +34,14 @@ else
   echo "No bucket or authentication token is provided. Weights are assumed to be downloaded from OCI Model Catalog."
 fi
 
+# Get the number of GPUs using nvidia-smi and assign it to a variable
+NUM_GPUS=$(nvidia-smi --list-gpus | wc -l)
+echo "Number of GPUs detected: $NUM_GPUS"
+
 echo "Starting vllm engine v40..."
 source activate vllm
 echo "Running command: WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model ${MODEL} --tensor-parallel-size ${TENSOR_PARALLELISM}"
-WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model ${MODEL} --tensor-parallel-size ${TENSOR_PARALLELISM}
-
+WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model ${MODEL} --tensor-parallel-size ${NUM_GPUS}
 
 echo "Exiting vLLM. Here is the disk utilization of /home/datascience - "
 echo $(du -sh /home/datascience)
