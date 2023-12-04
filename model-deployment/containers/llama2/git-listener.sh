@@ -55,8 +55,41 @@ while true; do
         update_repo
         echo "kill the running script"
         # pkill -f "${REPO_NAME}/${SCRIPT_PATH}" # Kill the running script
+        # kill $(cat script_pid)
+        # Kill the script using PID from script_pid
         kill $(cat script_pid)
-        echo "run the script again"
+
+        # Kill all 'vllm' processes
+        ps aux | grep 'vllm' | awk '{print $2}' | xargs -r kill
+
+        # Kill all ray cluster processes
+        ps aux | grep 'ray' | awk '{print $2}' | xargs -r kill
+
+        # Function to wait for process to terminate
+        wait_for_process_end() {
+            local pid=$1
+            local timeout=$2
+            local wait_interval=1
+            local elapsed_time=0
+
+            while kill -0 "$pid" 2> /dev/null; do
+                echo "Waiting for process $pid to terminate..."
+                sleep $wait_interval
+                elapsed_time=$((elapsed_time + wait_interval))
+                if [ $elapsed_time -ge $timeout ]; then
+                    echo "Process $pid did not terminate within $timeout seconds. Proceeding anyway."
+                    break
+                fi
+            done
+        }
+
+        # Wait for processes to terminate
+        for pid in $(cat script_pid) $(ps aux | grep 'vllm' | awk '{print $2}') $(ps aux | grep 'ray' | awk '{print $2}'); do
+            wait_for_process_end $pid 30
+        done
+
+        echo "All processes terminated. Continuing with the next part of the script."        
+        echo "Run the script again"
         run_script
     fi
 done
