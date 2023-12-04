@@ -51,4 +51,4 @@ ENV VLLM_DIR=${INSTALL_DIR}
 COPY vllm-api-server.py ${VLLM_DIR}/vllm-api-server.py
 
 ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
-CMD ["$VLLM_DIR/listener.sh"]
+CMD ["$VLLM_DIR/start.sh"]
