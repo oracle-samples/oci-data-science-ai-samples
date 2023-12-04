@@ -23,7 +23,7 @@ HF_DIR=/home/datascience/.cache
 
 token:=${PWD}/token
 target_token:=/opt/ds/model/deployed_model/token
-model:=meta-llama/Llama-2-7b-chat-hf
+model:=meta-llama/Llama-2-13b-chat-hf
 port:=8080
 params:="--max-batch-prefill-tokens 1024"
 local_model:=/opt/ds/model/deployed_model

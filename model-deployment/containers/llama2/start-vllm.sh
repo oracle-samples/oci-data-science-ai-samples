@@ -1,10 +1,13 @@
 #!/bin/bash
 
+echo "select authentication method"
 if [[ -z "${MODEL_DEPLOYMENT_OCID}" ]]; then
   auth_method=instance_principal
 else
   auth_method=resource_principal
 fi
+
+echo "authentication method: ${auth_method}"
 
 if [ -n "\$BUCKET" ]; then
   echo "BUCKET variable are set."
