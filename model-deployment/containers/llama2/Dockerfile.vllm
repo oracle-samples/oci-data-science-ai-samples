@@ -1,15 +1,24 @@
-FROM nvidia/cuda:11.8.0-base-ubuntu20.04 as base
+FROM nvcr.io/nvidia/cuda@sha256:3bbed06f530534a5f797a2a09df9b609783796d323663c94bc7ebe082c64a81f as base
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get -y install tzdata && apt-get install -y curl && apt-get install -y git
+# nvidia-container-runtime
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
+ENV NVIDIA_REQUIRE_CUDA "cuda>=11.6"
+
+RUN apt-get update && apt-get -y install tzdata && apt-get install -y curl && apt-get install -y git && apt-get clean && apt-get autoremove
 RUN curl -L https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh >> miniconda.sh
 RUN bash ./miniconda.sh -b -p /miniconda; rm ./miniconda.sh;
 ENV PATH="/miniconda/bin:$PATH"
-RUN mkdir -p /opt/vllm
 
+# install oci-cli
+RUN bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)" -- --accept-all-defaults
+
+RUN mkdir -p /opt/vllm
 ARG INSTALL_DIR=/opt/vllm
 COPY vllm-env.yaml /opt/vllm/environment.yaml
 RUN conda env create --name vllm -f ${INSTALL_DIR}/environment.yaml
+RUN conda clean -a
 
 ENV TMPDIR=/home/datascience
 WORKDIR /home/datascience
@@ -19,6 +28,11 @@ RUN chmod a+x ${INSTALL_DIR}/start.sh
 COPY vllm-log-config.yaml ${INSTALL_DIR}/vllm-log-config.yaml
 ENV UVICORN_LOG-CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
 ENV UVICORN_LOG_CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
+
+# for debugging 
+RUN mkdir -p /aiapps
+COPY runner.sh /aiapps/
+RUN chmod +x /aiapps/runner.sh
 
 # Default location where downloaded models are mapped on model container. No need to override, if using model catalog.
 ENV MODEL /opt/ds/model/deployed_model
