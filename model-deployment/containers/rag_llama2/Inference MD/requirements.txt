@@ -1,0 +1,6 @@
+langchain
+llama-cpp-python
+requests
+uvicorn
+fastapi
+qdrant-client
