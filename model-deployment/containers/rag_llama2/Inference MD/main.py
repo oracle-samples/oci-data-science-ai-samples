@@ -10,7 +10,7 @@ from langchain.vectorstores import Qdrant
 
 
 fast_app = FastAPI()
-model_path = "/opt/ds/model/deployed_model/7B/ggml-model-q4_0.bin"
+model_path = "<MODEL_PATH>"
 
 def load_model(model_folder_directory):
     embedding = LlamaCppEmbeddings(model_path=model_folder_directory)
@@ -22,8 +22,8 @@ try:
 except Exception as e:
     print("Error: %s", e)
 
-url = "https://0ad84320-52a6-407d-9c82-375bf60e1fc6.us-east4-0.gcp.cloud.qdrant.io"
-api_key= "a675QyMVF8SxqY9wNAssu4dwuIpbHGuXj8aZVDPBKX22AJeBGCOhqw"
+url = "<QDRANT_URL>"
+api_key= "<API_KEY>"
 
 
 qdrant = None

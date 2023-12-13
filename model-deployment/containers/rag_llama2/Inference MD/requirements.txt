@@ -1,6 +1,7 @@
-langchain
-llama-cpp-python
-requests
+langchain==0.0.333
+llama-cpp-python==0.2.15
+requests==2.25.1
 uvicorn
 fastapi
-qdrant-client
+qdrant-client==1.6.9
+oci==2.47.1

@@ -1,33 +1,19 @@
 import streamlit as st
 from streamlit_chat import message
-import oci
-import time
-import os
-import oci
+from oci.auth import signers
 import requests
-from oci.signer import Signer
 
-# token_file = os.path.expanduser("/Users/gagachau/.oci/sessions/OC1/token")
-# with open(token_file, 'r') as f:
-#         token = f.read()
-# private_key = oci.signer.load_private_key_from_file("/Users/gagachau/.oci/sessions/OC1/oci_api_key.pem")
-# signer = oci.auth.signers.SecurityTokenSigner(token, private_key)
+config = {"region": <YOUR_REGION>}
+signer = signers.InstancePrincipalsSecurityTokenSigner()
 
+endpoint = "<MD_ENDPOINT>"
+prompt = "<USER_PROMPT>"
 
 def generate_response(prompt):
-    # global signer
-    endpoint = "http://localhost:8080/predict"
+    global signer, endpoint
     headers = {"content-type": "application/text"}  # header goes here
-    # response = requests.post(endpoint, data=prompt, auth=signer, headers=headers)
     response = requests.post(endpoint, data=prompt, headers=headers)
-    res = response.text
-    print(res)
-    res = res.replace('\n', '')
-    res = res.replace("\n", "")
-    res = res.replace('"', "")
-    res = res.replace("'", "")
-    res = res.replace('\\', "")
-    return res
+    return response.text
 
 # Create the title and
 st.set_page_config(page_title="SQuAD Chatbot")

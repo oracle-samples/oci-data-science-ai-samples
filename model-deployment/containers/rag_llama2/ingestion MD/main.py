@@ -14,7 +14,7 @@ import qdrant_client
 
 fast_app = FastAPI()
 
-model_path = "/opt/ds/model/deployed_model/7B/ggml-model-q4_0.bin"
+model_path = "<MODEL_PATH>"
 
 def load_model(model_folder_directory):
     embedding = LlamaCppEmbeddings(model_path=model_folder_directory,n_gpu_layers=15000)
@@ -26,8 +26,8 @@ try:
 except Exception as e: 
     print("Error: %s", e)
 
-url = "QDRANT_URL"
-api_key= "API_KEY"
+url = "<QDRANT_URL>"
+api_key= "<API_KEY>"
 
 template = """You are an assistant to the user, you are given some context below, please answer the query of the user with as detail as possible
 
@@ -56,7 +56,6 @@ qdrant = Qdrant(
 qa_prompt = PromptTemplate.from_template(template)
 
 llm = LlamaCpp(model_path=model_path,n_gpu_layers=15000, n_ctx=2048)
-# llm = LlamaCpp(model_path=model_path, n_ctx=2048)
 
 @fast_app.get("/", response_class=HTMLResponse)
 def read_root():
@@ -68,23 +67,12 @@ def read_root():
 @fast_app.post("/predict")
 def model_predict(request: Request, response: Response, data=Body(None)):
     global llm, embeddings, qa_prompt, qdrant
-    print(data)
     question = data.decode("utf-8")
-    print(question)
     chain = load_qa_chain(llm, chain_type="stuff", prompt=qa_prompt)
-    print("OK")
-    if question =="Hi":
-        return "I am able to load the embedding"
-    if question == "Hello":
-        docs = qdrant.similarity_search(question)
-        return docs
     try:
         docs = qdrant.similarity_search(question)
-        print(docs)
     except Exception as e:
-        print(e)
         return e
-    print(question)
     answer = chain({"input_documents": docs, "question": question,"context": docs}, return_only_outputs=True)['output_text']
     return answer
 
