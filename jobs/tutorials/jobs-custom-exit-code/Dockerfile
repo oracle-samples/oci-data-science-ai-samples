@@ -1,6 +1,6 @@
 ARG type
 
-FROM python:3.8-slim AS base
+FROM python:3.10-slim AS base
 
 ENV DATASCIENCE_USER datascience
 ENV DATASCIENCE_UID 1000

@@ -1,0 +1,16 @@
+dependencies:
+  - main::python=3.8
+  - main::pip
+  - nvidia::cuda-cccl=11.8.89
+  - nvidia::cuda-compiler=11.8.0
+  - nvidia::cuda-cuobjdump=11.8.86
+  - nvidia::cuda-cuxxfilt=11.8.86
+  - nvidia::cuda-nvcc=11.8.89
+  - nvidia::cuda-nvdisasm=11.8.86
+  - nvidia::cuda-nvml-dev=11.8.86
+  - pip:
+    - vllm>=0.2.0
+    - transformers
+    - pandas
+    - flask
+    - GPUtil

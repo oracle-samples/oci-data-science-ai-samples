@@ -609,7 +609,7 @@
     "title": "XGBoost with RAPIDS"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v1",
+    "developed_on": "fspyspark32_p38_cpu_v2",
     "filename": "feature_store_quickstart.ipynb",
     "keywords": [
       "pyspark",
@@ -627,7 +627,7 @@
     "title": "Feature Store Quickstart"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v1",
+    "developed_on": "fspyspark32_p38_cpu_v2",
     "filename": "feature_store_querying.ipynb",
     "keywords": [
       "pyspark",
@@ -645,7 +645,7 @@
     "title": "Feature store handling querying operations"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v1",
+    "developed_on": "fspyspark32_p38_cpu_v2",
     "filename": "feature_store_schema_evolution.ipynb",
     "keywords": [
       "pyspark",
@@ -661,7 +661,7 @@
     "title": "Schema Enforcement and Schema Evolution in Feature Store"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v1",
+    "developed_on": "fspyspark32_p38_cpu_v2",
     "filename": "feature_store_spark_magic.ipynb",
     "keywords": [
       "pyspark",
@@ -676,5 +676,98 @@
     "summary": "Run Feature Store on interactive Spark workloads on a long lasting Data Flow Cluster",
     "time_created": "2023-03-29T11:04:51",
     "title": "Data Flow Studio : Big Data Operations in Feature Store"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_embeddings.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to convert words to embeddings using transformation",
+    "time_created": "2023-11-01T11:04:51",
+    "title": "Feature store embeddings using transformation"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_medical_synthetic_data_openai.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm",
+      "synthetic data generation",
+      "openai"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to perform synthetic data generation using openai",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Feature store to perform synthetic data generation using openai"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_pii_redaction_and_transformation.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm",
+      "pii data redaction",
+      "summarization",
+      "translation",
+      "openai"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to perform PII data redaction, summarization, translation using openai and redact",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Feature store to perform PII data redaction, summarization, translation using openai and redact"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_embeddings_openai.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm",
+      "pii data redaction",
+      "summarization",
+      "translation",
+      "openai"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to keep open ai embeddings using openai.Embedding.create",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Use feature store to keep open ai embeddings using openai.Embedding.create"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_ehr_data.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 429056,
+    "summary": "Use feature store transformations to perform feature engineering",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Use feature store transformations to perform feature engineering"
   }
 ]

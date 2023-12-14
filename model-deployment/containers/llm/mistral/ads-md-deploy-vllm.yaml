@@ -1,0 +1,37 @@
+kind: deployment
+spec:
+  displayName: LLama2-7b model deployment - vllm
+  infrastructure:
+    kind: infrastructure
+    type: datascienceModelDeployment
+    spec:
+      compartmentId: ocid1.compartment.oc1..<UNIQUE_ID>
+      projectId: ocid1.datascienceproject.oc1.<UNIQUE_ID>
+      accessLog:
+        logGroupId: ocid1.loggroup.oc1.<UNIQUE_ID>
+        logId: ocid1.log.oc1.<UNIQUE_ID>
+      predictLog:
+        logGroupId: ocid1.loggroup.oc1.<UNIQUE_ID>
+        logId: ocid1.log.oc1.<UNIQUE_ID>
+      shapeName: VM.GPU.A10.2
+      replica: 1
+      bandWidthMbps: 10
+      webConcurrency: 10
+      subnetId: ocid1.subnet.oc1.<UNIQUE_ID>
+  runtime:
+    kind: runtime
+    type: container
+    spec:
+      modelUri: ocid1.datasciencemodel.oc1.<UNIQUE_ID>
+      image: <UNIQUE_ID>
+      serverPort: 8080
+      healthCheckPort: 8080
+      env:
+        MODEL: "meta-llama/Llama-2-7b-chat-hf"
+        TOKEN_FILE: /opt/ds/model/deployed_model/token
+        STORAGE_SIZE_IN_GB: "950"
+      region: us-ashburn-1
+      overwriteExistingArtifact: True
+      removeExistingArtifact: True
+      timeout: 100
+      deploymentMode: HTTPS_ONLY

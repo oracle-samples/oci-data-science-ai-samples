@@ -1,0 +1,8 @@
+models:
+  mistralai/Mistral-7B-Instruct-v0.1:
+    endpoint: https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaav66vvniabq7ahm2h2pbvh6ti37svti5n5fk7jirucxdtdfcuo22q/predict
+    template: prompt-templates/mistral.txt
+  bigcode/santacoder:
+    endpoint: https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaay/predict
+oci:
+  profile: DEFAULT
