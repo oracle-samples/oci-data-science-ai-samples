@@ -5,7 +5,7 @@ This page curates the links to some common use cases for LLMs.
 
 [Fine tune Llama 2 with distributed multi-node, multi-GPU job](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/distributed_training/llama2)
 
-[Quantize Llama 2 70B to 4 bits and deploy on 2xA10s](tbd)
+[Quantize Llama 2 70B to 4 bits and deploy on 2xA10s](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/LLM/Quantization)
 
 [Deploy Llama 2 on fully service managed deployment using TGI or vLLM](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/master/model-deployment/containers/llama2)
 
