@@ -12,6 +12,7 @@
     <name>Oracle Cloud Infrastructure Data Science Service Jobs Samples</name>
     <description>Samples</description>
     <url>https://github.com/oracle/oci-data-science-ai-samples</url>
+
     <developers>
         <developer>
             <id>oracle</id>
@@ -34,7 +35,7 @@
         <jackson.version>2.13.1</jackson.version>
         <jackson.databind.version>2.13.4.2</jackson.databind.version>
         <apache-httpcomponents.httpclient.version>4.5.13</apache-httpcomponents.httpclient.version>
-        <oci-sdk.version>3.0.1</oci-sdk.version>
+        <oci-sdk.version>3.17.0</oci-sdk.version>
     </properties>
 
     <dependencies>
@@ -43,11 +44,6 @@
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.oci.sdk</groupId>
-            <artifactId>oci-java-sdk-common-httpclient-jersey</artifactId>
-            <version>${oci-sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -85,6 +81,11 @@
             <version>${apache-httpcomponents.httpclient.version}</version>
         </dependency>
         <!-- OCI Java SDK -->
+        <dependency>
+            <groupId>com.oracle.oci.sdk</groupId>
+            <artifactId>oci-java-sdk-common-httpclient-jersey</artifactId>
+            <version>${oci-sdk.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.oracle.oci.sdk</groupId>
             <artifactId>oci-java-sdk-core</artifactId>

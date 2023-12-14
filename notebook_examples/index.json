@@ -8,13 +8,13 @@
     ],
     "license": "Universal Permissive License v 1.0",
     "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_AnomalyDetection.ipynb",
-    "size": 4923344,
+    "size": 1817110,
     "summary": "Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.",
-    "time_created": "2023-03-26T22:51:01",
+    "time_created": "2023-05-29T15:52:02",
     "title": "Building and Explaining an Anomaly Detector using AutoMLx - Experimental"
   },
   {
-    "developed_on": "automlx_p38_cpu_v2",
+    "developed_on": "automlx_p38_cpu_v3",
     "filename": "automlx-classifier.ipynb",
     "keywords": [
       "automlx",
@@ -23,13 +23,27 @@
     ],
     "license": "Universal Permissive License v 1.0",
     "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification.ipynb",
-    "size": 6713293,
+    "size": 7045225,
     "summary": "Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.",
-    "time_created": "2023-03-26T22:51:01",
+    "time_created": "2023-05-29T15:52:02",
     "title": "Building and Explaining a Classifier using AutoMLx"
   },
   {
-    "developed_on": "automlx_p38_cpu_v2",
+    "developed_on": "automlx_p38_cpu_v3",
+    "filename": "automlx-fairness.ipynb",
+    "keywords": [
+      "automlx",
+      "fairness"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Fairness.ipynb",
+    "size": 5277687,
+    "summary": "Develop a model and evaluate its fairness",
+    "time_created": "2023-05-29T15:52:02",
+    "title": "Fairness with AutoMLx"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v3",
     "filename": "automlx-regression.ipynb",
     "keywords": [
       "automlx",
@@ -37,13 +51,13 @@
     ],
     "license": "Universal Permissive License v 1.0",
     "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Regression.ipynb",
-    "size": 750238,
+    "size": 7466599,
     "summary": "Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.",
-    "time_created": "2023-03-26T22:51:01",
+    "time_created": "2023-05-29T15:52:02",
     "title": "Building and Explaining a Regressor using AutoMLx"
   },
   {
-    "developed_on": "automlx_p38_cpu_v2",
+    "developed_on": "automlx_p38_cpu_v3",
     "filename": "automlx-text_classification.ipynb",
     "keywords": [
       "automlx",
@@ -52,9 +66,9 @@
     ],
     "license": "Universal Permissive License v 1.0.",
     "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Classification_Text.ipynb",
-    "size": 4586506,
+    "size": 4614269,
     "summary": "build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset",
-    "time_created": "2023-03-26T22:51:01",
+    "time_created": "2023-05-29T15:52:02",
     "title": "Building and Explaining a Text Classifier using AutoMLx"
   },
   {
@@ -92,9 +106,9 @@
       "fsspec"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 21300,
+    "size": 21304,
     "summary": "Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.",
-    "time_created": "2023-03-27T11:14:06",
+    "time_created": "2023-03-29T11:04:51",
     "title": "How to Read Data with fsspec from Oracle Big Data Service (BDS)"
   },
   {
@@ -181,6 +195,19 @@
     "title": "Train, Register, and Deploy a Generic Model"
   },
   {
+    "developed_on": "pypgx2310_p38_cpu_v1",
+    "filename": "graph_insight-autonomous_database.ipynb",
+    "keywords": [
+      "graph_insight",
+      "autonomous_database"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 121386,
+    "summary": "Access",
+    "time_created": "2023-06-05T07:46:16",
+    "title": "Bank Graph Example Notebook"
+  },
+  {
     "developed_on": "pytorch110_p38_cpu_v1",
     "filename": "train-register-deploy-huggingface-pipeline.ipynb",
     "keywords": [
@@ -237,28 +264,6 @@
     "title": "Connect to Oracle Big Data Service"
   },
   {
-    "developed_on": "automlx_p38_cpu_v2",
-    "filename": "automlx-forecasting.ipynb",
-    "keywords": [
-      "language services",
-      "string manipulation",
-      "regex",
-      "regular expression",
-      "natural language processing",
-      "NLP",
-      "part-of-speech tagging",
-      "named entity recognition",
-      "sentiment analysis",
-      "custom plugins"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Forecasting.ipynb",
-    "size": 5285019,
-    "summary": "Use Oracle AutoMLx to build a forecast model with real-world data sets.",
-    "time_created": "2023-03-26T22:51:01",
-    "title": "Building a Forecaster using AutoMLx"
-  },
-  {
     "developed_on": "nlp_p37_cpu_v2",
     "filename": "natural_language_processing.ipynb",
     "keywords": [
@@ -278,6 +283,28 @@
     "summary": "Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.",
     "time_created": "2023-03-26T22:51:01",
     "title": "Natural Language Processing"
+  },
+  {
+    "developed_on": "automlx_p38_cpu_v3",
+    "filename": "automlx-forecasting.ipynb",
+    "keywords": [
+      "language services",
+      "string manipulation",
+      "regex",
+      "regular expression",
+      "natural language processing",
+      "NLP",
+      "part-of-speech tagging",
+      "named entity recognition",
+      "sentiment analysis",
+      "custom plugins"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "original_source": "https://github.com/oracle-samples/automlx/blob/main/demos/OracleAutoMLx_Forecasting.ipynb",
+    "size": 5638148,
+    "summary": "Use Oracle AutoMLx to build a forecast model with real-world data sets.",
+    "time_created": "2023-05-29T15:52:02",
+    "title": "Building a Forecaster using AutoMLx"
   },
   {
     "developed_on": "generalml_p38_cpu_v1",
@@ -374,6 +401,19 @@
     "title": "Visual Genome Repository"
   },
   {
+    "developed_on": "nlp_p37_cpu_v2",
+    "filename": "onnx-integration-ads.ipynb",
+    "keywords": [
+      "onnx",
+      "deploy model"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 15896,
+    "summary": "Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.",
+    "time_created": "2023-07-17T22:35:37",
+    "title": "ONNX Integration with the Accelerated Data Science (ADS) SDK"
+  },
+  {
     "developed_on": "generalml_p38_cpu_v1",
     "filename": "pipelines-ml_lifecycle.ipynb",
     "keywords": [
@@ -402,19 +442,6 @@
     "title": "Graph Analytics and Graph Machine Learning with PyPGX"
   },
   {
-    "developed_on": "pyspark24_p37_cpu_v3",
-    "filename": "pyspark-data_flow-application.ipynb",
-    "keywords": [
-      "pyspark",
-      "data flow"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 13085,
-    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
-    "time_created": "2023-03-30T10:01:38",
-    "title": "PySpark"
-  },
-  {
     "developed_on": "pyspark32_p38_cpu_v2",
     "filename": "pyspark-data_flow_studio-introduction.ipynb",
     "keywords": [
@@ -439,6 +466,19 @@
     "summary": "Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.",
     "time_created": "2023-03-26T22:51:01",
     "title": "Spark NLP within Oracle Cloud Infrastructure Data Flow Studio"
+  },
+  {
+    "developed_on": "pyspark24_p37_cpu_v3",
+    "filename": "pyspark-data_flow-application.ipynb",
+    "keywords": [
+      "pyspark",
+      "data flow"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 10021,
+    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
+    "time_created": "2023-06-02T14:57:56",
+    "title": "PySpark"
   },
   {
     "developed_on": "pytorch110_p38_cpu_v1",
@@ -554,5 +594,167 @@
     "summary": "Compare training time between CPU and GPU trained models using XGBoost",
     "time_created": "2023-03-30T10:01:38",
     "title": "XGBoost with RAPIDS"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_quickstart.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "machine learning",
+      "feature transformation",
+      "feature storage",
+      "feature validation",
+      "feature statistics"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Introduction to the Oracle Cloud Infrastructure Feature Store.Use feature store for feature ingestion and feature querying",
+    "time_created": "2023-03-29T11:04:51",
+    "title": "Feature Store Quickstart"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_querying.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature querying",
+      "feature transformation",
+      "feature storage",
+      "feature validation",
+      "feature statistics"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Explore Feature Store Functionalities.Transform, Store your Data in Feature Store.Query your data using Feature Store using pandas like interface to query and join",
+    "time_created": "2023-03-29T11:04:51",
+    "title": "Feature store handling querying operations"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_schema_evolution.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature storage",
+      "schema evolution"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Perform Schema Enforcement and Schema Evolution in Feature Store when materialising the data",
+    "time_created": "2023-03-29T11:04:51",
+    "title": "Schema Enforcement and Schema Evolution in Feature Store"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_spark_magic.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature storage",
+      "schema evolution",
+      "data flow"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Run Feature Store on interactive Spark workloads on a long lasting Data Flow Cluster",
+    "time_created": "2023-03-29T11:04:51",
+    "title": "Data Flow Studio : Big Data Operations in Feature Store"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_embeddings.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to convert words to embeddings using transformation",
+    "time_created": "2023-11-01T11:04:51",
+    "title": "Feature store embeddings using transformation"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_medical_synthetic_data_openai.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm",
+      "synthetic data generation",
+      "openai"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to perform synthetic data generation using openai",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Feature store to perform synthetic data generation using openai"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_pii_redaction_and_transformation.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm",
+      "pii data redaction",
+      "summarization",
+      "translation",
+      "openai"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to perform PII data redaction, summarization, translation using openai and redact",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Feature store to perform PII data redaction, summarization, translation using openai and redact"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_embeddings_openai.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying",
+      "embeddings",
+      "llm",
+      "pii data redaction",
+      "summarization",
+      "translation",
+      "openai"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21304,
+    "summary": "Use feature store to keep open ai embeddings using openai.Embedding.create",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Use feature store to keep open ai embeddings using openai.Embedding.create"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_ehr_data.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 429056,
+    "summary": "Use feature store transformations to perform feature engineering",
+    "time_created": "2023-11-05T11:04:51",
+    "title": "Use feature store transformations to perform feature engineering"
   }
 ]

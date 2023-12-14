@@ -9,10 +9,10 @@ var jobRunChecking = {};
 
 function initComponents(compartmentId, projectId) {
   // Load the list of project in the compartment.
-  $("#compartments").change(function() {
+  $("#compartments").change(function () {
     var ocid = $("#compartments").val();
     var serviceEndpoint = $("#service-endpoint").text();
-    $.getJSON("/projects/" + ocid + "?endpoint=" + serviceEndpoint, function(data) {
+    $.getJSON("/projects/" + ocid + "?endpoint=" + serviceEndpoint, function (data) {
       var projectSelector = $("#projects");
       projectSelector.empty();
       console.log(projectId);
@@ -31,7 +31,7 @@ function initComponents(compartmentId, projectId) {
   // Trigger the compartment change callback to load the list of projects.
   if (compartmentId) $("#compartments").change();
   // Refresh the page to see jobs when project is changed.
-  $("#projects").change(function() {
+  $("#projects").change(function () {
     projectId = $("#projects").val();
     compartmentId = $("#compartments").val();
     window.location.href = "/" + compartmentId + "/" + projectId + window.location.search;
@@ -131,7 +131,7 @@ function loadJobs(compartmentId, projectId) {
         var projectName = $("#projects option[value='" + projectId + "']").text();
         console.log("No job found in compartment: " + compartmentId + ", project: " + projectId);
         toastMessage("No Job", "There is no job in " + compartmentName + "/" + projectName);
-        }, 2000);
+      }, 2000);
       return;
     }
     var prepended = false;
@@ -161,7 +161,7 @@ function loadJobs(compartmentId, projectId) {
     if (existing_jobs.length === 0 || prepended) {
       new bootstrap.Collapse(
         document.getElementsByClassName('accordion-collapse collapse')[0],
-        {toggle: true}
+        { toggle: true }
       );
     }
 
@@ -246,9 +246,16 @@ function updateMetrics(ocid) {
   const canvasId = "metrics-" + ocid.replaceAll(".", "");
   const ctx = document.getElementById(canvasId);
   if (ctx === null) return;
-  // FInd the name of the metric currently being displayed.
+  // Find the name of the metric currently being displayed.
   const metricName = $(ctx).closest(".job-run-metrics").find(".dropdown-menu .d-none a").data("val");
   $.getJSON("/metrics/" + metricName + "/" + ocid, function (data) {
+    // Refresh the list of the metrics
+    const metricDropdown = $(ctx).closest(".job-run-metrics").find(".dropdown-menu");
+    $.each(data.metrics, function (i, metric) {
+      if (metricDropdown.find("[data-val='" + metric.key + "']").length == 0) {
+        metricDropdown.append('<li><a class="dropdown-item" data-val="' + metric.key + '" href="#">' + metric.display + '</a></li>');
+      }
+    })
     var chart = Chart.getChart(canvasId);
     if (chart === undefined) {
       // Create a new chart
@@ -270,16 +277,14 @@ function addJobRun(jobRow, run) {
     console.log("Adding job run: " + run.ocid);
     jobRow.prepend(run.html);
     runDiv = jobRow.find(jobRunSelector);
-    runDiv.find("code").each(function() {
+    runDiv.find("code").each(function () {
       hljs.highlightElement(this);
     })
     // Metric dropdown callback
-    $(jobRunSelector + " .job-run-metrics a").click(
-      function(e) {
-        e.preventDefault();
-        metricDropdownClicked(this);
-      }
-    );
+    $(jobRunSelector + " .job-run-metrics").on("click", "a", function (e) {
+      e.preventDefault();
+      metricDropdownClicked(this);
+    });
 
     // Load logs.
     $(jobRunSelector + " .run-monitor").each(function () {
@@ -293,8 +298,8 @@ function addJobRun(jobRow, run) {
 function loadJobRuns(job_ocid) {
   const RUNNING = "running"
   // Avoid running the same function twice
-  if (typeof(jobRunChecking[job_ocid]) === RUNNING) return;
-  if (typeof(jobRunChecking[job_ocid]) === "number") clearTimeout(jobRunChecking[job_ocid]);
+  if (typeof (jobRunChecking[job_ocid]) === RUNNING) return;
+  if (typeof (jobRunChecking[job_ocid]) === "number") clearTimeout(jobRunChecking[job_ocid]);
   jobRunChecking[job_ocid] = RUNNING;
 
   // Load job runs only if the accordion is opened.
@@ -314,7 +319,7 @@ function loadJobRuns(job_ocid) {
     });
   });
 
-  jobRunChecking[job_ocid] = setTimeout(function() {
+  jobRunChecking[job_ocid] = setTimeout(function () {
     loadJobRuns(job_ocid);
     // Check if there is new job run for the job in about 30 seconds.
     // Add a random number to the time interval so that not all requests are send at the same time.

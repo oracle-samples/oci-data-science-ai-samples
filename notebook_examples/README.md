@@ -12,10 +12,11 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
 
 
 ## Topics
-<img src="https://img.shields.io/badge/deploy model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/register model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/train model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/automlx-4-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/data flow-4-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/bds-3-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/classification-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/language services-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/string manipulation-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regex-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regular expression-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/natural language processing-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/NLP-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/part of speech tagging-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/named entity recognition-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/sentiment analysis-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/custom plugins-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regression-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/text classification-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/big data service-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/nlp-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/intel-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/intel extension-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/scikit learn-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> 
+<img src="https://img.shields.io/badge/deploy model-8-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/register model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/train model-7-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/automlx-5-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/data flow-4-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/pyspark-4-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/bds-3-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/oracle open data-3-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/scikit learn-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/big data service-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/nlp-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/autonomous database-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/language services-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/string manipulation-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regex-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regular expression-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/natural language processing-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/NLP-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/part of speech tagging-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/named entity recognition-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/sentiment analysis-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/custom plugins-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/data catalog metastore-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/xgboost-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/text classification-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/classification-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/regression-2-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/intel-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/intel extension-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/scikit learn-1-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> <img src="https://img.shields.io/badge/feature%20store-9-brightgreen?style=for-the-badge&logo=pypi&logoColor=white"> 
 
 ## Contents
  - [Audi Autonomous Driving Dataset Repository](#audi-autonomous_driving-oracle_open_data.ipynb)
+ - [Bank Graph Example Notebook](#graph_insight-autonomous_database.ipynb)
  - [Building a Forecaster using AutoMLx](#automlx-forecasting.ipynb)
  - [Building and Explaining a Classifier using AutoMLx](#automlx-classifier.ipynb)
  - [Building and Explaining a Regressor using AutoMLx](#automlx-regression.ipynb)
@@ -23,6 +24,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Building and Explaining an Anomaly Detector using AutoMLx - Experimental](#automlx-anomaly_detection.ipynb)
  - [Caltech Pedestrian Detection Benchmark Repository](#caltech-pedestrian_detection-oracle_open_data.ipynb)
  - [Connect to Oracle Big Data Service](#big_data_service-(BDS)-kerberos.ipynb)
+ - [Fairness with AutoMLx](#automlx-fairness.ipynb)
  - [Graph Analytics and Graph Machine Learning with PyPGX](#pypgx-graph_analytics-machine_learning.ipynb)
  - [How to Read Data with fsspec from Oracle Big Data Service (BDS)](#read-write-big_data_service-(BDS).ipynb)
  - [Intel Extension for Scikit-Learn](#accelerate-scikit_learn-with-intel_extension.ipynb)
@@ -34,6 +36,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Loading Data With Pandas & Dask](#load_data-object_storage-hive-autonomous-database.ipynb)
  - [Model Evaluation with ADSEvaluator](#model_evaluation-with-ADSEvaluator.ipynb)
  - [Natural Language Processing](#natural_language_processing.ipynb)
+ - [ONNX Integration with the Accelerated Data Science (ADS) SDK](#onnx-integration-ads.ipynb)
  - [PySpark](#pyspark-data_flow-application.ipynb)
  - [Spark NLP within Oracle Cloud Infrastructure Data Flow Studio](#pyspark-data_flow_studio-spark_nlp.ipynb)
  - [Text Classification and Model Explanations using LIME](#text_classification-model_explanation-lime.ipynb)
@@ -53,12 +56,21 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Visualizing Data](#visualizing_data-exploring_data.ipynb)
  - [Working with Pipelines](#pipelines-ml_lifecycle.ipynb)
  - [XGBoost with RAPIDS](#xgboost-with-rapids.ipynb)
+ - [Medical data using feature store](#feature_store_ehr_data.ipynb)
+ - [Storage of hugging face embeddings using feature store](#feature_store_embeddings.ipynb)
+ - [Storage of open ai embeddings using feature store](#feature_store_embeddings_openai.ipynb)
+ - [Synthetic data generation using feature store](#feature_store_medical_synthetic_data_openai.ipynb)
+ - [PII redaction using feature store](#feature_store_pii_redaction_and_transformation.ipynb)
+ - [Querying operations using feature store](#feature_store_querying.ipynb)
+ - [Quickstart for feature store](#feature_store_quickstart.ipynb)
+ - [Schema evolution and schema enforcement using feature store](#feature_store_schema_evolution.ipynb)
+ - [Big data operations using feature store](#/feature_store_spark_magic.ipynb)
 
 
 ## Notebooks
 ### <a name="automlx-anomaly_detection.ipynb"></a> - Building and Explaining an Anomaly Detector using AutoMLx - Experimental
 
-<sub>Updated: 03/26/2023</sub>
+<sub>Updated: 05/29/2023</sub>
 #### [`automlx-anomaly_detection.ipynb`](automlx-anomaly_detection.ipynb)
 
  
@@ -74,13 +86,13 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
 ---
 ### <a name="automlx-classifier.ipynb"></a> - Building and Explaining a Classifier using AutoMLx
 
-<sub>Updated: 03/26/2023</sub>
+<sub>Updated: 05/29/2023</sub>
 #### [`automlx-classifier.ipynb`](automlx-classifier.ipynb)
 
  
 Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.
 
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 
  
 `automlx`  `classification`  `classifier`
@@ -88,15 +100,31 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
+### <a name="automlx-fairness.ipynb"></a> - Fairness with AutoMLx
+
+<sub>Updated: 05/29/2023</sub>
+#### [`automlx-fairness.ipynb`](automlx-fairness.ipynb)
+
+ 
+Develop a model and evaluate its fairness
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
+
+ 
+`automlx`  `fairness`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### <a name="automlx-regression.ipynb"></a> - Building and Explaining a Regressor using AutoMLx
 
-<sub>Updated: 03/26/2023</sub>
+<sub>Updated: 05/29/2023</sub>
 #### [`automlx-regression.ipynb`](automlx-regression.ipynb)
 
  
 Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.
 
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 
  
 `automlx`  `regression`
@@ -106,13 +134,13 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
 ---
 ### <a name="automlx-text_classification.ipynb"></a> - Building and Explaining a Text Classifier using AutoMLx
 
-<sub>Updated: 03/26/2023</sub>
+<sub>Updated: 05/29/2023</sub>
 #### [`automlx-text_classification.ipynb`](automlx-text_classification.ipynb)
 
  
 build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset
 
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 
  
 `automlx`  `text classification`  `text classifier`
@@ -154,7 +182,7 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 ---
 ### <a name="read-write-big_data_service-(BDS).ipynb"></a> - How to Read Data with fsspec from Oracle Big Data Service (BDS)
 
-<sub>Updated: 03/27/2023</sub>
+<sub>Updated: 03/29/2023</sub>
 #### [`read-write-big_data_service-(BDS).ipynb`](read-write-big_data_service-(BDS).ipynb)
 
  
@@ -264,6 +292,22 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
+### <a name="graph_insight-autonomous_database.ipynb"></a> - Bank Graph Example Notebook
+
+<sub>Updated: 06/05/2023</sub>
+#### [`graph_insight-autonomous_database.ipynb`](graph_insight-autonomous_database.ipynb)
+
+ 
+Access
+
+This notebook was developed on the conda pack with slug: `pypgx2310_p38_cpu_v1`
+
+ 
+`graph_insight`  `autonomous_database`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### <a name="train-register-deploy-huggingface-pipeline.ipynb"></a> - Train, register, and deploy HuggingFace Pipeline
 
 <sub>Updated: 03/26/2023</sub>
@@ -328,22 +372,6 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="automlx-forecasting.ipynb"></a> - Building a Forecaster using AutoMLx
-
-<sub>Updated: 03/26/2023</sub>
-#### [`automlx-forecasting.ipynb`](automlx-forecasting.ipynb)
-
- 
-Use Oracle AutoMLx to build a forecast model with real-world data sets.
-
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
-
- 
-`language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### <a name="natural_language_processing.ipynb"></a> - Natural Language Processing
 
 <sub>Updated: 03/26/2023</sub>
@@ -353,6 +381,22 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
 Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.
 
 This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+
+ 
+`language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="automlx-forecasting.ipynb"></a> - Building a Forecaster using AutoMLx
+
+<sub>Updated: 05/29/2023</sub>
+#### [`automlx-forecasting.ipynb`](automlx-forecasting.ipynb)
+
+ 
+Use Oracle AutoMLx to build a forecast model with real-world data sets.
+
+This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
 
  
 `language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
@@ -456,6 +500,22 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
 <sub>Universal Permissive License v 1.0 (https://oss.oracle.com/licenses/upl/)</sup>
 
 ---
+### <a name="onnx-integration-ads.ipynb"></a> - ONNX Integration with the Accelerated Data Science (ADS) SDK
+
+<sub>Updated: 07/17/2023</sub>
+#### [`onnx-integration-ads.ipynb`](onnx-integration-ads.ipynb)
+
+ 
+Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.
+
+This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+
+ 
+`onnx`  `deploy model`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
 ### <a name="pipelines-ml_lifecycle.ipynb"></a> - Working with Pipelines
 
 <sub>Updated: 03/26/2023</sub>
@@ -488,22 +548,6 @@ This notebook was developed on the conda pack with slug: `pypgx2310_p38_cpu_v1`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
-### <a name="pyspark-data_flow-application.ipynb"></a> - PySpark
-
-<sub>Updated: 03/30/2023</sub>
-#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
-
- 
-Develop local PySpark applications and work with remote clusters using Data Flow.
-
-This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
-
- 
-`pyspark`  `data flow`
-
-<sub>Universal Permissive License v 1.0</sup>
-
----
 ### <a name="pyspark-data_flow_studio-introduction.ipynb"></a> - Introduction to the Oracle Cloud Infrastructure Data Flow Studio
 
 <sub>Updated: 03/26/2023</sub>
@@ -529,6 +573,22 @@ This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v2`
 Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.
 
 This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v1`
+
+ 
+`pyspark`  `data flow`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+### <a name="pyspark-data_flow-application.ipynb"></a> - PySpark
+
+<sub>Updated: 06/02/2023</sub>
+#### [`pyspark-data_flow-application.ipynb`](pyspark-data_flow-application.ipynb)
+
+ 
+Develop local PySpark applications and work with remote clusters using Data Flow.
+
+This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
 
  
 `pyspark`  `data flow`
@@ -664,3 +724,121 @@ This notebook was developed on the conda pack with slug: `rapids2110_p37_gpu_v1`
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
+
+### <a name="feature_store_ehr_data.ipynb"></a> - Medical Data Management Using Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_ehr_data.ipynb`](feature_store_ehr_data.ipynb)
+
+Manage and utilize medical data efficiently using a feature store. This notebook demonstrates the storage, retrieval, and manipulation of Electronic Health Record (EHR) data within a feature store framework.
+
+`feature store` `medical data` `data management` 
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
+### <a name="feature_store_embeddings.ipynb"></a> - Storage of Hugging Face Embeddings Using Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_embeddings.ipynb`](feature_store_embeddings.ipynb)
+
+Explore the storage and retrieval of Hugging Face embeddings within a feature store setup. This notebook provides insights into storing and utilizing pre-trained embeddings for various natural language processing tasks using the feature store infrastructure.
+
+`feature store` `Hugging Face embeddings` `storage`
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
+### <a name="feature_store_embeddings_openai.ipynb"></a> - Storage of OpenAI Embeddings Using Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_embeddings_openai.ipynb`](feature_store_embeddings_openai.ipynb)
+
+Learn how to store and leverage OpenAI embeddings effectively within a feature store environment. This notebook guides users through the process of managing and utilizing OpenAI-generated embeddings for diverse machine learning applications within a feature store framework.
+
+`feature store` `OpenAI embeddings` `storage`
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
+### <a name="feature_store_medical_synthetic_data_openai.ipynb"></a> - Synthetic Data Generation Using Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_medical_synthetic_data_openai.ipynb`](feature_store_medical_synthetic_data_openai.ipynb)
+
+Generate synthetic medical data leveraging OpenAI tools within a feature store. This notebook illustrates the process of creating synthetic medical data for various research and analysis purposes using the capabilities of a feature store.
+
+`feature store` `synthetic data generation` `medical data` 
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
+### <a name="feature_store_pii_redaction_and_transformation.ipynb"></a> - PII Redaction Using Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_pii_redaction_and_transformation.ipynb`](feature_store_pii_redaction_and_transformation.ipynb)
+
+Explore techniques and methods for Personally Identifiable Information (PII) redaction and transformation within a feature store environment. This notebook demonstrates how to manage sensitive data securely by implementing PII masking and transformation techniques using a feature store.
+
+`feature store` `PII redaction` `data security`
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
+### <a name="feature_store_querying.ipynb"></a> - Querying Operations Using Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_querying.ipynb`](feature_store_querying.ipynb)
+
+Understand and perform querying operations within a feature store setup. This notebook covers querying techniques, data retrieval, and manipulation strategies to efficiently access and utilize stored features in a feature store environment.
+
+`feature store` `querying` `data operations`
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
+### <a name="feature_store_quickstart.ipynb"></a> - Quickstart for Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_quickstart.ipynb`](feature_store_quickstart.ipynb)
+
+Get started quickly with a feature store setup using this introductory notebook. It provides step-by-step guidance and essential information for setting up and utilizing a feature store environment for efficient data management and analysis.
+
+`feature store` `quickstart` `data management`
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
+### <a name="feature_store_schema_evolution.ipynb"></a> - Schema Evolution and Schema Enforcement Using Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_schema_evolution.ipynb`](feature_store_schema_evolution.ipynb)
+
+Learn about schema evolution and enforcement techniques within a feature store. This notebook explores methods to handle schema changes, enforce data integrity, and manage evolving data structures effectively in a feature store environment.
+
+`feature store` `schema evolution` `data integrity`
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
+### <a name="feature_store_spark_magic.ipynb"></a> - Big Data Operations Using Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_spark_magic.ipynb`](feature_store_spark_magic.ipynb)
+
+Explore big data operations within a feature store using Spark magic commands. This notebook demonstrates how to leverage the power of Spark for efficient data handling and analysis in a feature store environment.
+
+`feature store` `big data operations` `Spark`
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
