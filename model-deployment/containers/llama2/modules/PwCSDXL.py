@@ -29,7 +29,7 @@ base = DiffusionPipeline.from_pretrained(
 
 #base.to("cuda")
 base.enable_model_cpu_offload()
-base.unet = torch.compile(base.unet, mode="reduce-overhead", fullgraph=True)
+# base.unet = torch.compile(base.unet, mode="reduce-overhead", fullgraph=True)
 
 if not refiner_model_dir.exists():
     print(f"Folder {refiner_model_dir} doesn't exist. Building...")
@@ -49,7 +49,7 @@ refiner = DiffusionPipeline.from_pretrained(refiner_model_dir,
 
 #refiner.to("cuda")
 refiner.enable_model_cpu_offload()
-refiner.unet = torch.compile(refiner.unet, mode="reduce-overhead", fullgraph=True)
+# refiner.unet = torch.compile(refiner.unet, mode="reduce-overhead", fullgraph=True)
 
 high_noise_frac = 0.8
 
@@ -71,3 +71,4 @@ def generate_from_text(text, negative_text, seed, base_steps, refiner_steps, wid
         image=image,
     ).images[0]
     return image
+
