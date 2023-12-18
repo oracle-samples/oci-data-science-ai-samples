@@ -14,7 +14,7 @@ refiner_model_dir = Path("/opt/sdxl/model/openvino-sd-xl-refiner-1.0")
 if not model_dir.exists():
     print(f"Folder {model_dir} doesn't exist. Building...")
     base = DiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, variant="fp16", use_safetensors=True)
-    base.half()
+    # base.half()
     base.save_pretrained(model_dir)
     #text2image_pipe.compile()
     del base
@@ -34,7 +34,7 @@ base.unet = torch.compile(base.unet, mode="reduce-overhead", fullgraph=True)
 if not refiner_model_dir.exists():
     print(f"Folder {refiner_model_dir} doesn't exist. Building...")
     refiner = DiffusionPipeline.from_pretrained(refiner_model_id, text_encoder_2=base.text_encoder_2, vae=base.vae, torch_dtype=torch.float16, use_safetensors=True, variant="fp16",)
-    refiner.half()
+    # refiner.half()
     refiner.save_pretrained(refiner_model_dir)
     del refiner
     gc.collect()
