@@ -17,6 +17,8 @@ TGI_CONTAINER_NAME:=tgi-odsc
 VLLM_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/vllm-odsc:0.2.2-v
 VLLM_CONTAINER_NAME:=vllm-odsc
 
+SDXL_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/sdxl:1.0.
+
 MODEL_DIR:=${PWD}/hfdata
 TARGET_DIR:=/home/datascience
 HF_DIR=/home/datascience/.cache
@@ -49,10 +51,16 @@ build.tgi: check-env init increment_version
 	$(DOCKER_BUILD_CMD) --network host \
 	-t ${TGI_INFERENCE_IMAGE}$(shell cat version.txt) \
 	-f Dockerfile.tgi .
+
 build.vllm: check-env init increment_version
 	$(DOCKER_BUILD_CMD) --network host \
 	-t ${VLLM_INFERENCE_IMAGE}$(shell cat version.txt) \
 	-f Dockerfile.vllm .
+
+build.sdxl: check-env init increment_version
+	$(DOCKER_BUILD_CMD) --network host \
+	-t ${SDXL_INFERENCE_IMAGE}$(shell cat version.txt) \
+	-f Dockerfile.sdxl .
 
 run.tgi.hf: check-env
 	docker run --rm -it --gpus all --shm-size 1g \
@@ -108,6 +116,9 @@ push.tgi: check-env
 
 push.vllm: check-env
 	docker push ${VLLM_INFERENCE_IMAGE}$(shell cat version.txt)
+
+push.sxl: check-env
+	docker push ${SDXL_INFERENCE_IMAGE}$(shell cat version.txt)
 
 app:
 	MODEL=${model} gradio app.py

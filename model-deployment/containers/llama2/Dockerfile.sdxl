@@ -6,7 +6,10 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_REQUIRE_CUDA "cuda>=11.6"
 
-RUN apt-get update && apt-get -y install tzdata && apt-get install -y curl && apt-get install -y git && apt-get clean && apt-get autoremove
+RUN apt-get update && apt-get -y install tzdata && apt-get install -y curl && apt-get install -y git
+RUN apt-get install -y libgl1-mesa-glx
+RUN apt-get install vim -y
+RUN apt-get clean && apt-get autoremove
 RUN curl -L https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh >> miniconda.sh
 RUN bash ./miniconda.sh -b -p /miniconda; rm ./miniconda.sh;
 ENV PATH="/miniconda/bin:$PATH"
@@ -14,20 +17,21 @@ ENV PATH="/miniconda/bin:$PATH"
 # install oci-cli
 RUN bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)" -- --accept-all-defaults
 
-RUN mkdir -p /opt/vllm
-ARG INSTALL_DIR=/opt/vllm
-COPY vllm-env.yaml /opt/vllm/environment.yaml
-RUN conda env create --name vllm -f ${INSTALL_DIR}/environment.yaml
+RUN mkdir -p /opt/sdxl
+ARG INSTALL_DIR=/opt/sdxl
+COPY modules ${INSTALL_DIR}/modules
+COPY sdxl-env.yaml /opt/sdxl/environment.yaml
+RUN conda env create --name sdxl -f ${INSTALL_DIR}/environment.yaml
 RUN conda clean -a -y
 
 ENV TMPDIR=/home/datascience
 WORKDIR /home/datascience
 
-COPY start-vllm.sh ${INSTALL_DIR}/start.sh
+COPY start-sdxl.sh ${INSTALL_DIR}/start.sh
 RUN chmod a+x ${INSTALL_DIR}/start.sh
-COPY vllm-log-config.yaml ${INSTALL_DIR}/vllm-log-config.yaml
-ENV UVICORN_LOG-CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
-ENV UVICORN_LOG_CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
+COPY sdxl-log-config.yaml ${INSTALL_DIR}/sdxl-log-config.yaml
+ENV UVICORN_LOG-CONFIG=${INSTALL_DIR}/sdxl-log-config.yaml
+ENV UVICORN_LOG_CONFIG=${INSTALL_DIR}/sdxl-log-config.yaml
 
 # for debugging 
 RUN mkdir -p /aiapps
@@ -47,8 +51,8 @@ ENV TENSOR_PARALLELISM 1
 # Custom port for model container. No need to override.
 ENV PORT 8080
 EXPOSE ${PORT}
-ENV VLLM_DIR=${INSTALL_DIR}
-COPY vllm-api-server.py ${VLLM_DIR}/vllm-api-server.py
+ENV sdxl_DIR=${INSTALL_DIR}
+COPY sdxl-api-server.py ${sdxl_DIR}/sdxl-api-server.py
 
 ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
-CMD ["$VLLM_DIR/start.sh"]
+CMD ["$sdxl_DIR/start.sh"]

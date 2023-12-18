@@ -107,4 +107,5 @@ with gr.Blocks() as demo:
     clear.click(lambda: None, None, chatbot, queue=False)
 
     demo.queue()
-    demo.launch(share=True)
+    # demo.launch(share=True)
+    demo.launch()
