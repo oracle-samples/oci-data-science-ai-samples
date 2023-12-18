@@ -117,7 +117,7 @@ push.tgi: check-env
 push.vllm: check-env
 	docker push ${VLLM_INFERENCE_IMAGE}$(shell cat version.txt)
 
-push.sxl: check-env
+push.sdxl: check-env
 	docker push ${SDXL_INFERENCE_IMAGE}$(shell cat version.txt)
 
 app:

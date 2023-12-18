@@ -33,7 +33,7 @@ echo "Number of GPUs detected: $NUM_GPUS"
 
 echo "Starting SDXL engine..."
 source activate sdxl
-WEB_CONCURRENCY=1 python $SDXL_DIR/sdxl-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $SDXL_DIR/sdxl-log-config.yaml --tensor-parallel-size ${NUM_GPUS}
+WEB_CONCURRENCY=1 python $SDXL_DIR/sdxl-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $SDXL_DIR/sdxl-log-config.yaml
 
 echo "Exiting SDXL. Here is the disk utilization of /home/datascience - "
 echo $(du -sh /home/datascience)
