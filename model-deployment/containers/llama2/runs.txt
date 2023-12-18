@@ -59,7 +59,7 @@ docker run --gpus all \
            -v $(pwd):/home/datascience/ \
            -v $(pwd)/token:/opt/ds/model/deployed_model/token \
            --shm-size=10gb \
-           fra.ocir.io/bigdatadatasciencelarge/sdxl:1.0.2
+           fra.ocir.io/bigdatadatasciencelarge/sdxl:1.0.4
 
 
 
