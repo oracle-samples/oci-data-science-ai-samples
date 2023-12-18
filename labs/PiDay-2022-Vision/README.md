@@ -21,4 +21,3 @@ You may of course also use a paid OCI account, however the instructions are desi
   - [Lab 2 - Configure and use OCI Vision in the Console](Lab-2-analyze-vision.md)
   - [Lab 3 - Explore Vision REST API](Lab-3-vision-rest.md)
   - [Lab 4 - Run Python Application](Lab-4-vision-app.md)
-  - [Lab 5 - Create Custom Model](Lab-5-custom-model.md)
