@@ -51,8 +51,8 @@ ENV TENSOR_PARALLELISM 1
 # Custom port for model container. No need to override.
 ENV PORT 8080
 EXPOSE ${PORT}
-ENV sdxl_DIR=${INSTALL_DIR}
-COPY sdxl-api-server.py ${sdxl_DIR}/sdxl-api-server.py
+ENV SDXL_DIR=${INSTALL_DIR}
+COPY sdxl-api-server.py ${SDXL_DIR}/sdxl-api-server.py
 
 ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
-CMD ["$sdxl_DIR/start.sh"]
+CMD ["$SDXL_DIR/start.sh"]
