@@ -3,7 +3,7 @@ from streamlit_chat import message
 from oci.auth import signers
 import requests
 
-config = {"region": <YOUR_REGION>}
+config = {"region": "<YOUR_REGION>"}
 signer = signers.InstancePrincipalsSecurityTokenSigner()
 
 endpoint = "<MD_ENDPOINT>"
@@ -37,7 +37,6 @@ user_input = st.chat_input("How can I help?")
 # generate response when a user prompt is submitted
 if user_input:
     output = generate_response(prompt=user_input)
-    print(output)
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
 
