@@ -63,3 +63,8 @@ docker run --gpus all \
 
 
 
+# local TGI test
+curl -X POST http://127.0.0.1:8080/generate -H "Content-Type: application/json" -d '{"inputs":"Tell me about Data Science"}'
+
+# local vLLM test
+curl -X POST http://127.0.0.1:8080/predict -H "Content-Type: application/json" -d '{"inputs":"Tell me about Data Science"}'

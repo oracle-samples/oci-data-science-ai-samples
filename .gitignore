@@ -37,3 +37,5 @@ jobs/tutorials/standbyjob-with-git/code/
 model-deployment/containers/llama2/token.zip
 model-deployment/containers/llama2/version.txt
 model-deployment/containers/llama2/.cache
+model-deployment/containers/llama2/token
+model-deployment/containers/llama2/hfdata
