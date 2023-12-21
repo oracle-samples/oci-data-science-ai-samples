@@ -1,7 +1,7 @@
 import subprocess
 import os
 import shutil
-import pandas as pd
+
 from ads.feature_store.feature_group import FeatureGroup
 import pandas as pd
 import ads

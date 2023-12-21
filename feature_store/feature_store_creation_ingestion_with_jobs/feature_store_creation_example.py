@@ -134,6 +134,7 @@ feature_group_ehr = (
 )
 feature_group_ehr.create()
 
+
 print(feature_group_ehr.id)
 
 expectation_suite_ehr = ExpectationSuite(
