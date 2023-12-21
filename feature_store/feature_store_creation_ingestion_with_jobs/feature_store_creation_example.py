@@ -1,23 +1,32 @@
-import os
-
-print("Initiating feature store lazy entities creation")
-
 import ads
-ads.set_auth(auth="resource_principal", client_kwargs={"fs_service_endpoint": "<api_gateway>"})
 import os
-
-compartment_id = <compartment_id>
-metastore_id = <metastore_id>
 import pandas as pd
 from ads.feature_store.feature_store import FeatureStore
 from ads.feature_store.feature_group import FeatureGroup
 from ads.feature_store.model_details import ModelDetails
 from ads.feature_store.dataset import Dataset
 from ads.feature_store.common.enums import DatasetIngestionMode
+from ads.feature_store.common.enums import ExpectationType
+from ads.feature_store.transformation import Transformation,TransformationMode
 
 from ads.feature_store.feature_group_expectation import ExpectationType
 from great_expectations.core import ExpectationSuite, ExpectationConfiguration
 from ads.feature_store.feature_store_registrar import FeatureStoreRegistrar
+from ads.feature_store.feature_group import FeatureGroup
+from ads.feature_store.common.enums import FeatureType
+from ads.feature_store.input_feature_detail import FeatureDetail
+
+COMPARTMENT_ID = "COMPARTMENT_ID"
+METASTORE_ID = "METASTORE_ID"
+SERVICE_ENDPOINT = "SERVICE_ENDPOINT"
+
+print("Initiating feature store lazy entities creation")
+
+compartment_id = os.environ.get(COMPARTMENT_ID, "ocid1.compartment...none")
+metastore_id = os.environ.get(METASTORE_ID, "ocid1.metastore...none")
+service_endpoint = os.environ.get(SERVICE_ENDPOINT, "<api_gateway_url>")
+
+ads.set_auth(auth="resource_principal", client_kwargs={"fs_service_endpoint":  service_endpoint})
 
 patient_result_df = pd.read_csv("https://objectstorage.us-ashburn-1.oraclecloud.com/p/hh2NOgFJbVSg4amcLM3G3hkTuHyBD-8aE_iCsuZKEvIav1Wlld-3zfCawG4ycQGN/n/ociodscdev/b/oci-feature-store/o/beta/data/EHR/data-ori.csv")
 
@@ -87,8 +96,6 @@ transformation_args = {
     "redundant_feature_label": ["MCH", "MCHC", "MCV"]
 }
 
-from ads.feature_store.transformation import Transformation,TransformationMode
-
 transformation = (
     Transformation()
     .with_display_name("chained_transformation")
@@ -101,8 +108,6 @@ transformation = (
 
 transformation.create()
 
-from ads.feature_store.common.enums import FeatureType
-from ads.feature_store.input_feature_detail import FeatureDetail
 input_feature_details_ehr = [
         FeatureDetail("HAEMATOCRIT").with_feature_type(FeatureType.DOUBLE).with_order_number(1),
         FeatureDetail("HAEMOGLOBINS").with_feature_type(FeatureType.DOUBLE).with_order_number(2),
@@ -116,7 +121,6 @@ input_feature_details_ehr = [
         FeatureDetail("SOURCE").with_feature_type(FeatureType.STRING).with_order_number(9),
     ]
 
-from ads.feature_store.feature_group import FeatureGroup
 feature_group_ehr = (
     FeatureGroup()
     .with_feature_store_id(feature_store.id)
@@ -147,7 +151,6 @@ expectation_suite_ehr.add_expectation(
         kwargs={"column": "HAEMOGLOBINS", "min_value": 0, "max_value": 30},
     )
 )
-from ads.feature_store.common.enums import ExpectationType
 
 feature_group_ehr.with_expectation_suite(expectation_suite_ehr, expectation_type = ExpectationType.STRICT)
 feature_group_ehr.update()
