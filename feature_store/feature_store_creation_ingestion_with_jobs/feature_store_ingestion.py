@@ -5,7 +5,6 @@ import pandas as pd
 from ads.feature_store.feature_group import FeatureGroup
 import pandas as pd
 import ads
-import ads
 
 home_dir = os.path.expanduser("~")
 spark_conf_dir = os.path.join(home_dir, "spark_conf_dir")
