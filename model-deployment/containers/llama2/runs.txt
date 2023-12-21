@@ -51,7 +51,7 @@ docker run --gpus all \
            /opt/vllm/listener.sh
 
 
-# RUN DF ONLINE
+# RUN SDXL ONLINE
 docker run --gpus all \
            -e TOKEN_FILE=/opt/ds/model/deployed_model/token \
            -e STORAGE_SIZE_IN_GB=500 \
@@ -59,7 +59,7 @@ docker run --gpus all \
            -v $(pwd):/home/datascience/ \
            -v $(pwd)/token:/opt/ds/model/deployed_model/token \
            --shm-size=10gb \
-           fra.ocir.io/bigdatadatasciencelarge/sdxl:1.0.4
+           fra.ocir.io/bigdatadatasciencelarge/sdxl:1.0.18
 
 
 
