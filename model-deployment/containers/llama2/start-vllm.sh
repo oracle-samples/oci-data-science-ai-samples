@@ -31,6 +31,8 @@ elif [ -n "$TOKEN_FILE" ]; then
   echo $(du -sh /home/datascience/*)
 else
   echo "No bucket or authentication token is provided. Weights are assumed to be downloaded from OCI Model Catalog."
+  MODEL="/opt/ds/model/deployed_model/$MODEL"
+  echo $MODEL
 fi
 
 # Get the number of GPUs using nvidia-smi and assign it to a variable
@@ -39,8 +41,8 @@ echo "Number of GPUs detected: $NUM_GPUS"
 
 echo "Starting vllm engine..."
 source activate vllm
-echo "Running command: WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model ${MODEL} --tensor-parallel-size ${TENSOR_PARALLELISM}"
-WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port ${PORT} --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model ${MODEL} --tensor-parallel-size ${NUM_GPUS}
+echo "Running command: WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port $PORT --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model $MODEL --tensor-parallel-size $NUM_GPUS"
+WEB_CONCURRENCY=1 python $VLLM_DIR/vllm-api-server.py --port $PORT --host 0.0.0.0 --log-config $VLLM_DIR/vllm-log-config.yaml --model $MODEL --tensor-parallel-size $NUM_GPUS
 
 echo "Exiting vLLM. Here is the disk utilization of /home/datascience - "
 echo $(du -sh /home/datascience)

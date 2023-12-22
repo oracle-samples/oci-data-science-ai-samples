@@ -12,7 +12,7 @@ TENANCY:=${TENANCY_NAME}
 CONTAINER_REGISTRY:=${REGION_KEY}.ocir.io
 
 TGI_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/text-generation-interface:0.9.3-v
-VLLM_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/vllm:0.2.2-v
+VLLM_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/vllm:0.2.4-v
 
 # MODEL_DIR:=${PWD}/hfdata
 MODEL_DIR:=${PWD}
@@ -37,6 +37,7 @@ else
     DOCKER_BUILD_CMD := docker build
 endif
 
+# Check if TENANCY_NAME and REGION_KEY are set.
 check-env:
 	@if [ -z "$${TENANCY_NAME}" ] || [ -z "$${REGION_KEY}" ]; then \
 		echo "TENANCY_NAME or REGION_KEY is not set or is empty"; \
@@ -83,15 +84,15 @@ run.vllm.hf: check-env
 run.vllm.oci: check-env
 	docker run --rm -d --gpus all --shm-size 10gb \
 		-e PORT=${PORT} \
-		-e MODEL=${LOCAL_MODEL} \
-		-v ${MODEL_DIR}:${TARGET_DIR} \
+		-e MODEL=${MODEL} \
+		-v ${MODEL_DIR}:${LOCAL_MODEL} \
 		${VLLM_INFERENCE_IMAGE}$(shell cat version.txt)
 
 stop:
 	docker stop $(shell docker ps -a -q)
 
 remove:
-	docker rm $(shell docker ps -a -q)
+	docker rm -f $(shell docker ps -a -q)
 
 push.tgi: check-env
 	docker push ${TGI_INFERENCE_IMAGE}$(shell cat version.txt)
