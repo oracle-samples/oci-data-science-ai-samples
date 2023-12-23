@@ -55,7 +55,7 @@ docker run --gpus all \
            -p 8080:8080 \
            -v $(pwd):/opt/ds/model/deployed_model/ \
            --shm-size=52gb \
-           fra.ocir.io/bigdatadatasciencelarge/vllm:0.2.4-v48
+           fra.ocir.io/bigdatadatasciencelarge/vllm:0.2.6-v51
 
 # local TGI test
 curl -X POST http://127.0.0.1:8080/generate -H "Content-Type: application/json" -d '{"inputs":"Tell me about Data Science"}'

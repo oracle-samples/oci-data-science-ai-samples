@@ -12,7 +12,7 @@ TENANCY:=${TENANCY_NAME}
 CONTAINER_REGISTRY:=${REGION_KEY}.ocir.io
 
 TGI_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/text-generation-interface:0.9.3-v
-VLLM_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/vllm:0.2.4-v
+VLLM_INFERENCE_IMAGE:=${CONTAINER_REGISTRY}/${TENANCY}/vllm:0.2.6-v
 
 # MODEL_DIR:=${PWD}/hfdata
 MODEL_DIR:=${PWD}
@@ -91,8 +91,11 @@ run.vllm.oci: check-env
 stop:
 	docker stop $(shell docker ps -a -q)
 
-remove:
+rm:
 	docker rm -f $(shell docker ps -a -q)
+
+rmi:
+	docker rmi -f $(shell docker images -a -q)
 
 push.tgi: check-env
 	docker push ${TGI_INFERENCE_IMAGE}$(shell cat version.txt)
