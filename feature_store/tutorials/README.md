@@ -14,7 +14,7 @@ This repository contains tutorials and notebooks demonstrating the utilization o
 
 ### [feature_store_creation_ingestion_with_jobs](feature_store_creation_ingestion_with_jobs/)
 
-Explore big data operations within a feature store using Spark magic commands. This notebook demonstrates leveraging the power of Spark for efficient data handling and analysis in a feature store environment, focusing on ML job integration.
+Explore feature store operations using ML Job. This notebook demonstrates leveraging the power of Spark for efficient data handling and analysis in a feature store environment, focusing on ML job integration.
 
 Tags: `feature store`, `ML jobs`, `Spark`
 
@@ -28,7 +28,7 @@ Tags: `feature store`, `ML jobs`, `Spark`
 
 ### [feature_store_creation_ingestion_with_dataflow](feature_store_creation_ingestion_with_dataflow/)
 
-Discover big data operations within a feature store using Spark magic commands. This notebook showcases leveraging the power of Spark for efficient data handling and analysis in a feature store environment, emphasizing data flow operations.
+Explore feature store operations using Data Flow. This notebook showcases leveraging the power of Spark for efficient data handling and analysis in a feature store environment, emphasizing data flow operations.
 
 Tags: `feature store`, `data flow`, `Spark`
 
