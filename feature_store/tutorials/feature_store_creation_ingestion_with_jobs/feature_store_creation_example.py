@@ -46,13 +46,13 @@ feature_store_resource = (
     FeatureStore().
     with_description("Electronic Heath Data consisting of Patient Test Results").
     with_compartment_id(compartment_id).
-    with_display_name("EHR details MLJob").
+    with_name("EHR details MLJob").
     with_offline_config(metastore_id=metastore_id)
 )
 feature_store = feature_store_resource.create()
 print(feature_store)
 entity = feature_store.create_entity(
-    display_name="EHR",
+    name="EHR",
     description="Electronic Health Record predictions"
 )
 print(entity)
@@ -98,7 +98,7 @@ transformation_args = {
 
 transformation = (
     Transformation()
-    .with_display_name("chained_transformation")
+    .with_name("chained_transformation")
     .with_feature_store_id(feature_store.id)
     .with_source_code_function(chained_transformation)
     .with_transformation_mode(TransformationMode.PANDAS)
