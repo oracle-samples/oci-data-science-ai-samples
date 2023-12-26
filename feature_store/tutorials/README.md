@@ -2,6 +2,8 @@
 
 This repository contains tutorials and notebooks demonstrating the utilization of a feature store along with various operations within the Spark environment.
 
+![image info](../figures/feature_store_overview.png)
+
 ## Contents
 - [Feature Store with ML Jobs](#feature-store-with-ml-jobs)
 - [Feature Store with Data Flow](#feature-store-with-data-flow)
