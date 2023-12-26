@@ -16,11 +16,22 @@ RUN bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/s
 
 RUN mkdir -p /opt/vllm
 ARG INSTALL_DIR=/opt/vllm
-COPY vllm-env.yaml /opt/vllm/environment.yaml
+ENV TMPDIR=/home/datascience
+
+# build the base conda env
+FROM base as conda-base
+COPY vllm-env-base.yaml ${INSTALL_DIR}/environment.yaml
 RUN conda env create --name vllm -f ${INSTALL_DIR}/environment.yaml
 RUN conda clean -a -y
 
-ENV TMPDIR=/home/datascience
+# build secondary dependacies
+FROM conda-base as conda-secondary
+COPY vllm-env-deps.yaml ${INSTALL_DIR}/secondary-environment.yaml
+RUN conda env update --name vllm -f ${INSTALL_DIR}/secondary-environment.yaml
+RUN conda clean -a -y
+
+# now the code
+FROM conda-secondary as production
 WORKDIR /home/datascience
 
 COPY start-vllm.sh ${INSTALL_DIR}/start.sh
@@ -38,7 +49,8 @@ RUN chmod +x /aiapps/runner.sh
 COPY git-listener.sh ${INSTALL_DIR}/listener.sh
 RUN chmod +x ${INSTALL_DIR}/listener.sh
 
-# Default location where downloaded models are mapped on model container. No need to override, if using model catalog.
+# Default location where downloaded models are mapped on model container. 
+# No need to override, if using model catalog.
 ENV MODEL /opt/ds/model/deployed_model
 
 # Tensor parallelism required by the model
