@@ -1,7 +1,7 @@
 Feature Store Creation and Ingestion using Data Flow
 =====================
 
-In this Example, you use the Oracle Cloud Infrastructure (OCI) Data Science service MLJob component to create OCI Feature store design time constructs and then ingest feature values into the offline feature store.
+In this Example, you use the Oracle Cloud Infrastructure (OCI) Data Flow Run to create OCI Feature store design time constructs and then ingest feature values into the offline feature store.
 
 Tutorial picks use case of Electronic Heath Data consisting of Patient Test Results. The example demonstrates creation of feature store, entity , transformation and feature group design time constructs using a python script which is provided as job artifact. Another job artifact demonstrates ingestion of feature values into pre-created feature group.
 
