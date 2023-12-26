@@ -64,7 +64,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Querying operations using feature store](#feature_store_querying.ipynb)
  - [Quickstart for feature store](#feature_store_quickstart.ipynb)
  - [Schema evolution and schema enforcement using feature store](#feature_store_schema_evolution.ipynb)
- - [Big data operations using feature store](#/feature_store_spark_magic.ipynb)
+ - [Big data operations using feature store](#feature_store_spark_magic.ipynb)
 
 
 ## Notebooks
