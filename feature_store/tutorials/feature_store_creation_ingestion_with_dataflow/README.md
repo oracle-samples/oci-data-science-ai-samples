@@ -5,12 +5,12 @@ In this Example, you use the Oracle Cloud Infrastructure (OCI) Data Flow Run to 
 
 Tutorial picks use case of Electronic Heath Data consisting of Patient Test Results. The example demonstrates creation of feature store, entity , transformation and feature group design time constructs using a python script which is provided as job artifact. Another job artifact demonstrates ingestion of feature values into pre-created feature group.
 
-# Prerequisites
+## Prerequisites
 
 The notebook makes connections to other OCI resources. This is done using [resource principals](https://docs.oracle.com/en-us/iaas/Content/Functions/Tasks/functionsaccessingociresources.htm). If you have not configured your tenancy to use resource principals then you can do so using the instructions that are [here](https://docs.oracle.com/en-us/iaas/data-science/using/create-dynamic-groups.htm). Alternatively, you can use API keys. The preferred method for authentication is resource principals.
 
 
-# Instructions using programmatic interface
+## Instructions using programmatic interface
 
 1. Open a Data Science Notebook session (i.e. JupyterLab).
 2. Open a file terminal by clicking on File -> New -> Terminal.
@@ -28,7 +28,7 @@ The notebook makes connections to other OCI resources. This is done using [resou
 13. validate the ingestion data flow job is executed successfully.
 14. User can validate the ingested data and other metadata using the feature store notebook ui extension.
 
-# Instructions using YAML
+## Instructions using YAML
 
 Follow these steps to execute the defined job configuration:
 
