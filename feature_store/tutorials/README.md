@@ -5,16 +5,21 @@ This repository contains tutorials and notebooks demonstrating the utilization o
 ![image info](../figures/feature_store_overview.png)
 
 ## Contents
+
+### Ci/Cd for feature store using ml jobs and dataflow
 - [Feature Store with ML Jobs](#feature-store-with-ml-jobs)
 - [Feature Store with Data Flow](#feature-store-with-data-flow)
-- [Storage of open ai embeddings using feature store](#feature_store_embeddings_openai.ipynb)
-- [Synthetic data generation using feature store](#feature_store_medical_synthetic_data_openai.ipynb)
-- [PII redaction using feature store](#feature_store_pii_redaction_and_transformation.ipynb)
-- [Querying operations using feature store](#feature_store_querying.ipynb)
+
+### Basic examples using feature store
 - [Quickstart for feature store](#feature_store_quickstart.ipynb)
 - [Schema evolution and schema enforcement using feature store](#feature_store_schema_evolution.ipynb)
 - [Big data operations using feature store](#feature_store_spark_magic.ipynb)
 
+### Text embeddings using feature store
+- [Storage of open ai embeddings using feature store](#feature_store_embeddings_openai.ipynb)
+- [Synthetic data generation using feature store](#feature_store_medical_synthetic_data_openai.ipynb)
+- [PII redaction using feature store](#feature_store_pii_redaction_and_transformation.ipynb)
+- [Querying operations using feature store](#feature_store_querying.ipynb)
 
 ---
 
