@@ -14,12 +14,12 @@ This repository contains tutorials and notebooks demonstrating the utilization o
 - [Quickstart for feature store](#feature_store_quickstart.ipynb)
 - [Schema evolution and schema enforcement using feature store](#feature_store_schema_evolution.ipynb)
 - [Big data operations using feature store](#feature_store_spark_magic.ipynb)
+- [Querying operations using feature store](#feature_store_querying.ipynb)
 
 ### Text embeddings using feature store
 - [Storage of open ai embeddings using feature store](#feature_store_embeddings_openai.ipynb)
 - [Synthetic data generation using feature store](#feature_store_medical_synthetic_data_openai.ipynb)
 - [PII redaction using feature store](#feature_store_pii_redaction_and_transformation.ipynb)
-- [Querying operations using feature store](#feature_store_querying.ipynb)
 
 ---
 
