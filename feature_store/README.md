@@ -53,9 +53,9 @@ Following are brief descriptions of key concepts and the main components of ADS 
 
 ### Streaming operations using OCI DataFlow
 
-| Notebook Title                                                                       | Description                                                                                                                                                                       | Updated    |
-|--------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
-| [Streaming Operations Using Feature Store](feature_store_streaming_data_frame.ipynb) | Explore streaming operations within a feature store using Spark. Demonstrates leveraging Spark Streaming for efficient data handling and analysis in a feature store environment. | 11/13/2023 |
+| Notebook Title                                                                                                                                                                 | Description                                                                                                                                                                       | Updated    |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| [Streaming Operations Using Feature Store](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/notebook_examples/feature_store_streaming_data_frame.ipynb) | Explore streaming operations within a feature store using Spark. Demonstrates leveraging Spark Streaming for efficient data handling and analysis in a feature store environment. | 11/13/2023 |
 
 
 ## Contributing
