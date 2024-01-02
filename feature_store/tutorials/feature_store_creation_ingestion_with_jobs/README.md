@@ -18,11 +18,11 @@ The notebook makes connections to other OCI resources. This is done using [resou
 4. `odsc conda install -s fspyspark32_p38_cpu_v{version}` to install the feature store conda.
     1. `conda activate /home/datascience/conda/fspyspark32_p38_cpu_v{version}` to activate the conda.
 5. Copy the `notebooks` folder into the notebook session.
-6. Open the notebook `notebook/feature_store_using_mljob.ipynb`.
+6. Open the notebook `feature_store_using_mljob.ipynb`.
 7. Change the notebook kernel to `Python [conda env:fspyspark32_p38_cpu_v{version}]`.
 8. Read the notebook and execute each cell.
 9. Once the ml job run is completed successfully, user can validate creation of feature store construct using the feature store notebook ui extension.
-10. Now open the notebook `notebook/feature_store_ingestion_via_mljob.ipynb`.
+10. Now open the notebook `feature_store_ingestion_via_mljob.ipynb`.
 11. Change the notebook kernel to `Python [conda env:fspyspark32_p38_cpu_v{version}]`.
 12. Read the notebook and execute each cell.
 13. validate the ingestion ml job is executed successfully.
