@@ -21,6 +21,10 @@ This repository contains tutorials and notebooks demonstrating the utilization o
 - [Synthetic data generation using feature store](#feature_store_medical_synthetic_data_openai.ipynb)
 - [PII redaction using feature store](#feature_store_pii_redaction_and_transformation.ipynb)
 
+### Streaming operations using feature store
+- [Streaming operations using feature store](#feature_store_streaming_data_frame.ipynb)
+
+
 ---
 
 ## Feature Store with ML Jobs
@@ -163,6 +167,19 @@ Learn about schema evolution and enforcement techniques within a feature store. 
 Explore big data operations within a feature store using Spark magic commands. This notebook demonstrates how to leverage the power of Spark for efficient data handling and analysis in a feature store environment.
 
 `feature store` `big data operations` `Spark`
+
+<sub>License: Universal Permissive License v 1.0</sub>
+
+---
+
+### <a name="feature_store_streaming_data_frame.ipynb"></a> - Streaming Operations Using Feature Store
+
+<sub>Updated: 11/13/2023</sub>
+#### [`feature_store_streaming_data_frame.ipynb`](../../notebook_examples/feature_store_streaming_data_frame.ipynb)
+
+Explore streaming operations within a feature store using Spark. This notebook demonstrates how to leverage the power of Spark Streaming for efficient data handling and analysis in a feature store environment.
+
+`feature store` `big data operations` `Spark` `Spark Streaming`
 
 <sub>License: Universal Permissive License v 1.0</sub>
 

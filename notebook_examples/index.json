@@ -756,5 +756,20 @@
     "summary": "Use feature store transformations to perform feature engineering",
     "time_created": "2023-11-05T11:04:51",
     "title": "Use feature store transformations to perform feature engineering"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v2",
+    "filename": "feature_store_streaming_data_frame.ipynb",
+    "keywords": [
+      "pyspark",
+      "featurestore",
+      "feature transformation",
+      "feature querying"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 429056,
+    "summary": "Use feature store transformations to perform streaming operations",
+    "time_created": "2024-01-01T11:04:51",
+    "title": "Use feature store transformations to perform streaming operations"
   }
 ]

@@ -51,6 +51,12 @@ Following are brief descriptions of key concepts and the main components of ADS 
 | [PII Data redaction, Summarise Content and Translate content using doctran and open AI](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/notebook_examples/feature_store_pii_redaction_and_transformation.ipynb) | - One way to think of Doctran is a LLM-powered black box where messy strings go in and nice, clean, labelled strings come out. Another way to think about it is a modular, declarative wrapper over OpenAI's functional calling feature that significantly improves the developer experience.                            |
 | [OpenAI embeddings in feature store](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/notebook_examples/feature_store_embeddings_openai.ipynb)                                                                   | - `Embedding feature stores` are optimized for fast and efficient retrieval of embeddings. This is important because embeddings can be high-dimensional and computationally expensive to calculate. By storing them in a dedicated store, you can avoid the need to recalculate embeddings for the same data repeatedly. |
 
+### Streaming operations using OCI DataFlow
+
+| Notebook Title                                                                       | Description                                                                                                                                                                       | Updated    |
+|--------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| [Streaming Operations Using Feature Store](feature_store_streaming_data_frame.ipynb) | Explore streaming operations within a feature store using Spark. Demonstrates leveraging Spark Streaming for efficient data handling and analysis in a feature store environment. | 11/13/2023 |
+
 
 ## Contributing
 
