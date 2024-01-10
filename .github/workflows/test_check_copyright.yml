@@ -13,7 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-        python-version: "3.10"
+        with:
+          python-version: "3.10"
       - shell: bash
         run: |
           set -x # print commands that are executed
