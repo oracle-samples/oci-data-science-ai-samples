@@ -18,7 +18,7 @@
 """
 This sample script creates an asynchronous processor job to perform document classification on document_classification_demo.pdf 
 (found in the resources folder), which is supplied inline as a base64 encoded string. Successful execution of this 
-sample will create results in object storage as configured under the output_location variable.
+sample will store the results in the configured Object Storage bucket, under the output_location variable.
 
 This script is designed to be executed on a user's computer that is configured with Python 3 or later. The user's computer 
 must also be configured with a config file as described in README.md to authenticate with the OCI tenancy used to execute 
