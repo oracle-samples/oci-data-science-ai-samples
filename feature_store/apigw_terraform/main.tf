@@ -1,0 +1,54 @@
+provider "oci" {
+  disable_auto_retries = "true"
+  region = var.region
+}
+resource "random_string" "suffix" {
+  length = 4
+  special = false
+}
+
+locals {
+  compartment_id = data.oci_network_load_balancer_network_load_balancer.nlb.compartment_id
+}
+
+
+data oci_network_load_balancer_network_load_balancer nlb {
+  network_load_balancer_id = var.nlb_id
+}
+
+module "feature_store_gw_subnet" {
+  source = "./modules/subnet"
+  kubernetes_nlb_id = var.nlb_id
+  subnet_name = "fs-gw-subnet"
+}
+
+module "function" {
+  source = "./modules/function"
+  authorized_groups = var.authorized_user_groups
+  compartment_id = local.compartment_id
+  ocir_path = var.function_img_ocir_url
+  subnet_id = module.feature_store_gw_subnet.subnet_id
+  name_suffix = random_string.suffix.id
+
+}
+
+module "api_gw" {
+  source = "./modules/api_gw"
+  compartment_id = local.compartment_id
+  function_id = module.function.fn_id
+  nlb_id = var.nlb_id
+  subnet_id = module.feature_store_gw_subnet.subnet_id
+}
+
+resource oci_identity_policy feature_store_policies {
+  description = "FEATURE STORE: Policy allowing feature store to authenticate and authorize"
+  name        = "feature_store_gw_${random_string.suffix.id}"
+  compartment_id = var.tenancy_ocid
+  statements = concat(module.api_gw.policies, module.function.policies)
+  lifecycle {
+    ignore_changes = [defined_tags["Oracle-Tags.CreatedBy"], defined_tags["Oracle-Tags.CreatedOn"]]
+  }
+}
+
+
+
