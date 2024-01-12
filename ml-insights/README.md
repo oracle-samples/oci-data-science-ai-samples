@@ -56,6 +56,7 @@ Insights provides a simple, declarative API, out of box components covering majo
 | [ML Insights : Data Correlation Metrics](./sample_notebooks/11_Data_Correlation_Metrics.ipynb)                                         |
 | [ML Insights run with Custom Metrics](./sample_notebooks/12_Custom_Metrics_Example.ipynb)                                              |
 
-
+## Note
+The files [sum_divide_by_k_custom_metrics.py](./sample_notebooks/sum_divide_by_k_custom_metrics.py) and [sum_divide_by_two_custom_metrics.py](./sample_notebooks/sum_divide_by_two_custom_metrics.py) are examples of how to implement custom metrics and usage is demonstrated in sample notebook [ML Insights run with Custom Metrics](./sample_notebooks/12_Custom_Metrics_Example.ipynb).  
 
 
