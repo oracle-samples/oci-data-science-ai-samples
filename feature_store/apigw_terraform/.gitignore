@@ -3,4 +3,4 @@
 *.tfvars
 fs_apigw_terraform.zip
 *.tfstate.*
-
+*.tfstate
