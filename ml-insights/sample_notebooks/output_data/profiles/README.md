@@ -1,0 +1,1 @@
+Output of the sample notebooks is saved in this directory when we use Local Writer post processor.
