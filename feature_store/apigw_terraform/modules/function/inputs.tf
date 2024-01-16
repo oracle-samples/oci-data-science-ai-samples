@@ -17,3 +17,7 @@ variable "authorized_groups" {
 variable "name_suffix" {
   type = string
 }
+
+variable "tenancy_id" {
+  type = string
+}

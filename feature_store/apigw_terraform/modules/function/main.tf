@@ -9,7 +9,7 @@ data "oci_identity_compartment" "compartment" {
 
 
 resource "oci_identity_dynamic_group" "functions_dg" {
-  compartment_id = "ocid1.tenancy.oc1..aaaaaaaa462hfhplpx652b32ix62xrdijppq2c7okwcqjlgrbknhgtj2kofa"
+  compartment_id = var.tenancy_id
   description    = "FEATURESTORE: Allow Oci functions to inspect identity"
   matching_rule  = "All {resource.type = 'fnfunc', resource.id = '${oci_functions_function.test_function.id}'}"
   name           = "Feature_Store_Authorizer_${var.name_suffix}"

@@ -27,6 +27,7 @@ module "feature_store_networking" {
 
 module "function" {
   source = "./modules/function"
+  tenancy_id = var.tenancy_ocid
   authorized_groups = var.authorized_user_groups
   compartment_id = local.compartment_id
   ocir_path = var.function_img_ocir_url
