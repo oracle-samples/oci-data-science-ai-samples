@@ -15,8 +15,8 @@ data oci_network_load_balancer_network_load_balancer nlb {
   network_load_balancer_id = var.nlb_id
 }
 
-module "feature_store_gw_subnet" {
-  source = "./modules/subnet"
+module "feature_store_networking" {
+  source = "./modules/feature_store_networking"
   kubernetes_nlb_id = var.nlb_id
   compartment_id = local.compartment_id
   subnet_name = "fs-gw-subnet"
@@ -30,7 +30,7 @@ module "function" {
   authorized_groups = var.authorized_user_groups
   compartment_id = local.compartment_id
   ocir_path = var.function_img_ocir_url
-  subnet_id = module.feature_store_gw_subnet.subnet_id
+  subnet_id = module.feature_store_networking.subnet_id
   name_suffix = random_string.suffix.id
 }
 
@@ -39,7 +39,7 @@ module "api_gw" {
   compartment_id = local.compartment_id
   function_id = module.function.fn_id
   nlb_id = var.nlb_id
-  subnet_id = module.feature_store_gw_subnet.subnet_id
+  subnet_id = module.feature_store_networking.subnet_id
 }
 
 resource oci_identity_policy feature_store_policies {
