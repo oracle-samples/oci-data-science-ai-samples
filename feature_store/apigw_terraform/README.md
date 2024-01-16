@@ -2,13 +2,11 @@ This module handles opinionated Feature Store AuthN/AuthZ configuration using AP
 
 ## Deploy Using Oracle Resource Manager
 
-> ___NOTE:___ If you aren't already signed in, when prompted, enter the tenancy and user credentials. Review and accept the terms and conditions.
+> ___NOTE:___ If you aren't already signed in, when prompted, enter the compartment <compartment_name> and user credentials. Review and accept the terms and conditions.
 
-1. Click to deploy the stack
+1. Click to download the [terraform bundle][https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://raw.githubusercontent.com/harsh97/oci-data-science-ai-samples/feature-store/feature_store/fs_apigw_terraform.zip]
 
-   [![Deploy to Oracle Cloud][magic_button]][magic_oke_stack]
-
-1. Select the region and compartment where you want to deploy the stack.
+1. Create a stack in OCI resource manager with the downloaded bundle
 
 1. Follow the on-screen prompts and instructions to create the stack.
 
@@ -23,14 +21,16 @@ This module handles opinionated Feature Store AuthN/AuthZ configuration using AP
 1. After the stack application is complete attach the auto-provisioned security rules to the respective service and node subnets of the OKE cluster. 
 
 ### Prerequisites
-
-Create a terraform.tfvars file and populate with the required variables or override existing variables.
-
-Note: An example [tfvars file](examples/terraform.tfvars.example) is included for reference. Using this file is the
-preferred way to run the stack from the CLI, because of the large number of variables to manage.
-
-To use this file just copy the example [tfvars file](examples/terraform.tfvars.example) and save it in the outermost directory.
-Next, rename the file to __terraform.tfvars__. You can override the example values set in this file.
+#### Required permissions:
+allow group <user_group> to manage orm-stacks in compartment <compartment_name>
+allow group <user_group> to manage orm-jobs in compartment <compartment_name>
+allow group <user_group> to read network-load-balancers in compartment <compartment_name>
+allow group <user_group> to read instances in compartment <compartment_name>
+allow group <user_group> to manage groups in compartment <compartment_name>
+allow group <user_group> to manage dynamic-groups in compartment <compartment_name>
+allow group <user_group> to manage functions-family in compartment <compartment_name>
+allow group <user_group> to manage virtual-network-family in compartment <compartment_name>
+allow group <user_group> to manage policies in tenancy
 
 
 ### Running Terraform
@@ -42,11 +42,11 @@ terraform init
 ```
 
 ```bash
-terraform plan
+terraform plan -var-file=<path-to-variable-file>
 ```
 
 ```bash
-terraform apply
+terraform apply -var-file=<path-to-variable-file>
 ```
 
 ```bash
@@ -62,5 +62,4 @@ See [LICENSE](./LICENSE) for more details.
 
 [oci]: https://cloud.oracle.com/en_US/cloud-infrastructure
 [oci_rm]: https://docs.cloud.oracle.com/iaas/Content/ResourceManager/Concepts/resourcemanager.htm
-[magic_button]: https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg
-[magic_oke_stack]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://raw.githubusercontent.com/harsh97/oci-data-science-ai-samples/feature-store/feature_store/fs_apigw_terraform.zip
+[stack]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://raw.githubusercontent.com/harsh97/oci-data-science-ai-samples/feature-store/feature_store/fs_apigw_terraform.zip

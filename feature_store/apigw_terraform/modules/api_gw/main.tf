@@ -6,11 +6,11 @@ locals {
   # we are doing it like this because of issues in escaping ${ character
   path_str = format("%s%s","$","{request.path[")
   path_map = {for path,methods in local.unique_paths: path=>replace(replace(tostring(path), "{", local.path_str),"}", "]}")}
-  policies = ["allow any-user to use functions-family in compartment ${data.oci_identity_compartment.compartment1.name} where ALL {request.principal.type='ApiGateway'}"]
+  policies = ["allow any-user to use functions-family in compartment ${data.oci_identity_compartment.compartment.name} where ALL {request.principal.type='ApiGateway'}"]
 
 }
 
-data "oci_identity_compartment" "compartment1" {
+data "oci_identity_compartment" "compartment" {
   id = var.compartment_id
 }
 
