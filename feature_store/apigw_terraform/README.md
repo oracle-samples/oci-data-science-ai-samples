@@ -24,6 +24,7 @@ This module handles opinionated [Feature Store][feature_store_docs] AuthN/AuthZ 
 ### Prerequisites
 #### Required permissions:
 ```
+allow group <user_group> to manage read repos in compartment <compartment_name>
 allow group <user_group> to manage orm-stacks in compartment <compartment_name>
 allow group <user_group> to manage orm-jobs in compartment <compartment_name>
 allow group <user_group> to read network-load-balancers in compartment <compartment_name>
