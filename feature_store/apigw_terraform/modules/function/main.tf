@@ -3,10 +3,13 @@ locals {
   policies = ["allow dynamic-group ${oci_identity_dynamic_group.functions_dg.name} to {AUTHENTICATION_INSPECT,GROUP_MEMBERSHIP_INSPECT} in tenancy"]
 }
 
+data "oci_identity_compartment" "compartment" {
+  id = var.compartment_id
+}
 
 
 resource "oci_identity_dynamic_group" "functions_dg" {
-  compartment_id = var.compartment_id
+  compartment_id = "ocid1.tenancy.oc1..aaaaaaaa462hfhplpx652b32ix62xrdijppq2c7okwcqjlgrbknhgtj2kofa"
   description    = "FEATURESTORE: Allow Oci functions to inspect identity"
   matching_rule  = "All {resource.type = 'fnfunc', resource.id = '${oci_functions_function.test_function.id}'}"
   name           = "Feature_Store_Authorizer_${var.name_suffix}"

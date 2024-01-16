@@ -8,9 +8,8 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  compartment_id = data.oci_network_load_balancer_network_load_balancer.nlb.compartment_id
+  compartment_id = var.use_nlb_compartment?data.oci_network_load_balancer_network_load_balancer.nlb.compartment_id:var.compartment_id
 }
-
 
 data oci_network_load_balancer_network_load_balancer nlb {
   network_load_balancer_id = var.nlb_id
@@ -19,7 +18,11 @@ data oci_network_load_balancer_network_load_balancer nlb {
 module "feature_store_gw_subnet" {
   source = "./modules/subnet"
   kubernetes_nlb_id = var.nlb_id
+  compartment_id = local.compartment_id
   subnet_name = "fs-gw-subnet"
+  existing_subnet_id = var.api_gw_subnet_id
+  use_existing_subnet = !var.automatically_provision_apigw_subnet
+  create_security_rules = var.create_security_rules
 }
 
 module "function" {
@@ -29,7 +32,6 @@ module "function" {
   ocir_path = var.function_img_ocir_url
   subnet_id = module.feature_store_gw_subnet.subnet_id
   name_suffix = random_string.suffix.id
-
 }
 
 module "api_gw" {

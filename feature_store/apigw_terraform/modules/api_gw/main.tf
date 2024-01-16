@@ -6,8 +6,12 @@ locals {
   # we are doing it like this because of issues in escaping ${ character
   path_str = format("%s%s","$","{request.path[")
   path_map = {for path,methods in local.unique_paths: path=>replace(replace(tostring(path), "{", local.path_str),"}", "]}")}
-  policies = ["allow any-user to use functions-family in tenancy where ALL {request.principal.type='ApiGateway'}"]
+  policies = ["allow any-user to use functions-family in compartment ${data.oci_identity_compartment.compartment1.name} where ALL {request.principal.type='ApiGateway'}"]
 
+}
+
+data "oci_identity_compartment" "compartment1" {
+  id = var.compartment_id
 }
 
 resource oci_apigateway_api specs {
@@ -46,7 +50,9 @@ data "oci_network_load_balancer_network_load_balancer" "nlb"{
 }
 
 resource oci_apigateway_deployment fs_deployment {
+  display_name="Feature store api deployment"
   compartment_id = var.compartment_id
+
   gateway_id     = oci_apigateway_gateway.fs_gateway.id
   path_prefix    = "/20230101"
   specification {
