@@ -6,22 +6,24 @@ This module handles opinionated Feature Store AuthN/AuthZ configuration using AP
 
 1. Click to download the [terraform bundle][https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://raw.githubusercontent.com/harsh97/oci-data-science-ai-samples/feature-store/feature_store/fs_apigw_terraform.zip]
 
-1. Create a stack in OCI resource manager with the downloaded bundle
+2. Create a stack in OCI resource manager with the downloaded bundle
 
-1. Follow the on-screen prompts and instructions to create the stack.
+3. Follow the on-screen prompts and instructions to create the stack.
 
-1. After creating the stack, click Terraform Actions, and select Plan.
+4. After creating the stack, click Terraform Actions, and select Plan.
 
-1. Wait for the job to be completed, and review the plan.
+5. Wait for the job to be completed, and review the plan.
 
-1. To make any changes, return to the Stack Details page, click Edit Stack, and make the required changes. Then, run the Plan action again.
+6. To make any changes, return to the Stack Details page, click Edit Stack, and make the required changes. Then, run the Plan action again.
 
-1. If no further changes are necessary, return to the Stack Details page, click Terraform Actions, and select Apply.
+7. If no further changes are necessary, return to the Stack Details page, click Terraform Actions, and select Apply.
 
-1. After the stack application is complete attach the auto-provisioned security rules to the respective service and node subnets of the OKE cluster. 
+8. After the stack application is complete attach the auto-provisioned security rules to the respective service and node subnets of the OKE cluster. 
 
 ### Prerequisites
 #### Required permissions:
+
+```bash
 allow group <user_group> to manage orm-stacks in compartment <compartment_name>
 allow group <user_group> to manage orm-jobs in compartment <compartment_name>
 allow group <user_group> to read network-load-balancers in compartment <compartment_name>
@@ -31,6 +33,7 @@ allow group <user_group> to manage dynamic-groups in compartment <compartment_na
 allow group <user_group> to manage functions-family in compartment <compartment_name>
 allow group <user_group> to manage virtual-network-family in compartment <compartment_name>
 allow group <user_group> to manage policies in tenancy
+```
 
 
 ### Running Terraform
