@@ -44,6 +44,10 @@ The [data labeling service](https://docs.oracle.com/en-us/iaas/data-labeling/dat
 
 The [OCI Data Science service](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) offers managed notebook(jupyterlab) sessions. Notebook lifecycle script features execute the customer provided scripts during CREATE/ACTIVATE/DEACTIVATE/DELETE notebook session lifecycle. This folder contains the examples script which needs little to no editing and ready to be used as lifecycle scripts input.
 
+### [Feature Store](./feature_store/)
+
+The [Feature store service](https://feature-store-accelerated-data-science.readthedocs.io/en/latest/) solves many of the problems because it is a centralized way to transform and access data for training and serving time, Feature stores help define a standardised pipeline for ingestion of data and querying of data.
+
 ## Documentation
 
 Check out the following resources for more information about the OCI Data Science and AI services:
