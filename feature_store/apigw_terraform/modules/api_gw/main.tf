@@ -41,9 +41,6 @@ resource oci_apigateway_gateway fs_gateway {
     ignore_changes = [defined_tags["Oracle-Tags.CreatedBy"], defined_tags["Oracle-Tags.CreatedOn"]]
   }
 }
-data "oci_identity_compartment" "compartment" {
-  id = var.compartment_id
-}
 
 data "oci_network_load_balancer_network_load_balancer" "nlb"{
   network_load_balancer_id = var.nlb_id
