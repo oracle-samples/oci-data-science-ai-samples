@@ -117,7 +117,7 @@ paths:
         Returns a list of FeatureStores.
       parameters:
         - $ref: '#/parameters/CompartmentIdQueryParam'
-        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
         - $ref: '#/parameters/PaginationLimitQueryParam'
         - $ref: '#/parameters/PaginationTokenQueryParam'
         - $ref: '#/parameters/FeatureStoreLifecycleStateQueryParam'
@@ -305,7 +305,7 @@ paths:
       parameters:
         - $ref: '#/parameters/CompartmentIdQueryParam'
         - $ref: '#/parameters/FeatureStoreIdQueryParam'
-        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
         - $ref: '#/parameters/PaginationLimitQueryParam'
         - $ref: '#/parameters/PaginationTokenQueryParam'
         - $ref: '#/parameters/EntityLifecycleStateQueryParam'
@@ -489,7 +489,7 @@ paths:
       parameters:
         - $ref: '#/parameters/CompartmentIdQueryParam'
         - $ref: '#/parameters/FeatureStoreIdQueryParam'
-        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
         - $ref: '#/parameters/PaginationLimitQueryParam'
         - $ref: '#/parameters/PaginationTokenQueryParam'
         - $ref: '#/parameters/TransformationLifecycleStateQueryParam'
@@ -638,7 +638,7 @@ paths:
       parameters:
         - $ref: '#/parameters/CompartmentIdQueryParam'
         - $ref: '#/parameters/FeatureStoreIdQueryParam'
-        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
         - $ref: '#/parameters/PaginationLimitQueryParam'
         - $ref: '#/parameters/PaginationTokenQueryParam'
         - $ref: '#/parameters/FeatureGroupLifecycleStateQueryParam'
@@ -1026,7 +1026,7 @@ paths:
       parameters:
         - $ref: '#/parameters/CompartmentIdQueryParam'
         - $ref: '#/parameters/FeatureStoreIdQueryParam'
-        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
         - $ref: '#/parameters/PaginationLimitQueryParam'
         - $ref: '#/parameters/PaginationTokenQueryParam'
         - $ref: '#/parameters/DatasetLifecycleStateQueryParam'
@@ -1406,41 +1406,41 @@ paths:
   #          $ref: '#/responses/default'
 
   # ------------------ Search -------------------
-#  /resources:
-#    post:
-#      tags: [ 'featureStore' ]
-#      operationId: Search
-#      summary: Gets a list of all matching display names matching the search string.
-#      description: Search across all constructs.
-#      parameters:
-#        - name: SearchDetails
-#          description: A base request type that contains common criteria for searching for resources.
-#          required: true
-#          in: body
-#          schema:
-#            $ref: '#/definitions/SearchDetails'
-#        - $ref: '#/parameters/PaginationLimitQueryParam'
-#        - $ref: '#/parameters/RequestIdHeader'
-#      responses:
-#        200:
-#          description: A page searched results
-#          schema:
-#            $ref: '#/definitions/SearchSummaryCollection'
-#          headers:
-#            opc-request-id: *ref-opc-request-id
-#            opc-next-page: *ref-opc-next-page
-#        400:
-#          $ref: '#/responses/400'
-#        401:
-#          $ref: '#/responses/401'
-#        404:
-#          $ref: '#/responses/404'
-#        429:
-#          $ref: '#/responses/429'
-#        500:
-#          $ref: '#/responses/500'
-#        default:
-#          $ref: '#/responses/default'
+  /resources:
+    post:
+      tags: [ 'featureStore' ]
+      operationId: Search
+      summary: Gets a list of all matching display names matching the search string.
+      description: Search across all constructs.
+      parameters:
+        - name: SearchDetails
+          description: A base request type that contains common criteria for searching for resources.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/SearchDetails'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      responses:
+        200:
+          description: A page searched results
+          schema:
+            $ref: '#/definitions/SearchSummaryCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
 
   # ------------------------ Lineage --------------------------------------------
 
@@ -1672,7 +1672,7 @@ definitions:
         type: string
         minLength: 1
         maxLength: 4000
-      displayName:
+      name:
         description: A user-friendly name. Does not have to be unique, and it's changeable. Avoid entering confidential information.
         type: string
       timeCreated:
@@ -1722,7 +1722,7 @@ definitions:
       compartmentId:
         description: Compartment Identifier
         type: string
-      displayName:
+      name:
         description: FeatureStore Identifier, can be renamed
         type: string
       timeCreated:
@@ -1784,10 +1784,10 @@ definitions:
     description: The information about new FeatureStore.
     type: object
     required:
-      - displayName
+      - name
       - compartmentId
     properties:
-      displayName:
+      name:
         description: FeatureStore Identifier
         type: string
         minLength: 1
@@ -1811,7 +1811,7 @@ definitions:
     description: The information to be updated.
     type: object
     properties:
-      displayName:
+      name:
         description: FeatureStore Identifier
         type: string
         minLength: 1
@@ -2235,12 +2235,12 @@ definitions:
     type: object
     required:
       - compartmentId
-      - displayName
+      - name
       - sourceCode
       - transformationMode
       - featureStoreId
     properties:
-      displayName:
+      name:
         description: A user-friendly display name for the resource. It does not have to be unique and can be modified. Avoid entering confidential information.
         type: string
         minLength: 1
@@ -2289,7 +2289,7 @@ definitions:
     required:
       - id
       - compartmentId
-      - displayName
+      - name
       - timeCreated
       - timeUpdated
     properties:
@@ -2299,7 +2299,7 @@ definitions:
       compartmentId:
         description: Compartment Identifier
         type: string
-      displayName:
+      name:
         description: FeatureStore transformation name, can be renamed
         type: string
       timeCreated:
@@ -2337,7 +2337,7 @@ definitions:
     required:
       - id
       - compartmentId
-      - displayName
+      - name
       - lifecycleState
       - timeCreated
       - sourceCode
@@ -2359,7 +2359,7 @@ definitions:
         type: string
         minLength: 1
         maxLength: 255
-      displayName:
+      name:
         description: A user-friendly name. Does not have to be unique, and it's changeable. Avoid entering confidential information.
         type: string
         minLength: 1
@@ -3487,8 +3487,9 @@ definitions:
         type: string
       timeCreated:
         type: string
-        format: date-time
         description: The time that this resource was created.
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
       lifecycleState:
         description: The current state of the resource.
         type: string
@@ -4195,7 +4196,7 @@ parameters:
     type: string
     enum:
       - timeCreated
-      - displayName
+      - name
     default: 'timeCreated'
     description: |
       The field to sort by. Only one sort order may be provided. Default order for timeCreated is descending. Default order for displayName is ascending.
@@ -4206,6 +4207,15 @@ parameters:
     required: true
     type: string
     description: The ID of the compartment in which to list resources.
+
+  NameQueryParam:
+    in: query
+    maxLength: 255
+    minLength: 1
+    name: name
+    type: string
+    x-default-description: 'null'
+    description: A filter to return only resources that match the entire display name given.
 
   DisplayNameQueryParam:
     in: query
