@@ -3,11 +3,6 @@ locals {
   policies = ["allow dynamic-group ${oci_identity_dynamic_group.functions_dg.name} to {AUTHENTICATION_INSPECT,GROUP_MEMBERSHIP_INSPECT} in tenancy"]
 }
 
-data "oci_identity_compartment" "compartment" {
-  id = var.compartment_id
-}
-
-
 resource "oci_identity_dynamic_group" "functions_dg" {
   compartment_id = var.tenancy_id
   description    = "FEATURESTORE: Allow Oci functions to inspect identity"
@@ -28,7 +23,6 @@ resource oci_functions_application test_application {
     ignore_changes = [defined_tags["Oracle-Tags.CreatedBy"], defined_tags["Oracle-Tags.CreatedOn"]]
   }
 }
-
 
 resource oci_functions_function test_function {
   application_id = oci_functions_application.test_application.id
