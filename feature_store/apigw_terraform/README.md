@@ -66,6 +66,6 @@ See [LICENSE](./LICENSE) for more details.
 
 [oci]: https://cloud.oracle.com/en_US/cloud-infrastructure
 [oci_rm]: https://docs.cloud.oracle.com/iaas/Content/ResourceManager/Concepts/resourcemanager.htm
-[stack]: https://raw.githubusercontent.com/oracle-samples/oci-data-science-ai-samples/main/feature_store/apigw_terraform/releases/fs_apigw_terraform-1.1.0.zip
+[stack]: https://raw.githubusercontent.com/oracle-samples/oci-data-science-ai-samples/main/feature_store/apigw_terraform/releases/fs-apigw-terraform-1.1.0.zip
 [feature_store_docs]: https://feature-store-accelerated-data-science.readthedocs.io
 [oci_tf_provider]: https://www.terraform.io/docs/providers/oci/index.html
