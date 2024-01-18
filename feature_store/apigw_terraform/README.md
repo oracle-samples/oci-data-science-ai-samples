@@ -4,9 +4,10 @@ This module handles opinionated [Feature Store][feature_store_docs] AuthN/AuthZ 
 
 > ___NOTE:___ If you aren't already signed in, when prompted, enter the tenancy and user credentials. Review and accept the terms and conditions.
 
+1. Export [Feature Store Marketplace Listing][listing]
 1. Click to download the [terraform bundle][stack]
 
-1. Create a stack in OCI resource manager with the downloaded bundle
+1. Create a stack in [OCI resource manager][oci_rm] with the downloaded bundle
 
 1. Follow the on-screen prompts and instructions to create the stack.
 
@@ -69,3 +70,4 @@ See [LICENSE](./LICENSE) for more details.
 [stack]: https://raw.githubusercontent.com/oracle-samples/oci-data-science-ai-samples/main/feature_store/apigw_terraform/releases/fs-apigw-terraform-1.1.0.zip
 [feature_store_docs]: https://feature-store-accelerated-data-science.readthedocs.io
 [oci_tf_provider]: https://www.terraform.io/docs/providers/oci/index.html
+[listing]: https://cloud.oracle.com/marketplace/application/ocid1.mktpublisting.oc1.iad.amaaaaaabiudgxya26lzh2dsyvg7cfzgllvdl6xo5phz4mnsoktxeutecrvq
