@@ -1,0 +1,278 @@
+{
+  "input_schema": {
+    "sepal length (cm)": {
+      "data_type": "float",
+      "variable_type": "continuous"
+    },
+    "sepal width (cm)": {
+      "data_type": "float",
+      "variable_type": "continuous"
+    },
+    "petal length (cm)": {
+      "data_type": "float",
+      "variable_type": "continuous"
+    },
+    "petal width (cm)": {
+      "data_type": "float",
+      "variable_type": "continuous"
+    }
+  },
+  "some": [
+    {
+    }
+  ],
+  "reader": {
+    "type": "CSVNativeDataReader",
+    "params": {
+      "data_source": {
+        "type": "LocalDatePrefixDataSource",
+        "params": {
+          "base_location": "input_data/iris_dataset",
+          "file_type": "csv",
+          "date_range": {
+            "start": "2023-06-26",
+            "end": "2023-06-29"
+          }
+        }
+      }
+    }
+  },
+  "feature_metrics": {
+    "sepal length (cm)": [
+      {
+        "type": "Sum"
+      },
+      {
+        "type": "Quartiles"
+      },
+      {
+        "type": "Max"
+      },
+      {
+        "type": "Min"
+      },
+      {
+        "type": "DistinctCount"
+      },
+      {
+        "type": "Count"
+      },
+      {
+        "type": "Mean"
+      },
+      {
+        "type": "Skewness"
+      },
+      {
+        "type": "TypeMetric"
+      },
+      {
+        "type": "Variance"
+      },
+      {
+        "type": "IsConstantFeature"
+      },
+      {
+        "type": "IsQuasiConstantFeature"
+      },
+      {
+        "type": "Kurtosis"
+      },
+      {
+        "type": "DuplicateCount"
+      },
+      {
+        "type": "IQR"
+      },
+      {
+        "type": "Mode"
+      },
+      {
+        "type": "Range"
+      },
+      {
+        "type": "StandardDeviation"
+      }
+    ],
+    "sepal width (cm)": [
+      {
+        "type": "Sum"
+      },
+      {
+        "type": "Quartiles"
+      },
+      {
+        "type": "Max"
+      },
+      {
+        "type": "Min"
+      },
+      {
+        "type": "DistinctCount"
+      },
+      {
+        "type": "Count"
+      },
+      {
+        "type": "Mean"
+      },
+      {
+        "type": "Skewness"
+      },
+      {
+        "type": "TypeMetric"
+      },
+      {
+        "type": "Variance"
+      },
+      {
+        "type": "IsConstantFeature"
+      },
+      {
+        "type": "IsQuasiConstantFeature"
+      },
+      {
+        "type": "Kurtosis"
+      },
+      {
+        "type": "DuplicateCount"
+      },
+      {
+        "type": "IQR"
+      },
+      {
+        "type": "Mode"
+      },
+      {
+        "type": "Range"
+      },
+      {
+        "type": "StandardDeviation"
+      }
+    ],
+    "petal length (cm)": [
+      {
+        "type": "Sum"
+      },
+      {
+        "type": "Quartiles"
+      },
+      {
+        "type": "Max"
+      },
+      {
+        "type": "Min"
+      },
+      {
+        "type": "DistinctCount"
+      },
+      {
+        "type": "Count"
+      },
+      {
+        "type": "Mean"
+      },
+      {
+        "type": "Skewness"
+      },
+      {
+        "type": "TypeMetric"
+      },
+      {
+        "type": "Variance"
+      },
+      {
+        "type": "IsConstantFeature"
+      },
+      {
+        "type": "IsQuasiConstantFeature"
+      },
+      {
+        "type": "Kurtosis"
+      },
+      {
+        "type": "DuplicateCount"
+      },
+      {
+        "type": "IQR"
+      },
+      {
+        "type": "Mode"
+      },
+      {
+        "type": "Range"
+      },
+      {
+        "type": "StandardDeviation"
+      }
+    ],
+    "petal width (cm)": [
+      {
+        "type": "Sum"
+      },
+      {
+        "type": "Quartiles"
+      },
+      {
+        "type": "Max"
+      },
+      {
+        "type": "Min"
+      },
+      {
+        "type": "DistinctCount"
+      },
+      {
+        "type": "Count"
+      },
+      {
+        "type": "Mean"
+      },
+      {
+        "type": "Skewness"
+      },
+      {
+        "type": "TypeMetric"
+      },
+      {
+        "type": "Variance"
+      },
+      {
+        "type": "IsConstantFeature"
+      },
+      {
+        "type": "IsQuasiConstantFeature"
+      },
+      {
+        "type": "Kurtosis"
+      },
+      {
+        "type": "DuplicateCount"
+      },
+      {
+        "type": "IQR"
+      },
+      {
+        "type": "Mode"
+      },
+      {
+        "type": "Range"
+      },
+      {
+        "type": "StandardDeviation"
+      }
+    ]
+  },
+  "post_processor": [
+    {
+      "type": "LocalWriterPostProcessor",
+      "params": {
+        "file_location": "profiles",
+        "file_name": "profile.bin"
+      }
+    }
+  ],
+  "engine_detail": {
+    "engine_name": "native"
+  }
+}
