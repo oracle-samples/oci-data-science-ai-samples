@@ -1,11 +1,8 @@
-provider "oci" {
-  disable_auto_retries = "true"
-  region = var.region
-}
 resource "random_string" "suffix" {
   length = 4
   special = false
 }
+
 
 locals {
   compartment_id = var.use_nlb_compartment?data.oci_network_load_balancer_network_load_balancer.nlb.compartment_id:var.compartment_id
@@ -33,6 +30,9 @@ module "function" {
   ocir_path = var.function_img_ocir_url
   subnet_id = module.feature_store_networking.subnet_id
   name_suffix = random_string.suffix.id
+  providers = {
+    oci.home_region = oci.home_region
+  }
 }
 
 module "api_gw" {
@@ -51,6 +51,7 @@ resource oci_identity_policy feature_store_policies {
   lifecycle {
     ignore_changes = [defined_tags["Oracle-Tags.CreatedBy"], defined_tags["Oracle-Tags.CreatedOn"]]
   }
+  provider = oci.home_region
 }
 
 

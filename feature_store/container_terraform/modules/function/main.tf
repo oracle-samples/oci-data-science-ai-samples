@@ -42,4 +42,3 @@ resource oci_functions_function test_function {
     ignore_changes = [defined_tags["Oracle-Tags.CreatedBy"], defined_tags["Oracle-Tags.CreatedOn"]]
   }
 }
-
