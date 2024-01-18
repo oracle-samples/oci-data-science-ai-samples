@@ -1,7 +1,6 @@
 variable nlb_id {
   description = "Network load balancer ocid for the resource created after deploying feature store helm chart "
   type = string
-  nullable = false
 }
 
 variable "use_nlb_compartment" {
@@ -30,26 +29,22 @@ variable authorized_user_groups {
 variable function_img_ocir_url {
   description = "OCIR URL of the authorizer image exported from feature store marketplace listing"
   type = string
-  nullable = false
 }
 
 variable "tenancy_ocid" {
   type = string
   description = "OCID of the tenancy where the stack needs to be deployed"
-  nullable = false
 }
 
 variable "compartment_id" {
   type = string
-  description = "OCID of the compartment where the stack needs to be deployed."
+  description = "OCID of the compartment where the stack needs to be deployed. If not provided, the stack will be deployed in the nlb compartment"
   default = ""
 }
 
 variable "region" {
   description = "Region in which the resources are to be provisioned"
   type = string
-  default = "us-ashburn-1"
-  nullable = false
 }
 
 variable "create_security_rules" {
