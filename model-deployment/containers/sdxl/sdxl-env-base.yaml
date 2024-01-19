@@ -1,0 +1,10 @@
+channels:
+  - pytorch
+  - nvidia
+  - main
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pytorch=2.1.2
+  - pytorch-cuda=11.8
+  - pip=23.3.2

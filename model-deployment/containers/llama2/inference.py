@@ -13,17 +13,24 @@ app_config = yaml.load(open("config.yaml"), Loader=yaml.SafeLoader)
 
 profile = app_config["oci"]["profile"]
 
+# replace with the location of your oci config file
 config = oci.config.from_file(
     "~/.oci/config", profile_name=profile
-)  # replace with the location of your oci config file
+)  
 
-model = os.environ.get("MODEL", "meta-llama/Llama-2-7b-chat-hf")
+# model = os.environ.get("MODEL", "meta-llama/Llama-2-7b-chat-hf")
+model = os.environ.get("MODEL", None)
+if model is None:
+    raise EnvironmentError("The 'MODEL' environment variable is not set.")
+
 template_file = app_config["models"][model].get("template")
+
 prompt_template = string.Template(
     open(template_file).read() if template_file else "$prompt"
 )
 
-logger.info(f"Setting prompt template to: {prompt_template}")
+logger.info(f"Setting prompt template to...")
+logger.info(prompt_template.template)
 
 endpoint = app_config["models"][model]["endpoint"]
 
@@ -69,7 +76,7 @@ def create_security_token_signer():
 def create_default_signer():
     config = oci.config.from_file(
         "~/.oci/config"
-    )  # replace with the location of your oci config file
+    )
 
     auth = oci.signer.Signer(
         tenancy=config["tenancy"],
@@ -97,6 +104,7 @@ def query(prompt, max_tokens=200, **kwargs):
     # create auth using one of the oci signers
     auth = create_default_signer()
     data = requests.post(endpoint, json=body, auth=auth, headers=headers).json()
+    
     # return model generated response, or any error as a string
     return str(data.get("generated_text", data))
 

@@ -1,0 +1,41 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  precise:
+    (): 'uvicorn.logging.DefaultFormatter'
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+loggers:
+  root:
+    level: DEBUG
+    handlers:
+      - console
+      - file
+  uvicorn.error:
+    level: DEBUG
+    handlers:
+      - console
+      - file
+    propagate: no
+  uvicorn.access:
+    level: DEBUG
+    handlers:
+      - console
+      - file
+  uvicorn:
+    level: DEBUG
+    handlers:
+      - console
+      - file
+    propagate: no
+handlers:
+  console:
+    class : logging.StreamHandler
+    formatter: precise
+    level   : DEBUG
+    stream  : ext://sys.stdout
+  file:
+    class : logging.handlers.RotatingFileHandler
+    formatter: precise
+    filename: /opt/sdxl/server.log
+    maxBytes: 10240
+    backupCount: 3

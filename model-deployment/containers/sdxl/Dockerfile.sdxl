@@ -6,7 +6,11 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_REQUIRE_CUDA "cuda>=11.6"
 
-RUN apt-get update && apt-get -y install tzdata && apt-get install -y curl && apt-get install -y git && apt-get clean && apt-get autoremove
+RUN apt-get -y update && apt-get -y install tzdata && apt-get -y install curl && apt-get -y install git
+RUN apt-get install -y libgl1-mesa-glx
+RUN apt-get install -y libglib2.0-0
+RUN apt-get install -y vim
+RUN apt-get clean && apt-get autoremove
 RUN curl -L https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh >> miniconda.sh
 RUN bash ./miniconda.sh -b -p /miniconda; rm ./miniconda.sh;
 ENV PATH="/miniconda/bin:$PATH"
@@ -14,31 +18,32 @@ ENV PATH="/miniconda/bin:$PATH"
 # install oci-cli
 RUN bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)" -- --accept-all-defaults
 
-RUN mkdir -p /opt/vllm
-ARG INSTALL_DIR=/opt/vllm
+RUN mkdir -p /opt/sdxl
+ARG INSTALL_DIR=/opt/sdxl
 ENV TMPDIR=/home/datascience
 
 # build the base conda env
 FROM base as conda-base
-COPY vllm-env-base.yaml ${INSTALL_DIR}/environment.yaml
-RUN conda env create --name vllm -f ${INSTALL_DIR}/environment.yaml
+COPY sdxl-env-base.yaml ${INSTALL_DIR}/environment.yaml
+RUN conda env create --name sdxl -f ${INSTALL_DIR}/environment.yaml
 RUN conda clean -a -y
 
 # build secondary dependacies
 FROM conda-base as conda-secondary
-COPY vllm-env-deps.yaml ${INSTALL_DIR}/secondary-environment.yaml
-RUN conda env update --name vllm -f ${INSTALL_DIR}/secondary-environment.yaml
+COPY sdxl-env-deps.yaml ${INSTALL_DIR}/secondary-environment.yaml
+RUN conda env update --name sdxl -f ${INSTALL_DIR}/secondary-environment.yaml
 RUN conda clean -a -y
 
 # now the code
 FROM conda-secondary as production
 WORKDIR /home/datascience
+COPY modules ${INSTALL_DIR}/modules
 
-COPY start-vllm.sh ${INSTALL_DIR}/start.sh
+COPY start-sdxl.sh ${INSTALL_DIR}/start.sh
 RUN chmod a+x ${INSTALL_DIR}/start.sh
-COPY vllm-log-config.yaml ${INSTALL_DIR}/vllm-log-config.yaml
-ENV UVICORN_LOG-CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
-ENV UVICORN_LOG_CONFIG=${INSTALL_DIR}/vllm-log-config.yaml
+COPY sdxl-log-config.yaml ${INSTALL_DIR}/sdxl-log-config.yaml
+ENV UVICORN_LOG-CONFIG=${INSTALL_DIR}/sdxl-log-config.yaml
+ENV UVICORN_LOG_CONFIG=${INSTALL_DIR}/sdxl-log-config.yaml
 
 # for debugging 
 RUN mkdir -p /aiapps
@@ -46,6 +51,7 @@ COPY runner.sh /aiapps/
 COPY git-listener.sh /aiapps/ 
 RUN chmod +x /aiapps/runner.sh
 
+# to run code from git directly
 COPY git-listener.sh ${INSTALL_DIR}/listener.sh
 RUN chmod +x ${INSTALL_DIR}/listener.sh
 
@@ -53,14 +59,11 @@ RUN chmod +x ${INSTALL_DIR}/listener.sh
 # No need to override, if using model catalog.
 ENV MODEL /opt/ds/model/deployed_model
 
-# Tensor parallelism required by the model
-ENV TENSOR_PARALLELISM 1
-
 # Custom port for model container. No need to override.
 ENV PORT 8080
 EXPOSE ${PORT}
-ENV VLLM_DIR=${INSTALL_DIR}
-COPY vllm-api-server.py ${VLLM_DIR}/vllm-api-server.py
+ENV SDXL_DIR=${INSTALL_DIR}
+COPY sdxl-api-server.py ${SDXL_DIR}/sdxl-api-server.py
 
 ENTRYPOINT [ "/bin/bash", "--login",  "-c"]
-CMD ["$VLLM_DIR/start.sh"]
+CMD ["$SDXL_DIR/start.sh"]
