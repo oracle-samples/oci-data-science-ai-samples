@@ -1,0 +1,32 @@
+kind: job
+name: "{Job name}"
+spec:
+  infrastructure:
+    kind: infrastructure
+    spec:
+      blockStorageSize: 50
+      subnetId: ocid1.subnet.oc1.iad..<unique_ID>
+      compartmentId: ocid1.compartment.oc1..<unique_ID>
+      projectId: ocid1.datascienceproject.oc1.iad..<unique_ID>
+      logGroupId: ocid1.loggroup.oc1.iad..<unique_ID>
+      logId: ocid1.log.oc1.iad..<unique_ID>
+      shapeName: VM.Standard.E3.Flex
+      shapeConfigDetails:
+        memoryInGBs: 20
+        ocpus: 2
+      jobInfrastructureType: ME_STANDALONE
+      jobType: DEFAULT
+    type: dataScienceJob
+  runtime:
+    kind: runtime
+    spec:
+      args: []
+      conda:
+        type: published
+        uri: oci://bucket@namespace/prefix
+      env:
+      - name: TEST
+        value: TEST_VALUE
+      entrypoint: "{Entry point script}"
+      scriptPathURI: "{Path to the script}"
+    type: python
