@@ -52,3 +52,9 @@ variable "create_security_rules" {
   type = bool
   default = true
 }
+
+variable "home_region" {
+  description = "Home region of the tenancy"
+  type = string
+  default = ""
+}

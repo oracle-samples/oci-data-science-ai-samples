@@ -1,13 +1,12 @@
 locals {
   routes = data.oci_apigateway_api_deployment_specification.specs.routes
-  ip = format("%s%s%s","http://", data.oci_network_load_balancer_network_load_balancer.nlb.ip_addresses[0].ip_address, "/20230101")
+  ip = format("%s%s:21000%s","http://", var.ip, "/20230101")
   unique_paths = {for route in local.routes : route.path=> route.methods...}
   unique_paths_flattened = {for path, methods in local.unique_paths: path=>flatten(methods) }
   # we are doing it like this because of issues in escaping ${ character
   path_str = format("%s%s","$","{request.path[")
   path_map = {for path,methods in local.unique_paths: path=>replace(replace(tostring(path), "{", local.path_str),"}", "]}")}
   policies = length(regexall(".*tenancy.*", var.compartment_id)) > 0? ["allow any-user to use functions-family in tenancy where ALL {request.principal.type='ApiGateway'}"]:["allow any-user to use functions-family in compartment ${data.oci_identity_compartment.compartment.name} where ALL {request.principal.type='ApiGateway'}"]
-
 }
 
 data "oci_identity_compartment" "compartment" {
@@ -20,7 +19,7 @@ resource oci_apigateway_api specs {
   content = file("${path.module}/api.yaml")
   # data resource is not provisioned properly without this
   provisioner "local-exec" {
-    command = "sleep 10"
+    command = "sleep 20"
   }
   defined_tags = var.defined_tags
   lifecycle {
@@ -40,10 +39,6 @@ resource oci_apigateway_gateway fs_gateway {
   lifecycle {
     ignore_changes = [defined_tags["Oracle-Tags.CreatedBy"], defined_tags["Oracle-Tags.CreatedOn"]]
   }
-}
-
-data "oci_network_load_balancer_network_load_balancer" "nlb"{
-  network_load_balancer_id = var.nlb_id
 }
 
 resource oci_apigateway_deployment fs_deployment {
