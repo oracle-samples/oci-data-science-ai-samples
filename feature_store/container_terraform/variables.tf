@@ -1,14 +1,3 @@
-variable "vcn_ocid" {
-  description = "VCN OCIR for feature store. Leave blank to automatically provision a vcn"
-  type = string
-  default = ""
-}
-variable "use_existing_vcn" {
-    description = "Use existing vcn for feature store. If false, vcn_ocid must be provided"
-    type = bool
-    default = false
-}
-
 variable authorized_user_groups {
   description = "User group OCIDs authorized to access feature store environment"
   type = list(string)
@@ -51,6 +40,7 @@ variable "container_shape" {
   type = string
   default = "CI.Standard.E4.Flex"
 }
+
 variable "container_shape_flex_details" {
   description = "Flex shape details of the container instance"
   type = map(string)
@@ -62,6 +52,6 @@ variable "container_shape_flex_details" {
 
 variable "home_region" {
   default = ""
-  description = "Home region of the tenancy"
+  description = "Home region of the tenancy. If not provided, the home region will be automatically populated using metadata from tenancyid"
   type = string
 }

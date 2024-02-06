@@ -54,7 +54,7 @@ variable "create_security_rules" {
 }
 
 variable "home_region" {
-  description = "Home region of the tenancy"
+  description = "Home region of the tenancy. If not provided, the home region will be automatically populated using metadata from tenancyid"
   type = string
   default = ""
 }

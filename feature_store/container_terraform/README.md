@@ -35,7 +35,6 @@ allow group <user_group> to manage functions-family in compartment <compartment_
 allow group <user_group> to manage virtual-network-family in compartment <compartment_name>
 allow group <user_group> to manage policies in tenancy
 allow group <user_group> to manage compute-container-family in compartment <compartment_name>
-allow group <user_group> to manage data-science-family in compartment <compartment_name>
 allow group <user_group> to manage database-family in compartment <compartment_name>
 
 ```
