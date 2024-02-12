@@ -104,13 +104,11 @@ Generate an API signing key pair
 
 * Download and upload the file [Offline_Video_Service.ipynb](./notebooks/Offline_Video_Service.ipynb) in the notebook.
 
-![](./images/sdk.png) <!-- //change required -->
+![](./images/sdk.png) 
 
 * Open the Notebook that you've just uploaded. Now go through each of the cells and run them one by one. You can click Shift+Enter on each cell to run the code in the cell.
 
-* After running all the cells in order, the final cell should display an output similar to the below one.
-
-![](./images/sdk1.png) <!-- //change required -->
+* After running all the cells in order, the final cell should store the output as **"video_response.json"** in the output directory.
 
 This notebook demonstrates how you can productively use the Offline Video service through the notebook.
 
@@ -118,7 +116,3 @@ This notebook demonstrates how you can productively use the Offline Video servic
 
 Congratulations! </br>
 In this lab, you have learnt how to access Offline Video Service through OCI preview SDK.
-
-You may now **proceed to the next lab**.
-
-[Proceed to the next section](./lab-05-postman.md).
