@@ -1,4 +1,4 @@
-# Lab 4: Call your model using the SDK in Data Science Notebook
+# Lab 1: Access Offline Video Service in DataScience Notebook Session
 ## Introduction
 
 In this lab session, we will show you how to access Offline Video services in a Data Science Notebook.
