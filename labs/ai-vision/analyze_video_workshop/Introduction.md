@@ -5,7 +5,7 @@
 Vision is a serverless, multi-tenant service, accessible using the Console, SDK or over REST APIs. 
 Offline Video Service is a part of Vision Service which enables you to upload videos to detect and classify objects and text in the given video. You can use out of the box pre-trained models and also customize the models to suite a specific domain.
 
-*Estimated Workshop Time*: 100 minutes
+*Estimated Workshop Time*: 50 minutes
 
 ### Objectives
 
