@@ -1,3 +1,10 @@
+import json
+
+def display_formatted_response(res):
+    clean_res = clean_output(json.loads(repr(res.data)))
+    return clean_res
+
+
 def clean_output(res):
     '''
     Recursively removes all None values from the input json

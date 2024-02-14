@@ -16,15 +16,17 @@ In this lab, you will:
 
 ### Prerequisites
 
-Before you can start using Data Science, your tenancy administrator should set up the following networking, dynamic group.
-* Create a VCN and subnets using Virtual Cloud Networks > Start VCN Wizard > VCN with Internet Connectivity option. The Networking Quickstart option automatically creates the necessary private subnet with a NAT gateway.
-* Create a dynamic group with the following matching rule: ALL { resource.type = 'datasciencenotebooksession' }
+* Before you can start using Data Science, your tenancy administrator should set up the following networking, dynamic group.
+  * Create a VCN and subnets using Virtual Cloud Networks > Start VCN Wizard > VCN with Internet Connectivity option. The Networking Quickstart option automatically creates the necessary private subnet with a NAT gateway.
+  * Create a dynamic group with the following matching rule: ALL { resource.type = 'datasciencenotebooksession' }
   * Create a Dynamic Group Policy in the root compartment with the following statement:
-  ```
-  allow dynamic-group <dynamic-group> to manage data-science-family in tenancy
-  ```
+    ```
+    allow dynamic-group <dynamic-group> to manage data-science-family in tenancy
+    ```
 
-  where dynamic-group represents the name of your dynamic group.
+    where dynamic-group represents the name of your dynamic group.
+
+* Access to OCI preview SDK (request access by emailing aparna.chaturvedi@oracle.com).
 
 ## Task 1: Navigate to the Data Science Notebook Session
 
@@ -104,7 +106,7 @@ Generate an API signing key pair
 
 * Download and upload the file [Offline_Video_Service.ipynb](./notebooks/Offline_Video_Service.ipynb) in the notebook.
 
-![](./images/sdk.png) 
+![](./images/sdk.png)
 
 * Open the Notebook that you've just uploaded. Now go through each of the cells and run them one by one. You can click Shift+Enter on each cell to run the code in the cell.
 
@@ -116,3 +118,5 @@ This notebook demonstrates how you can productively use the Offline Video servic
 
 Congratulations! </br>
 In this lab, you have learnt how to access Offline Video Service through OCI preview SDK.
+
+
