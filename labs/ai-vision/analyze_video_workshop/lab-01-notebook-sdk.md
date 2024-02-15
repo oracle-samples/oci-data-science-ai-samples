@@ -1,7 +1,7 @@
-# Lab 1: Access Offline Video Service in DataScience Notebook Session
+# Lab 1: Access Stored Video Service in DataScience Notebook Session
 ## Introduction
 
-In this lab session, we will show you how to access Offline Video services in a Data Science Notebook.
+In this lab session, we will show you how to access Stored Video services in a Data Science Notebook.
 
 Estimated Time: 40 minutes
 
@@ -12,7 +12,7 @@ In this lab, you will:
 
 * Get to know how to create a Data Science notebook in the OCI console.
 * Learn to setup API Signing Key and Config File.
-* Learn how to use Offline Video Services within a Data Science notebook.
+* Learn how to use Stored Video Services within a Data Science notebook.
 
 ### Prerequisites
 
@@ -104,7 +104,7 @@ Generate an API signing key pair
 
 ## Task 3: Call your model
 
-* Download and upload the file [Offline_Video_Service.ipynb](./notebooks/Offline_Video_Service.ipynb) in the notebook.
+* Download and upload the file [Stored_Video_Service.ipynb](./notebooks/Stored_Video_Service.ipynb) in the notebook.
 
 ![](./images/sdk.png)
 
@@ -112,11 +112,11 @@ Generate an API signing key pair
 
 * After running all the cells in order, the final cell should store the output as **"video_response.json"** in the output directory.
 
-This notebook demonstrates how you can productively use the Offline Video service through the notebook.
+This notebook demonstrates how you can productively use the Stored Video service through the notebook.
 
 ## **Summary**
 
 Congratulations! </br>
-In this lab, you have learnt how to access Offline Video Service through OCI preview SDK.
+In this lab, you have learnt how to access Stored Video Service through OCI preview SDK.
 
 

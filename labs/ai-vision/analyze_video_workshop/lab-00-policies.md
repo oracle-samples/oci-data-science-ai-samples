@@ -1,8 +1,8 @@
-# Lab 0: Configure Policies for Offline Video Service
+# Lab 0: Configure Policies for Stored Video Service
 
 ## Introduction
 
-In this lab, you will use the OCI Console to set up the policies required for Offline Video Service.
+In this lab, you will use the OCI Console to set up the policies required for Stored Video Service.
 
 Estimated Time: 10 minutes
 
@@ -34,7 +34,7 @@ Configure as shown below:
 
 ### 4. Create a Policy to grant users Video APIs access
 
-Add the below statement to allow all the users in your tenancy to use offline video service:
+Add the below statement to allow all the users in your tenancy to use stored video service:
 ```
 allow any-user to manage ai-service-vision-family in tenancy
 ```
@@ -61,7 +61,7 @@ allow group <group-name> to use object-family in compartment <input-bucket-locat
 
 ### 6. Policy to access output location in object storage
 
-Offline Video Service stores results in your tenancy's object store. Add the following policy to grant object storage access permissions to the user group who requested the analysis of videos:
+Stored Video Service stores results in your tenancy's object storage. Add the following policy to grant object storage access permissions to the user group who requested the analysis of videos:
 
 ```
 allow group <group-name> to manage object-family in compartment <output-bucket-located-object-storage-compartment>
@@ -94,7 +94,7 @@ allow service datascience to use virtual-network-family in tenancy
 ## **Summary**
 
 Congratulations! </br>
-In this lab, you have learnt how to set up your policies required for Offline Video Service.
+In this lab, you have learnt how to set up your policies required for Stored Video Service.
 
 You may now **proceed to the next lab**.
 
