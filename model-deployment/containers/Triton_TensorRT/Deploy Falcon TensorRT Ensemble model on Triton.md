@@ -98,7 +98,6 @@ create_model_deployment_details = CreateModelDeploymentDetails(
 )
 ```
 
-
 ## Step 2: Using Python SDK to query the Inference Server
 
 Specify the JSON inference payload with input and output layers for the model as well as describe the shape and datatype of the expected input and output:
