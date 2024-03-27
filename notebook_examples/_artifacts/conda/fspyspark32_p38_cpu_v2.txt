@@ -1,4 +1,4 @@
-# packages in environment at /home/datascience/conda/fspyspark32_p38_cpu_v2:
+# packages in environment at /home/datascience/conda/fspyspark32_p38_cpu_v3:
 #
 # Name                    Version                   Build  Channel
 _libgcc_mutex             0.1                 conda_forge    conda-forge
