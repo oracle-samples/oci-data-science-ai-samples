@@ -35,6 +35,103 @@ from the deployments tab using the test model, or programmatically.
 
 ![Try Model](web_assets/try-model.png)
 
+### Using A Model
+
+#### Using oci-cli
+
+```bash
+oci raw-request --http-method POST --target-uri https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.xxxxxxxxx/predict --request-body '{
+        "model": "odsc-llm",
+        "prompt":"what are activation functions?",
+        "max_tokens":250,
+        "temperature": 0.7,
+        "top_p":0.8,
+    }' --auth <auth_method>
+```
+
+#### Using Python SDK (without streaming)
+
+```python
+# The OCI SDK must be installed for this example to function properly.
+# Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
+ 
+import requests
+import oci
+
+config = oci.config.from_file(
+    "~/.oci/config"
+)  # replace with the location of your oci config file
+token_file = config["security_token_file"]
+token = None
+with open(token_file, "r") as f:
+    token = f.read()
+private_key = oci.signer.load_private_key_from_file(config["key_file"])
+signer = oci.auth.signers.SecurityTokenSigner(token, private_key)
+
+
+endpoint = "https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.xxxxxxxxx/predict"
+body = {
+    "model": "odsc-llm",
+    "prompt": "what are activation functions?",
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+}
+headers = {}  # header goes here
+
+res = requests.post(endpoint, json=body, auth=signer, headers={}).json()
+
+print(res)
+```
+
+#### Using Python SDK (with streaming)
+
+```python
+# The OCI SDK must be installed for this example to function properly.
+# Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
+ 
+import requests
+import oci
+import json
+
+config = oci.config.from_file(
+    "~/.oci/config"
+)  # replace with the location of your oci config file
+token_file = config["security_token_file"]
+token = None
+
+with open(token_file, "r") as f:
+    token = f.read()
+
+private_key = oci.signer.load_private_key_from_file(config["key_file"])
+signer = oci.auth.signers.SecurityTokenSigner(token, private_key)
+
+endpoint = "https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.xxxxxxxxx/predict"
+body = {
+    "model": "odsc-llm",
+    "prompt": "what are activation functions?",
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "stream": True,
+}
+headers = {}  # header goes here
+
+# open session to enable streaming
+sess = requests.Session()
+
+with sess.post(
+    endpoint,
+    auth=signer,
+    headers={},
+    data=json.dumps(body),
+    stream=True,
+) as resp:
+    for chunk in resp.iter_lines():
+        chunk = chunk.decode("utf-8")
+        print(chunk)
+```
+
 ### Troubleshooting
 
 If the model should fail to deploy, reasons might include lack of availability, or policy permissions
