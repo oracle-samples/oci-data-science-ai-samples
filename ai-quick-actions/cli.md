@@ -168,7 +168,8 @@ The model OCID to deploy.
 
 `--instance_shape [str]`
 
-The shape of the instance used for model deployment.
+The shape of the instance used for model deployment. <br>
+Example: ` VM.GPU.A10.1, VM.GPU.A10.2, BM.GPU.A10.4, BM.GPU4.8, BM.GPU.A100-v2.8`.
 
 `--display_name [str]`
 
@@ -405,7 +406,7 @@ ads aqua evaluation create [OPTIONS]
 
 `--evaluation_source_id [str]`
 
-The evaluation source id. Must be model deployment ocid.
+The evaluation source id. Must be model deployment OCID.
 
 `--evaluation_name [str]`
 
@@ -413,19 +414,24 @@ The name for evaluation.
 
 `--dataset_path [str]`
 
-The dataset path for the evaluation. Must be an object storage path.
+The dataset path for the evaluation. Must be an object storage path. <br>
+Example: `oci://<bucket>@<namespace>/path/to/the/dataset.jsonl`
 
 `--report_path [str]`
 
-The report path for the evaluation. Must be an object storage path.
+The report path for the evaluation. Must be an object storage path. <br>
+Example: `oci://<bucket>@<namespace>/report/path/`
 
 `--model_parameters [str]`
 
-The parameters for the evaluation.
+The parameters for the evaluation. <br>
+Example: `'{"max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}'`
+
 
 `--shape_name [str]`
 
-The shape name for the evaluation job infrastructure.
+The shape name for the evaluation job infrastructure. <br>
+Example: `VM.Standard.E3.Flex, VM.Standard.E4.Flex, VM.Standard3.Flex, VM.Optimized3.Flex`.
 
 `--block_storage_size [int]`
 
@@ -433,7 +439,8 @@ The storage for the evaluation job infrastructure.
 
 `--metrics [list]`
 
-The metrics for the evaluation.
+The metrics for the evaluation, currently BERTScore and ROGUE are supported. <br>
+Example: `'[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]`
 
 
 ### Optional Parameters
@@ -460,7 +467,7 @@ The ocpu count for the shape selected.
 
 `--experiment_id [str]`
 
-The evaluation model version set id. If provided, evaluation model will be associated with it. Defaults to None.
+The evaluation model version set id. If provided, evaluation model will be associated with it. Defaults to None. <br>
 
 `--experiment_name [str]`
 
@@ -700,31 +707,35 @@ ads aqua fine_tuning create [OPTIONS]
 
 `--ft_source_id [str]`
 
-The fine-tuning source id. Must be foundational model ocid.
+The fine-tuning source id. Must be foundational model OCID.
 
 `--ft_name [str]`
 
-The name for fine-tuned model.
+The name for the fine-tuned model.
 
 `--dataset_path [str]`
 
-The dataset path for the model fine-tuning. Must be an object storage path.
+The dataset path for the model fine-tuning. Must be an object storage path. <br>
+Example: `oci://<bucket>@<namespace>/path/to/the/dataset.jsonl`
 
 `--report_path [str]`
 
-The report path of the fine-tuned model. Must be an object storage path.
+The report path of the fine-tuned model. Must be an object storage path. <br>
+Example: `oci://<bucket>@<namespace>/report/path/`
 
 `--ft_parameters [dict]`
 
-The parameters for model fine-tuning.
+The parameters for model fine-tuning. Currently, user can configure learning rate and number of epochs. <br>
+Example: `'{"epochs": 10, "learning_rate": 0.0002}'`
 
 `--shape_name [str]`
 
-The shape name for the model fine-tuning job infrastructure.
+The shape name for the model fine-tuning job infrastructure. <br>
+Example: `VM.GPU.A10.1, VM.GPU.A10.2, BM.GPU.A10.4, BM.GPU4.8, BM.GPU.A100-v2.8`.
 
 `--replica [int]`
 
-The replica for the model fine-tuning job runtime.
+The replica count for the model fine-tuning job runtime.
 
 `--validation_set_size [float]`
 
