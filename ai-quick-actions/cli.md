@@ -393,7 +393,7 @@ ads aqua deployment get --model_deployment_id "ocid1.datasciencemodeldeploymenti
 
 ### Description
 
-Creates a new evaluation model using an existing Aqua model or model deployment. Currently, evaluation is only supported via model deployment as the source.
+Creates a new evaluation model using an existing Aqua model deployment.
 
 ### Usage
 
@@ -405,7 +405,7 @@ ads aqua evaluation create [OPTIONS]
 
 `--evaluation_source_id [str]`
 
-The evaluation source id. Must be either model or model deployment ocid.
+The evaluation source id. Must be model deployment ocid.
 
 `--evaluation_name [str]`
 
@@ -413,7 +413,7 @@ The name for evaluation.
 
 `--dataset_path [str]`
 
-The dataset path for the evaluation. Could be either a local path from notebook session or an object storage path.
+The dataset path for the evaluation. Must be an object storage path.
 
 `--report_path [str]`
 
@@ -482,7 +482,7 @@ The log id for the evaluation job infrastructure. Defaults to None.
 ### Example
 
 ```bash
-ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" --evaluation_name "test_evaluation" --dataset_path "oci://test_bucket@namespace/score.jsonl" --report_path "oci://test_bucket@namespace/" --model_parameters '{"max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}' --shape_name "VM.Standard.E4.Flex" --block_storage_size 50 --metrics '[{"name": "bertscore", "args": {}}]'
+ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" --evaluation_name "test_evaluation" --dataset_path "oci://test_bucket@namespace/score.jsonl" --report_path "oci://test_bucket@namespace/" --model_parameters '{"max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}' --shape_name "VM.Standard.E4.Flex" --block_storage_size 50 --metrics '[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]
 ```
 
 <details>
@@ -578,7 +578,7 @@ ads aqua evaluation list --compartment_id ocid1.compartment.oc1..<ocid>
         "frequency_penalty": 0,
         "stop": [],
         "shape": "VM.Standard.E3.Flex",
-        "dataset_path": "oci://aqua-eval-test-bucket@namespace/dataset/evaluation-sample-with-sys-message.jsonl",
+        "dataset_path": "oci://aqua-eval-test-bucket@namespace/dataset/evaluation-sample.jsonl",
         "report_path": "oci://aqua-eval-test-bucket@namespace/report/"
     }
 }
@@ -652,7 +652,7 @@ ads aqua evaluation get --eval_id "ocid1.datasciencemodel.oc1.iad.<ocid>"
         "frequency_penalty": 0,
         "stop": [],
         "shape": "VM.Standard.E3.Flex",
-        "dataset_path": "oci://aqua-eval-test-bucket@namespace/dataset/evaluation-sample-with-sys-message.jsonl",
+        "dataset_path": "oci://aqua-eval-test-bucket@namespace/dataset/evaluation-sample.jsonl",
         "report_path": "oci://aqua-eval-test-bucket@namespace/report/"
     },
     "log_group": {
