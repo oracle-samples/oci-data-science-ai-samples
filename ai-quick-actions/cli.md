@@ -452,7 +452,7 @@ The description of the evaluation. Defaults to None.
 
 `--memory_in_gbs [float]`
 
-The memory in gbs for the shape selected.
+The memory in gbs for the flexible shape selected.
 
 `--ocpus [float]`
 
@@ -482,7 +482,7 @@ The log id for the evaluation job infrastructure. Defaults to None.
 ### Example
 
 ```bash
-ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" --evaluation_name "test_evaluation" --dataset_path "oci://test_bucket@namespace/score.jsonl" --report_path "oci://test_bucket@namespace/" --model_parameters '{"max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}' --shape_name "VM.Standard.E4.Flex" --block_storage_size 50 --metrics '[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]
+ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" --evaluation_name "test_evaluation" --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" --report_path "oci://<bucket>@<namespace>/report/path/" --model_parameters '{"max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}' --shape_name "VM.Standard.E4.Flex" --block_storage_size 50 --metrics '[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]
 ```
 
 <details>
@@ -578,8 +578,8 @@ ads aqua evaluation list --compartment_id ocid1.compartment.oc1..<ocid>
         "frequency_penalty": 0,
         "stop": [],
         "shape": "VM.Standard.E3.Flex",
-        "dataset_path": "oci://aqua-eval-test-bucket@namespace/dataset/evaluation-sample.jsonl",
-        "report_path": "oci://aqua-eval-test-bucket@namespace/report/"
+        "dataset_path": "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl",
+        "report_path": "oci://<bucket>@<namespace>/report/path"
     }
 }
 ...
@@ -652,8 +652,8 @@ ads aqua evaluation get --eval_id "ocid1.datasciencemodel.oc1.iad.<ocid>"
         "frequency_penalty": 0,
         "stop": [],
         "shape": "VM.Standard.E3.Flex",
-        "dataset_path": "oci://aqua-eval-test-bucket@namespace/dataset/evaluation-sample.jsonl",
-        "report_path": "oci://aqua-eval-test-bucket@namespace/report/"
+        "dataset_path": "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl",
+        "report_path": "oci://<bucket>@<namespace>/report/path"
     },
     "log_group": {
         "id": "",
@@ -708,7 +708,7 @@ The name for fine-tuned model.
 
 `--dataset_path [str]`
 
-The dataset path for the model fine-tuning. Could be either a local path from notebook session or an object storage path.
+The dataset path for the model fine-tuning. Must be an object storage path.
 
 `--report_path [str]`
 
@@ -777,7 +777,7 @@ The log id for the evaluation job infrastructure. Defaults to None.
 ### Example
 
 ```bash
-ads aqua fine_tuning create --ft_source_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --ft_name "Mistral-7B-Instruct-v0.1 FT" --dataset_path "oci://test_bucket@namespace/datasets/samsum_500.jsonl" --report_path "oci://test_bucket@namespace/aqua_ft" --ft_parameters '{"epochs": 10, "learning_rate": 0.0002}' --shape_name "VM.GPU.A10.2" --replica 2 --validation_set_size 0.5 --subnet_id "ocid1.subnet.oc1.iad.<ocid>" --log_group_id "ocid1.loggroup.oc1.iad.<ocid>" --log_id "ocid1.log.oc1.iad.<ocid>" --experiment_id "ocid1.datasciencemodelversionset.oc1.iad.<ocid>"
+ads aqua fine_tuning create --ft_source_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --ft_name "Mistral-7B-Instruct-v0.1 FT" --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" --report_path "oci://<bucket>@<namespace>/report/path" --ft_parameters '{"epochs": 10, "learning_rate": 0.0002}' --shape_name "VM.GPU.A10.2" --replica 2 --validation_set_size 0.5 --subnet_id "ocid1.subnet.oc1.iad.<ocid>" --log_group_id "ocid1.loggroup.oc1.iad.<ocid>" --log_id "ocid1.log.oc1.iad.<ocid>" --experiment_id "ocid1.datasciencemodelversionset.oc1.iad.<ocid>"
 ```
 
 <details>
