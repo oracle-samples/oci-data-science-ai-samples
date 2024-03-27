@@ -56,22 +56,21 @@ oci raw-request --http-method POST --target-uri https://modeldeployment-int.us-a
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
  
 import requests
-import oci
+from oci.signer import Signer
+from oci.config import from_file
 
-config = oci.config.from_file(
-    "~/.oci/config"
-)  # replace with the location of your oci config file
-token_file = config["security_token_file"]
-token = None
-with open(token_file, "r") as f:
-    token = f.read()
-private_key = oci.signer.load_private_key_from_file(config["key_file"])
-signer = oci.auth.signers.SecurityTokenSigner(token, private_key)
-
+config = from_file('~/.oci/config')
+auth = Signer(
+    tenancy=config['tenancy'],
+    user=config['user'],
+    fingerprint=config['fingerprint'],
+    private_key_file_location=config['key_file'],
+    pass_phrase=config['pass_phrase']
+)
 
 endpoint = "https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.xxxxxxxxx/predict"
 body = {
-    "model": "odsc-llm",
+    "model": "odsc-llm", # this is a constant
     "prompt": "what are activation functions?",
     "max_tokens": 250,
     "temperature": 0.7,
@@ -91,24 +90,21 @@ print(res)
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
  
 import requests
-import oci
-import json
+from oci.signer import Signer
+from oci.config import from_file
 
-config = oci.config.from_file(
-    "~/.oci/config"
-)  # replace with the location of your oci config file
-token_file = config["security_token_file"]
-token = None
-
-with open(token_file, "r") as f:
-    token = f.read()
-
-private_key = oci.signer.load_private_key_from_file(config["key_file"])
-signer = oci.auth.signers.SecurityTokenSigner(token, private_key)
+config = from_file('~/.oci/config')
+auth = Signer(
+    tenancy=config['tenancy'],
+    user=config['user'],
+    fingerprint=config['fingerprint'],
+    private_key_file_location=config['key_file'],
+    pass_phrase=config['pass_phrase']
+)
 
 endpoint = "https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.xxxxxxxxx/predict"
 body = {
-    "model": "odsc-llm",
+    "model": "odsc-llm", # this is a constant
     "prompt": "what are activation functions?",
     "max_tokens": 250,
     "temperature": 0.7,
