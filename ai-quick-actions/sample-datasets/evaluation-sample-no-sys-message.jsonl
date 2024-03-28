@@ -1,10 +1,10 @@
-{"prompt":"<s>[INST] What is 2 + 2? [/INST]","completion":"The answer is 4.","category":"math"}
-{"prompt":"<s>[INST] Calculate the area of a circle with a radius of 3. [/INST]","completion":"The area of the circle is approximately 28.27 square units.","category":"math"}
-{"prompt":"<s>[INST] If I have 5 apples and you have 4 apples, how many apples do we have together? [/INST]","completion":"Together, we have 9 apples.","category":"math"}
-{"prompt":"<s>[INST] What is the result of 15 divided by 3? [/INST]","completion":"The result is 5.","category":"math"}
-{"prompt":"<s>[INST] Find the square root of 81. [/INST]","completion":"The square root of 81 is 9.","category":"math"}
-{"prompt":"<s>[INST] If all ravens are black, and I see a black bird, is it a raven? [/INST]","completion":"Seeing a black bird does not necessarily mean it is a raven, as there are many black birds.","category":null}
-{"prompt":"<s>[INST] If it rains, the ground gets wet. The ground is wet. Did it rain? [/INST]","completion":"The ground being wet does not definitively prove it rained; there could be other reasons.","category":null}
-{"prompt":"<s>[INST] A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost? [/INST]","completion":"The ball costs 5 cents.","category":null}
-{"prompt":"<s>[INST] Every cat has four legs. My pet has four legs. Is my pet a cat? [/INST]","completion":"Having four legs does not necessarily mean your pet is a cat; other animals also have four legs.","category":null}
-{"prompt":"<s>[INST] If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets? [/INST]","completion":"It would take 5 minutes for 100 machines to make 100 widgets.","category":null}
+{"prompt":"<s>[INST] Subtract 8 from 12. [/INST]","completion":"The result is 4.","category":"math"}
+{"prompt":"<s>[INST] What is the volume of a cube with edges of 3 units? [/INST]","completion":"The volume of the cube is 27 cubic units.","category":"math"}
+{"prompt":"<s>[INST] If you have 7 oranges and give away 3, how many oranges do you have left? [/INST]","completion":"You have 4 oranges left.","category":"math"}
+{"prompt":"<s>[INST] Multiply 6 by 7. [/INST]","completion":"The result is 42.","category":"math"}
+{"prompt":"<s>[INST] What is the cube root of 64? [/INST]","completion":"The cube root of 64 is 4.","category":"math"}
+{"prompt":"<s>[INST] All elephants are grey, but the animal I saw was grey. Is the animal an elephant? [/INST]","completion":"An animal being grey does not mean it is necessarily an elephant, as other animals can be grey too.","category":null}
+{"prompt":"<s>[INST] If water boils at 100°C, and my kettle is whistling, is the water boiling? [/INST]","completion":"The kettle whistling suggests the water is boiling, but it's not absolute proof without knowing the temperature.","category":null}
+{"prompt":"<s>[INST] A shirt and tie cost $60 in total. The shirt costs $50 more than the tie. How much does the tie cost? [/INST]","completion":"The tie costs $5.","category":null}
+{"prompt":"<s>[INST] Every dog barks. My animal barks. Is my animal a dog? [/INST]","completion":"Just because your animal barks does not necessarily mean it's a dog; other animals also bark.","category":null}
+{"prompt":"<s>[INST] If one printer can print 50 pages in 10 minutes, how long would it take 4 printers to print 200 pages? [/INST]","completion":"It would take
