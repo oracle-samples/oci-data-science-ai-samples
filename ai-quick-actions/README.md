@@ -2,6 +2,12 @@
 
 ![AQUA](web_assets/aqua.png)
 
+Table of Contents:
+
+- [Policies](policies/README.md)
+- [Model Deployment](model-deployment-tips.md)
+- [Model evaluation](evaluation-tips.md)
+- [Model Fine Tuning](fine-tuning-tips.md)
 
 AI Quick actions are a feature of the Data Science Cloud Service, they can be used within the Notebook environment which ensures all the right access control policies are respected.
 
@@ -91,9 +97,3 @@ Closing the cycle, once the model is selected and evaluated you can begin to use
 sophisticated solution is needed which will include [fine tuning.](fine-tuning-tips.md)
 
 
-Table of Contents:
-
-- [Policies](policies/README.md)
-- [Model Deployment](model-deployment-tips.md)
-- [Model evaluation](evaluation-tips.md)
-- [Model Fine Tuning](fine-tuning-tips.md)
