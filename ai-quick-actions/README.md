@@ -100,3 +100,7 @@ Closing the cycle, once the model is selected and evaluated you can begin to use
 sophisticated solution is needed which will include [fine tuning.](fine-tuning-tips.md)
 
 
+- [Policies](policies/README.md)
+- [Model Deployment](model-deployment-tips.md)
+- [Model evaluation](evaluation-tips.md)
+- [Model Fine Tuning](fine-tuning-tips.md)
