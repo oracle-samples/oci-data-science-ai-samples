@@ -12,7 +12,7 @@ One of the most significant benefits of fine-tuning is the reduction in resource
 
 The practical applications of fine-tuned LLMs are vast. From enhancing customer service ChatBots to providing more accurate healthcare suggestions, the implications are profound. In the realm of software development, fine-tuned LLMs can assist developers by providing contextually relevant code suggestions, thereby streamlining the development process.
 
-AI Quick Actions is progressively introducing fine-tuning capabilities to more LLMs. In the model explorer, models supporting fine-tuning are displayed with the label "Ready to Fine Tune".
+AI Quick Actions is progressively introducing fine-tuning capabilities to more LLMs. In the model explorer, models supporting fine-tuning are displayed with the label **"Ready to Fine Tune"**.
 
 ![AQUA](web_assets/model-explorer.png)
 
@@ -23,7 +23,8 @@ The primary method used by AI Quick Action for fine-tuning is Low-Rank Adaptatio
 The essence of LoRA lies in its ability to freeze the pre-trained weights of a model and introduce trainable matrices at each layer of the transformer architecture. These matrices are designed to have a lower rank compared to the original weight matrices, which significantly reduces the number of parameters that need to be updated during the fine-tuning process. As a result, LoRA not only curtails the computational burden but also mitigates the risk of catastrophic forgetting—a phenomenon where a model loses its previously acquired knowledge during the fine-tuning phase.
 
 In AI Quick Actions, the following [LoRA config parameters](https://huggingface.co/docs/peft/main/en/conceptual_guides/lora#common-lora-parameters-in-peft) are used for fine-tuning the model:
-```
+
+```json
 {
     "r": 32,
     "lora_alpha": 16,
@@ -38,14 +39,15 @@ All linear modules in the model are used as the `target_modules` for LoRA fine-t
 The success of fine-tuning LLMs heavily relies on the quality and diversity of the training dataset. Preparing a dataset for fine-tuning involves several critical steps to ensure the model can effectively learn and adapt to the specific domain or task at hand. The process begins with collecting or creating a dataset that is representative of the domain or task, ensuring it covers the necessary variations and nuances. Once the dataset is assembled, it must be preprocessed, which includes cleaning the data by removing irrelevant information, normalizing text, and possibly anonymizing sensitive information to adhere to privacy standards.
 
 For fine-tuning in AI Quick Actions, the dataset
-- Must be in [jsonl](https://jsonlines.org/) format.
-- Should contain keys: `prompt` and `completion` for each row.
 
-The `prompt` is the input to the LLM and the `completion` is the expected output from the LLM. You may want to format the `prompt` with specific template depending on your task.
+- Must be in [jsonl](https://jsonlines.org/) format
+- Should contain keys: `prompt` and `completion` for each row
 
-Here is a couple examples in the dataset prepared for the task of summarizing conversations. The raw data is taken from the [samsum dataset](https://huggingface.co/datasets/samsum) and formatted to be used by fine-tuning in AI Quick Actions:
+The `prompt` is the input to the LLM and the `completion` is the expected output from the LLM. You may want to format the `prompt` with a specific template depending on your task.
 
-```
+Here is a couple of examples in the dataset prepared for the task of summarizing conversations. The raw data is taken from the [samsum dataset](https://huggingface.co/datasets/samsum) and formatted to be used by fine-tuning in AI Quick Actions:
+
+```json
 {"prompt": "Summarize this dialog:\nAmanda: I baked  cookies. Do you want some?\r\nJerry: Sure!\r\nAmanda: I'll bring you some tomorrow :-)\n---\nSummary:\n", "completion": "Amanda baked cookies and will bring some for Jerry tomorrow."}
 {"prompt": "Summarize this dialog:\nOlivia: Who are you voting for in this election? \r\nOliver: Liberals as always.\r\nOlivia: Me too!!\r\nOliver: Great\n---\nSummary:\n", "completion": "Olivia and Olivier are voting for liberals in this election. "}
 ```
@@ -57,17 +59,21 @@ By clicking on one of the "Ready to Fine Tune" models, you will see more details
 ![FineTuneModel](web_assets/fine-tune-model.png)
 
 There are a few configurations for fine-tuning the model:
-* Model Information. Here you may customize the name and description of the model.
-* Dataset. You may choose a dataset file from object storage location or select a new dataset from your notebook session. Here you will also specify the percentage of the dataset you would like to split for training/validation (evaluation).
-* Model Version Set. You may group the fine-tuned models with model version sets.
-* Results. Here you specify the object storage location for saving the outputs of the fine-tuned model. Please note that versioning must be enabled.
+
+- **Model Information** Here you may customize the name and description of the model.
+- *Dataset** You may choose a dataset file from object storage location or select a new dataset from your notebook session. Here you will also specify the percentage of the dataset you would like to split for training/validation (evaluation).
+- **Model Version Set** You may group the fine-tuned models with model version sets.
+- **Results** Here you specify the object storage location for saving the outputs of the fine-tuned model. 
+
+> **Please note that [versioning](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usingversioning.htm) must be enabled on the ObjectStorage bucket for this to work.**
 
 In addition, you will need to specify the infrastructure and parameters for fine-tuning job:
-* Shape. A GPU shape is required for fine-tuning. You may use either a [VM shape](https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm#vm-gpu) or [BM shape](https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm#bm-gpu) for larger models. Fine-tuning requires substantial computational resources, particularly memory, to store model weights, optimizer states, gradients, and the data being processed. Adequate GPU memory ensures that larger batches of data can be processed simultaneously, which can lead to more efficient fine-tuning. 
-* Replica. This is the number nodes to be used for the fine-tuning job. Distributed training will be configured automatically when multiple GPUs are available. We recommend using single replica when possible to avoid the communication overhead between nodes, which adversely impacts the fine-tuning performance. AI Quick Actions will gradually roll out the multi-node distributed training support for larger models.
-* Networking. VCN and subnet are needed for distributed training (replica > 1). For single replica, default networking will be used automatically.
-* Logging. Logging is required for distributed training as the nodes will coordinate using logging. For single replica, logging is optional but highly recommended for debugging purpose.
-* Parameters. You can specify the number epochs and learning rate for the fine-tuning.
+
+- **Shape** A GPU shape is required for fine-tuning. You may use either a [VM shape](https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm#vm-gpu) or [BM shape](https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm#bm-gpu) for larger models. Fine-tuning requires substantial computational resources, particularly memory, to store model weights, optimizer states, gradients, and the data being processed. Adequate GPU memory ensures that larger batches of data can be processed simultaneously, which can lead to more efficient fine-tuning. 
+- **Replica** This is the number nodes to be used for the fine-tuning job. Distributed training will be configured automatically when multiple GPUs are available. We recommend using single replica when possible to avoid the communication overhead between nodes, which adversely impacts the fine-tuning performance. AI Quick Actions will gradually roll out the multi-node distributed training support for larger models.
+- **Networking** VCN and subnet are needed for distributed training (replica > 1). For single replica, default networking will be used automatically.
+- **Logging** Logging is required for distributed training as the nodes will coordinate using logging. For single replica, logging is optional but highly recommended for debugging purpose.
+- **Parameters** You can specify the number epochs and learning rate for the fine-tuning.
 
 ### Distributed Training
 
