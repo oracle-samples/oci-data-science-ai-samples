@@ -1,7 +1,16 @@
 # AI Quick Actions - Overview
 
+> **Note:** To Enable the AI Quick Actions features either begin a new Notebook session, or deactivate and
+> reactivate any existing Notebook sessions.
+
 ![AQUA](web_assets/aqua.png)
 
+Table of Contents:
+
+- [Policies](policies/README.md)
+- [Model Deployment](model-deployment-tips.md)
+- [Model evaluation](evaluation-tips.md)
+- [Model Fine Tuning](fine-tuning-tips.md)
 
 AI Quick actions are a feature of the Data Science Cloud Service, they can be used within the Notebook environment which ensures all the right access control policies are respected.
 
@@ -90,8 +99,6 @@ in lower probability, i.e more creative outputs.
 Closing the cycle, once the model is selected and evaluated you can begin to use it. In some cases a more
 sophisticated solution is needed which will include [fine tuning.](fine-tuning-tips.md)
 
-
-Table of Contents:
 
 - [Policies](policies/README.md)
 - [Model Deployment](model-deployment-tips.md)
