@@ -1,5 +1,8 @@
 # AI Quick Actions - Overview
 
+> **Note:** To Enable the AI Quick Actions features either begin a new Notebook session, or deactivate and
+> reactivate any existing Notebook sessions.
+
 ![AQUA](web_assets/aqua.png)
 
 Table of Contents:
