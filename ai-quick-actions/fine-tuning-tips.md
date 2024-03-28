@@ -45,11 +45,11 @@ For fine-tuning in AI Quick Actions, the dataset
 
 The `prompt` is the input to the LLM and the `completion` is the expected output from the LLM. You may want to format the `prompt` with a specific template depending on your task.
 
-Here is a couple of examples in the dataset prepared for the task of summarizing conversations. The raw data is taken from the [samsum dataset](https://huggingface.co/datasets/samsum) and formatted to be used by fine-tuning in AI Quick Actions:
+Here is a couple of examples in the dataset prepared for fine-tuning:
 
 ```json
-{"prompt": "Summarize this dialog:\nAmanda: I baked  cookies. Do you want some?\r\nJerry: Sure!\r\nAmanda: I'll bring you some tomorrow :-)\n---\nSummary:\n", "completion": "Amanda baked cookies and will bring some for Jerry tomorrow."}
-{"prompt": "Summarize this dialog:\nOlivia: Who are you voting for in this election? \r\nOliver: Liberals as always.\r\nOlivia: Me too!!\r\nOliver: Great\n---\nSummary:\n", "completion": "Olivia and Olivier are voting for liberals in this election. "}
+{"prompt": "Subtract 8 from 12.", "completion": "The result is 4."}
+{"prompt": "What is the cube root of 64?", "completion": "The cube root of 64 is 4."}
 ```
 
 ### Fine-Tune a Model
