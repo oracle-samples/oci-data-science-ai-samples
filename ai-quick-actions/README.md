@@ -84,7 +84,7 @@ does well to minimize bias and hallucinations try something like:
 > 
 > \<\</SYS\>\>
 > 
-> \<my question/promp\>t [/INST]
+> \<my question/promp\> [/INST]
 
 Use the "Test Your Model" feature in the UI to try a variety of prompts to see if the model is working as expected.
 
