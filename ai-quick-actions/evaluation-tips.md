@@ -1,10 +1,21 @@
 # LLM Evaluation
 
+Table of Contents:
+
+- [Home](README.md)
+- [CLI](cli-tips.md)
+- [Policies](policies/README.md)
+- [Model Deployment](model-deployment-tips.md)
+- [Model Fine Tuning](fine-tuning-tips.md)
+
 ## Introduction
 
-Machine learning enables the use of established metrics such as Precision, Recall, and F1 Score for evaluating classification models. However, evaluating large language models (LLMs), which generate natural language, code, or any style of output through fine-tuning, presents a challenge due to the unstructured nature of their output.
+Machine learning enables the use of established metrics such as Precision, Recall, and F1 Score for evaluating classification models. However, evaluating large language models (LLMs), which generate natural language, code, or any style of output, presents a challenge due to the unstructured nature of their output.
 
-There are various metrics to assess specific aspects of language model performance, yet no single metric captures overall effectiveness comprehensively. Commonly used metrics include BLEU and ROUGE, which focus on precision and recall, and embedding-based metrics like BERTScore.
+There are various metrics to assess specific aspects of language model performance, yet no single metric captures overall effectiveness comprehensively. Commonly used metrics are ROUGE, which focus on precision and recall, and embedding-based metrics like BERTScore.
+
+ROUGE is a set of metrics for evaluating text generation models (summarization or machine translation). ROUGE is based on measuring the overlap between the model prediction and the human-produced reference. This overlap relies on terminology being
+the same, which is sometimes desirable, other times semantics is more important, in which case BERT is a better metric.
 
 AI Quick Actions is progressively introducing more evaluation metrics tailored to the task at hand. For instance, coding models utilize very different metrics compared to those used for summarization or language translation.
 
@@ -35,12 +46,15 @@ For example:
 {"prompt": "Summarize this dialog:\nOlivia: Who are you voting for in this election? \r\nOliver: Liberals as always.\r\nOlivia: Me too!!\r\nOliver: Great\n---\nSummary:\n", "completion": "Olivia and Olivier are voting for liberals in this election. "}
 ```
 
-In the above example there's no category, that's an optional field to help make sense of the evaluation metrics because the report produced following the evaluation job will show metrics dimensioned around the categories. Categories like "logic", "math", "translation", etc are all useful ways to group an evaluation dataset, but are not required. When not specified the category will be assigned `_`
+In the above example there's no category, that's an optional field to help make sense of the evaluation metrics because the report produced following the evaluation job will show metrics dimensioned around the categories. Categories like "logic", "math", "translation", etc are all useful ways to group an evaluation dataset, but are not required. When not specified the category will be assigned the value "`_`" (for unknown)
 
+### To configure an Evaluation the UI presents a set of options
+
+![Evaluation Form](web_assets/evaluate-model.png)
 
 ### Interpretation of results
 
-The evaluation job will create a new Model Catalog entry, you can browse these and see examples of the metrics summary in the AI Quick actions screens and can download a more detailed report in html. The report will explain both the evaluation(s) performed along with how to interpret the results. 
+The evaluation job will create a new Model Catalog entry, you can browse these and see examples of the metrics summary in the AI Quick Actions screens and can download a more detailed report in html. The report will explain both the evaluation(s) performed along with how to interpret the results. 
 
 #### BERTScore
 
@@ -64,3 +78,16 @@ The report will show a box plot which allows viewing the distribution of the BER
 - BERTScore's effectiveness diminishes in tasks demanding an appreciation for context beyond mere word-level analysis, such as the interpretation of idioms or cultural nuances. This limitation highlights the metric's potential shortfall in capturing the full spectrum of language's complexity.
 
 - Utilizing BERTScore to evaluate coding models on programming tasks is inadvisable. This recommendation stems from the metric's design, which is not tailored to appreciate the unique demands and structures inherent in coding tasks.
+
+### Example Report
+
+![BERTScore Report](web_assets/bert-evaluation-report.png)
+
+
+Table of Contents:
+
+- [Home](README.md)
+- [Policies](policies/README.md)
+- [CLI](cli-tips.md)
+- [Model Deployment](model-deployment-tips.md)
+- [Model Fine Tuning](fine-tuning-tips.md)
