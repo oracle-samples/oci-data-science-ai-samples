@@ -84,7 +84,6 @@ body = {
     "temperature": 0.7,
     "top_p": 0.8,
 }
-headers = {}  # header goes here
 
 res = requests.post(endpoint, json=body, auth=signer, headers={}).json()
 
@@ -119,7 +118,6 @@ body = {
     "top_p": 0.8,
     "stream": True,
 }
-headers = {}  # header goes here
 
 # open session to enable streaming
 sess = requests.Session()
@@ -127,7 +125,9 @@ sess = requests.Session()
 with sess.post(
     endpoint,
     auth=signer,
-    headers={},
+    headers={
+      'enable-streaming': True
+    },
     data=json.dumps(body),
     stream=True,
 ) as resp:
