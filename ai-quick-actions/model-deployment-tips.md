@@ -119,8 +119,9 @@ body = {
     "top_p": 0.8,
     "stream": True,
 }
-headers = {}  # header goes here
-
+headers = {
+    'enable-streaming': true
+}
 # open session to enable streaming
 sess = requests.Session()
 
