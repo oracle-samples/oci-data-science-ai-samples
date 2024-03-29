@@ -1,7 +1,8 @@
 # AI Quick Actions
 
-> **Note:** To Enable the AI Quick Actions features either begin a new Notebook session, or deactivate and
-> reactivate any existing Notebook sessions.
+> **Note:** To Enable the AI Quick Actions features either begin a new Notebook session, or
+> deactivate and reactivate any existing Notebook sessions. The AI Quick Actions icon will
+> then be visible in the Extensions section of the launcher.
 
 ![AQUA](web_assets/aqua.png)
 
