@@ -4,7 +4,7 @@ Table of Contents:
 
 - [Home](README.md)
 - [Model Deployment](model-deployment-tips.md)
-- [Model evaluation](evaluation-tips.md)
+- [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
 
 This document provides documentation on how to use ADS to create AI Quick Actions (AQUA) model deployments, fine-tune foundational models and evaluate the models.
@@ -61,10 +61,9 @@ Additional keyword arguments that can be used to filter the results for OCI list
 ads aqua model list --compartment_id ocid1.compartment.oc1..<ocid>
 ```
 
-<details>
-  <summary>CLI Output</summary>
+#### CLI Output
 
-```console
+```json
 {
     "compartment_id": "ocid1.compartment.oc1..<ocid>",
     "icon": "",
@@ -88,12 +87,7 @@ ads aqua model list --compartment_id ocid1.compartment.oc1..<ocid>
     "search_text": "llama2,code_synthesis,,Meta",
     "ready_to_deploy": true
 }
-...
-...
-...
-  ```
-
-</details>
+```
 
 ## Get Model Details
 
@@ -119,10 +113,9 @@ The OCID of the Aqua model.
 ads aqua model get --model_id ocid1.datasciencemodel.oc1.iad.<ocid>
 ```
 
-<details>
-  <summary>CLI Output</summary>
+#### CLI Output
 
-```console
+```json
 {
   "compartment_id": "ocid1.compartment.oc1..<ocid>",
   "icon": "",
@@ -146,10 +139,8 @@ ads aqua model get --model_id ocid1.datasciencemodel.oc1.iad.<ocid>
   "search_text": "The Mistral-7B-Instruct-v0.1 Large Language Model (LLM) is a instruct fine-tuned version of the Mistral-7B-v0.1 generative text model using a variety of publicly available conversation datasets. Apache 2.0,text_generation,,Mistral AI",
   "ready_to_deploy": true,
   "model_card": "---\nlicense: apache-2.0\npipeline_tag: text-generation\ntags:\n- finetuned\ninference:\n  parameters:\n    temperature: 0.7\n---\n\n# Model Card for Mistral-7B-Instruct-v0.1\n\nThe Mistral-7B-Instruct-v0.1 Large Language Model (LLM) is a instruct fine-tuned version of the [Mistral-7B-v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) generative text model using a variety of publicly available conversation datasets.\n\nFor full details of this model please read our [release blog post](https://mistral.ai/news/announcing-mistral-7b/)\n\n## Instruction format\n\nIn order to leverage instruction fine-tuning, your prompt should be surrounded by `[INST]` and `[\\INST]` tokens. The very first instruction should begin with a begin of sentence id. The next instructions should not. The assistant generation will be ended by the end-of-sentence token id.\n\nE.g.\n```\ntext = \"<s>[INST] What is your favourite condiment? [/INST]\"\n\"Well, I'm quite partial to a good squeeze of fresh lemon juice. It adds just the right amount of zesty flavour to whatever I'm cooking up in the kitchen!</s> \"\n\"[INST] Do you have mayonnaise recipes? [/INST]\"\n```\n\nThis format is available as a [chat template](https://huggingface.co/docs/transformers/main/chat_templating) via the `apply_chat_template()` method:\n\n```python\nfrom transformers import AutoModelForCausalLM, AutoTokenizer\n\ndevice = \"cuda\" # the device to load the model onto\n\nmodel = AutoModelForCausalLM.from_pretrained(\"mistralai/Mistral-7B-Instruct-v0.1\")\ntokenizer = AutoTokenizer.from_pretrained(\"mistralai/Mistral-7B-Instruct-v0.1\")\n\nmessages = [\n    {\"role\": \"user\", \"content\": \"What is your favourite condiment?\"},\n    {\"role\": \"assistant\", \"content\": \"Well, I'm quite partial to a good squeeze of fresh lemon juice. It adds just the right amount of zesty flavour to whatever I'm cooking up in the kitchen!\"},\n    {\"role\": \"user\", \"content\": \"Do you have mayonnaise recipes?\"}\n]\n\nencodeds = tokenizer.apply_chat_template(messages, return_tensors=\"pt\")\n\nmodel_inputs = encodeds.to(device)\nmodel.to(device)\n\ngenerated_ids = model.generate(model_inputs, max_new_tokens=1000, do_sample=True)\ndecoded = tokenizer.batch_decode(generated_ids)\nprint(decoded[0])\n```\n\n## Model Architecture\nThis instruction model is based on Mistral-7B-v0.1, a transformer model with the following architecture choices:\n- Grouped-Query Attention\n- Sliding-Window Attention\n- Byte-fallback BPE tokenizer\n\n## Troubleshooting\n- If you see the following error:\n```\nTraceback (most recent call last):\nFile \"\", line 1, in\nFile \"/transformers/models/auto/auto_factory.py\", line 482, in from_pretrained\nconfig, kwargs = AutoConfig.from_pretrained(\nFile \"/transformers/models/auto/configuration_auto.py\", line 1022, in from_pretrained\nconfig_class = CONFIG_MAPPING[config_dict[\"model_type\"]]\nFile \"/transformers/models/auto/configuration_auto.py\", line 723, in getitem\nraise KeyError(key)\nKeyError: 'mistral'\n```\n\nInstalling transformers from source should solve the issue\npip install git+https://github.com/huggingface/transformers\n\nThis should not be required after transformers-v4.33.4.\n\n## Limitations\n\nThe Mistral 7B Instruct model is a quick demonstration that the base model can be easily fine-tuned to achieve compelling performance. \nIt does not have any moderation mechanisms. We're looking forward to engaging with the community on ways to\nmake the model finely respect guardrails, allowing for deployment in environments requiring moderated outputs.\n\n## The Mistral AI Team\n\nAlbert Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra Singh Chaplot, Diego de las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lélio Renard Lavaud, Lucile Saulnier, Marie-Anne Lachaux, Pierre Stock, Teven Le Scao, Thibaut Lavril, Thomas Wang, Timothée Lacroix, William El Sayed."
-}```
-
-</details>
-
+}
+```
 
 # Model Deployment
 
@@ -234,10 +225,9 @@ Environment variable for the model deployment, defaults to None.
 ads aqua deployment create --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --instance_shape "VM.GPU.A10.1" --display_name "falcon7b MD with Aqua CLI"
 ```
 
-<details>
-  <summary>CLI Output</summary>
+#### CLI Output
 
-```console
+```json
 {
     "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
     "display_name": "falcon7b MD with Aqua CLI",
@@ -259,10 +249,7 @@ ads aqua deployment create --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --
         "OCI_AQUA": ""
     }
 }
-  ```
-</details>
-
-
+```
 
 ## List Model Deployments
 
@@ -293,10 +280,9 @@ Additional keyword arguments that can be used to filter the results for OCI list
 ads aqua deployment list
 ```
 
-<details>
-  <summary>CLI Output</summary>
+#### CLI Output
 
-```console
+```json
 {
     "id": "ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>",
     "display_name": "Mistral-7B-v0.1 MD",
@@ -318,13 +304,7 @@ ads aqua deployment list
         "OCI_AQUA": ""
     }
 }
-...
-...
-  ```
-
-</details>
-
-
+```
 
 ## Get Model Deployment Details
 
@@ -354,10 +334,9 @@ Additional keyword arguments that can be used to filter the results for OCI get_
 ads aqua deployment get --model_deployment_id "ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>"
 ```
 
-<details>
-  <summary>CLI Output</summary>
+#### CLI Output
 
-```console
+```json
 {
     "id": "ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>",
     "display_name": "MD for falcon7b Model",
@@ -390,10 +369,6 @@ ads aqua deployment get --model_deployment_id "ocid1.datasciencemodeldeploymenti
     }
 }  
 ```
-
-</details>
-
-
 
 # Model Evaluation
 
@@ -499,10 +474,9 @@ The log id for the evaluation job infrastructure. Defaults to None.
 ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" --evaluation_name "test_evaluation" --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" --report_path "oci://<bucket>@<namespace>/report/path/" --model_parameters '{"max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}' --shape_name "VM.Standard.E4.Flex" --block_storage_size 50 --metrics '[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]
 ```
 
-<details>
-  <summary>CLI Output</summary>
+#### CLI Output
 
-```console
+```json
 {
     "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
     "display_name": "test_evaluation",
@@ -525,9 +499,6 @@ ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeploy
     }
 }  
 ```
-</details>
-
-
 
 ## List Model Evaluations
 
@@ -554,10 +525,9 @@ The ID of the compartment in which the aqua model evaluations are available.
 ads aqua evaluation list --compartment_id ocid1.compartment.oc1..<ocid>
 ```
 
-<details>
-  <summary>CLI Output</summary>
+#### CLI Output
 
-```console
+```json
 {
     "id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
     "name": "test-eval",
@@ -596,13 +566,7 @@ ads aqua evaluation list --compartment_id ocid1.compartment.oc1..<ocid>
         "report_path": "oci://<bucket>@<namespace>/report/path"
     }
 }
-...
-...
 ```
-
-</details>
-
-
 
 ## Get Model Evaluation Details
 
@@ -629,10 +593,9 @@ The OCID of the Aqua model evaluation.
 ads aqua evaluation get --eval_id "ocid1.datasciencemodel.oc1.iad.<ocid>"
 ```
 
-<details>
-  <summary>CLI Output</summary>
+#### CLI Output
 
-```console
+```json
 {
     "id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
     "name": "test-eval",
@@ -693,10 +656,6 @@ ads aqua evaluation get --eval_id "ocid1.datasciencemodel.oc1.iad.<ocid>"
     }
 }
 ```
-
-</details>
-
-
 
 # Model Fine-Tuning
 
@@ -800,10 +759,9 @@ The log id for the evaluation job infrastructure. Defaults to None.
 ads aqua fine_tuning create --ft_source_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --ft_name "Mistral-7B-Instruct-v0.1 FT" --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" --report_path "oci://<bucket>@<namespace>/report/path" --ft_parameters '{"epochs": 10, "learning_rate": 0.0002}' --shape_name "VM.GPU.A10.2" --replica 2 --validation_set_size 0.5 --subnet_id "ocid1.subnet.oc1.iad.<ocid>" --log_group_id "ocid1.loggroup.oc1.iad.<ocid>" --log_id "ocid1.log.oc1.iad.<ocid>" --experiment_id "ocid1.datasciencemodelversionset.oc1.iad.<ocid>"
 ```
 
-<details>
-  <summary>CLI Output</summary>
+#### CLI Output
 
-```console
+```json
 {
     "id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
     "name": "Test Mistral-7B-Instruct-v0.1 FT",
@@ -838,11 +796,10 @@ ads aqua fine_tuning create --ft_source_id "ocid1.datasciencemodel.oc1.iad.<ocid
     }
 }
 ```
-</details>
 
 Table of Contents:
 
 - [Home](README.md)
 - [Model Deployment](model-deployment-tips.md)
-- [Model evaluation](evaluation-tips.md)
+- [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
