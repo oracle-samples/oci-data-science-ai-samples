@@ -73,7 +73,7 @@ There are a few configurations for fine-tuning the model:
 - **Model Version Set** You may group the fine-tuned models with model version sets.
 - **Results** Here you specify the object storage location for saving the outputs of the fine-tuned model. 
 
-> **Please note that [versioning](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usingversioning.htm) must be enabled on the ObjectStorage bucket for this to work.**
+> **Important:** To save fine-tuned models, [versioning](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usingversioning.htm) must be enabled on the selected bucket.
 
 In addition, you will need to specify the infrastructure and parameters for fine-tuning job:
 
