@@ -1,5 +1,13 @@
 # Model Deployment
 
+Table of Contents:
+
+- [Home](README.md)
+- [Policies](policies/README.md)
+- [CLI](cli-tips.md)
+- [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Evaluation](evaluation-tips.md)
+
 ## Introduction to [vLLM](https://github.com/vllm-project/vllm)
 
 The Data Science server has prebuilt service containers that make deploying a large 
@@ -8,7 +16,7 @@ engine for LLMs) is used in the service container to host the model, the end poi
 supports the OpenAI API protocol.  This allows the model deployment to be used as a drop-in
 replacement for applications using OpenAI API. Model deployments are a managed resource in 
 the OCI Data Science service. For more details about Model Deployment and managing it through 
-the OCI console please see the official [docs](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-about.htm).
+the OCI console please see the [OCI docs](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-about.htm).
 
 ### Deploying an LLM
 
@@ -130,10 +138,20 @@ with sess.post(
 
 ### Troubleshooting
 
-If the model should fail to deploy, reasons might include lack of availability, or policy permissions
-the logs are a good place to start to diagnose the issue. The logs can be accessed 
+If the model should fail to deploy, reasons might include lack of GPU availability, or policy permissions.
+
+The logs are a good place to start to diagnose the issue. The logs can be accessed from the UI, or you can
+use the ADS Log watcher, see [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/opctl/_template/monitoring.html) for more details.
 
 From the **General Information** section the **Log Groups** and **Log** sections are clickable links to 
 begin the diagnosis.
 
 ![General Information](web_assets/gen-info-deployed-model.png)
+
+Table of Contents:
+
+- [Home](README.md)
+- [Policies](policies/README.md)
+- [CLI](cli-tips.md)
+- [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Evaluation](evaluation-tips.md)

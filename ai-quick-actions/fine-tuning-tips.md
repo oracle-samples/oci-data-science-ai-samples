@@ -1,12 +1,20 @@
 # LLM Fine-Tuning
 
+Table of Contents:
+
+- [Home](README.md)
+- [Policies](policies/README.md)
+- [CLI](cli-tips.md)
+- [Model Deployment](model-deployment-tips.md)
+- [Model Evaluation](evaluation-tips.md)
+
 ## Introduction
 
-Powerful large language models (LLMs), such as Llama2 and Mistral, have been pre-trained on vast amounts of text data, enabling them to understand and generate human-like text. However, more potential of LLMs can unlocked through fine-tuning.
+Powerful large language models (LLMs), such as Llama2 and Mistral, have been pre-trained on vast amounts of text data, enabling them to understand and generate human-like text. However, more potential of LLMs can be unlocked through fine-tuning.
 
 Fine-tuning is the art of tailoring a pre-trained model to excel in specific tasks or domains. This customization is crucial because, despite their general proficiency, LLMs may not perform optimally on specialized tasks without further training. By fine-tuning an LLM on a domain-specific dataset, we can enhance its performance, making it more adept at understanding and responding to the nuances of that domain.
 
-During fine-tuning, the model is trained a new dataset containing examples that are representative of the tasks it will perform. Through fine-tuning, the model's parameters are adjusted, effectively teaching it the finer details of the task at hand. This results in a model that is not only proficient in general language skills but also fine-tuned for specific applications.
+During fine-tuning, the model is trained on a new dataset containing examples that are representative of the tasks it will perform. Through fine-tuning, the model's parameters are adjusted, effectively teaching it the finer details of the task at hand. This results in a model that is not only proficient in general language skills but also fine-tuned for specific applications.
 
 One of the most significant benefits of fine-tuning is the reduction in resources required. Training an LLM from scratch is a resource-intensive endeavor, both in terms of computational power and time. Fine-tuning, on the other hand, leverages the heavy lifting already done during the pre-training phase, requiring only a fraction of the resources to specialize the model.
 
@@ -45,7 +53,7 @@ For fine-tuning in AI Quick Actions, the dataset
 
 The `prompt` is the input to the LLM and the `completion` is the expected output from the LLM. You may want to format the `prompt` with a specific template depending on your task.
 
-Here is a couple of examples in the dataset prepared for the task of summarizing conversations. The raw data is taken from the [samsum dataset](https://huggingface.co/datasets/samsum) and formatted to be used by fine-tuning in AI Quick Actions:
+Here are a couple of examples in the dataset prepared for the task of summarizing conversations. The raw data is taken from the [samsum dataset](https://huggingface.co/datasets/samsum) and formatted to be used by fine-tuning in AI Quick Actions:
 
 ```json
 {"prompt": "Summarize this dialog:\nAmanda: I baked  cookies. Do you want some?\r\nJerry: Sure!\r\nAmanda: I'll bring you some tomorrow :-)\n---\nSummary:\n", "completion": "Amanda baked cookies and will bring some for Jerry tomorrow."}
@@ -70,10 +78,10 @@ There are a few configurations for fine-tuning the model:
 In addition, you will need to specify the infrastructure and parameters for fine-tuning job:
 
 - **Shape** A GPU shape is required for fine-tuning. You may use either a [VM shape](https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm#vm-gpu) or [BM shape](https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm#bm-gpu) for larger models. Fine-tuning requires substantial computational resources, particularly memory, to store model weights, optimizer states, gradients, and the data being processed. Adequate GPU memory ensures that larger batches of data can be processed simultaneously, which can lead to more efficient fine-tuning. 
-- **Replica** This is the number nodes to be used for the fine-tuning job. Distributed training will be configured automatically when multiple GPUs are available. We recommend using single replica when possible to avoid the communication overhead between nodes, which adversely impacts the fine-tuning performance. AI Quick Actions will gradually roll out the multi-node distributed training support for larger models.
+- **Replica** This is the number of nodes to be used for the fine-tuning job. Distributed training will be configured automatically when multiple GPUs are available. We recommend using single replica when possible to avoid the communication overhead between nodes, which adversely impacts the fine-tuning performance. AI Quick Actions will gradually roll out the multi-node distributed training support for larger models.
 - **Networking** VCN and subnet are needed for distributed training (replica > 1). For single replica, default networking will be used automatically.
 - **Logging** Logging is required for distributed training as the nodes will coordinate using logging. For single replica, logging is optional but highly recommended for debugging purpose.
-- **Parameters** You can specify the number epochs and learning rate for the fine-tuning.
+- **Parameters** You can specify the number of epochs and learning rate for the fine-tuning.
 
 ### Distributed Training
 
@@ -88,3 +96,11 @@ Once the fine-tuning job is successfully submitted, a fine-tuned model will be c
 The accuracy metric reflects the proportion of correct completions made by the model on a given dataset. A higher accuracy indicates that the model is performing well in terms of making correct completions. On the other hand, the loss metric represents the model's error. It quantifies how far the model's completions are from the actual target completions. The goal during training is to minimize this loss function, which typically involves optimizing the model's weights to reduce the error on the training data.
 
 As the training progresses, monitoring both accuracy and loss provides insights into the model's learning dynamics. A decreasing loss alongside increasing accuracy suggests that the model is learning effectively. However, it's important to watch for signs of over-fitting, where the model performs exceptionally well on the training data but fails to generalize to new, unseen data. This can be detected if the validation loss stops decreasing or starts increasing, even as training loss continues to decline.
+
+Table of Contents:
+
+- [Home](README.md)
+- [Policies](policies/README.md)
+- [CLI](cli-tips.md)
+- [Model Deployment](model-deployment-tips.md)
+- [Model Evaluation](evaluation-tips.md)
