@@ -126,7 +126,7 @@ with sess.post(
     endpoint,
     auth=signer,
     headers={
-      'enable-streaming': true
+      'enable-streaming': True
     },
     data=json.dumps(body),
     stream=True,
