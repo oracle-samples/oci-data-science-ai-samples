@@ -94,7 +94,7 @@ body = {
     "top_p": 0.8,
 }
 
-res = requests.post(endpoint, json=body, auth=signer, headers={}).json()
+res = requests.post(endpoint, json=body, auth=auth, headers={}).json()
 
 print(res)
 ```
