@@ -48,7 +48,7 @@ from the deployments tab using the test model, or programmatically.
 #### Using oci-cli
 
 ```bash
-oci raw-request --http-method POST --target-uri https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.xxxxxxxxx/predict --request-body '{
+oci raw-request --http-method POST --target-uri https://modeldeployment.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeployment.oc1.iad.xxxxxxxxx/predict --request-body '{
         "model": "odsc-llm",
         "prompt":"what are activation functions?",
         "max_tokens":250,
@@ -64,6 +64,7 @@ oci raw-request --http-method POST --target-uri https://modeldeployment-int.us-a
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
  
 import requests
+import oci
 from oci.signer import Signer
 from oci.config import from_file
 
@@ -76,7 +77,15 @@ auth = Signer(
     pass_phrase=config['pass_phrase']
 )
 
-endpoint = "https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.xxxxxxxxx/predict"
+# For security token based authentication
+# token_file = config['security_token_file']
+# token = None
+# with open(token_file, 'r') as f:
+#     token = f.read()
+# private_key = oci.signer.load_private_key_from_file(config['key_file'])
+# auth = oci.auth.signers.SecurityTokenSigner(token, private_key)
+
+endpoint = "https://modeldeployment.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeployment.oc1.iad.xxxxxxxxx/predict"
 body = {
     "model": "odsc-llm", # this is a constant
     "prompt": "what are activation functions?",
@@ -97,8 +106,11 @@ print(res)
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
  
 import requests
+import oci
 from oci.signer import Signer
 from oci.config import from_file
+# install with pip install sseclient-py
+import sseclient
 
 config = from_file('~/.oci/config')
 auth = Signer(
@@ -109,7 +121,15 @@ auth = Signer(
     pass_phrase=config['pass_phrase']
 )
 
-endpoint = "https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.xxxxxxxxx/predict"
+# For security token based authentication
+# token_file = config['security_token_file']
+# token = None
+# with open(token_file, 'r') as f:
+#     token = f.read()
+# private_key = oci.signer.load_private_key_from_file(config['key_file'])
+# auth = oci.auth.signers.SecurityTokenSigner(token, private_key)
+
+endpoint = "https://modeldeployment.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeployment.oc1.iad.xxxxxxxxx/predict"
 body = {
     "model": "odsc-llm", # this is a constant
     "prompt": "what are activation functions?",
@@ -119,22 +139,149 @@ body = {
     "stream": True,
 }
 
-# open session to enable streaming
-sess = requests.Session()
+headers={'Content-Type':'application/json','enable-streaming':'true', 'Accept': 'text/event-stream'}
+response = requests.post(endpoint, json=body, auth=auth, stream=True, headers=headers)
 
-with sess.post(
-    endpoint,
-    auth=signer,
-    headers={
-      'enable-streaming': True
-    },
-    data=json.dumps(body),
-    stream=True,
-) as resp:
-    for chunk in resp.iter_lines():
-        chunk = chunk.decode("utf-8")
-        print(chunk)
+print(response.headers)
+
+client = sseclient.SSEClient(response)
+for event in client.events():
+    print(event.data)
+
+# Alternatively, we can use the below code to print the response.
+# for line in response.iter_lines():
+#    if line:
+#        print(line)
 ```
+
+#### Using Java
+
+```java
+/**
+ * The OCI SDK must be installed for this example to function properly.
+ * Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdk.htm
+ */
+package org.example;
+
+import com.oracle.bmc.auth.AuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider;
+import com.oracle.bmc.http.ClientConfigurator;
+import com.oracle.bmc.http.Priorities;
+import com.oracle.bmc.http.client.HttpClient;
+import com.oracle.bmc.http.client.HttpClientBuilder;
+import com.oracle.bmc.http.client.HttpRequest;
+import com.oracle.bmc.http.client.HttpResponse;
+import com.oracle.bmc.http.client.Method;
+import com.oracle.bmc.http.client.jersey.JerseyHttpProvider;
+import com.oracle.bmc.http.client.jersey.sse.SseSupport;
+import com.oracle.bmc.http.internal.ParamEncoder;
+import com.oracle.bmc.http.signing.RequestSigningFilter;
+
+import javax.ws.rs.core.MediaType;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+public class RestExample {
+
+    public static void main(String[] args) throws Exception {
+        String configurationFilePath = "~/.oci/config";
+        String profile = "DEFAULT";
+
+        // Pre-Requirement: Allow setting of restricted headers. This is required to allow the SigningFilter
+        // to set the host header that gets computed during signing of the request.
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
+
+        final AuthenticationDetailsProvider provider =
+                new SessionTokenAuthenticationDetailsProvider(configurationFilePath, profile);
+
+        // 1) Create a request signing filter instance using SessionTokenAuth Provider.
+        RequestSigningFilter requestSigningFilter = RequestSigningFilter.fromAuthProvider(
+                provider);
+
+      //  1) Alternatively, RequestSigningFilter can be created from a config file.
+      //  RequestSigningFilter requestSigningFilter = RequestSigningFilter.fromConfigFile(configurationFilePath, profile);
+
+        // 2) Create a Jersey client and register the request signing filter.
+        // Refer to this page https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkexamples.htm for information regarding the compatibility of the HTTP client(s) with OCI SDK version.
+
+        HttpClientBuilder builder = JerseyHttpProvider.getInstance()
+                .newBuilder()
+                .registerRequestInterceptor(Priorities.AUTHENTICATION, requestSigningFilter)
+                .baseUri(
+                        URI.create(
+                                "${modelDeployment.modelDeploymentUrl}/")
+                                + ParamEncoder.encodePathParam("predict"));
+        // 3) Create a request and set the expected type header.
+
+        String jsonPayload = "{}";  // Add payload here with respect to your model example shown in next line:
+
+        // 4) Setup Streaming request
+        Function<InputStream, List<String>> generateTextResultReader = getInputStreamListFunction();
+        SseSupport sseSupport = new SseSupport(generateTextResultReader);
+        ClientConfigurator clientConfigurator = sseSupport.getClientConfigurator();
+        clientConfigurator.customizeClient(builder);
+
+        try (HttpClient client = builder.build()) {
+            HttpRequest request = client
+                    .createRequest(Method.POST)
+                    .header("accepts", MediaType.APPLICATION_JSON)
+                    .header("content-type", MediaType.APPLICATION_JSON)
+                    .header("enable-streaming", "true")
+                    .body(jsonPayload);
+
+            // 5) Invoke the call and get the response.
+            HttpResponse response = request.execute().toCompletableFuture().get();
+
+            // 6) Print the response headers and body
+            Map<String, List<String>> responseHeaders = response.headers();
+            System.out.println("HTTP Headers " + responseHeaders);
+
+            InputStream responseBody = response.streamBody().toCompletableFuture().get();
+            try (
+                    final BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(responseBody, StandardCharsets.UTF_8)
+                    )
+            ) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    private static Function<InputStream, List<String>> getInputStreamListFunction() {
+        Function<InputStream, List<String>> generateTextResultReader = entityStream -> {
+            try (BufferedReader reader =
+                         new BufferedReader(new InputStreamReader(entityStream))) {
+                String line;
+                List<String> generatedTextList = new ArrayList<>();
+                while ((line = reader.readLine()) != null) {
+                    if (line.isEmpty() || line.startsWith(":")) {
+                        continue;
+                    }
+                    generatedTextList.add(line);
+                }
+                return generatedTextList;
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        };
+        return generateTextResultReader;
+    }
+}
+
+```
+
 
 ### Troubleshooting
 
