@@ -154,7 +154,7 @@ for event in client.events():
 #        print(line)
 ```
 
-#### Using Java
+#### Using Java (with streaming)
 
 ```java
 /**
