@@ -43,7 +43,7 @@ from the deployments tab using the test model, or programmatically.
 
 ![Try Model](web_assets/try-model.png)
 
-### Using A Model
+### Inferencing Model
 
 #### Using oci-cli
 
@@ -101,6 +101,8 @@ print(res)
 
 #### Using Python SDK (with streaming)
 
+To consume streaming Server-sent Events (SSE), install [sseclient-py](https://pypi.org/project/sseclient-py/) using `pip install sseclient-py`.
+
 ```python
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
@@ -109,8 +111,7 @@ import requests
 import oci
 from oci.signer import Signer
 from oci.config import from_file
-# install with pip install sseclient-py
-import sseclient
+import sseclient # pip install sseclient-py
 
 config = from_file('~/.oci/config')
 auth = Signer(
