@@ -3,6 +3,7 @@
 Table of Contents:
 
 - [Home](README.md)
+- [Policies](policies/README.md)
 - [Model Deployment](model-deployment-tips.md)
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
@@ -800,6 +801,7 @@ ads aqua fine_tuning create --ft_source_id "ocid1.datasciencemodel.oc1.iad.<ocid
 Table of Contents:
 
 - [Home](README.md)
+- [Policies](policies/README.md)
 - [Model Deployment](model-deployment-tips.md)
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
