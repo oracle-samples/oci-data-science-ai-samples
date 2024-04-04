@@ -57,6 +57,9 @@ oci raw-request --http-method POST --target-uri https://modeldeployment.us-ashbu
     }' --auth <auth_method>
 ```
 
+Note: Currently `oci-cli` does not support streaming response, use Python or Java SDK instead.
+
+
 #### Using Python SDK (without streaming)
 
 ```python
