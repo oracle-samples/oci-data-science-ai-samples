@@ -1,10 +1,10 @@
 # ORM Policies
 
-- [Home](README.md)
-- [CLI](cli-tips.md)
-- [Model Deployment](model-deployment-tips.md)
-- [Model Evaluation](evaluation-tips.md)
-- [Model Fine Tuning](fine-tuning-tips.md)
+- [Home](../README.md)
+- [CLI](../cli-tips.md)
+- [Model Deployment](../model-deployment-tips.md)
+- [Model Evaluation](../evaluation-tips.md)
+- [Model Fine Tuning](../fine-tuning-tips.md)
 
 To install required policies for AI Quick Actions you can use [Oracle Resource Manager](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) (ORM) stack. Download terraform configuration file [oci-ods-aqua-orm.zip](./oci-ods-aqua-orm.zip) with the infrastructure instructions for the dynamic groups and polices. For steps on creating stacks, see [Creating a Stack from a Zip File](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Tasks/create-stack-local.htm#top).
 
@@ -16,8 +16,8 @@ To install required policies for AI Quick Actions you can use [Oracle Resource M
 
 ![Setup 3](../web_assets/policies3.png)
 
-- [Home](README.md)
-- [CLI](cli-tips.md)
-- [Model Deployment](model-deployment-tips.md)
-- [Model Evaluation](evaluation-tips.md)
-- [Model Fine Tuning](fine-tuning-tips.md)
+- [Home](../README.md)
+- [CLI](../cli-tips.md)
+- [Model Deployment](../model-deployment-tips.md)
+- [Model Evaluation](../evaluation-tips.md)
+- [Model Fine Tuning](../fine-tuning-tips.md)
