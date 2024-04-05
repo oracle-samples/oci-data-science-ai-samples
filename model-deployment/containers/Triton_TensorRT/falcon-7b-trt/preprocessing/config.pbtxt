@@ -59,7 +59,7 @@ output [
 parameters {
   key: "tokenizer_dir"
   value: {
-    string_value: "/falcon-7B"
+    string_value: "/opt/ds/model/deployed_model/falcon-7b-trt/tensorrt_llm/1/falcon-7b"
   }
 }
 
