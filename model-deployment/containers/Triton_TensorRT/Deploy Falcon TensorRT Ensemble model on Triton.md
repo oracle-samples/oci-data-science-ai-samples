@@ -31,13 +31,13 @@ Start by building a docker image which contain the tool chain required convert a
 ### Step 2 - Downloading and Retrieving the model weights 
 ```bash
   git lfs install
-  git clone https://huggingface.co/tiiuae/falcon-180B
+  git clone https://huggingface.co/tiiuae/falcon-7b-instruct
 ```
 ### Step 3 - Compiling the Model 
 The subsequent phase involves converting the model into a TensorRT engine. This requires having both the model weights and a model definition crafted using the TensorRT-LLM Python API. Within the TensorRT-LLM repository, there is an extensive selection of pre-established model structures. For the purpose of this blog, we'll employ the provided Falcon model definition rather than creating a custom one. This serves as a basic illustration of some optimizations that TensorRT-LLM offers. 
 ```bash
-  # -v /falcon-180B/:/model:Z , This statement mounts the downloaded model directory into tooling container
-  docker run --gpus=all --shm-size=1g -v /falcon-180B/:/model:Z -it triton_trt_llm bash
+  # -v /falcon-7b/:/model:Z , This statement mounts the downloaded model directory into tooling container
+  docker run --gpus=all --shm-size=1g -v /falcon-7b/:/model:Z -it triton_trt_llm bash
   # Inside the container , Run following command
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-12.2/compat/lib.real/
 ```
@@ -72,25 +72,18 @@ Install Quantisation tooling dependencies
                     --calib_size 16
   
   # Apply TensorRT-LLM Conversion
-  # Build Falcon 180B TP=8 using HF checkpoint + PTQ scaling factors from the single-rank checkpoint
-  python build.py --model_dir /model \
-                  --quantized_fp8_model_path ./quantized_fp8/falcon_tp1_rank0.npz \
-                  --dtype float16 \
-                  --enable_context_fmha \
-                  --use_gpt_attention_plugin float16 \
-                  --output_dir falcon/180b/trt_engines/fp8/8-gpu/ \
+
+  # Single GPU on falcon-7b-instruct
+  python build.py --model_dir falcon/7b-instruct \
+                  --dtype bfloat16 \
+                  --use_gemm_plugin bfloat16 \
                   --remove_input_padding \
-                  --enable_fp8 \
-                  --fp8_kv_cache \
-                  --strongly_typed \
-                  --world_size 8 \
-                  --tp_size 8 \
-                  --load_by_shard \
-                  --parallel_build
-  
-  # --tp_size 8 Indicates, Tensor parallelism 8
-  # --output_dir falcon/180b/trt_engines/fp8/8-gpu/ Indicates that converted model artifacts will be placed in this location.
-```
+                  --use_gpt_attention_plugin bfloat16 \
+                  --enable_context_fmha \
+                  --output_dir falcon/7b/trt_engines/bf16/1-gpu/ \
+                  --world_size 1
+  # --output_dir falcon/7b/trt_engines/bf16/1-gpu/ indicates that converted model artifacts will be placed in this location.
+````
 
 # Model Deployment
 
@@ -98,7 +91,7 @@ Set up Triton Inference Server compliant docker image and model
 ### Step 1: Create Model Artifact
 To use Triton, we need to build a model repository. The structure of the repository as follows:
 ```
-model_repository
+falcon-7b-trt
 |
 +-- ensemble
     |
@@ -122,7 +115,17 @@ model_repository
     +-- 1
         |
         +-- model.py
+        +-- falcon_float16_tp1_rank0.engine     (saved from TensorRT-LLM Conversion)
+        +-- model.cache                         (saved from TensorRT-LLM Conversion)
+        +-- config.json                         (saved from TensorRT-LLM Conversion)
+        +-- falcon-7b                           (holds Original Model files)
 ```
+Notes -
+
+1. The attached falcon-7b-trt model doesn't have the falcon-7b trt converted model(`falcon_float16_tp1_rank0.engine`) in the repo. That needs to be created and put inside the model_artifact by the user with other files as shown above.
+2. `falcon-7b` inside `tensorrt_llm/1` location is a folder which would have tokenizer and other files from the original model - [falcon-7b](https://huggingface.co/tiiuae/falcon-7b-instruct).
+3. Model Deployment Service mounts the deployed_model at this location - `/opt/ds/model/deployed_model`. You can find the reference in the config.pbtxt, refer the `tokenizer_dir` [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/model-deployment/containers/Triton_TensorRT/falcon-7b-trt/preprocessing/config.pbtxt)
+
 
 ### Step 2: Upload model artifact to Model catalog
 Please zip the model_repository folder into model_artifact.zip and follow guidelines mentioned in [Readme step](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/model-deployment/containers/llama2/README.md#one-time-download-to-oci-model-catalog) to create a model catalog item with model_artifact.zip.
@@ -131,19 +134,24 @@ Please zip the model_repository folder into model_artifact.zip and follow guidel
 
 ```bash
 docker login $(OCIR_REGION).ocir.io
-mkdir -p tritonServer
-cd tritonServer
-git clone https://github.com/triton-inference-server/server.git -b v2.30.0 --depth 1
-cd server
-python compose.py --backend onnxruntime --repoagent checksum --output-name $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/onnx-runtime:1.0.0
-docker push $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/onnx-runtime:1.0.0
+docker tag triton_trt_llm $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/triton-tensorrt:1.1
+docker push $(OCIR_REGION).ocir.io/$(OCIR_NAMESPACE)/oci-datascience-triton-server/triton-tensorrt:1.1
 ```
 
 ### Step 4: Create Model Deployment
-OCI Data Science Model Deployment has a dedicated support for Triton image, to make it easier to manage the Triton image by mapping of service-mandated endpoints to the Triton's inference and health HTTP/REST endpoint. To enable this support, enter the following environment variable when creating the Model Deployment:
+OCI Data Science Model Deployment has a dedicated support for Triton image, to make it easier to manage the Triton image by mapping of service-mandated endpoints to the Triton's inference and health HTTP/REST endpoint. 
+
+To enable this support, enter the following environment variable when creating the Model Deployment:
 ```bash
 CONTAINER_TYPE = TRITON
 ```
+***
+But Triton TRT Container serves the prediction on `/generate` endpoint instead of `/infer` which older Triton Container supports. OCI Data Science Model Deployment doesn't have a dedicated support for this new Triton TRT Image. 
+
+So User can use Environment Variable supported by OCI Data Science Model Deployment service to serve this Triton TRT Container until OCI Data Science Model Deployment service provides dedicated support for the new Triton TRT image.
+1. `MODEL_DEPLOY_PREDICT_ENDPOINT` Environment Variable to map the predict endpoint to `/v2/models/ensemble/versions/1/generate`. With this restriction, user can only inference single Model with TritonTRT MD as inference endpoint is a static endpoint.
+2. `MODEL_DEPLOY_HEALTH_ENDPOINT` Environment Variable to map the health endpoint `/v2/health/ready`
+3. This Triton TRT container constitutes around 40+ GB in Size, so OCI Model Deployment needs large enough Boot Volume to accommodate the same. For that purpose, user can use `STORAGE_SIZE_IN_GB` Environment Variable.
 
 #### Using Python sdk
 ```bash
@@ -158,15 +166,19 @@ model_config_details = ModelConfigurationDetails(
 # Create the container environment configuration
 environment_config_details = OcirModelDeploymentEnvironmentConfigurationDetails(
     environment_configuration_type="OCIR_CONTAINER",
-    environment_variables={'CONTAINER_TYPE': 'TRITON'},
+    environment_variables={
+      'STORAGE_SIZE_IN_GB': '500', 
+      'MODEL_DEPLOY_PREDICT_ENDPOINT':'/v2/models/ensemble/versions/1/generate', 
+      'MODEL_DEPLOY_HEALTH_ENDPOINT':'/v2/health/ready'},
     image="iad.ocir.io/testtenancy/oci-datascience-triton-server/triton-tensorrt:1.1",
     image_digest=<image_digest>,
     cmd=[
         "tritonserver",
-        "--model-repository=/opt/ds/model/deployed_model/model_repository"
+        "--model-repository=/opt/ds/model/deployed_model/falcon-7b-trt",
+        "--http-port=9000"
     ],
-    server_port=8000,
-    health_check_port=8000
+    server_port=9000,
+    health_check_port=9000
 )
   
 # create a model type deployment
@@ -198,7 +210,7 @@ request_body = {"text_input": "Explain Cloud Computing to a school kid", "max_to
 request_body = json.dumps(request_body)
 ```
 
-Specify the request headers indicating model name and version:
+No need to specify the request headers indicating model name and version as we need to do for older Triton Containers Inferencing. We have already mapped predict endpoint to static inference endpoint `/v2/models/ensemble/versions/1/generate` and the all the inference request to any Model would go to `ensemble` model only.
 ```bash
 request_headers = {"model_name":"ensemble", "model_version":"1"}
 ```
