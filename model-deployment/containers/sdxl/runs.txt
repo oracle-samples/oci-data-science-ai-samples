@@ -1,0 +1,15 @@
+# RUN DF ONLINE
+docker run --gpus all \
+           -e TOKEN_FILE=/opt/ds/model/deployed_model/token \
+           -e STORAGE_SIZE_IN_GB=500 \
+           -p 8080:8080 \
+           -v $(pwd):/home/datascience/ \
+           -v $(pwd)/token:/opt/ds/model/deployed_model/token \
+           --shm-size=10gb \
+           fra.ocir.io/bigdatadatasciencelarge/sdxl:1.0.4
+
+# run local test
+curl -X POST http://127.0.0.1:8080/predict -H "Content-Type: application/json" -d '{"prompt":"llama with sunglasses", "negative_prompt":"a sunset over a mountain range"}'
+
+# run deployment test
+oci raw-request --http-method POST --target-uri https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaan/predict --request-body '{"prompt":"llama with sunglasses"}'

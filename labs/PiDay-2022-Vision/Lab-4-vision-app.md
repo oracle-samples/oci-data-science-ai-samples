@@ -20,11 +20,6 @@ Example of workers not wearing their helmets:
 
 * Learn how to use Vision Python SDK to communicate with our Vision service endpoints.
 
-<!-- ### Prerequisites:
-* Familiar with Python programming is required
-* Familiar with local editing tools, vi and nano -->
-
-
 ## **TASK 1:** Setup API Signing Key and Config File
 
 1. Create the .oci folder. Open an admin command prompt or Terminal and run the following command.

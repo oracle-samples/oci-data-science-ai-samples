@@ -1,0 +1,73 @@
+
+# RUN HF
+docker run --gpus all \
+           -e TOKEN_FILE=/opt/ds/model/deployed_model/token \
+           -e STORAGE_SIZE_IN_GB=500 \
+           -e MODEL=meta-llama/Llama-2-13b-chat-hf \
+           -p 8080:8080 \
+           -v $(pwd):/home/datascience/ \
+           -v $(pwd)/token:/opt/ds/model/deployed_model/token \
+           --shm-size=10gb \
+           fra.ocir.io/bigdatadatasciencelarge/vllm:0.2.4-v48
+
+
+# RUN GIT HF
+docker run --gpus all \
+           -e TOKEN_FILE=/opt/ds/model/deployed_model/token \
+           -e STORAGE_SIZE_IN_GB=500 \
+           -e MODEL=meta-llama/Llama-2-13b-chat-hf \
+           -e GIT_REPO_URL=https://github.com/lyudmil-pelov/oci-data-science-ai-samples.git \
+           -e GIT_SCRIPT_PATH=model-deployment/containers/llama2/start-vllm.sh \
+           -p 8080:8080 \
+           -v $(pwd):/home/datascience/ \
+           -v $(pwd)/token:/opt/ds/model/deployed_model/token \
+           --shm-size=10gb \
+           fra.ocir.io/bigdatadatasciencelarge/vllm:0.2.1-v43 \
+           /opt/vllm/listener.sh
+
+
+# RUN OSS
+docker run --gpus all \
+           -e BUCKET=genai \
+           -e STORAGE_SIZE_IN_GB=500 \
+           -e MODEL=Llama-2-13b-chat-hf \
+           -p 8080:8080 \
+           -v $(pwd):/home/datascience/ \
+           --shm-size=10gb \
+           fra.ocir.io/bigdatadatasciencelarge/vllm:0.2.1-v43
+
+
+# RUN GIT OSS
+docker run --gpus all \
+           -e BUCKET=genai \
+           -e STORAGE_SIZE_IN_GB=500 \
+           -e MODEL=Llama-2-13b-chat-hf \
+           -e GIT_REPO_URL=https://github.com/lyudmil-pelov/oci-data-science-ai-samples.git \
+           -e GIT_SCRIPT_PATH=model-deployment/containers/llama2/start-vllm.sh \
+           -p 8080:8080 \
+           -v $(pwd):/home/datascience/ \
+           --shm-size=10gb \
+           fra.ocir.io/bigdatadatasciencelarge/vllm:0.2.1-v43
+           /opt/vllm/listener.sh
+
+docker run --gpus all \
+           -e MODEL=Llama-2-13b-chat-hf \
+           -p 8080:8080 \
+           -v $(pwd):/opt/ds/model/deployed_model/ \
+           --shm-size=52gb \
+           fra.ocir.io/bigdatadatasciencelarge/vllm:0.2.6-v51
+
+# local TGI test
+curl -X POST http://127.0.0.1:8080/generate -H "Content-Type: application/json" -d '{"inputs":"Tell me about Data Science"}'
+
+# local vLLM test
+curl -X POST http://127.0.0.1:8080/predict -H "Content-Type: application/json" -d '{"inputs":"Tell me about Data Science"}'
+
+oci raw-request --http-method POST --target-uri https://modeldeployment.me-jeddah-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.me-jeddah-1.amaaaaaanif7xwiazam7frmpzhqojuh2d5bntwzcczezyvmuzajwgqr45zza/predict --request-body '{"url":"https://www.wikipedia.org"}'
+
+
+oci raw-request --http-method POST --target-uri https://modeldeployment.eu-frankfurt-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.eu-frankfurt-1.amaaaaaanif7xwiadmag5egvh5mmplnpf3tg7uw7zmnzzg5m72jlvv26mk3a/predict --request-body '{"prompt":"llama with sunglasses"}'
+
+curl -X POST http://127.0.0.1:8080/predict -H "Content-Type: application/json" -d '{"prompt":"llama with sunglasses"}'
+curl -X POST http://127.0.0.1:8080/predict -H "Content-Type: application/json" -d '{"prompt":"llama with sunglasses", "negative_prompt":"a sunset over a mountain range"}'
+
