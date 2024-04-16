@@ -95,6 +95,8 @@ After the stack is created and its Stack details page opens, click Plan from the
   Allow dynamic-group aqua-dynamic-group to read objectstorage-namespaces in compartment <your-compartment-name>
 
   Allow dynamic-group aqua-dynamic-group to inspect compartments in tenancy
+
+  Allow dynamic-group aqua-dynamic-group to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
   ```
 
 - ``dt_jr_policies``
@@ -109,8 +111,6 @@ After the stack is created and its Stack details page opens, click Plan from the
   Allow dynamic-group distributed_training_job_runs to manage objects in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
 
   Allow dynamic-group distributed_training_job_runs to read buckets in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
-
-  Allow dynamic-group aqua-dynamic-group to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
   ```
 
 These policies and dynamic groups set up the necessary permissions to enable AI Quick Actions within your OCI environment. Remember to replace placeholders like ``<your_compartment_ocid>`` and ``<your_compartment-name>`` with actual values from your OCI setup.
