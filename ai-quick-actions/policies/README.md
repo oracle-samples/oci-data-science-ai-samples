@@ -7,7 +7,7 @@
 - [Model Evaluation](../evaluation-tips.md)
 - [Model Fine Tuning](../fine-tuning-tips.md)
 
-> **Note:** To install required policies for AI Quick Actions you can use [Oracle Resource Manager](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) (ORM) stack or configure them manually.
+> **Note:** To get started using AI quick actions, an admin in the tenancy needs to install the required policies for AI Quick Actions.  You can use [Oracle Resource Manager](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) (ORM) stack or configure them manually.
 
 
 - [Policies](#policies)
