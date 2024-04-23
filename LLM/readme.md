@@ -13,3 +13,7 @@ This page curates the links to some common use cases for LLMs.
 
 [Deploy GPT-2 using NVidia Triton Inference Server](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/model-deployment/containers/Triton/gpt2_ensemble/Deploy_GPT2_Ensemble.md)
 
+## AI Quick Actions - Fine-tune, deploy, and evaluate LLMs without writing code
+AI Quick Actions make working with LLMs super simple and requires no coding. From the AI Quick Actions extension in a Notebook session, you can explore foundation models, kickoff a fine-tuning process, deploy as a web endpoint and test it with a simple chat interface, and run evaluation jobs.
+Learn more in this blog post:
+[Introducing AI Quick Actions in OCI Data Science](https://blogs.oracle.com/ai-and-datascience/post/ai-quick-actions-in-oci-data-science)
