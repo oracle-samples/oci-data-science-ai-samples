@@ -18,6 +18,12 @@ The [OCI Data Science service](https://www.oracle.com/data-science/cloud-infrast
 
 This section provides examples of how to train machine learning models and deploy them on the OCI Data Science service, making it ideal for anyone looking to walk through an end-to-end problem.
 
+### [Large Language Models](LLM)
+OCI Data Science supports LLMs in several ways:
+* Fine-tune, deploy and evaluate without writing code via [AI Quick Actions](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions.htm)
+* LangChain integration via [ADS](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/model_registration/large_language_model.html)
+* Directly by coding Python in the service. You can find more information [here](LLM)
+
 ### [Model Catalog Examples](model_catalog_examples/)
 
 The [Model Catalog](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/user_guide/modelcatalog/modelcatalog.html) offers a managed and centralized storage space for models. ADS helps you create the artifacts you need to use this service. However, you must provide a [`score.py`](https://docs.oracle.com/en-us/iaas/data-science/using/model_score_py.htm) file that loads the model and a function that makes predictions. The [`runtime.yaml`](https://docs.oracle.com/en-us/iaas/data-science/using/model_runtime_yaml.htm) provides information about the runtime conda environment if you want to deploy the model. You can also document a comprehensive set of metadata about the provenance of the model. This section provides examples of how to create your `score.py` and `runtime.yaml` files for various common machine learning models and configurations.
