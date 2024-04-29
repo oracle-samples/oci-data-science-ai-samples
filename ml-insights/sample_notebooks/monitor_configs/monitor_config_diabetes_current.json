@@ -1,0 +1,66 @@
+{
+  "input_schema": {
+    "Pregnancies": { "data_type": "float", "variable_type": "continuous" },
+    "BloodPressure": { "data_type": "float", "variable_type": "continuous" },
+    "SkinThickness": { "data_type": "float", "variable_type": "continuous" },
+    "Insulin": { "data_type": "float", "variable_type": "continuous" },
+    "BMI": { "data_type": "float", "variable_type": "continuous" },
+    "Age": { "data_type": "float", "variable_type": "continuous" },
+    "DiabetesPedigreeFunction": {
+      "data_type": "float",
+      "variable_type": "continuous"
+    },
+    "BMICategory": { "data_type": "string", "variable_type": "nominal" }
+  },
+  "reader": {
+    "type": "CSVNativeDataReader",
+    "params": {
+      "file_path": ["input_data/diabetes_prediction/2023-06-27/2023-06-27.csv"]
+    }
+  },
+  "engine_detail": {
+    "engine_name": "native"
+  },
+  "test_config": {
+    "feature_metric_tests": [
+      {
+        "feature_name": "Pregnancies",
+        "tests": [
+          {
+            "test_name": "TestGreaterThan",
+            "metric_key": "Min",
+            "threshold_value": 4.5
+          },
+          {
+            "test_name": "TestDeviation",
+            "metric_key": "Mean",
+            "tags": {
+              "importance": "HIGH"
+            }
+          }
+        ]
+      },
+      {
+        "feature_name": "Age",
+        "tests": [
+          {
+            "test_name": "TestLessThan",
+            "metric_key": "Variance",
+            "threshold_value": 1.5
+          },
+          {
+            "test_name": "TestIsComplete"
+          }
+        ]
+      },
+      {
+        "feature_name": "BMICategory",
+        "tests": [
+          {
+            "test_name": "TestNoNewCategory"
+          }
+        ]
+      }
+    ]
+  }
+}
