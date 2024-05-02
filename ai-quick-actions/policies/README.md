@@ -30,12 +30,7 @@ allow group <your_admin_group> to manage policies in TENANCY
 allow group <your_admin_group> to read compartments in TENANCY
 ```
 
- Download terraform configuration file [oci-ods-aqua-orm.zip](./oci-ods-aqua-orm.zip) with the infrastructure instructions for the dynamic groups and polices. For steps on creating stacks, see [Creating a Stack from a Zip File](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Tasks/create-stack-local.htm#top).
-
-
-![Setup 1](../web_assets/policies1.png)
-
-![Setup 2](../web_assets/policies2.png)
+Click to deploy the stack  [![Deploy to Oracle Cloud][magic_button]][magic_stack]
 
 > **Note:** To save fine-tuned models, versioning has to be enabled in the selected Object Storage bucket. See [here](https://docs.oracle.com/iaas/data-science/using/ai-quick-actions-fine-tuning.htm) for more information.
 
@@ -118,7 +113,8 @@ These policies and dynamic groups set up the necessary permissions to enable AI 
 > **Note:** To save fine-tuned models, versioning has to be enabled in the selected Object Storage bucket. See [here](https://docs.oracle.com/iaas/data-science/using/ai-quick-actions-fine-tuning.htm) for more information.
 
 ![Setup 3](../web_assets/policies3.png)
-
+- [magic_button]: https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg
+- [magic_stack]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/harsh97/oci-data-science-ai-samples/releases/latest/download/oci-ods-aqua.zip
 - [Home](../README.md)
 - [CLI](../cli-tips.md)
 - [Model Deployment](../model-deployment-tips.md)
