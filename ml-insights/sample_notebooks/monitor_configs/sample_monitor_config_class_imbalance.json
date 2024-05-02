@@ -1,0 +1,68 @@
+{
+  "input_schema": {
+    "Ethnic group": {
+      "data_type": "text",
+      "variable_type": "nominal"
+    },
+    "Gender": {
+      "data_type": "text",
+      "variable_type": "nominal"
+    },
+    "Target": {
+      "data_type": "text",
+      "variable_type": "nominal"
+    }
+  },
+  "engine_detail": {
+    "engine_name": "native"
+  },
+  "reader": {
+    "type": "CSVNativeDataReader",
+    "params": {
+      "file_path": ["./census_income_dataset.csv"]
+    }
+  },
+  "dataset_metrics": [
+  ],
+  "feature_metrics": {
+    "Gender": [
+      {
+        "type": "ClassImbalance",
+        "params": {
+          "feature_values_or_threshold": ["Female"]
+        }
+      },
+      {
+        "type": "ClassImbalance",
+        "params": {
+          "feature_values_or_threshold": ["Male"]
+        }
+      }
+
+    ],
+    "Ethnic group": [
+      {
+        "type": "ClassImbalance",
+        "params": {
+          "feature_values_or_threshold": ["White"]
+        }
+      },
+      {
+        "type": "ClassImbalance",
+        "params": {
+          "feature_values_or_threshold": ["Black"]
+        }
+      },
+      {
+        "type": "ClassImbalance",
+        "params": {
+          "feature_values_or_threshold": ["Black", "Other"],
+          "drop_nan_values": true
+        }
+      }
+    ]
+  },
+  "tags": {
+    "tag": "value"
+  }
+}
