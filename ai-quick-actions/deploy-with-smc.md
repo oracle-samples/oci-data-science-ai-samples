@@ -1,8 +1,8 @@
 # Deploy ELYZA-japanese-Llama-2-13b-instruct with Oracle Service Managed vLLM(0.3.0) Container
 
-![ELYZA](https://huggingface.co/elyza/ELYZA-japanese-Llama-2-7b-instruct/resolve/main/key_visual.png)
+![ELYZA](https://huggingface.co/elyza/ELYZA-japanese-Llama-2-13b/resolve/main/key_visual.png)
 
-This how-to will show how to use the Oracle Data Science Service Managed Containers - part of the Quick Actions feature, to inference with a model downloaded from Hugging Face. For this we will use [ELYZA-japanese-Llama-2-13b-instruct](https://huggingface.co/elyza/ELYZA-japanese-Llama-2-7b-instruct) from a company named ELYZA, which is known for its LLM research and is based out of the University of Tokyo. ELYZA uses pre-training from the English-dominant model because of the prevalence of English training data, along with an additional 18 billion tokens of Japanese data.
+This how-to will show how to use the Oracle Data Science Service Managed Containers - part of the Quick Actions feature, to inference with a model downloaded from Hugging Face. For this we will use [ELYZA-japanese-Llama-2-13b-instruct](https://huggingface.co/collections/elyza/elyza-japanese-llama-2-13b-6589ba0435f23c0f1c41d32a) from a company named ELYZA, which is known for its LLM research and is based out of the University of Tokyo. ELYZA uses pre-training from the English-dominant model because of the prevalence of English training data, along with an additional 18 billion tokens of Japanese data.
 
 ## Required IAM Policies
 
