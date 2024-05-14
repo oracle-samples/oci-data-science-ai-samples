@@ -67,6 +67,11 @@ variables:
     required: true
     default: "DataScienceAquaDynamicGroup"
     pattern: "^[a-zA-Z0-9]+$"
+    visible:
+      not:
+        - eq:
+            - deployment_type
+            - "Only admin policies"
 
 
   aqua_policy_name:
@@ -89,7 +94,7 @@ variables:
         - eq:
             - deployment_type
             - "Only admin policies"
-            -
+
   distributed_training_policy_name:
     type: string
     title: "Distributed Training JobRuns Policy Name"
