@@ -43,6 +43,14 @@ from the deployments tab using the test model, or programmatically.
 
 ![Try Model](web_assets/try-model.png)
 
+### Advanced Deployment Options
+
+The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on 
+the type of inference container, i.e. vLLM or TGI, the parameters vary and must be changed only if needed. 
+
+For more details, please visit [vLLM page](https://docs.vllm.ai/en/latest/models/engine_args.html) or 
+[TGI page](https://huggingface.co/docs/text-generation-inference/en/basic_tutorials/launcher) to know more about the parameters accepted by the respective containers. 
+
 ### Inferencing Model
 
 #### Using oci-cli
