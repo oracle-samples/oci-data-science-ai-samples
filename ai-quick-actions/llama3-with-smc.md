@@ -47,7 +47,7 @@ project_id = os.environ["PROJECT_OCID"]
 log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx" 
 log_id = "cid1.log.oc1.xxx.xxxxx"
 
-instance_shape = "VM.GPU.A10.2"
+instance_shape = "VM.GPU.A10.1"
 container_image = "dsmc://odsc-vllm-serving:0.3.0.7"
 region = "us-ashburn-1"
 ```
