@@ -219,12 +219,16 @@ ads.set_auth("resource_principal")
 
 requests.post(
     "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict",
-    json = {
-       "model": "odsc-llm", # this is a constant
-       "prompt": Template(""""|begin_of_text|><|start_header_id|>user<|end_header_id|> $prompt <|eot_id|><|start_header_id|>assistant<|end_header_id|>""").substitute(prompt="What amateur radio band can a general class license holder use?"), 
-       "max_tokens": 250,
-       "temperature": 0.7,
-       "top_p": 0.8,
+    json={
+        "model": "odsc-llm",
+        "prompt": Template(
+            """"|begin_of_text|><|start_header_id|>user<|end_header_id|> $prompt <|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
+        ).substitute(
+            prompt="What amateur radio band can a general class license holder use?"
+        ),
+        "max_tokens": 250,
+        "temperature": 0.7,
+        "top_p": 0.8,
     },
     auth=ads.common.auth.default_signer()["signer"],
     headers={},
@@ -295,9 +299,23 @@ from string import Template
 
 ads.set_auth("resource_principal")
 
-llm = OCIModelDeploymentVLLM(endpoint=endpoint, model="odsc-llm")
+llm = OCIModelDeploymentVLLM(
+    endpoint="https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict",
+    model="odsc-llm",
+)
 
-llm.invoke(input=Template(""""|begin_of_text|><|start_header_id|>user<|end_header_id|> $prompt <|eot_id|><|start_header_id|>assistant<|end_header_id|>""").substitute(prompt="What amateur radio bands are best to use when there are solar flares?"), max_tokens=500, temperature=0, p=0.9, stop=["<|eot_id|>"], skip_special_tokens=False)
+llm.invoke(
+    input=Template(
+        """"|begin_of_text|><|start_header_id|>user<|end_header_id|> $prompt <|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
+    ).substitute(
+        prompt="What amateur radio bands are best to use when there are solar flares?"
+    ),
+    max_tokens=500,
+    temperature=0,
+    p=0.9,
+    stop=["<|eot_id|>"],
+    skip_special_tokens=False,
+)
 ```
 
 Output:
