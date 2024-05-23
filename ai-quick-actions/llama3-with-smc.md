@@ -192,18 +192,36 @@ deployment = (
 
 Once the model deployment has reached the Active state, we can invoke the model deployment endpoint to interact with the LLM. More details on different ways for accessing MD endpoints is documented [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/model-deployment-tips.md).
 
+
+#### How to prompt Llama 3
+
+The base models have no prompt format. The Instruct versions use the following conversation structure:
+
+```xml
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+{{ system_prompt }}<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+{{ user_msg_1 }}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+{{ model_answer_1 }}<|eot_id|>
+```
+
+This format has to be exactly reproduced for effective use.
+
+
 ```python
 import requests
 import ads
+from string import Template
 
 ads.set_auth("resource_principal")
 
-prompt = "What amateur radio band can a general class license holder use?"
 requests.post(
     "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict",
     json = {
        "model": "odsc-llm", # this is a constant
-       "prompt": f"<s><INST>{prompt}</INST>", 
+       "prompt": Template(""""|begin_of_text|><|start_header_id|>user<|end_header_id|> $prompt <|eot_id|><|start_header_id|>assistant<|end_header_id|>""").substitute(prompt="What amateur radio band can a general class license holder use?"), 
        "max_tokens": 250,
        "temperature": 0.7,
        "top_p": 0.8,
@@ -211,14 +229,11 @@ requests.post(
     auth=ads.common.auth.default_signer()["signer"],
     headers={},
 ).json()
-
-
 ```
 
 #### Output
 
 The LLM produced a great output:
-
 
 > A) All amateur radio bands
 B) All amateur radio bands except the 10-meter band
@@ -226,7 +241,7 @@ C) All amateur radio bands except the 160-meter band
 D) All amateur radio bands except the 2200-meter band
 >
 Answer: A) All amateur radio bands
-\<\/s\>
+\</s\>
 >
 The FCC grants a general class license to amateur radio operators who pass the Element 3 exam. The exam covers the following topics:
 >
@@ -278,15 +293,11 @@ import ads
 from langchain_community.llms import OCIModelDeploymentVLLM
 from string import Template
 
-prompt_template= Template(""""|begin_of_text|><|start_header_id|>user<|end_header_id|> $prompt <|eot_id|><|start_header_id|>assistant<|end_header_id|>""")
-
-prompt = t.substitute(prompt="What amateur radio bands are best to use when there are solar flares?")
-
 ads.set_auth("resource_principal")
 
 llm = OCIModelDeploymentVLLM(endpoint=endpoint, model="odsc-llm")
 
-llm.invoke(input=prompt, max_tokens=500, temperature=0, p=0.9, stop=["<|eot_id|>"], skip_special_tokens=False)
+llm.invoke(input=Template(""""|begin_of_text|><|start_header_id|>user<|end_header_id|> $prompt <|eot_id|><|start_header_id|>assistant<|end_header_id|>""").substitute(prompt="What amateur radio bands are best to use when there are solar flares?"), max_tokens=500, temperature=0, p=0.9, stop=["<|eot_id|>"], skip_special_tokens=False)
 ```
 
 Output:
