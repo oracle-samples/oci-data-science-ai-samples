@@ -233,10 +233,6 @@ The Container creation process is going to be the same as TGI. All associated fi
     * For `13b llama2` model, use the custom environment variable to override the default tensor parallelism as 2, to shard the model on 2 GPU cards.
       * Set custom environment variable key `TENSOR_PARALLELISM` with value `2`
       * You can override more vllm bootstrapping configuration using `PARAMS` environment configuration. For details of configurations, please refer the official vLLM [doc](https://vllm.readthedocs.io/en/latest/getting_started/quickstart.html).
-    * If you are downloading models directly from source, we will need these additional environment variable configurations:
-      * Set custom environment variable key `TOKEN_FILE` with value `/opt/ds/model/deployed_model/token`, as the token will be available at this path.
-      * Set custom environment variable key `MODEL` with value `meta-llama/Llama-2-13b-hf`, this is the model that will be downloaded during container start.
-      * Set custom environment variable key `STORAGE_SIZE_IN_GB` with value `950` for 7b model. This is required as model will be downloaded at runtime, so we need to keep extra storage size to accommodate various model sizes.
     * Since in the api server file, we have already changed the prediction endpoint to /predict, we don't need any other overrides.
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU3.2` instance
