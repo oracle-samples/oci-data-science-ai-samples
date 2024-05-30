@@ -122,7 +122,7 @@ These policies and dynamic groups set up the necessary permissions to enable AI 
 
 ![Setup 3](../web_assets/policies3.png)
 - [magic_button]: https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg
-- [magic_stack]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/harsh97/oci-data-science-ai-samples/releases/latest/download/oci-ods-aqua.zip
+- [magic_stack]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-samples/oci-data-science-ai-samples/releases/latest/download/oci-ods-aqua.zip
 - [Home](../README.md)
 - [CLI](../cli-tips.md)
 - [Model Deployment](../model-deployment-tips.md)
