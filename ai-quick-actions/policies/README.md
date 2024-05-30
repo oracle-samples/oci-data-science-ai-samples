@@ -28,11 +28,15 @@ allow group <your_admin_group> to manage policies in TENANCY
 allow group <your_admin_group> to read compartments in TENANCY
 ```
 
- Download terraform configuration file [oci-ods-aqua-orm.zip](./oci-ods-aqua-orm.zip) with the infrastructure instructions for the dynamic groups and polices. For steps on creating stacks, see [Creating a Stack from a Zip File](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Tasks/create-stack-local.htm#top).
+Click to deploy the stack  [![Deploy to Oracle Cloud][magic_button]][magic_stack]
+
+
+After clicking the button, you will be redirected to the Oracle Cloud Infrastructure Console.  You will need to sign in if you are not already signed in.  You can select the kind of policies that need to be deployed for AQUA:
+1. All policies - This will deploy all the policies needed for AQUA in one go.
+2. Only admin policies - This will deploy only the minimal set of policies that are required to be defined at the root compartment by the tenancy administrator for AQUA.
+3. Only resource policies - This will deploy the required policies that are required to be defined at the compartment level provided that the tenancy administrator has already defined the admin policies for AQUA.
 
 ![Setup 1](../web_assets/policies1.png)
-
-![Setup 2](../web_assets/policies2.png)
 
 > **Note:** To save fine-tuned models, versioning has to be enabled in the selected Object Storage bucket. See [here](https://docs.oracle.com/iaas/data-science/using/ai-quick-actions-fine-tuning.htm) for more information.
 
@@ -115,7 +119,8 @@ These policies and dynamic groups set up the necessary permissions to enable AI 
 > **Note:** To save fine-tuned models, versioning has to be enabled in the selected Object Storage bucket. See [here](https://docs.oracle.com/iaas/data-science/using/ai-quick-actions-fine-tuning.htm) for more information.
 
 ![Setup 3](../web_assets/policies3.png)
-
+- [magic_button]: https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg
+- [magic_stack]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-samples/oci-data-science-ai-samples/releases/latest/download/oci-ods-aqua.zip
 - [Home](../README.md)
 - [CLI](../cli-tips.md)
 - [Model Deployment](../model-deployment-tips.md)
