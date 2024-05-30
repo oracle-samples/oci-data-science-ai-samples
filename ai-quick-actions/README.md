@@ -11,6 +11,15 @@ Manager (ORM) or manually. For further information see [Policies](policies/READM
 
 ---
 
+**What's New:**
+
+How-To Blogs:
+
+1. [Deploy Meta-Llama-3-8B-Instruct with Oracle Service Managed vLLM(0.3.0) Container](llama3-with-smc.md)
+2. [Deploy ELYZA-japanese-Llama-2-13b-instruct with Oracle Service Managed vLLM(0.3.0) Container](deploy-with-smc.md)
+
+---
+
 - [Policies](policies/README.md)
 - [CLI](cli-tips.md)
 - [Model Deployment](model-deployment-tips.md)

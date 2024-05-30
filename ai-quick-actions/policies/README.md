@@ -1,6 +1,5 @@
 # Policies
 
-
 - [Home](../README.md)
 - [CLI](../cli-tips.md)
 - [Model Deployment](../model-deployment-tips.md)
@@ -9,14 +8,13 @@
 
 > **Note:** To get started using AI quick actions, an admin in the tenancy needs to install the required policies for AI Quick Actions.  You can use [Oracle Resource Manager](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) (ORM) stack or configure them manually.
 
-
 - [Policies](#policies)
 - [Setting Up Policies Using (ORM) stack](#setting-up-policies-using-orm-stack)
 - [Setting Up Policies Manually](#setting-up-policies-manually)
-    - [Dynamic Groups](#dynamic-groups)
-    - [Policies](#policies-1)
+  - [Dynamic Groups](#dynamic-groups)
+  - [Policies](#policies-1)
 
-# Setting Up Policies Using (ORM) stack
+## Setting Up Policies Using (ORM) stack
 
 > **Note:** Even if you already have the policies to use Data Science service, you still need to use the terraform configuration file to set up the policies to use AI Quick Actions. To successfully execute the Terraform script, you must have administrative rights.
 
