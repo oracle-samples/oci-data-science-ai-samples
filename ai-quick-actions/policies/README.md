@@ -32,6 +32,14 @@ allow group <your_admin_group> to read compartments in TENANCY
 
 Click to deploy the stack  [![Deploy to Oracle Cloud][magic_button]][magic_stack]
 
+
+After clicking the button, you will be redirected to the Oracle Cloud Infrastructure Console.  You will need to sign in if you are not already signed in.  You can select the kind of policies that need to be deployed for AQUA:
+1. All policies - This will deploy all the policies needed for AQUA in one go.
+2. Only admin policies - This will deploy only the minimal set of policies that are required to be defined at the root compartment by the tenancy administrator for AQUA.
+3. Only resource policies - This will deploy the required policies that are required to be defined at the compartment level provided that the tenancy administrator has already defined the admin policies for AQUA.
+
+![Setup 1](../web_assets/policies1.png)
+
 > **Note:** To save fine-tuned models, versioning has to be enabled in the selected Object Storage bucket. See [here](https://docs.oracle.com/iaas/data-science/using/ai-quick-actions-fine-tuning.htm) for more information.
 
 ![Setup 3](../web_assets/policies3.png)
