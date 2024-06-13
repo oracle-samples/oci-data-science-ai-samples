@@ -4,4 +4,4 @@ oci==2.47.1
 requests==2.25.1
 uvicorn
 fastapi
-qdrant-client==1.6.9
+qdrant-client==1.9.0
