@@ -7,6 +7,7 @@ Table of Contents:
 - [CLI](cli-tips.md)
 - [Model Deployment](model-deployment-tips.md)
 - [Model Evaluation](evaluation-tips.md)
+- [Model Registration](register-tips.md)
 
 ## Introduction
 
@@ -122,3 +123,4 @@ Table of Contents:
 - [CLI](cli-tips.md)
 - [Model Deployment](model-deployment-tips.md)
 - [Model Evaluation](evaluation-tips.md)
+- [Model Registration](register-tips.md)

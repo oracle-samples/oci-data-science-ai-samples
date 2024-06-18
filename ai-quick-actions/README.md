@@ -25,6 +25,7 @@ How-To Blogs:
 - [Model Deployment](model-deployment-tips.md)
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Registration](register-tips.md)
 
 
 ## Use Case Example
@@ -110,3 +111,4 @@ In some cases a more sophisticated solution is needed, for example [fine tuning.
 - [Model Deployment](model-deployment-tips.md)
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Registration](register-tips.md)

@@ -7,6 +7,7 @@ Table of Contents:
 - [CLI](cli-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
 - [Model Evaluation](evaluation-tips.md)
+- [Model Registration](register-tips.md)
 
 ## Introduction to Model Inference and Serving
 
@@ -318,3 +319,4 @@ Table of Contents:
 - [CLI](cli-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
 - [Model Evaluation](evaluation-tips.md)
+- [Model Registration](register-tips.md)
