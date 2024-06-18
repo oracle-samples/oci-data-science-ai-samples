@@ -87,6 +87,24 @@ In addition, you will need to specify the infrastructure and parameters for fine
 
 Distributed training leverage multiple GPUs to parallelize the fine-tuning. Recent advancements in distributed training frameworks have made it possible to train models with billions of parameters. Frameworks like [DeepSpeed](https://www.deepspeed.ai/) and [FSDP](https://pytorch.org/blog/introducing-pytorch-fully-sharded-data-parallel-api/) have been developed to optimize distributed training. AI Quick Actions will configure the distributed training automatically when multiple GPUs are available. It is important to note that the communication between multiple nodes incurs significant overhead comparing to the communication between multiple GPUs within a single node. Therefore, it is highly recommended that single replica is used when possible. Multi-node fine-tuning may not have better performance than single node fine-tuning when the number of replica is less than 5.
 
+### Advanced Finetuning Options
+
+The service allows overriding default hyperparameters when creating a fine-tuned model. The basic configuration shows `epochs` and `learning rate`,
+whereas the advanced configuration includes additional parameters:
+
+- epochs: Number of times the model goes through the entire training dataset. This is a required hyperparameter.
+- learning_rate: Rate at which the model updates its parameters during training to minimize loss. This is a required hyperparameter.
+- sample_packing: Technique for efficient data loading in training, especially with variable-length sequences.
+- batch_size: Number of training examples processed together in one iteration.
+- sequence_len: Length of input sequences fed into the model during training.
+- pad_to_sequence_len: Method to pad sequences to a specified length for uniformity.
+- lora_r, lora_alpha, lora_dropout, lora_target_linear, lora_target_modules: Hyperparameters specific to the [LoRA](https://github.com/microsoft/LoRA) technique that significantly reduces the number of trainable parameters.
+
+If defaults are already present for the selected Aqua model, it will show up in the advanced configuration section. If not, the additional supported hyperparameters 
+can be modified and set prior to creation of the fine-tuning job.
+
+![Fine Tuning Parameters](web_assets/finetuning-params.png)
+
 ### Training Metrics
 
 Once the fine-tuning job is successfully submitted, a fine-tuned model will be created in the model catalog. The model details page will be displayed and the lifecycle state will be "In progress" as the job is running. At the end of each epoch, the loss and accuracy will be calculated and updated in the metrics panel.
