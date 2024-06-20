@@ -7,6 +7,7 @@ Table of Contents:
 - [Model Deployment](model-deployment-tips.md)
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Registration](register-tips.md)
 
 This document provides documentation on how to use ADS to create AI Quick Actions (AQUA) model deployments, fine-tune foundational models and evaluate the models.
 You'll need the latest version of ADS to run these, installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
@@ -805,3 +806,4 @@ Table of Contents:
 - [Model Deployment](model-deployment-tips.md)
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Registration](register-tips.md)
