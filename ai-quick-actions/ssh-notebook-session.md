@@ -32,15 +32,15 @@ Create a file named `nb_ip.py` and add the following Python code to reveal the p
 import oci
 import os
 
-print(f"- get NB_SESSION_OCID")
+print("- get NB_SESSION_OCID")
 NB_OCID = os.environ.get("NB_SESSION_OCID")
 if NB_OCID is None:
     raise Exception("NB_SESSION_OCID environment variable is required.")
 
-print(f"- init RP")
-RP = os.environ.get("OCI_RESOURCE_PRINCIPAL_VERSION", "UNDEFINED")
+print("- init RP")
+RP = os.environ.get("OCI_RESOURCE_PRINCIPAL_VERSION")
 
-if not RP or RP == "UNDEFINED":
+if not RP:
     # LOCAL RUN
     config = oci.config.from_file("~/.oci/config", "DEFAULT")
     dsc = oci.data_science.DataScienceClient(config=config)
@@ -51,18 +51,18 @@ else:
     dsc = oci.data_science.DataScienceClient(config={}, signer=signer)
     network = oci.core.VirtualNetworkClient(config={}, signer=signer)
 
-print(f"- get notebook data")
+print("- get notebook data")
 nb = dsc.get_notebook_session(NB_OCID).data
 print(f"- notebook data: {nb}")
 
 if not nb.notebook_session_configuration_details or not nb.notebook_session_configuration_details.subnet_id:
     raise Exception("IP Address cannot be determined when Default Networking is in use! For SSH tunneling to work, you must specify your own VCN and Private subnet!")
 
-print(f"- get notebook subnet")
+print("- get notebook subnet")
 subnet_id = nb.notebook_session_configuration_details.subnet_id
 print(f"- notebook subnet ocid: {subnet_id}")
 
-print(f"- get subnet data")
+print("- get subnet data")
 subnet = network.get_subnet(subnet_id).data
 
 print("- fetching subnet private IPs")
