@@ -5,7 +5,7 @@ if [ -z "$NGC_API_KEY_FILE" ] ; then
 else
   export NGC_API_KEY=$(cat $NGC_API_KEY_FILE)
   echo "Starting server..."
-  /opt/nim/start-server.sh
+  WEB_CONCURRENCY=1 /opt/nim/start-server.sh
   exit $LastExitCode
 fi
 
