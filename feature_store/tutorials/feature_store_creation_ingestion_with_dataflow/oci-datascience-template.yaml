@@ -1,0 +1,34 @@
+kind: job
+name: "{DataFlow application name}"
+spec:
+  infrastructure:
+    kind: infrastructure
+    spec:
+      compartmentId: ocid1.compartment.oc1..<unique_ID>
+      driverShape: VM.Standard.E4.Flex
+      driverShapeConfig:
+        memory_in_gbs: 32
+        ocpus: 2
+      executorShape: VM.Standard.E4.Flex
+      executorShapeConfig:
+        memory_in_gbs: 32
+        ocpus: 2
+      language: PYTHON
+      logsBucketUri: oci://bucket@namespace/
+      numExecutors: 1
+      sparkVersion: 3.2.1
+      privateEndpointId: ocid1.dataflowprivateendpoint.oc1..<unique_ID>
+    type: dataFlow
+  runtime:
+    kind: runtime
+    spec:
+      configuration:
+        spark.driver.memory: "16G"
+      conda:
+        type: published
+        uri: oci://bucket@namespace/prefix
+      condaAuthType: resource_principal
+      scriptBucket: oci://bucket@namespace/dataflow/script
+      scriptPathURI: "feature_store_creation.py"
+      overwrite: True
+    type: dataFlow

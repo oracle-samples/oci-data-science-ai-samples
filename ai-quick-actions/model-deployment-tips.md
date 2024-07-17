@@ -7,12 +7,13 @@ Table of Contents:
 - [CLI](cli-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
 - [Model Evaluation](evaluation-tips.md)
+- [Model Registration](register-tips.md)
 
-## Introduction to [vLLM](https://github.com/vllm-project/vllm)
+## Introduction to Model Inference and Serving
 
-The Data Science server has prebuilt service containers that make deploying a large 
-language model very easy. vLLM (A high-throughput and memory-efficient inference and serving
-engine for LLMs) is used in the service container to host the model, the end point created
+The Data Science server has prebuilt service containers that make deploying and serving a large 
+language model very easy. Either one of [vLLM](https://github.com/vllm-project/vllm) (a high-throughput and memory-efficient inference and serving
+engine for LLMs) or [TGI](https://github.com/huggingface/text-generation-inference) (a high-performance text generation server for the popular open-source LLMs) is used in the service container to host the model, the end point created
 supports the OpenAI API protocol.  This allows the model deployment to be used as a drop-in
 replacement for applications using OpenAI API. Model deployments are a managed resource in 
 the OCI Data Science service. For more details about Model Deployment and managing it through 
@@ -42,6 +43,18 @@ The model will spin up and become available after some time, then you're able to
 from the deployments tab using the test model, or programmatically.
 
 ![Try Model](web_assets/try-model.png)
+
+### Advanced Deployment Options
+
+The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on 
+the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format 
+`(--param-name, param-value)`.
+
+For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) or 
+[TGI](https://huggingface.co/docs/text-generation-inference/en/basic_tutorials/launcher) documentation to know more about the parameters accepted by the respective containers. 
+
+![Model Deployment Parameters](web_assets/model-deployment-params.png)
+
 
 ### Inferencing Model
 
@@ -306,3 +319,4 @@ Table of Contents:
 - [CLI](cli-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
 - [Model Evaluation](evaluation-tips.md)
+- [Model Registration](register-tips.md)

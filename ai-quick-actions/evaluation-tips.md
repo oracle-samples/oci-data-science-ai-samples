@@ -7,6 +7,7 @@ Table of Contents:
 - [Policies](policies/README.md)
 - [Model Deployment](model-deployment-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Registration](register-tips.md)
 
 ## Introduction
 
@@ -91,3 +92,4 @@ Table of Contents:
 - [CLI](cli-tips.md)
 - [Model Deployment](model-deployment-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Registration](register-tips.md)
