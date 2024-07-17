@@ -30,7 +30,7 @@ When experimenting with new frameworks and models, it is highly advisable to att
 
 ## Build NIM Container for Model Deploy
 
-* Build the vLLM container image, this step would take a while
+* Build the OCI Model Deploy compatible container image. This process bakes in some of the configurations that makes it easier to deploy on the platform
 
   ```bash
   docker build -f Dockerfile -t odsc-nim-llama3 .
