@@ -46,18 +46,16 @@ log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx"
 log_id = "cid1.log.oc1.xxx.xxxxx"
 
 instance_shape = "BM.GPU.H100.8"
-container_image = "dsmc://vllm-openai:v0.5.3.post1"
+container_image = <vllm_image_with version>    # vllm container image pushed to oracle conatiner
 region = "us-ashburn-1"
 ```
+The container image referenced above is was build  by vllm with:
 
-The container image referenced above (`dsmc://vllm-openai:v0.5.3.post1`) is an Oracle Service Managed container that was build with:
-
-- Oracle Linux 8 - Slim
-- CUDA 12.4
+- CUDA 12.4.1
 - cuDNN 9
-- Torch 2.1.2
-- Python 3.11.5
-- vLLM v0.3.0
+- Torch 2.3.1
+- Python 3.10
+- vLLM v0.5.3.post1
 
 ## Prepare The Model Artifacts
 
@@ -156,11 +154,12 @@ infrastructure = (
 
 ```python
 env_var = {
-    'BASE_MODEL': model_prefix, 
-    'PARAMS': '--served-model-name odsc-llm --seed 42', 
     'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/completions', 
-    'MODEL_DEPLOY_ENABLE_STREAMING': 'true'
+    'MODEL_DEPLOY_ENABLE_STREAMING': 'true',
+    'SHM_SIZE': '10g'
 }
+
+cmd_var = ["--model", "/opt/ds/model/deployed_model/Meta-Llama-3-8B-Instruct/", "--tensor-parallel-size", "8", "--port", "8080", "--served-model-name", "odsc-llm", "--host", "0.0.0.0", "--max-model-len", "1200", "--trust-remote-code"]
 
 container_runtime = (
     ModelDeploymentContainerRuntime()
@@ -168,6 +167,7 @@ container_runtime = (
     .with_server_port(8080)
     .with_health_check_port(8080)
     .with_env(env_var)
+    .with_cmd(cmd_var)
     .with_deployment_mode(ModelDeploymentMode.HTTPS)
     .with_model_uri(model.id)
     .with_region(region)
@@ -179,7 +179,7 @@ container_runtime = (
 ```python
 deployment = (
     ModelDeployment()
-    .with_display_name(f"Meta-Llama-3.1-405B-Instruct with vLLM SMC")
+    .with_display_name(f"Meta-Llama-3.1-405B-Instruct with vLLM docker conatiner")
     .with_description("Deployment of Meta-Llama-3.1-405B-Instruct MD with vLLM(0.5.3.post1) container")
     .with_infrastructure(infrastructure)
     .with_runtime(container_runtime)
@@ -198,11 +198,12 @@ The base models have no prompt format. The Instruct versions use the following c
 ```xml
 <|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
-{{ system_prompt }}<|eot_id|><|start_header_id|>user<|end_header_id|>
+Cutting Knowledge Date: December 2023
+Today Date: 25 Jul 2024
 
-{{ user_msg_1 }}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
 
-{{ model_answer_1 }}<|eot_id|>
+<prompt> <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 ```
 
 This format has to be exactly reproduced for effective use.
@@ -215,15 +216,22 @@ from string import Template
 
 ads.set_auth("resource_principal")
 
+prompt_template= Template(""""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+                    Cutting Knowledge Date: December 2023
+                    Today Date: 24 Jul 2024
+                    
+                    You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
+                    
+                    $prompt<|eot_id|><|start_header_id|>assistant<|end_header_id|>""")
+
+prompt = t.substitute(prompt= "What amateur radio bands are best to use when there are solar flares?")
+
 requests.post(
     "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict",
     json={
         "model": "odsc-llm",
-        "prompt": Template(
-            """"|begin_of_text|><|start_header_id|>user<|end_header_id|> $prompt <|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
-        ).substitute(
-            prompt="What amateur radio band can a general class license holder use?"
-        ),
+        "prompt": prompt
         "max_tokens": 250,
         "temperature": 0.7,
         "top_p": 0.8,
@@ -248,11 +256,15 @@ llm = OCIModelDeploymentVLLM(
 )
 
 llm.invoke(
-    input=Template(
-        """"|begin_of_text|><|start_header_id|>user<|end_header_id|> $prompt <|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
-    ).substitute(
-        prompt="What amateur radio bands are best to use when there are solar flares?"
-    ),
+    input=Template(""""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+                    Cutting Knowledge Date: December 2023
+                    Today Date: 24 Jul 2024
+                    
+                    You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
+                    
+                    $prompt<|eot_id|><|start_header_id|>assistant<|end_header_id|>""")
+          .substitute(prompt="What amateur radio bands are best to use when there are solar flares?"),
     max_tokens=500,
     temperature=0,
     p=0.9,
