@@ -1,8 +1,8 @@
-# Deploy Meta-Llama-3-8B-Instruct with Oracle Service Managed vLLM(0.3.0) Container
+# Deploy Meta Llama 3.1 405B
 
-![LLama3](https://huggingface.co/blog/assets/llama3/thumbnail.jpg)
+![LLama3.1](https://huggingface.co/blog/assets/llama3/thumbnail.jpg)
 
-This how-to will show how to use the Oracle Data Science Service Managed Containers - part of the Quick Actions feature, to inference with a model downloaded from Hugging Face. For this we will use [Meta-Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) from Meta. The Llama 3 instruction tuned models are optimized for dialogue use cases and outperform many of the available open source chat models on common industry benchmarks.
+This how-to will show how to use the Oracle Data Science Service Managed Containers - to inference with a model downloaded from Hugging Face. For this we will use [Meta-Llama-3.1-405B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-Instruct) from Meta. The Llama 3.1 405B is a state-of-the-art open source model (with a custom commercial license, the Llama 3.1 Community License). With a context window of up to 128K and support across eight languages (English, German, French, Italian, Portuguese, Hindi, Spanish, and Thai), it rivals the top AI models when it comes to state-of-the-art capabilities in general knowledge, steerability, math, tool use, and multilingual translation.
 
 ## Required IAM Policies
 
@@ -47,12 +47,12 @@ project_id = os.environ["PROJECT_OCID"]
 log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx" 
 log_id = "cid1.log.oc1.xxx.xxxxx"
 
-instance_shape = "VM.GPU.A10.1"
-container_image = "dsmc://odsc-vllm-serving:0.3.0.7"
+instance_shape = "BM.GPU.H100.8"
+container_image = "dsmc://vllm-openai:v0.5.3.post1"
 region = "us-ashburn-1"
 ```
 
-The container image referenced above (`dsmc://odsc-vllm-serving:0.3.0.7`) is an Oracle Service Managed container that was build with:
+The container image referenced above (`dsmc://vllm-openai:v0.5.3.post1`) is an Oracle Service Managed container that was build with:
 
 - Oracle Linux 8 - Slim
 - CUDA 12.4
@@ -80,14 +80,14 @@ HUGGINGFACE_TOKEN =  "<HUGGINGFACE_TOKEN>" # Your huggingface token
 [This](https://huggingface.co/docs/huggingface_hub/guides/download#download-an-entire-repository) provides more information on using `snapshot_download()` to download an entire repository at a given revision. Models in the HuggingFace hub are stored in their own repository.
 
 ```python
-# Download the LLama3 model from Hugging Face to a local folder.
+# Download the LLama3.1 model from Hugging Face to a local folder.
 #
 
 from huggingface_hub import snapshot_download
 from tqdm.auto import tqdm
 
-model_name = "meta-llama/Meta-Llama-3-8B-Instruct" # copy from https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct
-local_dir = "models/Meta-Llama-3-8B-Instruct"
+model_name = "meta-llama/Meta-Llama-3.1-405B-Instruct" # copy from https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-Instruct
+local_dir = "models/Meta-Llama-3.1-405B-Instruct"
 
 snapshot_download(repo_id=model_name, local_dir=local_dir, force_download=True, tqdm_class=tqdm)  
 
@@ -114,7 +114,7 @@ artifact_path = f"oci://{bucket}@{namespace}/{model_prefix}"
 model = (DataScienceModel()
   .with_compartment_id(compartment_id)
   .with_project_id(project_id)
-  .with_display_name("Meta-Llama-3-8B-Instruct")
+  .with_display_name("Meta-Llama-3.1-405B-Instruct")
   .with_artifact(artifact_path)
 )
  
@@ -181,8 +181,8 @@ container_runtime = (
 ```python
 deployment = (
     ModelDeployment()
-    .with_display_name(f"Meta-Llama-3-8B-Instruct with vLLM SMC")
-    .with_description("Deployment of Meta-Llama-3-8B-Instruct MD with vLLM(0.3.0) container")
+    .with_display_name(f"Meta-Llama-3.1-405B-Instruct with vLLM SMC")
+    .with_description("Deployment of Meta-Llama-3.1-405B-Instruct MD with vLLM(0.5.3.post1) container")
     .with_infrastructure(infrastructure)
     .with_runtime(container_runtime)
 ).deploy(wait_for_completion=False)
@@ -193,7 +193,7 @@ deployment = (
 Once the model deployment has reached the Active state, we can invoke the model deployment endpoint to interact with the LLM. More details on different ways for accessing MD endpoints is documented [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/model-deployment-tips.md).
 
 
-#### How to prompt Llama 3
+#### How to prompt Llama 3.1
 
 The base models have no prompt format. The Instruct versions use the following conversation structure:
 
@@ -235,61 +235,6 @@ requests.post(
 ).json()
 ```
 
-#### Output
-
-The LLM produced a great output:
-
-> A) All amateur radio bands
-B) All amateur radio bands except the 10-meter band
-C) All amateur radio bands except the 160-meter band
-D) All amateur radio bands except the 2200-meter band
->
-Answer: A) All amateur radio bands
-\</s\>
->
-The FCC grants a general class license to amateur radio operators who pass the Element 3 exam. The exam covers the following topics:
->
-* FCC rules and regulations
-* Amateur radio practices and procedures
-* Radio theory and operating practices
-* Antennas and transmission lines
-* Electronic circuits and devices
-* RF safety and environmental concerns
->
-As a general class license holder, an amateur radio operator is authorized to use all amateur radio bands, which include:
->
-* 160 meters (1.8 MHz to 2 MHz)
-* 80 meters (3.5 MHz to 4 MHz)
-* 40 meters (7 MHz to 7.3 MHz)
-* 30 meters (10.1 MHz to 10.3 MHz)
-* 20 meters (14 MHz to 14.3 MHz)
-* 17 meters (18.1 MHz to 18.3 MHz)
-* 15 meters (21 MHz to 21.3 MHz
-
-The raw output:
-
-```json
-{
-  "id": "cmpl-2d57a83cb6544b768abc00c1b3b7ffc5",
-  "object": "text_completion",
-  "created": 2277,
-  "model": "odsc-llm",
-  "choices": [
-    {
-      "index": 0,
-      "text": "A) All amateur radio bands\nB) All amateur radio bands except the 10-meter band\nC) All amateur radio bands except the 160-meter band\nD) All amateur radio bands except the 2200-meter band\n\nAnswer: A) All amateur radio bands\n</s>\n\nThe FCC grants a general class license to amateur radio operators who pass the Element 3 exam. The exam covers the following topics:\n\n* FCC rules and regulations\n* Amateur radio practices and procedures\n* Radio theory and operating practices\n* Antennas and transmission lines\n* Electronic circuits and devices\n* RF safety and environmental concerns\n\nAs a general class license holder, an amateur radio operator is authorized to use all amateur radio bands, which include:\n\n* 160 meters (1.8 MHz to 2 MHz)\n* 80 meters (3.5 MHz to 4 MHz)\n* 40 meters (7 MHz to 7.3 MHz)\n* 30 meters (10.1 MHz to 10.3 MHz)\n* 20 meters (14 MHz to 14.3 MHz)\n* 17 meters (18.1 MHz to 18.3 MHz)\n* 15 meters (21 MHz to 21.3 MHz",
-      "logprobs": null,
-      "finish_reason": "length"
-    }
-  ],
-  "usage": {
-    "prompt_tokens": 19,
-    "total_tokens": 269,
-    "completion_tokens": 250
-  }
-}
-```
-
 #### Using the model from [LangChain](https://python.langchain.com/v0.1/docs/integrations/llms/oci_model_deployment_endpoint/)
 
 ```python
@@ -317,27 +262,3 @@ llm.invoke(
     skip_special_tokens=False,
 )
 ```
-
-Output:
-
-> During solar flares, the ionosphere can become highly ionized, causing radio signals to be refracted and scattered in unpredictable ways. This can make it challenging to communicate on certain amateur radio bands. However, some bands are more affected than others. Here's a general guideline on which amateur radio bands to use during solar flares:
->
-**Avoid:**
->
-1. **HF (3-30 MHz) bands**: These bands are most affected by solar flares, as the ionosphere can become highly ionized, causing signal refraction and scattering. Signals may be severely attenuated or even completely absorbed.
-2. **20m (14 MHz) and 15m (21 MHz) bands**: These bands are also prone to significant signal degradation due to the ionosphere's increased ionization.
->
-**Use:**
->
-1. **VHF (50-250 MHz) bands**: These bands are less affected by solar flares, as the ionosphere's ionization has less impact on signal propagation. Signals are more likely to follow a more predictable path.
-2. **UHF (300-3000 MHz) bands**: These bands are even less affected by solar flares, as the ionosphere's ionization has a minimal impact on signal propagation.
-3. **SHF (3-30 GHz) bands**: These bands are generally not affected by solar flares, as the ionosphere's ionization has a negligible impact on signal propagation.
->
-**Tips:**
->
-1. **Monitor propagation conditions**: Keep an eye on propagation forecasts and reports from other amateur radio operators to adjust your operating frequency and mode accordingly.
-2. **Use digital modes**: Digital modes like PSK31, FT8, and JT65 are more resistant to signal degradation and can be a good choice during solar flares.
-3. **Experiment with different frequencies**: If you're experiencing difficulties on a particular frequency, try switching to a different frequency within the same band to see if the signal improves.
-4. **Keep an eye on the solar flare's impact**: Monitor the solar flare's intensity and duration to adjust your operating strategy accordingly.
->
-Remember, solar flares can have unpredictable effects on radio propagation, so it's essential to stay flexible and adapt to changing conditions.
