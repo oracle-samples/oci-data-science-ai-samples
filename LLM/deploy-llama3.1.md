@@ -49,6 +49,7 @@ instance_shape = "BM.GPU.H100.8"
 container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1"  # name given to vllm image pushed to oracle  container registry
 region = "us-ashburn-1"
 ```
+
 The container image referenced above is an  offical container published by vLLM team:
 
 - CUDA 12.4.1
@@ -65,7 +66,54 @@ To prepare Model artifacts for LLM model deployment:
 - Upload the model folder to a [versioned bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usingversioning.htm) in Oracle Object Storage. If you don’t have an Object Storage bucket, create one using the OCI SDK or the Console. Create an Object Storage bucket. Make a note of the `namespace`, `compartment`, and `bucketname`. Configure the policies to allow the Data Science service to read and write the model artifact to the Object Storage bucket in your tenancy. An administrator must configure the policies in IAM in the Console.
 - Create model catalog entry for the model using the Object storage path
 
-### Model Download from HuggingFace Model Hub
+<style>
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border-top: none;
+}
+</style>
+
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, '#llama3_1_8B')">llama3_1_8B</button>
+  <button class="tablinks" onclick="openTab(event, '#llama3_1_70B')">llama3_1_70B</button>
+  <button class="tablinks" onclick="openTab(event, '#llama3_1_405B')">llama3_1_405B</button>
+</div>
+
+<div id="#llama3_1_8B" class="tabcontent">
+  <h3>llama3.1 8B</h3>
+  <p>
+  ### Model Download from HuggingFace Model Hub
 
 ```python
 # Login to huggingface using env variable
@@ -185,6 +233,276 @@ deployment = (
     .with_runtime(container_runtime)
 ).deploy(wait_for_completion=False)
 ```
+  </p>
+</div>
+<div id="#llama3_1_70B" class="tabcontent">
+  <h3>llama3.1 70B</h3>
+  <p>
+  ### Model Download from HuggingFace Model Hub
+
+```python
+# Login to huggingface using env variable
+HUGGINGFACE_TOKEN =  "<HUGGINGFACE_TOKEN>" # Your huggingface token
+!huggingface-cli login --token $HUGGINGFACE_TOKEN
+```
+
+[This](https://huggingface.co/docs/huggingface_hub/guides/download#download-an-entire-repository) provides more information on using `snapshot_download()` to download an entire repository at a given revision. Models in the HuggingFace hub are stored in their own repository.
+
+```python
+# Download the LLama3.1 model from Hugging Face to a local folder.
+#
+
+from huggingface_hub import snapshot_download
+from tqdm.auto import tqdm
+
+model_name = "meta-llama/Meta-Llama-3.1-405B-Instruct" # copy from https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-Instruct
+local_dir = "models/Meta-Llama-3.1-405B-Instruct"
+
+snapshot_download(repo_id=model_name, local_dir=local_dir, force_download=True, tqdm_class=tqdm)
+
+print(f"Downloaded model {model_name} to {local_dir}")
+```
+
+## Upload Model to OCI Object Storage
+
+```python
+model_prefix = "Meta-Llama-3-8B-Instruct/" #"<bucket_prefix>"
+bucket= "<bucket_name>" # this should be a versioned bucket
+namespace = "<bucket_namespace>"
+
+!oci os object bulk-upload --src-dir $local_dir --prefix $model_prefix -bn $bucket -ns $namespace --auth "resource_principal"
+```
+
+## Create Model by Reference using ADS
+
+```python
+from ads.model.datascience_model import DataScienceModel
+
+artifact_path = f"oci://{bucket}@{namespace}/{model_prefix}"
+
+model = (DataScienceModel()
+  .with_compartment_id(compartment_id)
+  .with_project_id(project_id)
+  .with_display_name("Meta-Llama-3.1-405B-Instruct")
+  .with_artifact(artifact_path)
+)
+
+model.create(model_by_reference=True)
+```
+
+### Import Model Deployment Modules
+
+```python
+from ads.model.deployment import (
+    ModelDeployment,
+    ModelDeploymentContainerRuntime,
+    ModelDeploymentInfrastructure,
+    ModelDeploymentMode,
+)
+```
+
+### Setup Model Deployment Infrastructure
+
+```python
+infrastructure = (
+    ModelDeploymentInfrastructure()
+    .with_project_id(project_id)
+    .with_compartment_id(compartment_id)
+    .with_shape_name(instance_shape)
+    .with_bandwidth_mbps(10)
+    .with_replica(1)
+    .with_web_concurrency(10)
+    .with_access_log(
+        log_group_id=log_group_id,
+        log_id=log_id,
+    )
+    .with_predict_log(
+        log_group_id=log_group_id,
+        log_id=log_id,
+    )
+)
+```
+
+### Configure Model Deployment Runtime
+
+```python
+env_var = {
+    'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/completions',
+    'MODEL_DEPLOY_ENABLE_STREAMING': 'true',
+    'SHM_SIZE': '10g'
+}
+
+cmd_var = ["--model", "/opt/ds/model/deployed_model/Meta-Llama-3-8B-Instruct/", "--tensor-parallel-size", "8", "--port", "8080", "--served-model-name", "llama3.1", "--host", "0.0.0.0", "--max-model-len", "1200", "--trust-remote-code"]
+
+container_runtime = (
+    ModelDeploymentContainerRuntime()
+    .with_image(container_image)
+    .with_server_port(8080)
+    .with_health_check_port(8080)
+    .with_env(env_var)
+    .with_cmd(cmd_var)
+    .with_deployment_mode(ModelDeploymentMode.HTTPS)
+    .with_model_uri(model.id)
+    .with_region(region)
+)
+```
+
+### Deploy Model Using Container Runtime
+
+```python
+deployment = (
+    ModelDeployment()
+    .with_display_name(f"Meta-Llama-3.1-405B-Instruct with vLLM docker conatiner")
+    .with_description("Deployment of Meta-Llama-3.1-405B-Instruct MD with vLLM(0.5.3.post1) container")
+    .with_infrastructure(infrastructure)
+    .with_runtime(container_runtime)
+).deploy(wait_for_completion=False)
+```
+  </p>
+</div>
+
+</div>
+<div id="#llama3_1_405B" class="tabcontent">
+  <h3>llama3.1 405B</h3>
+  <p>
+  ### Model Download from HuggingFace Model Hub
+
+```python
+# Login to huggingface using env variable
+HUGGINGFACE_TOKEN =  "<HUGGINGFACE_TOKEN>" # Your huggingface token
+!huggingface-cli login --token $HUGGINGFACE_TOKEN
+```
+
+[This](https://huggingface.co/docs/huggingface_hub/guides/download#download-an-entire-repository) provides more information on using `snapshot_download()` to download an entire repository at a given revision. Models in the HuggingFace hub are stored in their own repository.
+
+```python
+# Download the LLama3.1 model from Hugging Face to a local folder.
+#
+
+from huggingface_hub import snapshot_download
+from tqdm.auto import tqdm
+
+model_name = "meta-llama/Meta-Llama-3.1-405B-Instruct" # copy from https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-Instruct
+local_dir = "models/Meta-Llama-3.1-405B-Instruct"
+
+snapshot_download(repo_id=model_name, local_dir=local_dir, force_download=True, tqdm_class=tqdm)
+
+print(f"Downloaded model {model_name} to {local_dir}")
+```
+
+## Upload Model to OCI Object Storage
+
+```python
+model_prefix = "Meta-Llama-3-8B-Instruct/" #"<bucket_prefix>"
+bucket= "<bucket_name>" # this should be a versioned bucket
+namespace = "<bucket_namespace>"
+
+!oci os object bulk-upload --src-dir $local_dir --prefix $model_prefix -bn $bucket -ns $namespace --auth "resource_principal"
+```
+
+## Create Model by Reference using ADS
+
+```python
+from ads.model.datascience_model import DataScienceModel
+
+artifact_path = f"oci://{bucket}@{namespace}/{model_prefix}"
+
+model = (DataScienceModel()
+  .with_compartment_id(compartment_id)
+  .with_project_id(project_id)
+  .with_display_name("Meta-Llama-3.1-405B-Instruct")
+  .with_artifact(artifact_path)
+)
+
+model.create(model_by_reference=True)
+```
+
+### Import Model Deployment Modules
+
+```python
+from ads.model.deployment import (
+    ModelDeployment,
+    ModelDeploymentContainerRuntime,
+    ModelDeploymentInfrastructure,
+    ModelDeploymentMode,
+)
+```
+
+### Setup Model Deployment Infrastructure
+
+```python
+infrastructure = (
+    ModelDeploymentInfrastructure()
+    .with_project_id(project_id)
+    .with_compartment_id(compartment_id)
+    .with_shape_name(instance_shape)
+    .with_bandwidth_mbps(10)
+    .with_replica(1)
+    .with_web_concurrency(10)
+    .with_access_log(
+        log_group_id=log_group_id,
+        log_id=log_id,
+    )
+    .with_predict_log(
+        log_group_id=log_group_id,
+        log_id=log_id,
+    )
+)
+```
+
+### Configure Model Deployment Runtime
+
+```python
+env_var = {
+    'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/completions',
+    'MODEL_DEPLOY_ENABLE_STREAMING': 'true',
+    'SHM_SIZE': '10g'
+}
+
+cmd_var = ["--model", "/opt/ds/model/deployed_model/Meta-Llama-3-8B-Instruct/", "--tensor-parallel-size", "8", "--port", "8080", "--served-model-name", "llama3.1", "--host", "0.0.0.0", "--max-model-len", "1200", "--trust-remote-code"]
+
+container_runtime = (
+    ModelDeploymentContainerRuntime()
+    .with_image(container_image)
+    .with_server_port(8080)
+    .with_health_check_port(8080)
+    .with_env(env_var)
+    .with_cmd(cmd_var)
+    .with_deployment_mode(ModelDeploymentMode.HTTPS)
+    .with_model_uri(model.id)
+    .with_region(region)
+)
+```
+
+### Deploy Model Using Container Runtime
+
+```python
+deployment = (
+    ModelDeployment()
+    .with_display_name(f"Meta-Llama-3.1-405B-Instruct with vLLM docker conatiner")
+    .with_description("Deployment of Meta-Llama-3.1-405B-Instruct MD with vLLM(0.5.3.post1) container")
+    .with_infrastructure(infrastructure)
+    .with_runtime(container_runtime)
+).deploy(wait_for_completion=False)
+```
+  </p>
+</div>
+
+<script>
+function openTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
 
 ### Inference
 
