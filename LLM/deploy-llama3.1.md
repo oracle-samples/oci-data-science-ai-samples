@@ -1,6 +1,6 @@
 # Deploy Meta Llama 3.1 405B
 
-This how-to will show how to use the Oracle Data Science Service Managed Containers - to inference with a model downloaded from Hugging Face. For this we will use [Meta-Llama-3.1-405B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-Instruct) from Meta. The Llama 3.1 405B is a state-of-the-art open source model (with a custom commercial license, the Llama 3.1 Community License). With a context window of up to 128K and support across eight languages (English, German, French, Italian, Portuguese, Hindi, Spanish, and Thai), it rivals the top AI models when it comes to state-of-the-art capabilities in general knowledge, steerability, math, tool use, and multilingual translation.
+This tutorial will show you how to do inferencing with a model downloaded from Hugging Face. For this we will use [Meta-Llama-3.1-405B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-Instruct) from Meta. The Llama 3.1 405B is a state-of-the-art open source model (with a custom commercial license, the Llama 3.1 Community License). With a context window of up to 128K and support across eight languages (English, German, French, Italian, Portuguese, Hindi, Spanish, and Thai), it rivals the top AI models when it comes to state-of-the-art capabilities in general knowledge, steerability, math, tool use, and multilingual translation.
 
 ## Required IAM Policies
 
@@ -11,9 +11,9 @@ Add these [policies](https://github.com/oracle-samples/oci-data-science-ai-sampl
 ```python
 # Install required python packages
 
-!pip install oracle-ads
-!pip install oci
-!pip install huggingface_hub
+pip install oracle-ads
+pip install oci
+pip install huggingface_hub
 ```
 
 ```python
@@ -46,10 +46,10 @@ log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx"
 log_id = "cid1.log.oc1.xxx.xxxxx"
 
 instance_shape = "BM.GPU.H100.8"
-container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1"  # name given to vllm image pushed to oracle  container registry
+container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1"  # name given to vllm image pushed to oracle  container registry  
 region = "us-ashburn-1"
 ```
-The container image referenced above is an  offical container published by vLLM team:
+The container image referenced above is an offical container published by vLLM team:
 
 - CUDA 12.4.1
 - cuDNN 9
@@ -67,27 +67,17 @@ To prepare Model artifacts for LLM model deployment:
 
 ### Model Download from HuggingFace Model Hub
 
+You can to [HuggingFace documentation](https://github.com/huggingface/huggingface_hub) for details.
+
 ```python
 # Login to huggingface using env variable
-HUGGINGFACE_TOKEN =  "<HUGGINGFACE_TOKEN>" # Your huggingface token
-!huggingface-cli login --token $HUGGINGFACE_TOKEN
-```
+huggingface-cli login --token "<your-huggingface-token>"
 
-[This](https://huggingface.co/docs/huggingface_hub/guides/download#download-an-entire-repository) provides more information on using `snapshot_download()` to download an entire repository at a given revision. Models in the HuggingFace hub are stored in their own repository.
+# Download the LLama3.1 405B model from Hugging Face to a local folder  
 
-```python
-# Download the LLama3.1 model from Hugging Face to a local folder.
-#
+huggingface-cli download meta-llama/Meta-Llama-3.1-405B-Instruct-FP8 --local-dir Meta-Llama-3.1-405B-Instruct-FP8
 
-from huggingface_hub import snapshot_download
-from tqdm.auto import tqdm
 
-model_name = "meta-llama/Meta-Llama-3.1-405B-Instruct" # copy from https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-Instruct
-local_dir = "models/Meta-Llama-3.1-405B-Instruct"
-
-snapshot_download(repo_id=model_name, local_dir=local_dir, force_download=True, tqdm_class=tqdm)
-
-print(f"Downloaded model {model_name} to {local_dir}")
 ```
 
 ## Upload Model to OCI Object Storage
@@ -179,7 +169,7 @@ container_runtime = (
 ```python
 deployment = (
     ModelDeployment()
-    .with_display_name(f"Meta-Llama-3.1-405B-Instruct with vLLM docker conatiner")
+    .with_display_name(f"Meta-Llama-3.1-405B-Instruct with vLLM docker container")
     .with_description("Deployment of Meta-Llama-3.1-405B-Instruct MD with vLLM(0.5.3.post1) container")
     .with_infrastructure(infrastructure)
     .with_runtime(container_runtime)
