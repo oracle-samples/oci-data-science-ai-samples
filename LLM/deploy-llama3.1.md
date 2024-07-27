@@ -11,9 +11,7 @@ Add these [policies](https://github.com/oracle-samples/oci-data-science-ai-sampl
 ```python
 # Install required python packages
 
-pip install oracle-ads
-pip install oci
-pip install huggingface_hub
+pip install oracle-ads oci huggingface_hub -U
 ```
 
 ```python
@@ -34,28 +32,6 @@ ads.set_auth("resource_principal")
 # Extract region information from the Notebook environment variables and signer.
 ads.common.utils.extract_region()
 ```
-
-### Common variables
-
-```python
-# change as required for your environment
-compartment_id = os.environ["PROJECT_COMPARTMENT_OCID"]
-project_id = os.environ["PROJECT_OCID"]
-
-log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx"
-log_id = "cid1.log.oc1.xxx.xxxxx"
-
-instance_shape = "BM.GPU.H100.8"
-container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1"  # name given to vllm image pushed to oracle  container registry  
-region = "us-ashburn-1"
-```
-The container image referenced above is an offical container published by vLLM team:
-
-- CUDA 12.4.1
-- cuDNN 9
-- Torch 2.3.1
-- Python 3.10
-- vLLM v0.5.3.post1
 
 ## Prepare The Model Artifacts
 
@@ -106,6 +82,56 @@ model = (DataScienceModel()
 
 model.create(model_by_reference=True)
 ```
+##Inference container
+
+vLLM is an easy-to-use library for LLM inference and server.  You can get the container image from [DockerHub](https://hub.docker.com/r/vllm/vllm-openai/tags).
+
+```python
+docker pull --platform linux/amd64 vllm/vllm-openai:v0.5.3.post1
+```
+
+This container image published by the vLLM team has:
+
+- CUDA 12.4.1
+- cuDNN 9
+- Torch 2.3.1
+- Python 3.10
+- vLLM v0.5.3.post1
+
+Currently, OCI Data Science Model Deployment only supports container images residing in the OCI Registry.  Before we can push the pulled vLLM container, make sure you have created a repository in your tenancy.  
+-Go to your tenancy Container Registry
+-Click on the Create repository button
+-Select Private under Access types
+-Set a name for Repository name.  We are using "vllm-odsc "in the example.
+-Click on Create button
+
+You may need to docker login to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before in order to push the image. To login, you have to use your API Auth Token that can be created under your Oracle Cloud Account->Auth Token. You need to login only once. Replace <region> with the OCI region you are using.
+
+```python
+docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
+```
+
+If your tenancy is federated with Oracle Identity Cloud Service, use the format <tenancy-namespace>/oracleidentitycloudservice/<username>. You can then push the container image to the OCI Registry
+
+```python
+docker tag vllm/vllm-openai:v0.5.3.post1 -t <region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1
+docker push <region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1
+```
+### Set up Common variables
+
+```python
+# change as required for your environment
+compartment_id = os.environ["PROJECT_COMPARTMENT_OCID"]
+project_id = os.environ["PROJECT_OCID"]
+
+log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx"
+log_id = "cid1.log.oc1.xxx.xxxxx"
+
+instance_shape = "BM.GPU.H100.8"
+container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1"  # name given to vllm image pushed to oracle  container registry  
+region = "us-ashburn-1"
+```
+
 
 ### Import Model Deployment Modules
 
