@@ -15,8 +15,8 @@ pip install oracle-ads oci huggingface_hub -U
 ```
 
 ```python
+import os
 # Uncomment this code and set the correct proxy links if have to setup proxy for internet
-# import os
 # os.environ['http_proxy']="http://myproxy"
 # os.environ['https_proxy']="http://myproxy"
 
@@ -27,8 +27,6 @@ pip install oracle-ads oci huggingface_hub -U
 import ads
 ads.set_auth("resource_principal")
 ```
-
-```python
 # Extract region information from the Notebook environment variables and signer.
 ads.common.utils.extract_region()
 ```
@@ -82,7 +80,7 @@ model = (DataScienceModel()
 
 model.create(model_by_reference=True)
 ```
-##Inference container
+## Inference container
 
 vLLM is an easy-to-use library for LLM inference and server.  You can get the container image from [DockerHub](https://hub.docker.com/r/vllm/vllm-openai/tags).
 
@@ -99,11 +97,11 @@ This container image published by the vLLM team has:
 - vLLM v0.5.3.post1
 
 Currently, OCI Data Science Model Deployment only supports container images residing in the OCI Registry.  Before we can push the pulled vLLM container, make sure you have created a repository in your tenancy.  
--Go to your tenancy Container Registry
--Click on the Create repository button
--Select Private under Access types
--Set a name for Repository name.  We are using "vllm-odsc "in the example.
--Click on Create button
+- Go to your tenancy Container Registry
+- Click on the Create repository button
+- Select Private under Access types
+- Set a name for Repository name.  We are using "vllm-odsc "in the example.
+- Click on Create button
 
 You may need to docker login to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before in order to push the image. To login, you have to use your API Auth Token that can be created under your Oracle Cloud Account->Auth Token. You need to login only once. Replace <region> with the OCI region you are using.
 
