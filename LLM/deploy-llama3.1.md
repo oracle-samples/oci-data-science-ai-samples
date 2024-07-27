@@ -57,7 +57,7 @@ huggingface-cli download meta-llama/Meta-Llama-3.1-405B-Instruct-FP8 --local-dir
 ## Upload Model to OCI Object Storage
 
 ```python
-model_prefix = "Meta-Llama-3-8B-Instruct/" #"<bucket_prefix>"
+model_prefix = "Meta-Llama-3.1-405B-Instruct-FP8/" #"<bucket_prefix>"
 bucket= "<bucket_name>" # this should be a versioned bucket
 namespace = "<bucket_namespace>"
 
@@ -74,7 +74,7 @@ artifact_path = f"oci://{bucket}@{namespace}/{model_prefix}"
 model = (DataScienceModel()
   .with_compartment_id(compartment_id)
   .with_project_id(project_id)
-  .with_display_name("Meta-Llama-3.1-405B-Instruct")
+  .with_display_name("Meta-Llama-3.1-405B-Instruct-FP8")
   .with_artifact(artifact_path)
 )
 
@@ -127,7 +127,7 @@ log_id = "cid1.log.oc1.xxx.xxxxx"
 
 instance_shape = "BM.GPU.H100.8"
 container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1"  # name given to vllm image pushed to oracle  container registry  
-region = "us-ashburn-1"
+region = <your-region>
 ```
 
 
@@ -173,7 +173,7 @@ env_var = {
     'SHM_SIZE': '10g'
 }
 
-cmd_var = ["--model", "/opt/ds/model/deployed_model/Meta-Llama-3-8B-Instruct/", "--tensor-parallel-size", "8", "--port", "8080", "--served-model-name", "llama3.1", "--host", "0.0.0.0", "--max-model-len", "1200", "--trust-remote-code"]
+cmd_var = ["--model", "/opt/ds/model/deployed_model/Meta-Llama-3.1-405B-Instruct-FP8/", "--tensor-parallel-size", "8", "--port", "8080", "--served-model-name", "llama3.1", "--host", "0.0.0.0", "--max-model-len", "1200", "--trust-remote-code"]
 
 container_runtime = (
     ModelDeploymentContainerRuntime()
