@@ -26,7 +26,7 @@ import os
 ```python
 import ads
 ads.set_auth("resource_principal")
-```
+
 # Extract region information from the Notebook environment variables and signer.
 ads.common.utils.extract_region()
 ```
