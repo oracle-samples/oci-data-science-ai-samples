@@ -55,117 +55,37 @@ function initSdk(name) {
     const chatWidgetSettings = {
         URI: 'oda-6bd20d2d75414fc6893891714bc07f55-da2.data.digitalassistant.oci.oraclecloud.com',                               // ODA URI, only the hostname part should be passed, without the https://
         clientAuthEnabled: isClientAuthEnabled,     // Enables client auth enabled mode of connection if set true, no need to pass if set false
-        channelId: '05957180-ceed-4dd7-9e6e-8c9b4c9514ae',                   // Channel ID, available in channel settings in ODA UI, optional if client auth enabled
+        channelId: '05957180-ceed-4dd7-9e6e-8c9b4c9514ae',  // Channel ID, available in channel settings in ODA UI, optional if client auth enabled
+        // openChatOnLoad: true,
         userId: '<userId>',                         // User ID, optional field to personalize user experience
+        // initUserHiddenMessage: 'Hi',
+        openLinksInNewWindow: false,
+        disablePastActions: 'none',
+        enableAttachment: false,
         enableAutocomplete: true,                   // Enables autocomplete suggestions on user input
         enableBotAudioResponse: true,               // Enables audio utterance of skill responses
         enableClearMessage: true,                   // Enables display of button to clear conversation
         enableSpeech: true,                         // Enables voice recognition
+        enableTimestamp: false,                     // Show timestamp with each message
+        speechLocale: WebSDK.SPEECH_LOCALE.EN_US,
         showConnectionStatus: true,                 // Displays current connection status on the header
+        speechLocale: WebSDK.SPEECH_LOCALE.EN_US,
         i18n: {                                     // Provide translations for the strings used in the widget
             en: {                                   // en locale, can be configured for any locale
-                chatTitle: 'Oracle Assistant'       // Set title at chat header
+                chatTitle: 'DataScience Oracle23AI ODA Bot'       // Set title at chat header
             }
         },
         timestampMode: 'relative',                  // Sets the timestamp mode, relative to current time or default (absolute)
-        theme: WebSDK.THEME.DEFAULT,                // Redwood dark theme. The default is THEME.DEFAULT, while older theme is available as THEME.CLASSIC
+        theme: WebSDK.THEME.REDWOOD_DARK,           // Redwood dark theme. The default is THEME.DEFAULT, while older theme is available as THEME.CLASSIC
         icons: {
-            logo: null,
-            avatarAgent: '<svg xmlns="http://www.w3.org/2000/svg" height="32" width="32"><path fill="black" d="M12 2c5.523 0 10 4.477 10 10a9.982 9.982 0 01-3.804 7.85L18 20a9.952 9.952 0 01-6 2C6.477 22 2 17.523 2 12S6.477 2 12 2zm2 16h-4a2 2 0 00-1.766 1.06c1.123.6 2.405.94 3.766.94s2.643-.34 3.765-.94a1.997 1.997 0 00-1.616-1.055zM12 4a8 8 0 00-5.404 13.9A3.996 3.996 0 019.8 16.004L10 16h4c1.438 0 2.7.76 3.404 1.899A8 8 0 0012 4zm0 2c2.206 0 4 1.794 4 4s-1.794 4-4 4-4-1.794-4-4 1.794-4 4-4zm0 2c-1.103 0-2 .897-2 2s.897 2 2 2 2-.897 2-2-.897-2-2-2z" fill="#100f0e" fill-rule="evenodd"/></svg>',
-            avatarUser: '<svg xmlns="http://www.w3.org/2000/svg" height="32" width="32"><path fill="black" d="M12 2c5.523 0 10 4.477 10 10a9.982 9.982 0 01-3.804 7.85L18 20a9.952 9.952 0 01-6 2C6.477 22 2 17.523 2 12S6.477 2 12 2zm2 16h-4a2 2 0 00-1.766 1.06c1.123.6 2.405.94 3.766.94s2.643-.34 3.765-.94a1.997 1.997 0 00-1.616-1.055zM12 4a8 8 0 00-5.404 13.9A3.996 3.996 0 019.8 16.004L10 16h4c1.438 0 2.7.76 3.404 1.899A8 8 0 0012 4zm0 2c2.206 0 4 1.794 4 4s-1.794 4-4 4-4-1.794-4-4 1.794-4 4-4zm0 2c-1.103 0-2 .897-2 2s.897 2 2 2 2-.897 2-2-.897-2-2-2z" fill="#100f0e" fill-rule="evenodd"/></svg>',
-            avatarBot: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none"><path d="M0 0h36v36H0V0z" fill="#C74634"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.875 8.625a2.25 2.25 0 00-2.25 2.25v16c0 .621.504 1.125 1.125 1.125h.284c.298 0 .585-.119.796-.33l2.761-2.76a2.25 2.25 0 011.59-.66h15.944a2.25 2.25 0 002.25-2.25V10.875a2.25 2.25 0 00-2.25-2.25H7.875zM24.75 18a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5zm-4.5-2.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-9 2.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" fill="#fff"/></svg>'
+            avatarBot: "./images/botIcon.png",
+            avatarUser: './images/personIcon.png',
+            launch:"./images/botButtonIcon.gif",
+            logo:"./images/logoIcon.png",
         },
-        height: '90vh',
-        width: '75vw',
-        openChatOnLoad: true,
-        targetElement: 'chat-container',
+        height: '85vh', //layout modification property
+        width: '45vw',  //layout modification property
     };
-
-    chatWidgetSettings.delegate = {
-        render: (message) => {
-            if (message.messagePayload.type === "card") {
-                const msgElem = document.getElementById(message.msgId);
-                // Create custom styles
-                const styles = `
-                    .custom-card {
-                        background-color: white;
-                        width: 100%;
-                        max-width: 100%;
-                        border-radius: 10px;
-                        margin: 2px 0 0;
-                    }
-
-                    .custom-card ul {
-                        list-style: none;
-                        padding: 0;
-                        margin: 0;
-                    }
-
-                    .custom-card li {
-                        display: flex;
-                        justify-content: space-between;
-                        padding: 10px;
-                        border-bottom: thin solid #f5f4f2;
-                    }
-
-                    .custom-card li:last-child {
-                        border-bottom: none;
-                    }
-
-                    .custom-card button {
-                        align-self: start;
-                    }
-
-                    .actions-wrapper {
-                        margin-top: 8px;
-                    }`;
-
-                // Create custom template
-                const styleElem = document.createElement('style');
-                styleElem.innerText = styles;
-                document.head.appendChild(styleElem);
-
-                const cardElem = document.createElement('div');
-                cardElem.classList.add('custom-card');
-                const cardList = document.createElement('ul');
-                const cards = message.messagePayload.cards;
-                cards.forEach(card => {
-                    const liElem = document.createElement('li');
-                    const titleElem = document.createElement('div');
-                    titleElem.innerText = card.title;
-                    liElem.appendChild(titleElem);
-                    const button = document.createElement('button');
-                    button.innerText = card.actions[0].label;
-                    button.addEventListener('click', () => {
-                        actionHandler(card.actions[0]);
-                    });
-                    liElem.appendChild(button);
-                    cardList.appendChild(liElem);
-                });
-                cardElem.appendChild(cardList);
-                msgElem.appendChild(cardElem);
-
-                const actions = message.messagePayload.actions;
-                const actionsElem = document.createElement('div');
-                actionsElem.classList.add('actions-wrapper');
-                if (actions && actions.length) {
-                    actions.forEach(action => {
-                        const button = document.createElement('button');
-                        button.innerText = action.label;
-                        actionsElem.appendChild(button);
-                        button.addEventListener('click', () => {
-                            actionHandler(action);
-                        });
-                    });
-                }
-                msgElem.appendChild(actionsElem);
-                // Return `true` for customizing rendering for cards
-                return true;
-            }
-            // Return `false` for all other payloads to continue with WebSDK rendering
-            return false;
-        }
-    }
 
     // Initialize SDK
     if (isClientAuthEnabled) {
