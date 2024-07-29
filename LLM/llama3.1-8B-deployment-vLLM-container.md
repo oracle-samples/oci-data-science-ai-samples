@@ -233,7 +233,7 @@ You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
 <prompt> <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 ```
 
-This format has to be exactly reproduced for effective use. More details about prompting llama3.1 models can be found here[https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1]
+This format has to be exactly reproduced for effective use. More details about prompting LLaMA3.1 models can be found [here](https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1).
 
 
 ```python
