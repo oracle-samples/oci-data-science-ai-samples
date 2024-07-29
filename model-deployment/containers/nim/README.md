@@ -73,6 +73,7 @@ This file will be available to container on location `/opt/ds/model/deployed_mod
       * Key: `MODEL_DEPLOY_PREDICT_ENDPOINT`, Value: `/v1/completions`
       * Key: `MODEL_DEPLOY_HEALTH_ENDPOINT`, Value: `/v1/health/ready`
       * Key: `NGC_API_KEY_FILE`, Value: `/opt/ds/model/deployed_model/token`
+      * Key: `SHM_SIZE`, Value: `5g`
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.1` instance
     * Under `Networking` choose the `Custom Networking` option and bring the VCN and subnet, which allows Internet access.
