@@ -1,6 +1,6 @@
-# Deploy Meta Llama 3.1 405B
+# Deploy Meta Llama 3.1 8B
 
-This how-to will show how to use the Oracle Data Science Service Managed Containers - to inference with a model downloaded from Hugging Face. For this we will use [Meta-Llama-3.1-405B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-Instruct) from Meta. The Llama 3.1 405B is a state-of-the-art open source model (with a custom commercial license, the Llama 3.1 Community License). With a context window of up to 128K and support across eight languages (English, German, French, Italian, Portuguese, Hindi, Spanish, and Thai), it rivals the top AI models when it comes to state-of-the-art capabilities in general knowledge, steerability, math, tool use, and multilingual translation.
+This how-to will show how to use the Oracle Data Science Service Managed Containers - to inference with a model downloaded from Hugging Face. For this we will use [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct) from Meta. The Llama 3 instruction tuned models are optimized for dialogue use cases and outperform many of the available open source chat models on common industry benchmarks. (with a custom commercial license, the Llama 3.1 Community License). With a context window of up to 128K and support across eight languages (English, German, French, Italian, Portuguese, Hindi, Spanish, and Thai), it rivals the top AI models when it comes to state-of-the-art capabilities in general knowledge, steerability, math, tool use, and multilingual translation.
 
 ## Required IAM Policies
 
@@ -45,17 +45,45 @@ project_id = os.environ["PROJECT_OCID"]
 log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx"
 log_id = "cid1.log.oc1.xxx.xxxxx"
 
-instance_shape = "BM.GPU.H100.8"
+instance_shape = "BM.GPU.A10.2"
 container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1"  # name given to vllm image pushed to oracle  container registry
 region = "us-ashburn-1"
 ```
-The container image referenced above is an  offical container published by vLLM team:
+
+## Downloading the vLLM container
+
+The container image referenced above is an offical container published by vLLM[https://docs.vllm.ai/en/latest/index.html] team:
 
 - CUDA 12.4.1
 - cuDNN 9
 - Torch 2.3.1
 - Python 3.10
 - vLLM v0.5.3.post1
+
+You can get the container image from DockerHub:
+```bash
+docker pull --platform linux/amd64 vllm/vllm-openai:v0.5.3.post1
+```
+
+Currently, OCI Data Science Model Deployment only supports container images residing in the OCI Registry. Before we can push the pulled vLLM container, make sure you have created a repository in your tenancy:
+
+Go to your tenancy's Container Registry.
+Click on the "Create repository" button.
+Select "Private" under Access types.
+Set a name for the repository (we are using 'vllm-odsc' in this example).
+Click on the "Create" button.
+You may need to log in to the Oracle Cloud Container Registry (OCIR) first if you haven't done so before, in order to push the image. To log in, you have to use your API Auth Token that can be created under your Oracle Cloud Account -> Auth Token. You need to log in only once. Replace <region> with the OCI region you are using:
+
+```bash
+docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
+```
+If your tenancy is federated with Oracle Identity Cloud Service, use the format <tenancy-namespace>/oracleidentitycloudservice/<username>. You can then push the container image to the OCI Registry:
+
+```bash
+docker tag vllm/vllm-openai:v0.5.3.post1 -t <region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1
+docker push <region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1
+```
+
 
 ## Prepare The Model Artifacts
 
@@ -82,8 +110,8 @@ HUGGINGFACE_TOKEN =  "<HUGGINGFACE_TOKEN>" # Your huggingface token
 from huggingface_hub import snapshot_download
 from tqdm.auto import tqdm
 
-model_name = "meta-llama/Meta-Llama-3.1-405B-Instruct" # copy from https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-Instruct
-local_dir = "models/Meta-Llama-3.1-405B-Instruct"
+model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct" # copy from https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct
+local_dir = "models/Meta-Llama-3.1-8B-Instruct"
 
 snapshot_download(repo_id=model_name, local_dir=local_dir, force_download=True, tqdm_class=tqdm)
 
@@ -93,7 +121,7 @@ print(f"Downloaded model {model_name} to {local_dir}")
 ## Upload Model to OCI Object Storage
 
 ```python
-model_prefix = "Meta-Llama-3-8B-Instruct/" #"<bucket_prefix>"
+model_prefix = "Meta-Llama-3.1-8B-Instruct/" #"<bucket_prefix>"
 bucket= "<bucket_name>" # this should be a versioned bucket
 namespace = "<bucket_namespace>"
 
@@ -110,7 +138,7 @@ artifact_path = f"oci://{bucket}@{namespace}/{model_prefix}"
 model = (DataScienceModel()
   .with_compartment_id(compartment_id)
   .with_project_id(project_id)
-  .with_display_name("Meta-Llama-3.1-405B-Instruct")
+  .with_display_name("Meta-Llama-3.1-8B-Instruct")
   .with_artifact(artifact_path)
 )
 
@@ -154,12 +182,11 @@ infrastructure = (
 
 ```python
 env_var = {
-    'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/completions',
+    'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/chat/completions',
     'MODEL_DEPLOY_ENABLE_STREAMING': 'true',
-    'SHM_SIZE': '10g'
 }
 
-cmd_var = ["--model", "/opt/ds/model/deployed_model/Meta-Llama-3-8B-Instruct/", "--tensor-parallel-size", "8", "--port", "8080", "--served-model-name", "llama3.1", "--host", "0.0.0.0", "--max-model-len", "1200", "--trust-remote-code"]
+cmd_var = ["--model", "/opt/ds/model/deployed_model/Meta-Llama-3.1-8B-Instruct/", "--tensor-parallel-size", "2", "--port", "8080", "--served-model-name", "llama3.1", "--host", "0.0.0.0",]
 
 container_runtime = (
     ModelDeploymentContainerRuntime()
@@ -179,8 +206,8 @@ container_runtime = (
 ```python
 deployment = (
     ModelDeployment()
-    .with_display_name(f"Meta-Llama-3.1-405B-Instruct with vLLM docker conatiner")
-    .with_description("Deployment of Meta-Llama-3.1-405B-Instruct MD with vLLM(0.5.3.post1) container")
+    .with_display_name(f"Meta-Llama-3.1-8B-Instruct with vLLM docker conatiner")
+    .with_description("Deployment of Meta-Llama-3.1-8B-Instruct MD with vLLM(0.5.3.post1) container")
     .with_infrastructure(infrastructure)
     .with_runtime(container_runtime)
 ).deploy(wait_for_completion=False)
@@ -199,14 +226,14 @@ The base models have no prompt format. The Instruct versions use the following c
 <|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
 Cutting Knowledge Date: December 2023
-Today Date: 25 Jul 2024
+Today Date: 29 Jul 2024
 
 You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
 
 <prompt> <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 ```
 
-This format has to be exactly reproduced for effective use.
+This format has to be exactly reproduced for effective use. More details about prompting llama3.1 models can be found here[https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1]
 
 
 ```python
@@ -219,7 +246,7 @@ ads.set_auth("resource_principal")
 prompt_template= Template("""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
                     Cutting Knowledge Date: December 2023
-                    Today Date: 24 Jul 2024
+                    Today Date: 29 Jul 2024
 
                     You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
 
@@ -254,34 +281,48 @@ The raw output:
         "index": 0,
         "logprobs": null,
         "stop_reason": null,
-        "text": "\n\nDuring solar flares, radio communications can be disrupted due to increased ionization and geomagnetic storms. However, some amateur radio bands are more resilient to these conditions than others. Here are some bands that are often considered best to use during solar flares:\n\n1. **VHF (30 MHz - 300 MHz) and UHF (300 MHz - 3 GHz) bands**: These higher frequency bands are less affected by solar flares and geomagnetic storms. They are also less prone to ionospheric absorption, which can attenuate signals on lower frequency bands.\n2. **6 meters (50 MHz)**: This band is often considered a good choice during solar flares, as it is less affected by ionospheric disturbances and can provide reliable local and regional communications.\n3. **2 meters (144 MHz) and 70 cm (440 MHz)**: These bands are popular for local and regional communications and are often less affected by solar flares.\n4. **Microwave bands (e.g., 1.2 GHz, 2.4 GHz, 5.8 GHz)**: These bands are even less affected by solar flares and can provide reliable communications over shorter distances.\n\nBands to avoid during solar flares:\n\n1. **HF (3 MHz - 30 MHz) bands**: These lower frequency bands are more susceptible to ionospheric absorption and geomagnetic storms, which can cause signal loss and disruption.\n2. **160 meters (1.8 MHz) and 80 meters (3.5 MHz)**: These bands are often the most affected by solar flares and geomagnetic storms.\n\nKeep in mind that the impact of solar flares on amateur radio communications can vary depending on the intensity of the flare, the location of the communicating stations, and the time of day. It's always a good idea to monitor space weather forecasts and adjust your communication plans accordingly."
+        "text": "\n\nDuring solar flares, it's best to use amateur radio bands that are less affected by the ionospheric and solar radiation. Here are some general guidelines:\n\n1. **Lower frequency bands (below 30 MHz):** These bands are less affected by solar activity and can be used for communication during solar flares. Some popular lower frequency bands include:\n\t* 160 meters (1.8-2 MHz)\n\t* 80 meters (3.5-4 MHz)\n\t* 40 meters (7-7.3 MHz)\n2. **Medium frequency bands (30-60 MHz):** These bands can be used, but with some caution. They may experience some ionospheric disturbances, but they can still be usable:\n\t* 20 meters (14-14.35 MHz)\n\t* 15 meters (21-21.45 MHz)\n\t* 10 meters (28-29.7 MHz)\n3. **Higher frequency bands (above 60 MHz):** These bands are more susceptible to ionospheric and solar radiation and are generally not recommended during solar flares:\n\t* 6 meters (50-54 MHz)\n\t* 2 meters (144-148 MHz)\n\t* 70 centimeters (430-440 MHz)\n\t* 23 centimeters (1240-1300 MHz)\n\nKeep in mind that the impact of solar flares on amateur radio bands can vary depending on the intensity of the flare and the specific frequency band. It's always a good idea to monitor the solar activity forecast and adjust your operating frequency accordingly.\n\nAdditionally, consider the following tips:\n\n* Use a solar flux index (SFI) and Kp index to monitor solar activity.\n* Be prepared for increased noise and interference on the higher frequency bands.\n* Use a good quality antenna and transmitter to minimize signal degradation.\n* Consider using a filter or a noise-reducing device to minimize interference.\n* Be patient and flexible, as propagation conditions can change rapidly during solar flares.\n\nRemember, it's always better to err on the side of caution and choose lower frequency bands during solar flares."
       }
     ],
-    "created": 1721939892,
-    "id": "cmpl-4aac6ee35ffd477eaedadbb973efde18",
-    "model": "llama3.1",
+    "created": 1722278476,
+    "id": "cmpl-640c5f4febcb48798278506eadfd795e",
+    "model": "odsc-llm",
     "object": "text_completion",
     "usage": {
-      "completion_tokens": 384,
-      "prompt_tokens": 57,
-      "total_tokens": 441
+      "completion_tokens": 431,
+      "prompt_tokens": 58,
+      "total_tokens": 489
     }
   },
 ```
 
-During solar flares, radio communications can be disrupted due to increased ionization and geomagnetic storms. However, some amateur radio bands are more resilient to these conditions than others. Here are some bands that are often considered best to use during solar flares:
+During solar flares, it's best to use amateur radio bands that are less affected by the ionospheric and solar radiation. Here are some general guidelines:
 
-1. **VHF (30 MHz - 300 MHz) and UHF (300 MHz - 3 GHz) bands**: These higher frequency bands are less affected by solar flares and geomagnetic storms. They are also less prone to ionospheric absorption, which can attenuate signals on lower frequency bands.
-2. **6 meters (50 MHz)**: This band is often considered a good choice during solar flares, as it is less affected by ionospheric disturbances and can provide reliable local and regional communications.
-3. **2 meters (144 MHz) and 70 cm (440 MHz)**: These bands are popular for local and regional communications and are often less affected by solar flares.
-4. **Microwave bands (e.g., 1.2 GHz, 2.4 GHz, 5.8 GHz)**: These bands are even less affected by solar flares and can provide reliable communications over shorter distances.
+1. **Lower frequency bands (below 30 MHz):** These bands are less affected by solar activity and can be used for communication during solar flares. Some popular lower frequency bands include:
+	* 160 meters (1.8-2 MHz)
+	* 80 meters (3.5-4 MHz)
+	* 40 meters (7-7.3 MHz)
+2. **Medium frequency bands (30-60 MHz):** These bands can be used, but with some caution. They may experience some ionospheric disturbances, but they can still be usable:
+	* 20 meters (14-14.35 MHz)
+	* 15 meters (21-21.45 MHz)
+	* 10 meters (28-29.7 MHz)
+3. **Higher frequency bands (above 60 MHz):** These bands are more susceptible to ionospheric and solar radiation and are generally not recommended during solar flares:
+	* 6 meters (50-54 MHz)
+	* 2 meters (144-148 MHz)
+	* 70 centimeters (430-440 MHz)
+	* 23 centimeters (1240-1300 MHz)
 
-Bands to avoid during solar flares:
+Keep in mind that the impact of solar flares on amateur radio bands can vary depending on the intensity of the flare and the specific frequency band. It's always a good idea to monitor the solar activity forecast and adjust your operating frequency accordingly.
 
-1. **HF (3 MHz - 30 MHz) bands**: These lower frequency bands are more susceptible to ionospheric absorption and geomagnetic storms, which can cause signal loss and disruption.
-2. **160 meters (1.8 MHz) and 80 meters (3.5 MHz)**: These bands are often the most affected by solar flares and geomagnetic storms.
+Additionally, consider the following tips:
 
-Keep in mind that the impact of solar flares on amateur radio communications can vary depending on the intensity of the flare, the location of the communicating stations, and the time of day. It's always a good idea to monitor space weather forecasts and adjust your communication plans accordingly.
+* Use a solar flux index (SFI) and Kp index to monitor solar activity.
+* Be prepared for increased noise and interference on the higher frequency bands.
+* Use a good quality antenna and transmitter to minimize signal degradation.
+* Consider using a filter or a noise-reducing device to minimize interference.
+* Be patient and flexible, as propagation conditions can change rapidly during solar flares.
+
+Remember, it's always better to err on the side of caution and choose lower frequency bands during solar flares.
 
 
 #### Using the model from [LangChain](https://python.langchain.com/v0.1/docs/integrations/llms/oci_model_deployment_endpoint/)
@@ -302,7 +343,7 @@ llm.invoke(
     input=Template("""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
                     Cutting Knowledge Date: December 2023
-                    Today Date: 24 Jul 2024
+                    Today Date: 29 Jul 2024
 
                     You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
 
