@@ -83,6 +83,9 @@ If your tenancy is federated with Oracle Identity Cloud Service, use the format 
 docker tag vllm/vllm-openai:v0.5.3.post1 -t <region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1
 docker push <region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1
 ```
+## API Endpoint Usage
+
+The `/v1/completions` is for interacting with non-chat base models or the instruction trained chat model. This endpoint provides the completion for a single prompt and takes a single string as input, whereas the `/v1/chat/completions` endpoint provides the responses for a given dialog and requires the input in a specific format corresponding to the message history. This guide uses `/v1/chat/completions` endpoint.
 
 
 ## Prepare The Model Artifacts
