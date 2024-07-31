@@ -185,7 +185,7 @@ infrastructure = (
 
 ```python
 env_var = {
-    'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/chat/completions',
+    'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/completions',
     'MODEL_DEPLOY_ENABLE_STREAMING': 'true',
 }
 
@@ -243,22 +243,26 @@ This format has to be exactly reproduced for effective use. More details about p
 import requests
 import ads
 from string import Template
+from datetime import datetime
 
 ads.set_auth("resource_principal")
+endpoint = f"https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict"
 
-prompt_template= Template("""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+current_date = datetime.now().strftime("%d %B %Y")
+
+prompt_template= Templatef(f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
                     Cutting Knowledge Date: December 2023
-                    Today Date: 29 Jul 2024
+                    Today Date: {current_date}
 
                     You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
 
                     $prompt<|eot_id|><|start_header_id|>assistant<|end_header_id|>""")
 
-prompt = t.substitute(prompt= "What amateur radio bands are best to use when there are solar flares?")
+prompt = prompt_template.substitute(prompt= "What amateur radio bands are best to use when there are solar flares?")
 
 requests.post(
-    "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict",
+    endpoint,
     json={
         "model": "llama3.1",
         "prompt": prompt,
@@ -334,19 +338,22 @@ Remember, it's always better to err on the side of caution and choose lower freq
 import ads
 from langchain_community.llms import OCIModelDeploymentVLLM
 from string import Template
+from datetime import datetime
+
 
 ads.set_auth("resource_principal")
+current_date = datetime.now().strftime("%d %B %Y")
 
 llm = OCIModelDeploymentVLLM(
-    endpoint="https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict",
+    endpoint=f"https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict",
     model="llama3.1",
 )
 
 llm.invoke(
-    input=Template("""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+    input=Template(f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
                     Cutting Knowledge Date: December 2023
-                    Today Date: 29 Jul 2024
+                    Today Date: {current_date}
 
                     You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
 
