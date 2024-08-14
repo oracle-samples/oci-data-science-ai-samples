@@ -1,30 +1,32 @@
 ## Introduction
 
-In today's digital landscape, chatbots are evolving to become more intelligent, responsive, and capable of handling complex interactions. In this blog, we delve into the creation of a next-generation chatbot by harnessing the power of Oracle Data Science capabilities like AI Quick Actions and Model Deployment, Mistral-7B-Instruct-v0.2, Oracle 23AI DB, Retrieval-Augmented Generation (RAG), LangChain, and Oracle Digital Assistant. Each of these technologies brings unique strengths to the table, enabling us to build a chatbot that not only understands and responds to user queries with remarkable accuracy but also offers a seamless and engaging conversational experience.
+In today's digital landscape, chatbots are evolving to become more intelligent, responsive, and capable of handling complex interactions. In this blog, we delve into the creation of a next-generation chatbot by harnessing the power of Oracle Data Science capabilities like AI Quick Actions and Model Deployment, Mistral-7B-Instruct-v0.2, Oracle Database 23ai, LangChain, and Oracle Digital Assistant. Each of these technologies brings unique strengths to the table, enabling us to build a chatbot that not only understands and responds to user queries with remarkable accuracy but also offers a seamless and engaging conversational experience.
 
-One of the standout features of Oracle 23AI is its advanced vector search capabilities. This technology allows for efficient retrieval of information by converting text into high-dimensional vectors, which are then compared for relevance. When integrated into the RAG pipeline, Oracle 23AI's vector search enhances the chatbot's ability to access and deliver the most pertinent information from vast datasets. This ensures that the responses generated are not only contextually accurate but also highly relevant to the user's query.
+One of the standout features of Oracle Database 23ai is its advanced vector search capabilities. This technology allows for efficient retrieval of information by converting text into high-dimensional vectors, which are then compared for relevance. When integrated into the RAG pipeline, Oracle Database 23ai's vector search enhances the chatbot's ability to access and deliver the most pertinent information from vast datasets. This ensures that the responses generated are not only contextually accurate but also highly relevant to the user's query.
 
 Oracle Digital Assistant further elevates the chatbot's functionality by providing a robust platform for building, deploying, and managing conversational AI solutions. It offers pre-built connectors, natural language understanding (NLU), and dialogue management, which streamline the development process and ensure a smooth user experience. The combination of Oracle Digital Assistant with the RAG pipeline enables the chatbot to handle complex interactions and maintain a natural flow of conversation, thereby improving user engagement and satisfaction.
 
-By leveraging the synergy of Oracle 23AI and Oracle Digital Assistant within the RAG pipeline, developers can create a chatbot that excels in both retrieval accuracy and conversational fluidity. This integrated approach not only reduces the time and effort required to build sophisticated chatbots but also results in a solution that is scalable, efficient, and capable of delivering superior user experiences. Whether you're a developer, a tech enthusiast, or a business leader looking to enhance customer engagement, this guide will equip you with the knowledge and tools to build an advanced chatbot that stands out in the crowded digital arena.
+By leveraging the synergy of Oracle Database 23ai and Oracle Digital Assistant within the RAG pipeline, developers can create a chatbot that excels in both retrieval accuracy and conversational fluidity. This integrated approach not only reduces the time and effort required to build sophisticated chatbots but also results in a solution that is scalable, efficient, and capable of delivering superior user experiences. Whether you're a developer, a tech enthusiast, or a business leader looking to enhance customer engagement, this guide will equip you with the knowledge and tools to build an advanced chatbot that stands out in the crowded digital arena.
 
-For the step-by-step walkthrough of the process, see the [AI samples GitHub repository](https://github.com/shekharchavan1990/oci-data-science-ai-samples/tree/oda_rag_poc/oda_examples/oda-oci-data-science-oracledb-23ai-llm).  
+### Use Cases
+Here are few sample use cases where this can be useful for example.
+* Personalized customer support - querying both guide books as well as customer history can create a better view of the customer's issues and help diagnose and solve the problem faster.
+* Supply chain optimization - querying vendor data with internal business ordering/shipping data can result in better decision making and faster response to changes in the supply chain.
+* Optimize Sales - query CRM data to identify high-potential leads and suggest strategies to increase deal closing probability.
 
-To take a look at what we’re building, here’s the end state, an ODA chatbot that integrates with OCI Data Science.
-
-[http://oda.pre.datascience.us-ashburn-1.oci.oracleiaas.com/](http://oda.pre.datascience.us-ashburn-1.oci.oracleiaas.com/)
+### Benefits of Oracle AI Vector Search
+Oracle Database is a leading repository of operational and enterprise data. Enterprise applications usually need to search a combination of business data and unstructured data.  For example, a retail website could feature searches based on a natural language product description and a target product image, along with other filters, such as price, store location, manufacturer, and current availability. This search requires simultaneously searching unstructured catalog data (product description and image), structured catalog data (price, store location and manufacturer) as well as real time transactional data (such as current inventory).
 
 ## High Level Solution Overview
 
 High Level Architecture
 
-![image](./images/oda-with-oci-data-science-high-level-architecture.jpg)
+![image](./images/oda-with-oci-data-science-high-level-architecture.png)
 
 Figure: A High Level Architecture of RAG Pipeline
 
 ### Steps
-
-The above diagram illustrates the architecture and workflow of building an advanced chatbot using Mistral-7B-Instruct-v0.2, Oracle 23AI, RAG, LangChain, and Oracle Digital Assistant. Here are the detailed steps involved based on the diagram:
+The above diagram illustrates the architecture and workflow of building an advanced chatbot using Mistral-7B-Instruct-v0.2, Oracle Database 23ai, RAG, LangChain, and Oracle Digital Assistant. Here are the detailed steps involved based on the diagram:
 
 1.  **User Interaction** - The user sends a request to the chatbot via the Oracle Digital Assistant interface.
 2.  **Request Handling** - The Digital Assistant receives the request and forwards it to the OCI Data Science infrastructure.
@@ -33,9 +35,9 @@ The above diagram illustrates the architecture and workflow of building an advan
     *   LangChain processes the request and identifies the need for information retrieval from external documents and enterprise data
 4.  **Vectorization** - In this process there are following sub-process involved:
     *   The request is sent to an embedding model deployment, which transforms the query into a high-dimensional vector representation.
-    *   This vectorized query is then sent to Oracle DB 23AI for vector search
+    *   This vectorized query is then sent to Oracle Database 23ai for vector search
 5.  **Data Retrieval**  - This step involves the following sub-processes
-    *   Oracle DB 23AI performs a vector search against both enterprise data and external document vectors (HTML/PDF).
+    *   Oracle Database 23ai performs a vector search against both enterprise data and external document vectors (HTML/PDF).
     *   Relevant documents and data vectors are retrieved and sent back to OCI Data Science.
 6.  **Querying the External Models** - In this step the data is retrieved and generates a response. 
     *   The retrieved information is used to generate a query for the Mistral-7B-Instruct-v0.2 model deployment provisioned using AI Quick Actions features in OCI Data Science.
@@ -88,7 +90,7 @@ We would be leveraging [AI quick actions Model deployment feature](https://docs.
 #### Deploying Jina Embedding Model
 
 * In Notebook copy Jine Embedding model files from [https://huggingface.co/jinaai/jina-embeddings-v2-base-en/tree/main](https://huggingface.co/jinaai/jina-embeddings-v2-base-en/tree/main) to ads\_embedding\_model\_dir directory.
-* Upload [score.py](images/4095969586.py) this to current directory (e.g. /home/datascience/)
+* Upload [score.py](images/score.py) this to current directory (e.g. /home/datascience/)
 * Execute below code
 
 ```py
@@ -176,29 +178,29 @@ reranker_md = reranker_generic_model.deploy(
 )
 ```
 
-### Step 2: Setting up the Oracle 23AI database
+### Step 2: Setting up the Oracle Database 23ai
 
-We will be utilizing the latest features of Oracle 23AI, specifically the AI Vector Search, for our use case. In this scenario, we will import the embeddings generated from the dataset into Oracle 23AI. When a user queries using the RAG, the response will be enhanced by supplying the LLMs with additional context. the below diagram shows some of benefits of using Oracle 23AI:
+We will be utilizing the latest features of Oracle Database 23ai, specifically the AI Vector Search, for our use case. In this scenario, we will import the embeddings generated from the dataset into Oracle Database 23ai. When a user queries using the RAG, the response will be enhanced by supplying the LLMs with additional context. the below diagram shows some of benefits of using Oracle Database 23ai:
 
 ![image](./images/oda-with-oci-data-science-oracle-database-23ai.jpg)
 
-Figure: A illustration of Oracle 23AI Search Feature (source)
+Figure: A illustration of Oracle Database 23ai Search Feature (source)
 
-This will augment their knowledge, leading to responses that are more accurate and pertinent to the customer's inquiries To setup Oracle 23AI you can following the options mentioned below:
+This will augment their knowledge, leading to responses that are more accurate and pertinent to the customer's inquiries To setup Oracle Database 23ai you can following the options mentioned below:
 
 *   Using a container instance as mentioned [here](https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/autonomous-docker-container.html)
 *   using a python client
 
-We will be using a hosted instance of Oracle 23AI to demonstrate the powerful features of Vector search.
+We will be using a hosted instance of Oracle Database 23ai to demonstrate the powerful features of Vector search.
 
-### Step 3: Parsing, Chunking and Store Embedding In Oracle 23AI DB
+### Step 3: Parsing, Chunking and Store Embedding In Oracle Database 23ai
 
-Below snippet give high level overview how document gets parsed, how document gets converted into chunks and then how embedding will be stored in Oracle 23 AI DB.
+Below snippet give high level overview how document gets parsed, how document gets converted into chunks and then how embedding will be stored in Oracle Database 23ai.
 
 For detailed implementation, please refer [github repo](https://github.com/shekharchavan1990/oci-data-science-ai-samples/tree/oda_rag_poc/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
 
 
-**Initialize Oracle 23 AI**
+**Initialize Oracle Database 23ai**
 
 ```py
 def load_documents(embedding_model):
@@ -249,7 +251,7 @@ def load_documents(embedding_model):
 
 
 
-### Step 4: Connect to Mistral-7B-Instruct-v0.2 AQUA LLM
+### Step 4: Connect to Mistral-7B-Instruct-v0.2 AI Quick Actions LLM
 
 Create a Model deployment with AI Quick actions and get the model deployment endpoint from there. 
 
@@ -269,7 +271,7 @@ command_md = OCIModelDeploymentVLLM(
 
 The following RAG architecture, would consist of the following steps:
 
-**Upload to 23AI Vector Database**
+**Upload to 23ai Vector Database**
 
 ```py
 class CustomRetriever(BaseRetriever):
@@ -357,14 +359,12 @@ deploy.predict('Can you please give some overview on Oracle Database 23.4?')
 
 Add a REST service to instance that calls the model's provider. We're using Oracle Model Deployment as an example, but we can you use a REST service for any LLM.
 
-![](images/4095971032.png)
+![image](./images/oda-with-oci-data-science-md-endpoint.png)
 
 Add policy, so that Digital Assistant can access Model deployment predict endpoint.
-Go to **Navigation menu** on top left corner --> **Identity & Security** \--> **Policies** \--> **Create Policy**
+Go to **Navigation menu** on top left corner --> **Identity & Security** --> **Policies** --> **Create Policy**
 
-**![](images/4095971033.png)**
-
-
+![image](./images/oda-with-oci-data-science-create-policy.png)
 
 **Policies for dynamic group**
 
@@ -384,7 +384,7 @@ Once policy gets created, we can launch to Digital Assistant and open it in a br
     *   **Endpoint**: Copy and and paste the Model Deployment endpoint.
     *   **Methods**: Select **POST**.
 5.  Click **Create**.
-    ![](images/4095971034.png)
+    ![image](./images/oda-with-oci-data-science-create-llm-service.png)
 6.  Complete the service by adding the API key, and the request and response payload samples:
     *   **Authentication Type**: Select **OCI Resource Principal**..
     *   POST request: Select **application/json** as the **Content Type**.
@@ -393,10 +393,10 @@ Once policy gets created, we can launch to Digital Assistant and open it in a br
             "query": "Can you please give some overview on Oracle Database 23.4?"
         }
 
-        ![](images/4095971035.png)
+        ![image](./images/oda-with-oci-data-science-set-llm-service.png)
 7.  Click **Test Request** to check for a 200 response.
 
-    ![](images/4095971036.png)
+    ![image](./images/oda-with-oci-data-science-test-llm-service.png)
     ------------------------------------------
 
 
@@ -406,7 +406,7 @@ With the LLM Provider REST Service added to the instance, now we need to create 
 
 To create this skill:
 
-1.  With the Oracle Digital Assistant UI opened in browser. Go to **Navigation menu** on top left corner --> **Development** \--> S**kills**
+1.  With the Oracle Digital Assistant UI opened in browser. Go to **Navigation menu** on top left corner --> **Development** --> **\+Skills**
 2.  Click the **\+ New Skill** button.
 
 The Create Skill dialog appears.
@@ -414,13 +414,14 @@ The Create Skill dialog appears.
 1.  Add a name in the **Display Name** field.
 2.  For the other fields, leave the default values. Note that the Dialog Mode is **Visual**.
 3.  Click **Create**.
-    ![](images/4095971453.png)
+    ![image](./images/oda-with-oci-data-science-create-skill.png)
 
 ### Connect the Skill to the Model
 
 We're now going to enable the skill to access the LLM REST service by creating a custom component with an event handler that transforms the REST payloads into formats that are accepted by both the LLM provider and Oracle Digital Assistant.
 
 1.  Click **Components** ![The Components icon](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/components_icon_inline.png) in the left nav-bar.
+
     ![The Components icon in the left navbar](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/components_leftnavbar.png)
 
 1.  Click **Add Service**.
@@ -431,14 +432,16 @@ We're now going to enable the skill to access the LLM REST service by creating a
     *   Select **LLM Transformation** from the Component Type drop down list.
     *   Enter a descriptive name in the Component Name field.
     *   Select **Custom** (located under **other**) from the Template drop down list.
-3.  Click **Create
-    **![](images/4095971545.png)
+3.  Click **Create**
+    ![image](./images/oda-with-oci-data-science-create-service.png)
 4.  The completed component displays in the Components page.
-    ![](images/4095971587.png)
+    ![image](./images/oda-with-oci-data-science-component-page.png)
 5.  Select the component in the component page to check its deployment status. When Ready displays, you can move on to the next step.
-    ![](images/4095971614.png)
+    ![image](./images/oda-with-oci-data-science-component-status.png)
+
     Ensure that **Service Enabled** (the default setting) is switched on.
-    ![](images/4095971639.png)
+
+    ![image](./images/oda-with-oci-data-science-service-enabled.png)
 
 ### Map the LLM Service Provider and Oracle Digital Assistant Requests and Responses
 
@@ -451,11 +454,13 @@ The skill's requests to the model's service provider need to be transformed from
 To open the event handler code editor and update the transformation code (in this case, for Azure OpenAI):
 
 1.  Expand the service. Then select the event handler.
-    ![](images/4095971738.png)
+
+    ![image](./images/oda-with-oci-data-science-event-handler.png)
+
 2.  Click **Edit** ![The Edit Component code icon](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/edit_icon_inline.png) (located at the upper right) to open the editor.
-    ![](images/4095971716.png)
+    ![image](./images/oda-with-oci-data-science-component-edit.png)
 3.  Code Editor
-    ![](images/4095971766.png)
+    ![image](./images/oda-with-oci-data-science-component-editor.png)
 4.  Replace the \``` transformRequestPayload` `` handler event method code (around Lines 24-26) with the following:
 
     **transformRequestPayload**
@@ -497,7 +502,7 @@ To open the event handler code editor and update the transformation code (in thi
     ```
 
 7.  Check the code syntax by clicking **Validate**. Use it to replace the code in the editor if you're encountering syntax errors that you can't fix.
-    ![](images/4095971614.png)
+    ![image](./images/oda-with-oci-data-science-component-status.png)
 
 
 8.  Click **Save**, then **Close**. Wait for the deployment to complete. When Ready displays, you can move on to the next step.
@@ -507,10 +512,12 @@ To open the event handler code editor and update the transformation code (in thi
 To enable the skill to connect users to the model through the dialog flow, you need to create an LLM service that combines the instance-wide LLM service that calls the model with the transformation event handler (which in this case is for Oracle Model Deployment).
 
 1.  Click **Settings** ![The Settings icon](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/settings_icon_inline.png) in the left nav-bar.
-    ![](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/settings_icon_left_navbar.png)
+
+    ![Left nav bar](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/settings_icon_left_navbar.png)
 
 
 2.  Open the Configuration page.
+
     ![The Configuration tab in Settings](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/settings_configuration_tab.png)
 
 
@@ -523,13 +530,14 @@ To enable the skill to connect users to the model through the dialog flow, you n
     *   **LLM Service**: Select the name of the instance-wide LLM service that you created in [Task 1: Create the LLM Service for the Model](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/#task_one).
     *   **Transformation Handler**: Select the name of the event handler component that you created as part of the REST service in [Task 3: Connect the Skill to the Model](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/#task_three).
     *   Leave the remaining properties in their default settings. Note that **Default** is switched on (`true`) if this is the only service that you've created so far for this tutorial.
-        ![](images/4095972384.png)
-
+        ![image](./images/oda-with-oci-data-science-llm-service.png)
 
 5.  Click **Save** (located at the right).
+
     ![The Save service icon](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/create_llm_service.png)
+
 6.  Switch off Feedback and other default on switches.
-    ![](images/4119700617.png)
+    ![image](./images/oda-with-oci-data-science-switches.png)
 
 ### Integrate the Service
 
@@ -538,95 +546,85 @@ The component conveys these instructions using a prompt, which is a block of hum
 In this step, we'll provide this prompt, which instructs the model on evaluating user feedback as positive or negative, or neutral.
 
 1.  Click **Flows** ![The Flows icon](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/flows_inline.png) in the left nav-bar.
+
     ![The Flows icon in the left navbar](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/flows_leftnavbar.png)
 
-
 2.  Select **unresolvedIntent**.
+
     ![Unresolved flow](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/select_unresolved_flow.png)
 
-
 3.  In the unresolvedMessage state, click ![The menu icon](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/inline_component_menu_icon.png) and then select **Add State** from the menu.
-    ![The Add State option](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/add_state_option.png)
 
+    ![The Add State option](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/add_state_option.png)
 
 4.  Select **Service Integration**.
 
-
 5.  Select **Invoke Large Language Model**.
 
-
 6.  Enter a description like Sentiment analysis. Then click **Insert**.
-    ![](images/4095974628.png)
+
+    ![image](./images/oda-with-oci-data-science-add-state.png)
 
     The dialog flow now includes the unresolvedMessage (Send Message) state, invokeLLM state and the showLLMError state.
 
     ![The invokeLLM state with the showError state in the dialog flow](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/invokeLLM_state_in_flow.png)
 
-
 7.  In the unresolvedMessage state, click ![The menu icon](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/inline_component_menu_icon.png) and then select **Delete** from the menu. as we don't want to show error message for **UnresolvedIntent**
-    ![](images/4095974963.png)
+    ![image](./images/oda-with-oci-data-science-unresolved-intent-actions.png)
 
     The dialog flow now includes the invokeLLM state and the showLLMError state only.
-    ![](images/4095974996.png)
+    ![image](./images/oda-with-oci-data-science-dialog-flow.png)
 
 8.  Open the invokeLLM state. In the Component page, select the LLM service that we have created from the last step.
     ![The LLM Service field](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-large-language-model/images/llm_component_select_service.png)
 
-
 9.  Add prompt that sends instructions to the LLM service by pasting the following into the Prompt field. Here we want all user conversation should get passed as Prompt Input.
 
-    ![](images/4096319176.png)
-
+    ![image](./images/oda-with-oci-data-science-invoke-llm.png)
 
 10.  We need to create PROMPT\_INPUT variable. So, click on Prompt Parameters + sign, to add a new parameter and its value.
-    ![](images/4096319228.png)
-
+    ![image](./images/oda-with-oci-data-science-prompt-input.png)
 
 11.  Set **Use Streaming** is set to **False** so that the message is delivered in its entirety, not incrementally. 
-    ![](images/4096319279.png)
-12.  Test the Prompt with the **Prompt Builder.** Click on **Build Prompt 
-    ![](images/4096319328.png)** 
+    ![image](./images/oda-with-oci-data-science-use-streaming.png)
+12.  Test the Prompt with the **Prompt Builder.** Click on **Build Prompt**
+    ![image](./images/oda-with-oci-data-science-build-prompt.png)
 
 13.  Add **Prompt Parameter Mock Value** and Click on **Generate Output.** This way we can validate LLM integration.
-    **![](images/4096319356.png)
-    **
-
-
-
+    ![image](./images/oda-with-oci-data-science-test-prompt-builder.png)
 
 ### Test the Prompt with the Skill Tester
 
 1.  Open the Skill Tester by clicking **Preview** (located at the upper right).
     ![The Preview button](https://docs.oracle.com/en/cloud/paas/digital-assistant/tutorial-llm-cohere/images/preview.png)
 
-
 2.  Enter the following request:
     _"Can you please give some overview on Oracle Database 23.4?"_
 
     The output may look something like this.
-    ![](images/4096319471.png)
+    ![image](./images/oda-with-oci-data-science-conversation-tester-output-1.png)
 
     Ask next query to LLM:
     _"latest oracle database"_
 
     The output may look something like this.
-    ![](images/4096319746.png)
+    ![image](./images/oda-with-oci-data-science-conversation-tester-output-2.png)
 
 
 ### Set Up the Oracle Web User Channel
 
 We'll create a Digital Assistant user channel that enables an Oracle Web client to access skill. To ensure that only our web clients can use this channel, we'll configure it to require client authentication.
 
-1.  With the Oracle Digital Assistant UI opened in browser. Go to **Navigation menu** on top left corner --> **Development** \--> **Channels**
+1.  With the Oracle Digital Assistant UI opened in browser. Go to **Navigation menu** on top left corner --> **Development** --> **Channels**
 2.  Click **+Add Channel**.
 3.  Complete the Channel dialog to create a POST operation to the provider's endpoint:
     *   **Name**: A unique name that begins with a letter and contains only letters, numbers, periods, and underscores (`_`). For example: OCI`_MD_LLM`.
     *   **Description (Optional)**: What the channel is used for.
     *   **Channel Type**: Select **Oracle Web**.
-    *   **Allowed Domains: \***
+    *   **Allowed Domains:**
     *   **Client Authentication Enabled:** Switch off
 4.  Click **Create**.
-    ![](images/4107325320.png)
+    ![image](./images/oda-with-oci-data-science-create-channel.png)
 5.  Switch off **Client Authentication Enabled,** If not already. In above screenshot, I forgot to switch it of.
 6.  In the **Route** To **drop-down list**, select the skill that we want to use. We have selected current skill i.e **LLM-MD-Skill**
 7.  Switch **Channel** **Enabled** to On.
@@ -642,7 +640,7 @@ Download this ZIP and extract it to your local system. This ZIP includes a user 
 3.  Click first row, 2nd column download icon. Current Version i.e [ODA Web SDK 24.06](https://www.oracle.com/downloads/cloud/amce-downloads.html).
 4.  In **Platforms** column Select **GENRIC** from dropdown.
 5.  Click to download latest oda js sdk i.e \`oda-native-client-sdk-js-24\_06 for (GENERIC (All Platforms)\`
-     ![](images/4107325510.png)
+     ![image](./images/oda-with-oci-data-science-download-sdk.png)
 6.  Extract the downloaded zip file.
 
 ### Test Oracle Web App
@@ -655,16 +653,17 @@ Download this ZIP and extract it to your local system. This ZIP includes a user 
     `let isClientAuthEnabled = false;` 
 4.  Run `samples/web/index.html file on any browser.`
 5.  Ignore the Index file contents. Directly click on chat icon.
-    ![](images/4107325653.png)
+    ![image](./images/oda-with-oci-data-science-web-sdk.png)
 6.  It will show **Oracle Assistant CONNECTED** status.
-7.  We can start out conversation, like we did earlier **with the Skill Tester
-    ![](images/4107325670.png)  ![](images/4107325681.png)**  
+7.  We can start out conversation, like we did earlier with the Skill Tester
+    ![image](./images/oda-with-oci-data-science-chatbot-1.png)  
+    ![image](./images/oda-with-oci-data-science-chatbot-2.png)
 
 ### Release on Oracle Compute Instance
 
 1.  Create Oracle Compute Instance. Please refer [https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/launchinginstance.htm](https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/launchinginstance.htm)
 2.  Make sure you have below ingress rules.
-    ![](images/4114023169.png)
+    ![image](./images/oda-with-oci-data-science-ingress-rules.png)
 3.  Copy all  web folder to newly created instance.
 4.  Install NGINX [https://docs.oracle.com/en/learn/ol-nginx/index.html#background](https://docs.oracle.com/en/learn/ol-nginx/index.html#background)
 5.  Open a browser and navigate to `http://<IP_address>/`
@@ -676,48 +675,34 @@ Download this ZIP and extract it to your local system. This ZIP includes a user 
 *   [Configure Client Authentication](http://www.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/digital-assistant&id=DACUA-GUID-672865F8-5883-461C-B6AD-47191EBC89DA) in _Using Oracle Digital Assistant_.
 *   [Customize-chat-widget](https://docs.oracle.com/en/cloud/paas/digital-assistant/use-chatbot/customize-chat-widget.html#GUID-45FA259F-4558-4C0F-A3AD-0BB7586EA595)
 
-Benchmarking Results
-
------------------------
-
+## Benchmarking Results
 Let's compare the outputs from directly asking the LLM vs using RAG with LLM:
 
 **Response from LLM**
 
-![](images/4106200733.png)
-
-
+![image](./images/oda-with-oci-data-science-llm-output.png)
 
 **Response from RAG**
 
-**![](images/4106200746.png)**
+![image](./images/oda-with-oci-data-science-oda-output.png)
 
 **Comparison:** Add a response on how the RAG response is better than when compared from LLM Response. If you have any other areas please add them here.  
 
-
-
-Conclusion
-==========
-
-In conclusion, building an advanced chatbot using Llama3, Oracle 23AI, RAG, LangChain, and Oracle Digital Assistant showcases the power of integrating cutting-edge technologies to create a highly responsive and intelligent conversational agent. The detailed workflow, from request handling to response generation, ensures that the chatbot can efficiently retrieve and process vast amounts of information, delivering accurate and contextually relevant answers to users. By leveraging Oracle 23AI's vector search capabilities and the robust platform provided by Oracle Digital Assistant, developers can significantly enhance the chatbot's performance and user engagement. This integrated approach not only streamlines the development process but also results in a scalable, efficient, and highly effective AI solution that stands out in the competitive landscape of digital assistants. Whether for customer service, information retrieval, or interactive support, this advanced chatbot architecture paves the way for creating sophisticated conversational experiences that meet the demands of modern users.
-
-
+## Conclusion
+In conclusion, building an advanced chatbot using Llama3, Oracle Database 23ai, RAG, LangChain, and Oracle Digital Assistant showcases the power of integrating cutting-edge technologies to create a highly responsive and intelligent conversational agent. The detailed workflow, from request handling to response generation, ensures that the chatbot can efficiently retrieve and process vast amounts of information, delivering accurate and contextually relevant answers to users. By leveraging Oracle Database 23ai's vector search capabilities and the robust platform provided by Oracle Digital Assistant, developers can significantly enhance the chatbot's performance and user engagement. This integrated approach not only streamlines the development process but also results in a scalable, efficient, and highly effective AI solution that stands out in the competitive landscape of digital assistants. Whether for customer service, information retrieval, or interactive support, this advanced chatbot architecture paves the way for creating sophisticated conversational experiences that meet the demands of modern users.
 
 Try [Oracle Cloud Free Trial](https://www.oracle.com/cloud/free/)! A 30-day trial with US$300 in free credits gives you access to Oracle Cloud Infrastructure Data Science service. For more information, see the following resources:
 
-*   Full sample, including all files in [OCI Data Science sample repository on GitHub](https://github.com/shekharchavan1990/oci-data-science-ai-samples/tree/oda_rag_poc/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
-*   Visit our [service documentation](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions.htm).
-*   Watch [our tutorials on our YouTube playlist](https://www.youtube.com/playlist?list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L).
-*   Try one of our [LiveLabs](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/livelabs-workshop-cards?session=108343633199478). Search for “data science.”
-*   Got questions? Reach out to us at [ask-oci-data-science\_grp@oracle.com](mailto:ask-oci-data-science_grp@oracle.com?subject=Follow%20up%20questions%20on%20%22Deploy%20Llama%202%20in%20OCI%20Data%20Science%22%20blog%20post)
-
-
+* Full sample, including all files in [OCI Data Science sample repository on GitHub](https://github.com/shekharchavan1990/oci-data-science-ai-samples/tree/oda_rag_poc/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
+* Visit our [service documentation](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions.htm).
+* Watch [our tutorials on our YouTube playlist](https://www.youtube.com/playlist?list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L).
+* Try one of our [LiveLabs](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/livelabs-workshop-cards?session=108343633199478). Search for “data science.”
+* Got questions? Reach out to us at [ask-oci-data-science\_grp@oracle.com](mailto:ask-oci-data-science_grp@oracle.com?subject=Follow%20up%20questions%20on%20%22Deploy%20Llama%202%20in%20OCI%20Data%20Science%22%20blog%20post)
 
 If you want to suggest specific models to add to AI Quick Actions email [the OCI Data Science group](mailto:ask-oci-data-science_grp@oracle.com). For more information on how to use AI Quick Actions, go to the Oracle Cloud Infrastructure Data Science [YouTube playlist](https://www.youtube.com/playlist?list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L) to see a demo video of AI Quick Actions, and find [our technical documentation](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions.htm), and see our [Github repository](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/ai-quick-actions) with tips and examples
 
 
 ## References
-
 Try [Oracle Cloud Free Trial](https://www.oracle.com/cloud/free/)! A 30-day trial with US$300 in free credits gives you access to Oracle Cloud Infrastructure Data Science service. For more information, see the following resources:
 
 Full sample including all files in [OCI Data Science sample repository on Github](https://github.com/shekharchavan1990/oci-data-science-ai-samples/tree/oda_rag_poc/LLM/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
@@ -733,6 +718,5 @@ Watch our tutorials on our [YouTube playlist](https://www.youtube.com/playlist?l
 Try one of our [LiveLabs](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/livelabs-workshop-cards?session=108343633199478). Search for “data science.”
 
 ## Acknowledgements
-
 *   Announcing AI Quick Actions : [https://blogs.oracle.com/ai-and-datascience/post/ai-quick-actions-in-oci-data-science](https://blogs.oracle.com/ai-and-datascience/post/ai-quick-actions-in-oci-data-science)
 *   Announcing Oracle Database 23ai : General Availability :  [https://blogs.oracle.com/database/post/oracle-23ai-now-generally-available](https://blogs.oracle.com/database/post/oracle-23ai-now-generally-available)
