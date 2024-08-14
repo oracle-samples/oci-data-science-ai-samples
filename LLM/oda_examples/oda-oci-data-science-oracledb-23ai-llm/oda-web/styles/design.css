@@ -299,6 +299,8 @@ img {
 }
 .page-banner{
     display: flex;
+    height: 52rem;
+    background-color: rgba(2,10,19,255);
 }
 .page-content{
     display: flex;
