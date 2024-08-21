@@ -21,7 +21,7 @@ Oracle Database is a leading repository of operational and enterprise data. Ente
 
 High Level Architecture
 
-![image](./images/oda-with-oci-data-science-high-level-architecture.png)
+![image](./images/oda-with-oci-data-science-high-level-architecture.jpeg)
 
 Figure: A High Level Architecture of RAG Pipeline
 
@@ -655,9 +655,9 @@ Download this ZIP and extract it to your local system. This ZIP includes a user 
 5.  Ignore the Index file contents. Directly click on chat icon.
     ![image](./images/oda-with-oci-data-science-web-sdk.png)
 6.  It will show **Oracle Assistant CONNECTED** status.
-7.  We can start out conversation, like we did earlier with the Skill Tester
-    ![image](./images/oda-with-oci-data-science-chatbot-1.png)  
-    ![image](./images/oda-with-oci-data-science-chatbot-2.png)
+7.  This is how our website looks with chat icon in bottom-right corner. We can start out conversation, like we did earlier with the Skill Tester.
+    ![image](./images/oda-with-oci-data-science-website-landing.png)  
+    ![image](./images/oda-with-oci-data-science-website-chatbot.png)
 
 ### Release on Oracle Compute Instance
 
