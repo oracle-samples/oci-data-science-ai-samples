@@ -5,6 +5,10 @@ This Readme walks through how to use NIM - [ Meta-Llama-3-8B-Instruct](https://h
 * [llama3](https://github.com/meta-llama/llama3) from Meta.
 * [NIM](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct) by Nvidia
 
+We describe two approaches to create this Model Deployment on OCI:
+* Download Model using API-KEY from NGC Nvidia (described below)
+* Utilising Model Catalog to store Models in OCI, later used for model deployment
+
 ## Prerequisites
 * Access the corresponding NIM container for the model. For example for llama3, fetch the latest available image from [NGC catalog](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). If you are a first time user,  you need to sign up a developer account and wait for access to be granted to required container image.
 Click Get Container Button and click Request Access for NIM. At the time of writing this blog, you need a business email address to get access to NIM.
@@ -28,13 +32,13 @@ When experimenting with new frameworks and models, it is highly advisable to att
     * Then click `Create agent configuration`
 
 
-## Build NIM Container for Model Deploy
+## Download NIM Container image and upload to OCIR
 
-* Build the OCI Model Deploy compatible container image. This process bakes in some of the configurations that makes it easier to deploy on the platform
-
-  ```bash
-  docker build -f Dockerfile -t odsc-nim-llama3 .
-  ```
+* Pull the latest NIM Image to local machine or through NB session. Tag it with desired name. 
+    ```bash
+    docker pull nvcr.io/nim/meta/llama3-8b-instruct:latest
+    docker tag nvcr.io/nim/meta/llama3-8b-instruct:latest odsc-nim-llama3:latest 
+    ```
 
 ## OCI Container Registry
 
@@ -57,7 +61,7 @@ When experimenting with new frameworks and models, it is highly advisable to att
 Once you built and pushed the NIM container, you can now use the `Bring Your Own Container` Deployment in OCI Data Science to deploy the Llama3 model.
 
 ### Creating Model catalog
-NIM container will download the model directly using publicly exposed NGC catalog APIs. To provide authorization token to download, we will save API key in a file and creaate a zip out of it. This zip file will then be used to create a model catalog resource.
+NIM container will download the model directly using publicly exposed NGC catalog APIs. To provide authorization token to download, we will save API key in a file and create a zip out of it. This zip file will then be used to create a model catalog resource.
 Sample file content named `token`:
 ```bash
 nvapi-..........
@@ -73,6 +77,7 @@ This file will be available to container on location `/opt/ds/model/deployed_mod
       * Key: `MODEL_DEPLOY_PREDICT_ENDPOINT`, Value: `/v1/completions`
       * Key: `MODEL_DEPLOY_HEALTH_ENDPOINT`, Value: `/v1/health/ready`
       * Key: `NGC_API_KEY_FILE`, Value: `/opt/ds/model/deployed_model/token`
+      * Key: `NIM_SERVER_PORT`, Value `8080`
       * Key: `SHM_SIZE`, Value: `5g`
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.1` instance
