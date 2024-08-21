@@ -39,12 +39,12 @@ The above diagram illustrates the architecture and workflow of building an advan
 5.  **Data Retrieval**  - This step involves the following sub-processes
     *   Oracle Database 23ai performs a vector search against both enterprise data and external document vectors (HTML/PDF).
     *   Relevant documents and data vectors are retrieved and sent back to OCI Data Science.
-6.  **Querying the External Models** - In this step the data is retrieved and generates a response. 
-    *   The retrieved information is used to generate a query for the Mistral-7B-Instruct-v0.2 model deployment provisioned using AI Quick Actions features in OCI Data Science.
-    *   The  Mistral-7B-Instruct-v0.2 model processes the query and generates a response based on its training and the retrieved context.
-7.  **Re-ranking**
+6.  **Re-ranking**
     *   The generated response may be further refined by a rerank model deployment.
     *   The rerank model evaluates and ranks the responses to ensure the most relevant and accurate response is selected.
+7.  **Querying the External Models** - In this step the data is retrieved and generates a response. 
+    *   The retrieved information is used to generate a query for the Mistral-7B-Instruct-v0.2 model deployment provisioned using AI Quick Actions features in OCI Data Science.
+    *   The  Mistral-7B-Instruct-v0.2 model processes the query and generates a response based on its training and the retrieved context.
 8.  **Response Generation** - The refined response is sent back to LangChain, which consolidates the final output.
 9.  **Returning the Response to the user**
     *   The final response is returned to the Digital Assistant.
