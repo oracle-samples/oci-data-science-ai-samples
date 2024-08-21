@@ -197,7 +197,7 @@ We will be using a hosted instance of Oracle Database 23ai to demonstrate the po
 
 Below snippet give high level overview how document gets parsed, how document gets converted into chunks and then how embedding will be stored in Oracle Database 23ai.
 
-For detailed implementation, please refer [github repo](https://github.com/shekharchavan1990/oci-data-science-ai-samples/tree/oda_rag_poc/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
+For detailed implementation, please refer [github repo](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/LLM/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
 
 
 **Initialize Oracle Database 23ai**
@@ -693,7 +693,7 @@ In conclusion, building an advanced chatbot using Llama3, Oracle Database 23ai, 
 
 Try [Oracle Cloud Free Trial](https://www.oracle.com/cloud/free/)! A 30-day trial with US$300 in free credits gives you access to Oracle Cloud Infrastructure Data Science service. For more information, see the following resources:
 
-* Full sample, including all files in [OCI Data Science sample repository on GitHub](https://github.com/shekharchavan1990/oci-data-science-ai-samples/tree/oda_rag_poc/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
+* Full sample, including all files in [OCI Data Science sample repository on GitHub](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/LLM/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
 * Visit our [service documentation](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions.htm).
 * Watch [our tutorials on our YouTube playlist](https://www.youtube.com/playlist?list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L).
 * Try one of our [LiveLabs](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/livelabs-workshop-cards?session=108343633199478). Search for “data science.”
@@ -705,7 +705,7 @@ If you want to suggest specific models to add to AI Quick Actions email [the OC
 ## References
 Try [Oracle Cloud Free Trial](https://www.oracle.com/cloud/free/)! A 30-day trial with US$300 in free credits gives you access to Oracle Cloud Infrastructure Data Science service. For more information, see the following resources:
 
-Full sample including all files in [OCI Data Science sample repository on Github](https://github.com/shekharchavan1990/oci-data-science-ai-samples/tree/oda_rag_poc/LLM/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
+Full sample including all files in [OCI Data Science sample repository on Github](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/LLM/oda_examples/oda-oci-data-science-oracledb-23ai-llm).
 
 Visit our [datascience service documentation](http://docs.oracle.com/iaas/data-science/using/data-science.htm).
 
