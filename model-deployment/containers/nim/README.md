@@ -86,7 +86,7 @@ This file will be available to container on location `/opt/ds/model/deployed_mod
     * Click on `Show advanced options` at the bottom
     * Select the checkbox `Use a custom container image`
     * Select the OCIR repository and image we pushed earlier
-    * Use port 8000.
+    * Use port 8080.
     * Leave CMD and Entrypoint blank
     * Click on `Create` button to create the model deployment
 
