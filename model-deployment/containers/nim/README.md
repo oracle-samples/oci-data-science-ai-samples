@@ -35,6 +35,7 @@ When experimenting with new frameworks and models, it is highly advisable to att
 ## Build NIM Container for Model Deploy
 
 * Build the OCI Model Deploy compatible container image. This process bakes in some of the configurations that makes it easier to deploy on the platform
+
   ```bash
   docker build -f Dockerfile -t odsc-nim-llama3 .
   ```
@@ -84,7 +85,7 @@ This file will be available to container on location `/opt/ds/model/deployed_mod
     * Click on `Show advanced options` at the bottom
     * Select the checkbox `Use a custom container image`
     * Select the OCIR repository and image we pushed earlier
-    * Use port 8080.
+    * Use port 8000.
     * Leave CMD and Entrypoint blank
     * Click on `Create` button to create the model deployment
 
