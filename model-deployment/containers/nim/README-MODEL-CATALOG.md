@@ -10,7 +10,16 @@ Utilising Model Catalog to store Models in OCI. We describe two ways to achieve 
 The following are the pre-requisite:
 * Notebook session with internet access (Recommended)
 * Download the Llama 3 8B Instruct Model from [HuggingFace][https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct] or NGC repository.
-* Download NIM Container image and upload to OCIR as described in README.md
+
+## Download NIM Container image and upload to OCIR
+* Pull the latest NIM Image to local machine or through NB session. Tag it with desired name.
+    ```bash
+    docker pull nvcr.io/nim/meta/llama3-8b-instruct:latest
+    docker tag nvcr.io/nim/meta/llama3-8b-instruct:latest odsc-nim-llama3:latest 
+    ```
+## OCI Container Registry
+
+Once you built and pushed the NIM container, you can now use the `Bring Your Own Container` Deployment in OCI Data Science to deploy the Llama3 model.
 
 # Method 1: Export Model to Model Catalog
 
@@ -26,8 +35,8 @@ Utilise the [section][https://github.com/oracle-samples/oci-data-science-ai-samp
 
 # ### Create Model deploy
 
-* To deploy the model now in the console, go back to your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
-    * Select the project you created earlier and then select `Model Deployment`
+* To deploy the model now in the console, navigate to your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
+    * Select the project created earlier and then select `Model Deployment`
     * Click on `Create model deployment`
     * Under `Default configuration` set following custom environment variables
         * Key: `MODEL_DEPLOY_PREDICT_ENDPOINT`, Value: `/v1/completions`

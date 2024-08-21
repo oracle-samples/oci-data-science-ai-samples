@@ -32,13 +32,12 @@ When experimenting with new frameworks and models, it is highly advisable to att
     * Then click `Create agent configuration`
 
 
-## Download NIM Container image and upload to OCIR
+## Build NIM Container for Model Deploy
 
-* Pull the latest NIM Image to local machine or through NB session. Tag it with desired name. 
-    ```bash
-    docker pull nvcr.io/nim/meta/llama3-8b-instruct:latest
-    docker tag nvcr.io/nim/meta/llama3-8b-instruct:latest odsc-nim-llama3:latest 
-    ```
+* Build the OCI Model Deploy compatible container image. This process bakes in some of the configurations that makes it easier to deploy on the platform
+  ```bash
+  docker build -f Dockerfile -t odsc-nim-llama3 .
+  ```
 
 ## OCI Container Registry
 
@@ -70,14 +69,13 @@ This file will be available to container on location `/opt/ds/model/deployed_mod
 
 ### Create Model deploy
 
-* To deploy the model now in the console, go back to your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
-  * Select the project you created earlier and then select `Model Deployment`
+* To deploy the model now in the console, navigate to your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
+  * Select the project created earlier and then select `Model Deployment`
   * Click on `Create model deployment`
   * Under `Default configuration` set following custom environment variables
       * Key: `MODEL_DEPLOY_PREDICT_ENDPOINT`, Value: `/v1/completions`
       * Key: `MODEL_DEPLOY_HEALTH_ENDPOINT`, Value: `/v1/health/ready`
       * Key: `NGC_API_KEY_FILE`, Value: `/opt/ds/model/deployed_model/token`
-      * Key: `NIM_SERVER_PORT`, Value `8080`
       * Key: `SHM_SIZE`, Value: `5g`
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.1` instance
