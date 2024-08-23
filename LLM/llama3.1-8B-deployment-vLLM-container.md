@@ -45,44 +45,11 @@ project_id = os.environ["PROJECT_OCID"]
 log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx"
 log_id = "cid1.log.oc1.xxx.xxxxx"
 
-instance_shape = "BM.GPU.A10.2"
-container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1"  # name given to vllm image pushed to oracle  container registry
+instance_shape = "VM.GPU.A10.2"
+container_image = "dsmc://odsc-vllm-serving:0.5.3.post1"   # official SMC image for vllm 0.5.3.post1
 region = "us-ashburn-1"
 ```
 
-## Downloading the vLLM container
-
-The container image referenced above is an offical container published by vLLM[https://docs.vllm.ai/en/latest/index.html] team:
-
-- CUDA 12.4.1
-- cuDNN 9
-- Torch 2.3.1
-- Python 3.10
-- vLLM v0.5.3.post1
-
-You can get the container image from DockerHub:
-```bash
-docker pull --platform linux/amd64 vllm/vllm-openai:v0.5.3.post1
-```
-
-Currently, OCI Data Science Model Deployment only supports container images residing in the OCI Registry. Before we can push the pulled vLLM container, make sure you have created a repository in your tenancy:
-
-Go to your tenancy's Container Registry.
-Click on the "Create repository" button.
-Select "Private" under Access types.
-Set a name for the repository (we are using 'vllm-odsc' in this example).
-Click on the "Create" button.
-You may need to log in to the Oracle Cloud Container Registry (OCIR) first if you haven't done so before, in order to push the image. To log in, you have to use your API Auth Token that can be created under your Oracle Cloud Account -> Auth Token. You need to log in only once. Replace <region> with the OCI region you are using:
-
-```bash
-docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
-```
-If your tenancy is federated with Oracle Identity Cloud Service, use the format <tenancy-namespace>/oracleidentitycloudservice/<username>. You can then push the container image to the OCI Registry:
-
-```bash
-docker tag vllm/vllm-openai:v0.5.3.post1 -t <region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1
-docker push <region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:v0.5.3.post1
-```
 ## API Endpoint Usage
 
 The `/v1/completions` is for interacting with non-chat base models or the instruction trained chat model. This endpoint provides the completion for a single prompt and takes a single string as input, whereas the `/v1/chat/completions` endpoint provides the responses for a given dialog and requires the input in a specific format corresponding to the message history. This guide uses `/v1/chat/completions` endpoint.
@@ -185,11 +152,11 @@ infrastructure = (
 
 ```python
 env_var = {
+    'BASE_MODEL': model_prefix,
+    'PARAMS': '--served-model-name llama3.1 --seed 42 --disable-custom-all-reduce',
     'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/completions',
     'MODEL_DEPLOY_ENABLE_STREAMING': 'true',
 }
-
-cmd_var = ["--model", "/opt/ds/model/deployed_model/Meta-Llama-3.1-8B-Instruct/", "--tensor-parallel-size", "2", "--port", "8080", "--served-model-name", "llama3.1", "--host", "0.0.0.0",]
 
 container_runtime = (
     ModelDeploymentContainerRuntime()
@@ -197,7 +164,6 @@ container_runtime = (
     .with_server_port(8080)
     .with_health_check_port(8080)
     .with_env(env_var)
-    .with_cmd(cmd_var)
     .with_deployment_mode(ModelDeploymentMode.HTTPS)
     .with_model_uri(model.id)
     .with_region(region)
