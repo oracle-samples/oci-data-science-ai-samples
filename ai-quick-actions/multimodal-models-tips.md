@@ -28,7 +28,7 @@ image_path = "<Sample Image>"
 
 
 # Set Resource principal. For other signers, please check `oracle-ads` documentation
-auth.set_auth("resource_principal")
+ads.set_auth("resource_principal")
 
 auth = ads.common.auth.default_signer()['signer']
  
