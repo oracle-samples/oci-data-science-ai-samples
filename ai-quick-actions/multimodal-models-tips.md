@@ -11,6 +11,7 @@
 * (Optional) Select log group and log 
 * Click on `Show advanced options`
 * (Required) Under Inference Model, select `v1/chat/completions` from the dropdown
+* Click on Deploy
 
 ## Sample code 
 
