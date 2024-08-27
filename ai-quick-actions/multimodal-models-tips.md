@@ -15,7 +15,7 @@
 
 ## Sample code 
 
-The following python code demostrates how to submit multi-modal inference payload.
+The following python code demonstrates how to submit multi-modal inference payload.
 
 ```
 import requests
