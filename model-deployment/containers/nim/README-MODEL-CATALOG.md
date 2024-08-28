@@ -12,7 +12,7 @@ The following are the pre-requisite:
 * Download the Llama 3 8B Instruct Model from [HuggingFace](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) or NGC repository.
 
 ## Download NIM Container image and upload to OCIR
-* Pull the latest NIM Image to local machine or through NB session. Tag it with desired name.
+* Pull the latest NIM Image to local machine. Tag it with desired name.
     ```bash
     docker pull nvcr.io/nim/meta/llama3-8b-instruct:latest
     docker tag nvcr.io/nim/meta/llama3-8b-instruct:latest odsc-nim-llama3:latest 
@@ -23,15 +23,15 @@ Once NIM container is pushed, you can now use the `Bring Your Own Container` Dep
 
 # Method 1: Export Model to Model Catalog
 
-Follow the steps mentioned [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/model-deployment/containers/llama2/README.md), refer the section One time download to OCI Model Catalog. 
+Follow the steps mentioned [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/model-deployment/containers/llama2/README.md#model-store-export-api-for-creating-model-artifacts-greater-than-6-gb-in-size)), refer the section One time download to OCI Model Catalog. 
 
 We would utilise the above created model in the next steps to create the Model Deployment. 
 
 # Method 2: Model-by-reference
 
-Follow the steps to upload your model to Object Storage [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/llama3.1-8B-deployment-vLLM-container.md)
+Follow the steps to upload your model to Object Storage [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/llama3.1-8B-deployment-vLLM-container.md#upload-model-to-oci-object-storage)
 
-Utilise the [section](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/llama3.1-8B-deployment-vLLM-container.md) on Create Model by Reference using ADS to create the model.
+Utilise the [section](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/llama3.1-8B-deployment-vLLM-container.md#create-model-by-reference-using-ads) on Create Model by Reference using ADS to create the model.
 
 # ### Create Model deploy
 

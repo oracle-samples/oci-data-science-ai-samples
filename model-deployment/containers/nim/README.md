@@ -7,7 +7,7 @@ This Readme walks through how to use NIM - [ Meta-Llama-3-8B-Instruct](https://h
 
 We describe two approaches to create this Model Deployment on OCI:
 * Download Model using API-KEY from NGC Nvidia (described below)
-* Utilising Model Catalog to store Models in OCI, later used for model deployment. [Refer](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/model-deployment/containers/nim/README-MODEL-CATALOG.md)
+* Utilising  Object storage to store the model and creating a model catalog pointing to Object storage bucket [Refer](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/model-deployment/containers/nim/README-MODEL-CATALOG.md)
 
 ## Prerequisites
 * Access the corresponding NIM container for the model. For example for llama3, fetch the latest available image from [NGC catalog](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). If you are a first time user,  you need to sign up a developer account and wait for access to be granted to required container image.
@@ -58,7 +58,7 @@ When experimenting with new frameworks and models, it is highly advisable to att
 
 ## Deploy on OCI Data Science Model Deployment
 
-Once NIM container is pushed, you can now use the `Bring Your Own Container` Deployment in OCI Data Science to deploy the Llama3 model.
+Once you built and pushed the NIM container, you can now use the `Bring Your Own Container` Deployment in OCI Data Science to deploy the Llama3 model
 
 ### Creating Model catalog
 NIM container will download the model directly using publicly exposed NGC catalog APIs. To provide authorization token to download, we will save API key in a file and create a zip out of it. This zip file will then be used to create a model catalog resource.
