@@ -40,6 +40,8 @@ When experimenting with new frameworks and models, it is highly advisable to att
   docker build -f Dockerfile -t odsc-nim-llama3 .
   ```
 
+##### To directly get image from Nvidia NIM catalogue and upload to OCIR check: ```./README-SOURCE-NIM-TO-OCIR.MD```
+
 ## OCI Container Registry
 
 * You need to `docker login` to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before been able to push the image. To login, you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
@@ -55,6 +57,9 @@ When experimenting with new frameworks and models, it is highly advisable to att
     ```bash
     docker push `odsc-nim-llama3:latest`
     ```
+  
+
+##### To directly get image from Nvidia NIM catalogue and upload to OCIR check: ```./README-SOURCE-NIM-TO-OCIR.MD```
 
 ## Deploy on OCI Data Science Model Deployment
 
