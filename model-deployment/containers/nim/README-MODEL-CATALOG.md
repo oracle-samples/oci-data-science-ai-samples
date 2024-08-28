@@ -3,7 +3,7 @@
 Utilising Model Catalog to store Models in OCI. We describe two ways to achieve this: 
 
 * Storing zipped model file in Model Catalog
-* Utilising Model-by-reference Feature to download model
+* Utilising Object storage to store the model and creating a model catalog pointing to Object storage bucket [Refer](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/model-deployment/containers/nim/README-MODEL-CATALOG.md)
 
 # Pre-requisite
 
