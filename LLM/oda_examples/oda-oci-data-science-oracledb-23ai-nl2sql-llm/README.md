@@ -300,8 +300,6 @@ command_md = OCIModelDeploymentVLLM(
 
 The following RAG architecture, will consist of the following steps:
 
-### Task 5.1: Upload to 23ai Vector Database
-
 ```py
 import json
 import oci
@@ -490,7 +488,7 @@ def predict(data, model=load_model()):
 
 We use the prompt template and QA chain provided by Langchain to make the chatbot, this helps in passing the context and question directly to the LLM.
 
-### Task 5.2: Deploy LangChain Model
+Deploy LangChain Model
 
 ```py
 import tempfile
