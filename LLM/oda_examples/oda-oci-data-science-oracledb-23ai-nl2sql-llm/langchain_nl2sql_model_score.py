@@ -170,7 +170,7 @@ def get_data_from_DB(query):
     for row in cursor:
         row_values = [str(value).replace(',', ' ') for value in row]
         result += ','.join(row_values) + '\n'
-    print(f"Query Result: {result}")
+    #print(f"Query Result: {result}")
     # Closing the cursor and connection
     cursor.close()
     connection.close()
@@ -191,8 +191,6 @@ def predict(data, model=load_model()):
     chain.combine_documents_chain.llm_chain.llm.auth['signer'].refresh_security_token()
 
     res = chain(data)
-    print("\n")
-    print("\n")
     print(f"Output: {res['result']}")
     op= res['result']
     if 'Question' in op:

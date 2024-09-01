@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In today's digital landscape, chatbots are evolving to become more intelligent, responsive, and capable of handling complex interactions. In this tutorial, we delve into the creation of a next-generation chatbot by harnessing the power of Oracle Cloud Infrastructure (OCI) Data Science capabilities like AI Quick Actions and Model Deployment, Mistral-7B-Instruct-v0.2, Oracle Database 23ai, LangChain, and Oracle Digital Assistant. Each of these technologies brings unique strengths to the table, enabling us to build a chatbot that not only understands and responds to user queries with remarkable accuracy but also offers a seamless and engaging conversational experience.
+In today's digital landscape, chatbots are evolving to become more intelligent, responsive, and capable of handling complex interactions. In this tutorial, we delve into the creation of a next-generation chatbot by harnessing the power of Oracle Cloud Infrastructure (OCI) Data Science capabilities like AI Quick Actions and Model Deployment, Meta-Llama-3-8B-Instruct, Oracle Database 23ai, LangChain, and Oracle Digital Assistant. Each of these technologies brings unique strengths to the table, enabling us to build a chatbot that not only understands and responds to user queries with remarkable accuracy but also offers a seamless and engaging conversational experience.
 
 One of the standout features of Oracle Database 23ai is its advanced vector search capabilities. This technology allows for efficient retrieval of information by converting text into high-dimensional vectors, which are then compared for relevance. When integrated into the retrieval-augmented generation (RAG) pipeline, Oracle Database 23ai's vector search enhances the chatbot's ability to access and deliver the most pertinent information from vast datasets. This ensures that the responses generated are not only contextually accurate but also highly relevant to the user's query.
 
@@ -32,7 +32,7 @@ Oracle Database is a leading repository of operational and enterprise data. Ente
 
 Figure: A High Level Architecture of RAG Pipeline
 
-The following diagram illustrates the architecture and workflow of building an advanced chatbot using Mistral-7B-Instruct-v0.2, Oracle Database 23ai, RAG, LangChain, and Oracle Digital Assistant. Here are the detailed steps involved in the following architecture.
+The following diagram illustrates the architecture and workflow of building an advanced chatbot using Meta-Llama-3-8B-Instruct, Oracle Database 23ai, RAG, LangChain, and Oracle Digital Assistant. Here are the detailed steps involved in the following architecture.
 
 1. **User Interaction:** The user sends a request to the chatbot through the Oracle Digital Assistant interface.
 
@@ -60,8 +60,8 @@ The following diagram illustrates the architecture and workflow of building an a
 
 7. **Querying the External Models:** In this step the data is retrieved and generates a response.
 
-   - The retrieved information is used to generate a query for the Mistral-7B-Instruct-v0.2 model deployment provisioned using AI Quick Actions features in OCI Data Science.
-   - The Mistral-7B-Instruct-v0.2 model processes the query and generates a response based on its training and the retrieved context.
+   - The retrieved information is used to generate a query for the Meta-Llama-3-8B-Instruct model deployment provisioned using AI Quick Actions features in OCI Data Science.
+   - The Meta-Llama-3-8B-Instruct model processes the query and generates a response based on its training and the retrieved context.
 
 8. **Response Generation:** The refined response is sent back to LangChain, which consolidates the final output.
 
@@ -71,7 +71,7 @@ The following diagram illustrates the architecture and workflow of building an a
 
 ### Objectives
 
-- Build a chatbot by leveraging the latest technologies like OCI Data Science capabilities like AI Quick Actions and Model Deployment, Mistral-7B-Instruct-v0.2, Oracle Database 23ai, LangChain, and Oracle Digital Assistant. We will guide you through each step, from setting up the foundational AI models to integrating them into a seamless conversational experience. By the end of this tutorial, you will have a comprehensive understanding of how to utilize these advanced tools to create an intelligent, responsive, and highly effective chatbot capable of understanding and interacting with users in a natural and engaging manner.
+- Build a chatbot by leveraging the latest technologies like OCI Data Science capabilities like AI Quick Actions and Model Deployment, Meta-Llama-3-8B-Instruct, Oracle Database 23ai, LangChain, and Oracle Digital Assistant. We will guide you through each step, from setting up the foundational AI models to integrating them into a seamless conversational experience. By the end of this tutorial, you will have a comprehensive understanding of how to utilize these advanced tools to create an intelligent, responsive, and highly effective chatbot capable of understanding and interacting with users in a natural and engaging manner.
 
 ### Prerequisites
 
@@ -86,7 +86,7 @@ The key prerequisites that you would need to set up before you can proceed to ru
 
 - Set the policies to allow the OCI Data Science service resources to access OCI Object Storage buckets, networking and others. For more information, see [OCI Policies](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/distributed_training#3-oci-policies).
 
-- Access token from HuggingFace to download Mistral-7B-Instruct-v0.2 model. To fine-tune the model, you will first need to access the pre-trained model. The pre-trained model can be obtained from [HuggingFace](https://huggingface.co/models?sort=trending&search=meta-llama%2Fllama-2). In this tutorial, we will use the [HuggingFace access token](https://huggingface.co/docs/hub/security-tokens) to download the pre-trained model from HuggingFace (by setting the `HUGGING_FACE_HUB_TOKEN` environment variable).
+- Access token from HuggingFace to download Meta-Llama-3-8B-Instruct model. To fine-tune the model, you will first need to access the pre-trained model. The pre-trained model can be obtained from [HuggingFace](https://huggingface.co/models?sort=trending&search=meta-llama%2Fllama-2). In this tutorial, we will use the [HuggingFace access token](https://huggingface.co/docs/hub/security-tokens) to download the pre-trained model from HuggingFace (by setting the `HUGGING_FACE_HUB_TOKEN` environment variable).
 
 - Log group and log from OCI Logging service. This will be used to monitor the progress of the training.
 
@@ -110,9 +110,9 @@ The key prerequisites that you would need to set up before you can proceed to ru
 
 ## Task 1: Deploy Required Models
 
-### Task 1.1: Deploy the Mistral-7B-Instruct-v0.2 Model
+### Task 1.1: Deploy the Meta-Llama-3-8B-Instruct Model
 
-We will be leveraging [AI Quick Actions Model deployment feature](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions-model-deploy.htm), to deploy Mistral-7B-Instruct-v0.2 with a few clicks. The AI Quick Actions model deployment aids users to deploy the Mistral-7B-Instruct-v0.2 with a few clicks and provide users with an endpoint.
+We will be leveraging [AI Quick Actions Model deployment feature](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions-model-deploy.htm), to deploy Meta-Llama-3-8B-Instruct with a few clicks. The AI Quick Actions model deployment aids users to deploy the Meta-Llama-3-8B-Instruct with a few clicks and provide users with an endpoint.
 
 ![image](./images/oda-with-oci-data-science-model-explorer.png "image")
 
@@ -282,7 +282,7 @@ def load_documents(embedding_model):
                 connection.commit()
 ```
 
-## Task 4: Connect to Mistral-7B-Instruct-v0.2 AI Quick Actions LLM
+## Task 4: Connect to Meta-Llama-3-8B-Instruct AI Quick Actions LLM
 
 Create a model deployment with AI Quick Actions and get the model deployment endpoint from there. Run the following code to connect to LLM.
 
@@ -303,48 +303,189 @@ The following RAG architecture, will consist of the following steps:
 ### Task 5.1: Upload to 23ai Vector Database
 
 ```py
+import json
+import oci
+import requests
+
+from langchain_community.llms import OCIModelDeploymentVLLM
+import ads
+from oracle_vector_db import oracle_query, test_oracle_query
+from ads.model.generic_model import GenericModel
+import ads
+from oracle_vector_db import oracle_query, test_oracle_query
+from langchain.chains import RetrievalQA
+from typing import List
+from langchain_core.callbacks import CallbackManagerForRetrieverRun
+from langchain_core.documents import Document
+from langchain_core.retrievers import BaseRetriever
+from oracle_vector_db import oracle_query, test_oracle_query
+from config import COMMAND_MD_ENDPOINT, EMBEDDING_MD_ENDPOINT, RERANKER_MD_ENDPOINT, TOP_K
+from pprint import pprint
+
+nl2sql_prompt_template = """ Given an input Question, create a syntactically correct Oracle SQL query to run. 
+Pay attention to using only the column names that you can see in the schema description.
+Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table.
+Please double check that the SQL query you generate is valid for Oracle Database.
+DO NOT use alias in the SELECT clauses.
+Only use the tables listed below.
+
+create table Partner(ID NUMBER NOT NULL,
+NAME VARCHAR2(100) NOT NULL,
+Region VARCHAR2(100) NOT NULL,
+Category VARCHAR2(100) NOT NULL,
+Partner_since DATE NOT NULL,
+Last_renewal DATE NOT NULL,
+Licensed  DATE NOT NULL,
+Oracle_Products VARCHAR2(100) NOT NULL,
+Nominated VARCHAR2(100) NOT NULL,
+Nomination_date DATE NOT NULL,
+Past_Awards_years_comma_seperated_list VARCHAR2(100) NOT NULL,
+Customer_satisfaction_rating NUMBER NOT NULL,
+Number_of_customers NUMBER NOT NULL,
+Oracle_contact_email VARCHAR2(100) NOT NULL,
+PRIMARY KEY (ID)
+);
+ 
+### Context:
+{context}
+ 
+### In-Context Examples:
+Question: list or view partners who renewal last year
+Oracle SQL: SELECT * FROM Partner WHERE   EXTRACT(YEAR FROM Last_renewal) = EXTRACT(YEAR FROM SYSDATE – INTERVAL ‘1’ YEAR)
+             
+Instructions:
+- Do not use JOIN since the Schema only includes 1 table, unless striclt required.
+- Do not use UNION since the Schema only includes 1 table.
+- If all columns are required, give the (*) notation.
+- Make sure to include all WHERE filtering conditions even there are more conditions than in-context examples.
+- Use the best query description which matches the query.
+- You should NEVER generate SQL queries with JOIN, since the Schema only includes 1 table.
+- Use Context section to get additional details while bulding the query
+- Do not return multiple queries in response. Just respond with single SQL query and nothing else
+- Return only single query and append response between ###
+
+Question: {question}
+Oracle SQL: """
+
+relational_data_summary_prompt_template = """We have implmented the natural language question to SQL model which retrieves records from relational database.
+The data retrieved is provided below in the Context section and the corresponding question is provided in the Question section.
+By considering the question and context data can you please summarize the answer. The first row in the context data represents the column headers, and the subsequent rows represent the data.
+Just convert context data to user understandable answer
+ 
+### Context:
+Question: {question}
+Ans:
+{context_data}
+
+### In-Context Examples:
+Question: list or view partners who renewal last year
+Answer: Partner2 has renewal last year
+
+Can you please summarize the ans mentioned in context section according to question in context? Just return the summarized text. Dont mention 'Based on the context data provided' 
+Ans:"""
+
+ads.set_auth("resource_principal")
+command_md = OCIModelDeploymentVLLM(
+    endpoint= COMMAND_MD_ENDPOINT,
+    model="odsc-llm"
+)
+model_name = f"<replace-with-your-model-name>"
+
+
 class CustomRetriever(BaseRetriever):
     def _get_relevant_documents(
         self, query: str, *, run_manager: CallbackManagerForRetrieverRun
     ) -> List[Document]:
         matching_documents = []
-
-        #Embedding model
+        
+        #Embedding model 
         rps = oci.auth.signers.get_resource_principals_signer()
+        print(f"###Query {query}")
         prediction = requests.post(EMBEDDING_MD_ENDPOINT, data=f'["{query}"]', auth=rps)
 
         #Search in DB
-        q_result = test_oracle_query(prediction.json()['embeddings'][0], TOP_K, True, False)
+        q_result = test_oracle_query(prediction.json()['embeddings'][0], TOP_K, True, False)        
         text_list = []
         for n, id, sim in zip(q_result.nodes, q_result.ids, q_result.similarities):
             text_list.append(n.text)
         paired_list = [[query, text] for text in text_list]
-
-        print(f'Reranker payload: {paired_list}')
-
+        
+        #print(f'Reranker payload: {paired_list}')        
         #ReRanker model
-        reranker_results = requests.post(RERANKER_MD_ENDPOINT, data=json.dumps(paired_list), auth=rps)  # make a prediction request
+        reranker_results = requests.post(RERANKER_MD_ENDPOINT, data=json.dumps(paired_list), auth=rps)  # make a prediction request        
         max_value = max(reranker_results.json()['prediction'])
-        if max_value < -3:
+        print(f"###Reranker Result Max value: {max_value}")
+
+        if max_value < -13:
             return matching_documents;
         # Find the index of the maximum value
         max_index = reranker_results.json()['prediction'].index(max_value)
-        print(f"The maximum value is: {max_value}")
-        print(f"The index of the maximum value is: {max_index}")
-        doc =  Document(page_content=paired_list[max_index][1], metadata={"source": "local"})
+        #print(f"The maximum value is: {max_value}")
+        #print(f"The index of the maximum value is: {max_index}")
+        doc =  Document(page_content=paired_list[max_index][1], metadata={"source": "local"})        
+        #print(f"###Contextttt: {doc}")
         matching_documents.append(doc)
         return matching_documents
 
-customRetriever = CustomRetriever()
-chain = RetrievalQA.from_chain_type(
+
+def load_model(model_file_name=model_name):
+    if not model_file_name:
+        raise ValueError('model_file_name cannot be None')
+
+    # This is the default implementation of the load_model() specific to this score.py template only.
+    if model_file_name == "<replace-with-your-model-name>":
+        return "default_model"
+
+def get_data_from_DB(query):
+    DSN = f"{DB_HOST_IP}/{DB_SERVICE}"
+    connection = oracledb.connect(user=DB_USER, password=DB_PWD, dsn=DSN)
+    # Creating a cursor object
+    cursor = connection.cursor()
+
+    # Executing the query
+    cursor.execute(query)
+    # Fetching the column names
+    column_names = [desc[0] for desc in cursor.description]
+    result = ','.join(column_names) + '\n'
+
+    # Fetching and printing the results
+    for row in cursor:
+        row_values = [str(value).replace(',', ' ') for value in row]
+        result += ','.join(row_values) + '\n'
+    #print(f"Query Result: {result}")
+    # Closing the cursor and connection
+    cursor.close()
+    connection.close()
+    return result;
+
+def predict(data, model=load_model()):
+    print(str)
+    ads.set_auth("resource_principal")
+    
+    prompt_template = PromptTemplate(template=nl2sql_prompt_template, input_variables=['question'])
+    customRetriever = CustomRetriever()
+    chain = RetrievalQA.from_chain_type(
     llm=command_md,
+    chain_type="stuff",
+    chain_type_kwargs={"prompt": prompt_template},
     retriever=customRetriever
 )
+    chain.combine_documents_chain.llm_chain.llm.auth['signer'].refresh_security_token()
 
-prompt = "Can you please give some overview on Oracle Database 23.4?"
-res = chain(prompt)
-print('Output::')
-print(res['result'])
+    res = chain(data)
+    print(f"Output: {res['result']}")
+    op= res['result']
+    if 'Question' in op:
+        query_str = op.split("Question:")[0]
+    else:
+        query_str = op
+    query = query_str.replace(';', '')
+    result = get_data_from_DB(query)
+    
+    relational_data_summary_prompt = relational_data_summary_prompt_template.format(question=data, context_data=result)
+    op=command_md.predict(relational_data_summary_prompt)
+    print(f"Final Output: {op}")
+    return {'prediction':op}
 ```
 
 We use the prompt template and QA chain provided by Langchain to make the chatbot, this helps in passing the context and question directly to the LLM.
@@ -753,7 +894,7 @@ Let us compare the outputs from directly asking the LLM vs using RAG with LLM:
 
 ## Next Steps
 
-Building an advanced chatbot using Oracle Database 23ai, RAG, LangChain, Mistral-7B-Instruct-v0.2, and Oracle Digital Assistant showcases the power of integrating cutting-edge technologies to create a highly responsive and intelligent conversational agent. The detailed workflow, from request handling to response generation, ensures that the chatbot can efficiently retrieve and process vast amounts of information, delivering accurate and contextually relevant answers to users. By leveraging Oracle Database 23ai's vector search capabilities and the robust platform provided by Oracle Digital Assistant, developers can significantly enhance the chatbot's performance and user engagement. This integrated approach not only streamlines the development process but also results in a scalable, efficient, and highly effective AI solution that stands out in the competitive landscape of digital assistants. Whether for customer service, information retrieval, or interactive support, this advanced chatbot architecture paves the way for creating sophisticated conversational experiences that meet the demands of modern users.
+Building an advanced chatbot using Oracle Database 23ai, RAG, LangChain, Meta-Llama-3-8B-Instruct, and Oracle Digital Assistant showcases the power of integrating cutting-edge technologies to create a highly responsive and intelligent conversational agent. The detailed workflow, from request handling to response generation, ensures that the chatbot can efficiently retrieve and process vast amounts of information, delivering accurate and contextually relevant answers to users. By leveraging Oracle Database 23ai's vector search capabilities and the robust platform provided by Oracle Digital Assistant, developers can significantly enhance the chatbot's performance and user engagement. This integrated approach not only streamlines the development process but also results in a scalable, efficient, and highly effective AI solution that stands out in the competitive landscape of digital assistants. Whether for customer service, information retrieval, or interactive support, this advanced chatbot architecture paves the way for creating sophisticated conversational experiences that meet the demands of modern users.
 
 For more information on how to use AI Quick Actions, go to the Oracle Cloud Infrastructure Data Science [YouTube playlist](https://www.youtube.com/playlist?list=PLKCk3OyNwIzv6CWMhvqSB_8MLJIZdO80L) to see a demo video of AI Quick Actions, and find [our technical documentation](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions.htm), and see our [Github repository](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/ai-quick-actions) with tips and examples.
 
