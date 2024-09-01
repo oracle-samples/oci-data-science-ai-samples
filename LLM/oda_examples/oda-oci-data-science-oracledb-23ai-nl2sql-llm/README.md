@@ -114,9 +114,9 @@ The key prerequisites that you would need to set up before you can proceed to ru
 
 We will be leveraging [AI Quick Actions Model deployment feature](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions-model-deploy.htm), to deploy Meta-Llama-3-8B-Instruct with a few clicks. The AI Quick Actions model deployment aids users to deploy the Meta-Llama-3-8B-Instruct with a few clicks and provide users with an endpoint.
 
-![image](./images/oda-with-oci-data-science-model-explorer.png "image")
+![image](./images/oda-with-oci-data-science-register-model.png "image")
 
-![image](./images/oda-with-oci-data-science-deployments-action.png "image")
+![image](./images/oda-with-oci-data-science-model-deploy.png "image")
 
 ### Task 1.2: Deploy Jina Embedding Model
 
