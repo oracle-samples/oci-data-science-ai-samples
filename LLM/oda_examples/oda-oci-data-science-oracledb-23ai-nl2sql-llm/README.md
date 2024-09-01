@@ -1,4 +1,4 @@
-# Build an Enterprise Chatbot with Oracle Digital Assistant, OCI Data Science, LangChain and Oracle Database 23ai
+# Build an Enterprise Chatbot with Document Retrieval and NL2SQL Using Oracle Digital Assistant, OCI Data Science, LangChain and Oracle Database 23ai
 
 ## Introduction
 
