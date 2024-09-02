@@ -888,7 +888,7 @@ Let us compare the outputs from directly asking the LLM vs using RAG with LLM:
 
 - **Response from RAG**
 
-  ![image](./images/oda-with-oci-data-science-oda-output.png "image")
+  ![image](./images/oda-with-oci-data-science-website-chatbot.png "image")
 
 ## Next Steps
 

@@ -166,7 +166,7 @@ def oracle_query(
                 if verbose:
                     logger.info(f"SQL Query: {select}")
 
-                cursor.execute(select, [vector_str])
+                cursor.execute(select, [array_query])
                 rows = cursor.fetchall()
 
                 result_nodes, node_ids, similarities = [], [], []
