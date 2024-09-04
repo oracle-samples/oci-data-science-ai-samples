@@ -102,10 +102,10 @@ The key prerequisites that you would need to set up before you can proceed to ru
 
 - Notebook session used to initiate the distributed training and to access the fine-tuned model. For more information, see [Notebook session](https://docs.oracle.com/en-us/iaas/data-science/using/manage-notebook-sessions.htm).
 
-- Install the latest version of [Oracle Accelerated Data Science (ADS)](https://accelerated-data-science.readthedocs.io/en/latest/index.html)
+- Install "PyTorch 2.0 for GPU on Python 3.9" conda and install required dependencies mentioned in requirements.txt
 
   ```
-  pip install oracle-ads[opctl] -U
+  pip install -r requirements.txt
   ```
 
 ## Task 1: Deploy Required Models
