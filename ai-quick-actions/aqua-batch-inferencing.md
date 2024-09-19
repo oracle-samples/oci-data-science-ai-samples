@@ -2,23 +2,20 @@
 
 #### This notebook offers a detailed, step-by-step guide for performing batch inference on LLMs using AI Quick Action.
 
-### Common Variables
-
 
 ```python
 import os
-from ads.jobs import (
-    Job,
-    DataScienceJob,
-    ContainerRuntime
-)
+from ads.jobs import Job, DataScienceJob, ContainerRuntime
 import ads
 import json
+
 ads.set_auth("resource_principal")
 ```
 
 
 ```python
+##  Update following variables as required
+
 compartment_id = os.environ["PROJECT_COMPARTMENT_OCID"]
 project_id = os.environ["PROJECT_OCID"]
 
@@ -28,17 +25,16 @@ log_id = "cid1.log.oc1.xxx.xxxxx"
 instance_shape = "VM.GPU.A10.2"
 region = "us-ashburn-1"
 
-container_image="dsmc://odsc-vllm-serving:0.6.0"
+container_image = "dsmc://odsc-vllm-serving:0.6.0"
 
-bucket= "<bucket_name>" # this should be a versioned bucket
+bucket = "<bucket_name>"  # this should be a versioned bucket
 namespace = "<bucket_namespace>"
-model_name= "meta-llama/Meta-Llama-3.1-8B-Instruct"
-hf_token= "<your-huggingface-token>"
-oci_iam_type="resource_principal"
-prefix="batch-inference"
+model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+hf_token = "<your-huggingface-token>"
+oci_iam_type = "resource_principal"
+prefix = "batch-inference"
 
-job_artifacts="job-artifacts"
-
+job_artifacts = "job-artifacts"
 ```
 
 ## Prepare The JOB Artifacts
@@ -48,10 +44,39 @@ job_artifacts="job-artifacts"
 
 ```python
 os.makedirs(job_artifacts, exist_ok=True)
-artifacts_path =os.path.expanduser(job_artifacts)
+artifacts_path = os.path.expanduser(job_artifacts)
 ```
 
-### 2. Add **input.json** to **job_artifacts** folder
+### 2. Add [**input.json**](notebook_examples/batch-inferencing-data/input.json) to **job_artifacts** folder
+
+**Sample input.json**
+```json
+
+        {
+          "vllm_engine_config": {
+            "tensor_parallel_size": 2,
+            "disable_custom_all_reduce": true
+          },
+          "sampling_config": {
+            "max_tokens": 250,
+            "temperature": 0.7,
+            "top_p": 0.85
+          },
+          "data": [
+            [
+              {
+                "role": "system",
+                "content": "You are a friendly chatbot who is a great story teller."
+              },
+              {
+                "role": "user",
+                "content": "Tell me a 1000 words story"
+              }
+            ]
+          ]
+        }
+
+```
 
 This file defines the configuration and data for batch inferenceing. It contains the following key sections:
 
@@ -233,22 +258,21 @@ if __name__ == "__main__":
 
 ```python
 infrastructure = (
-        DataScienceJob()
-        # Configure logging for getting the job run outputs.
-        .with_log_group_id(log_group_id)
-        # Log resource will be auto-generated if log ID is not specified.
-        .with_log_id(log_id)
-        .with_job_infrastructure_type("ME_STANDALONE")
-
-        # If you are in an OCI data science notebook session,
-        # the following configurations are not required.
-        # Configurations from the notebook session will be used as defaults.
-        .with_compartment_id(compartment_id)
-        .with_project_id(project_id)
-        .with_shape_name(instance_shape)
-        # Minimum/Default block storage size is 50 (GB).
-        .with_block_storage_size(80)
-    )
+    DataScienceJob()
+    # Configure logging for getting the job run outputs.
+    .with_log_group_id(log_group_id)
+    # Log resource will be auto-generated if log ID is not specified.
+    .with_log_id(log_id)
+    .with_job_infrastructure_type("ME_STANDALONE")
+    # If you are in an OCI data science notebook session,
+    # the following configurations are not required.
+    # Configurations from the notebook session will be used as defaults.
+    .with_compartment_id(compartment_id)
+    .with_project_id(project_id)
+    .with_shape_name(instance_shape)
+    # Minimum/Default block storage size is 50 (GB).
+    .with_block_storage_size(80)
+)
 ```
 
 ### Configure Job Conatiner Runtime
@@ -257,31 +281,30 @@ infrastructure = (
 
 ```python
 conatiner_runtime = (
-        ContainerRuntime()
-        # Specify the service conda environment by slug name.
-        .with_image(container_image)
-
-        # Environment variable
-        .with_environment_variable(
-          HF_TOKEN=hf_token,
-          MODEL=model_name,
-          BUCKET=bucket,
-          NAMESPACE=namespace,
-          OCI_IAM_TYPE=oci_iam_type,
-          PREFIX=prefix
-          )
-        # Command line argument
-        .with_entrypoint([ "bash", "-c"])
-        .with_cmd("microdnf install -y unzip &&"
-                   + "pip install oracle-ads[opctl] &&"
-                  + "cd /home/datascience/ &&"
-                  +"ls -lt &&"
-                  + "unzip job-artifacts.zip -d . && "
-                  + "chmod +x job-artifacts/vllm_batch_inferencing.py &&"
-                  + "python job-artifacts/vllm_batch_inferencing.py"
-                     )
-
-        .with_artifact(artifacts_path)
+    ContainerRuntime()
+    # Specify the service conda environment by slug name.
+    .with_image(container_image)
+    # Environment variable
+    .with_environment_variable(
+        HF_TOKEN=hf_token,
+        MODEL=model_name,
+        BUCKET=bucket,
+        NAMESPACE=namespace,
+        OCI_IAM_TYPE=oci_iam_type,
+        PREFIX=prefix,
+    )
+    # Command line argument
+    .with_entrypoint(["bash", "-c"])
+    .with_cmd(
+        "microdnf install -y unzip &&"
+        + "pip install oracle-ads[opctl] &&"
+        + "cd /home/datascience/ &&"
+        + "ls -lt &&"
+        + "unzip job-artifacts.zip -d . && "
+        + "chmod +x job-artifacts/vllm_batch_inferencing.py &&"
+        + "python job-artifacts/vllm_batch_inferencing.py"
+    )
+    .with_artifact(artifacts_path)
 )
 ```
 
@@ -289,10 +312,10 @@ conatiner_runtime = (
 
 
 ```python
-job=(
-  Job(name=f"Batch-inferencing of {model_name} using AI Quick Action.")
-  .with_infrastructure(infrastructure)
-  .with_runtime(conatiner_runtime)
+job = (
+    Job(name=f"Batch-inferencing of {model_name} using AI Quick Action.")
+    .with_infrastructure(infrastructure)
+    .with_runtime(conatiner_runtime)
 )
 # Create the job on OCI Data Science
 job.create()
@@ -314,7 +337,7 @@ run.watch()
 
 
 ```python
-output_file = os.path.join(os.path.abspath(prefix),"outputs","output_prompts.json")
+output_file = os.path.join(os.path.abspath(prefix), "outputs", "output_prompts.json")
 
 !python -m json.tool $output_file
 ```
