@@ -1,6 +1,6 @@
-# Deploy AI Quick Action Registered Models usin vLLM SMC 
+# Deploy LLM Models using BYOC
 
-This guide demonstrates how to deploy and perform inference using AI Quick Action registered models with Oracle Data Science Service Managed Containers (SMC) powered by vLLM. In this example, we will use a model downloaded from Hugging Face—specifically, [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct) from Meta. 
+This guide demonstrates how to deploy and perform inference using AI Quick Action registered models with Oracle Data Science Service Managed Containers (SMC) powered by vLLM. In this example, we will use a model downloaded from Hugging Face—specifically, [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct) from Meta.
 
 
 ## Required IAM Policies
@@ -136,7 +136,7 @@ vLLM is an easy-to-use library for LLM inference and server.  You can get the co
 docker pull --platform linux/amd64 vllm/vllm-openai:latest
 ```
 
-Currently, OCI Data Science Model Deployment only supports container images residing in the OCI Registry.  Before we can push the pulled vLLM container, make sure you have created a repository in your tenancy.  
+Currently, OCI Data Science Model Deployment only supports container images residing in the OCI Registry.  Before we can push the pulled vLLM container, make sure you have created a repository in your tenancy.
 - Go to your tenancy Container Registry
 - Click on the Create repository button
 - Select Private under Access types
