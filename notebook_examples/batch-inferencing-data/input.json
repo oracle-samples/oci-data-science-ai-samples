@@ -1,0 +1,63 @@
+{
+  "vllm_engine_config": {
+    "tensor_parallel_size": 2,
+    "disable_custom_all_reduce": true
+  },
+  "sampling_config": {
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.85
+  },
+  "data": [
+    [
+      {
+        "role": "system",
+        "content": "You are a friendly chatbot who is a great story teller."
+      },
+      {
+        "role": "user",
+        "content": "Tell me a 1000 words story"
+      }
+    ],
+    [
+      {
+        "role": "system",
+        "content": "You are an AI assistant I always trust with ethical considerations."
+      },
+      {
+        "role": "user",
+        "content": "How do I protect my digital privacy"
+      }
+    ],
+    [
+      {
+        "role": "system",
+        "content": "You are a wise old person who gives great advice on life."
+      },
+      {
+        "role": "user",
+        "content": "I'm feeling stressed about my presentation. What should I do?"
+      }
+    ],
+    [
+      {
+        "role": "system",
+        "content": "You are a fashion assistant who loves fashion trends."
+      },
+      {
+        "role": "user",
+        "content": "Tell me a latest fall fashion trends."
+      }
+    ],
+    [
+      {
+        "role": "system",
+        "content": "You are an assistant who speaks like anime character."
+      },
+      {
+        "role": "user",
+        "content": "I am excited about my next task assignment"
+      }
+    ]
+  ]
+}
