@@ -52,29 +52,29 @@ artifacts_path = os.path.expanduser(job_artifacts)
 **Sample input.json**
 ```json
 
-        {
-          "vllm_engine_config": {
+    {
+        "vllm_engine_config": {
             "tensor_parallel_size": 2,
             "disable_custom_all_reduce": true
-          },
-          "sampling_config": {
+        },
+        "sampling_config": {
             "max_tokens": 250,
             "temperature": 0.7,
             "top_p": 0.85
-          },
-          "data": [
+        },
+        "data": [
             [
-              {
+            {
                 "role": "system",
                 "content": "You are a friendly chatbot who is a great story teller."
-              },
-              {
+            },
+            {
                 "role": "user",
                 "content": "Tell me a 1000 words story"
-              }
+            }
             ]
-          ]
-        }
+        ]
+    }
 
 ```
 
@@ -123,19 +123,29 @@ from huggingface_hub import login
 from ads.common.utils import ObjectStorageDetails
 from ads.aqua.common.utils import upload_folder
 
+
 ## Constants class for centralized variable management
 class Constants:
     import os
+
     # Environment variables used in the script
-    OCI_IAM_TYPE = "OCI_IAM_TYPE"  # Authentication type for OCI (Oracle Cloud Infrastructure)
+    OCI_IAM_TYPE = (
+        "OCI_IAM_TYPE"  # Authentication type for OCI (Oracle Cloud Infrastructure)
+    )
     INPUT_PROMPT = "input_prompt"  # Key for input prompt in data structure
     OUTPUT = "generated_output"  # Key for generated output in data structure
-    VLLM_ENGINE_CONFIG = "vllm_engine_config"  # Key for VLLM engine configuration in data
+    VLLM_ENGINE_CONFIG = (
+        "vllm_engine_config"  # Key for VLLM engine configuration in data
+    )
     SAMPLING_CONFIG = "sampling_config"  # Key for sampling parameters in data
     MODEL = "MODEL"  # Environment variable for model selection
     HF_TOKEN = "HF_TOKEN"  # Environment variable for Hugging Face token
-    OUTPUT_FOLDER_PATH = os.path.expanduser("~/outputs")  # Output folder path for generated data
-    OUTPUT_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "output_prompts.json")  # Path to save output prompts
+    OUTPUT_FOLDER_PATH = os.path.expanduser(
+        "~/outputs"
+    )  # Output folder path for generated data
+    OUTPUT_FILE_PATH = os.path.join(
+        OUTPUT_FOLDER_PATH, "output_prompts.json"
+    )  # Path to save output prompts
     OS_OBJECT = "batch-inference"  # Object name used for storing in OCI
 
 
@@ -155,12 +165,13 @@ class Deployment:
 
         # Get model name from environment variables,
         try:
-            model_name = os.environ.get(Constants.MODEL, "meta-llama/Meta-Llama-3.1-8B-Instruct")
+            model_name = os.environ.get(
+                Constants.MODEL, "meta-llama/Meta-Llama-3.1-8B-Instruct"
+            )
             if not model_name:
                 raise ValueError
         except ValueError:
             print(f"Invalid model name in {Constants.MODEL}")
-
 
         self.model = os.environ[Constants.MODEL]
 
@@ -173,7 +184,9 @@ class Deployment:
 
         print("Initialization complete.")
 
-    def requests(self, data: List[Dict[str, Any]], sampling_config: Dict[str, Any] = None) -> List[Dict[str, Any]]:
+    def requests(
+        self, data: List[Dict[str, Any]], sampling_config: Dict[str, Any] = None
+    ) -> List[Dict[str, Any]]:
         """
         Processes a batch of requests (prompts) and returns the generated responses.
 
@@ -185,30 +198,47 @@ class Deployment:
             A list of dictionaries containing the input prompts and their corresponding generated outputs.
         """
         # Convert input messages to token IDs for the model using a chat template
-        prompt_token_ids = [self.tokenizer.apply_chat_template(messages, add_generation_prompt=True) for messages in data]
+        prompt_token_ids = [
+            self.tokenizer.apply_chat_template(messages, add_generation_prompt=True)
+            for messages in data
+        ]
 
         # Set sampling parameters (e.g., max tokens, temperature, top-p)
-        sampling_params = SamplingParams(**sampling_config) if sampling_config else SamplingParams(max_tokens=250, temperature=0.6, top_p=0.9)
+        sampling_params = (
+            SamplingParams(**sampling_config)
+            if sampling_config
+            else SamplingParams(max_tokens=250, temperature=0.6, top_p=0.9)
+        )
 
         # Generate outputs using the VLLM model
-        outputs = self.llm.generate(prompt_token_ids=prompt_token_ids, sampling_params=sampling_params)
+        outputs = self.llm.generate(
+            prompt_token_ids=prompt_token_ids, sampling_params=sampling_params
+        )
 
         processed_outputs = []
         # Loop through each output and decode the token IDs into human-readable text
         for output in outputs:
-            input_prompt = self.tokenizer.decode(output.prompt_token_ids)  # Decode the input prompt
-            generated_text = output.outputs[0].text  # Extract the first generated output
+            input_prompt = self.tokenizer.decode(
+                output.prompt_token_ids
+            )  # Decode the input prompt
+            generated_text = output.outputs[
+                0
+            ].text  # Extract the first generated output
             # Store the input prompt, output, and configurations in the result
-            processed_outputs.append({
-                Constants.INPUT_PROMPT: input_prompt,
-                Constants.OUTPUT: generated_text,
-                Constants.VLLM_ENGINE_CONFIG: self.vllm_config,
-                Constants.SAMPLING_CONFIG: sampling_config
-            })
+            processed_outputs.append(
+                {
+                    Constants.INPUT_PROMPT: input_prompt,
+                    Constants.OUTPUT: generated_text,
+                    Constants.VLLM_ENGINE_CONFIG: self.vllm_config,
+                    Constants.SAMPLING_CONFIG: sampling_config,
+                }
+            )
 
         # Save the generated output to a JSON file
-        os.makedirs(Constants.OUTPUT_FOLDER_PATH, exist_ok=True)  # Ensure the output folder exists
-        with open(Constants.OUTPUT_FILE_PATH, 'w') as f:
+        os.makedirs(
+            Constants.OUTPUT_FOLDER_PATH, exist_ok=True
+        )  # Ensure the output folder exists
+        with open(Constants.OUTPUT_FILE_PATH, "w") as f:
             json.dump(processed_outputs, f)  # Write the output data to a JSON file
 
         return processed_outputs  # Return the list of processed outputs
@@ -220,27 +250,27 @@ def main():
     Reads input data from a file, initializes the deployment, runs the inference, and uploads results.
     """
     # Load input data from the specified JSON file
-    with open('job-artifacts/input.json') as f:
+    with open("job-artifacts/input.json") as f:
         input_data = json.load(f)
 
     # Initialize the deployment with the VLLM engine configuration from input data
     deployment = Deployment(input_data[Constants.VLLM_ENGINE_CONFIG])
 
     # Run the batch inference and generate responses based on the input prompts
-    response = deployment.requests(input_data["data"], input_data.get(Constants.SAMPLING_CONFIG))
+    response = deployment.requests(
+        input_data["data"], input_data.get(Constants.SAMPLING_CONFIG)
+    )
 
     # Upload the result to Object Storage in Oracle Cloud
-    prefix=os.environ.get("PREFIX",Constants.OS_OBJECT)
+    prefix = os.environ.get("PREFIX", Constants.OS_OBJECT)
     os_path = ObjectStorageDetails(
-            os.environ["BUCKET"], os.environ["NAMESPACE"], prefix
-        ).path
+        os.environ["BUCKET"], os.environ["NAMESPACE"], prefix
+    ).path
 
     # Upload the folder containing the output data to Object Storage
     model_artifact_path = upload_folder(
-            os_path=os_path,
-            local_dir=Constants.OUTPUT_FOLDER_PATH,
-            model_name="outputs"
-        )
+        os_path=os_path, local_dir=Constants.OUTPUT_FOLDER_PATH, model_name="outputs"
+    )
 
     # Print the path to the uploaded model artifact
     print(model_artifact_path)
@@ -248,6 +278,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 ```
 
 ## Define and Run the inferencing Job
