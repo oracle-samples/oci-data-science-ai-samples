@@ -1,6 +1,6 @@
 # Deploy LLM Models using BYOC
 
-This guide demonstrates how to deploy and perform inference using AI Quick Action registered models with Oracle Data Science Service Managed Containers (SMC) powered by vLLM. In this example, we will use a model downloaded from Hugging Face—specifically, [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct) from Meta.
+This guide demonstrates how to deploy and perform inference using AI Quick Action registered models with Oracle Data Science Service Managed Containers (SMC) powered by vLLM. In this example, we will use a model downloaded from Hugging Face specifically, [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct) from Meta. 
 
 
 ## Required IAM Policies
@@ -33,12 +33,12 @@ Add these [policies](https://github.com/oracle-samples/oci-data-science-ai-sampl
 ```python
 import ads
 import os
+
 ads.set_auth("resource_principal")
 ```
 
 
 ```python
-
 # Extract region information from the Notebook environment variables and signer.
 ads.common.utils.extract_region()
 ```
@@ -54,7 +54,7 @@ project_id = os.environ["PROJECT_OCID"]
 log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx"
 log_id = "cid1.log.oc1.xxx.xxxxx"
 
-instance_shape = "BM.GPU.H100.8"
+instance_shape = "VM.GPU.A10.2"
 
 region = "<your-region>"
 ```
@@ -77,33 +77,27 @@ To prepare Model artifacts for LLM model deployment:
 
 ```python
 # Login to huggingface using env variable
-HUGGINGFACE_TOKEN =  "<HUGGINGFACE_TOKEN>" # Your huggingface token
+HUGGINGFACE_TOKEN = "<HUGGINGFACE_TOKEN>"  # Your huggingface token
 !huggingface-cli login --token $HUGGINGFACE_TOKEN
 ```
 
-[This](https://huggingface.co/docs/huggingface_hub/guides/download#download-an-entire-repository) provides more information on using `snapshot_download()` to download an entire repository at a given revision. Models in the HuggingFace hub are stored in their own repository.
+[This](https://huggingface.co/docs/huggingface_hub/en/guides/cli#download-an-entire-repository) provides more information on using `huggingface-cli` to download an entire repository at a given revision. Models in the HuggingFace hub are stored in their own repository.
 
 
 ```python
-# Download the LLama3.1 model from Hugging Face to a local folder.
-
-from huggingface_hub import snapshot_download
-from tqdm.auto import tqdm
-
-model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct" # copy from https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct
+# Select the the model that you want to deploy. Currently it is set to Meta-Llama3.1-8B-Instruct
+model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 local_dir = "models/Meta-Llama-3.1-8B-Instruct"
 
-snapshot_download(repo_id=model_name, local_dir=local_dir, force_download=True, tqdm_class=tqdm)
-
-print(f"Downloaded model {model_name} to {local_dir}")
+!huggingface-cli download $model_namet --local-dir $local_dir
 ```
 
 ## Upload Model to OCI Object Storage
 
 
 ```python
-model_prefix = "Meta-Llama-3.1-8B-Instruct/" #"<bucket_prefix>"
-bucket= "<bucket_name>" # this should be a versioned bucket
+model_prefix = "Meta-Llama-3.1-8B-Instruct/"  # "<bucket_prefix>"
+bucket = "<bucket_name>"  # this should be a versioned bucket
 namespace = "<bucket_namespace>"
 
 !oci os object bulk-upload --src-dir $local_dir --prefix $model_prefix -bn $bucket -ns $namespace --auth "resource_principal"
@@ -118,11 +112,12 @@ from ads.model.datascience_model import DataScienceModel
 
 artifact_path = f"oci://{bucket}@{namespace}/{model_prefix}"
 
-model = (DataScienceModel()
-  .with_compartment_id(compartment_id)
-  .with_project_id(project_id)
-  .with_display_name("Meta-Llama-3.1-405B-Instruct-FP8")
-  .with_artifact(artifact_path)
+model = (
+    DataScienceModel()
+    .with_compartment_id(compartment_id)
+    .with_project_id(project_id)
+    .with_display_name("Meta-Llama-3.1-405B-Instruct-FP8")
+    .with_artifact(artifact_path)
 )
 
 model.create(model_by_reference=True)
@@ -136,7 +131,7 @@ vLLM is an easy-to-use library for LLM inference and server.  You can get the co
 docker pull --platform linux/amd64 vllm/vllm-openai:latest
 ```
 
-Currently, OCI Data Science Model Deployment only supports container images residing in the OCI Registry.  Before we can push the pulled vLLM container, make sure you have created a repository in your tenancy.
+Currently, OCI Data Science Model Deployment only supports container images residing in the OCI Registry.  Before we can push the pulled vLLM container, make sure you have created a repository in your tenancy.  
 - Go to your tenancy Container Registry
 - Click on the Create repository button
 - Select Private under Access types
@@ -165,7 +160,6 @@ container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:latest"  # n
 
 
 ```python
-
 from ads.model.deployment import (
     ModelDeployment,
     ModelDeploymentContainerRuntime,
@@ -203,12 +197,23 @@ infrastructure = (
 
 
 ```python
-
 env_var = {
-    'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/completions',
+    "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions",
 }
 
-cmd_var = ["--model", f"/opt/ds/model/deployed_model/{model_prefix}", "--tensor-parallel-size", "2", "--port", "8080", "--served-model-name", "odsc-llm", "--host", "0.0.0.0", "--trust-remote-code"]
+cmd_var = [
+    "--model",
+    f"/opt/ds/model/deployed_model/{model_prefix}",
+    "--tensor-parallel-size",
+    "2",
+    "--port",
+    "8080",
+    "--served-model-name",
+    "odsc-llm",
+    "--host",
+    "0.0.0.0",
+    "--trust-remote-code",
+]
 
 container_runtime = (
     ModelDeploymentContainerRuntime()
@@ -221,7 +226,6 @@ container_runtime = (
     .with_model_uri(model.id)
     .with_region(region)
 )
-
 ```
 
 ## Deploy Model using Container Runtime
@@ -252,31 +256,34 @@ from string import Template
 from datetime import datetime
 
 
-auth = ads.common.auth.default_signer()['signer']
-prompt= "What amateur radio bands are best to use when there are solar flares?"
+auth = ads.common.auth.default_signer()["signer"]
+prompt = "What amateur radio bands are best to use when there are solar flares?"
 endpoint = f"https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict"
 
 current_date = datetime.now().strftime("%d %B %Y")
-prompt_template= Template(""""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+prompt_template = Template(
+    """"<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
                     Cutting Knowledge Date: December 2023
                     Today Date: {current_date}
 
                     You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
 
-                    $prompt<|eot_id|><|start_header_id|>assistant<|end_header_id|>""")
+                    $prompt<|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
+)
 
-prompt = t.substitute(prompt= "What amateur radio bands are best to use when there are solar flares?")
+prompt = t.substitute(
+    prompt="What amateur radio bands are best to use when there are solar flares?"
+)
 
 body = {
-    "model": "odsc-llm", # this is a constant
-    "prompt": prompt ,
+    "model": "odsc-llm",  # this is a constant
+    "prompt": prompt,
     "max_tokens": 500,
     "temperature": 0,
     "top_p": 0.9,
 }
 requests.post(endpoint, json=body, auth=auth, headers={}).json()
-
 ```
 
 #### Output:
@@ -339,20 +346,22 @@ llm = OCIModelDeploymentVLLM(
 )
 
 llm.invoke(
-    input=Template(f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+    input=Template(
+        f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
                     Cutting Knowledge Date: December 2023
                     Today Date:{current_date}
 
                     You are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>
 
-                    $prompt<|eot_id|><|start_header_id|>assistant<|end_header_id|>""")
-          .substitute(prompt="What amateur radio bands are best to use when there are solar flares?"),
+                    $prompt<|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
+    ).substitute(
+        prompt="What amateur radio bands are best to use when there are solar flares?"
+    ),
     max_tokens=500,
     temperature=0.7,
     p=0.8,
     stop=["<|eot_id|>"],
     skip_special_tokens=False,
 )
-
 ```
