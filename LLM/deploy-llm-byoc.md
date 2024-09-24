@@ -1,6 +1,6 @@
 # Deploy LLM Models using BYOC
 
-This guide demonstrates how to deploy and perform inference using AI Quick Action registered models with Oracle Data Science Service Managed Containers (SMC) powered by vLLM. In this example, we will use a model downloaded from Hugging Face—specifically, [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct) from Meta.
+This guide demonstrates how to deploy and perform inference of LLMs with Oracle Data Science Service through a bring your own container (BYOC) approach.   In this example, we will use a model downloaded from Hugging Face—specifically, [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct) from Meta, and the container is powered by vLLM.
 
 
 ## Required IAM Policies
