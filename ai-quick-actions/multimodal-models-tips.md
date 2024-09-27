@@ -45,7 +45,7 @@ payload = {
         {
             "role": "user",
             "content": [
-                {"type": "text", "text": Template("""<|image_1|>\n""").substitute(prompt="What is shown in this image?")},
+                {"type": "text", "text": Template("""<|image_1|>\n $prompt""").substitute(prompt="What is shown in this image?")},
                 {
                     "type": "image_url",
                     "image_url": {
