@@ -47,19 +47,42 @@ All linear modules in the model are used as the `target_modules` for LoRA fine-t
 
 The success of fine-tuning LLMs heavily relies on the quality and diversity of the training dataset. Preparing a dataset for fine-tuning involves several critical steps to ensure the model can effectively learn and adapt to the specific domain or task at hand. The process begins with collecting or creating a dataset that is representative of the domain or task, ensuring it covers the necessary variations and nuances. Once the dataset is assembled, it must be preprocessed, which includes cleaning the data by removing irrelevant information, normalizing text, and possibly anonymizing sensitive information to adhere to privacy standards.
 
-For fine-tuning in AI Quick Actions, the dataset
+Fine-tuning with AI Quick Actions requires dataset in JSONL format. Each row in the JSONL file must be a valid JSON, and all rows in the file must have the same JSON format.
 
-- Must be in [jsonl](https://jsonlines.org/) format
-- Should contain keys: `prompt` and `completion` for each row
+The following JSON formats are supported:
 
-The `prompt` is the input to the LLM and the `completion` is the expected output from the LLM. You may want to format the `prompt` with a specific template depending on your task.
+**Instruction format**:
 
-Here are a couple of examples in the dataset prepared for the task of summarizing conversations. The raw data is taken from the [samsum dataset](https://huggingface.co/datasets/samsum) and formatted to be used by fine-tuning in AI Quick Actions:
-
-```json
-{"prompt": "Summarize this dialog:\nAmanda: I baked  cookies. Do you want some?\r\nJerry: Sure!\r\nAmanda: I'll bring you some tomorrow :-)\n---\nSummary:\n", "completion": "Amanda baked cookies and will bring some for Jerry tomorrow."}
-{"prompt": "Summarize this dialog:\nOlivia: Who are you voting for in this election? \r\nOliver: Liberals as always.\r\nOlivia: Me too!!\r\nOliver: Great\n---\nSummary:\n", "completion": "Olivia and Olivier are voting for liberals in this election. "}
+Instruction format is mainly for fine-tuning completion model. Each JSON should contain a `prompt` and a `completion`:
 ```
+{"prompt": "Where's the headquarter of Oracle?", "completion": "Austin, TX"}
+{"prompt": "Who's Shakespeare?", "completion": "William Shakespeare was ..."}
+{"prompt": "How far is New York from Boston?", "completion": "215 miles via I-95N"}
+```
+
+The `prompt` is the input to the LLM and the `completion` is the expected output from the LLM. You may want to format the `prompt` with a specific template depending on your task. For chat model, training data in instruction format will be converted to conversational format automatically, if the `chat_template` is available from the tokenizer.
+
+**Conversational format**:
+
+Conversational format is mainly for fine-tuning chat model. Each JSON should contain a list of `messages`, each `message` may have different `role` and `content`.
+```
+{"messages": [{"role": "system", "content": "You are helpful assistant."}, {"role": "user", "content": "Where's the headquarter of Oracle?"}, {"role": "assistant", "content": "Austin, TX"}]}
+{"messages": [{"role": "system", "content": "You are helpful assistant."}, {"role": "user", "content": "Who's Shakespeare?"}, {"role": "assistant", "content": "William Shakespeare was ..."}]}
+{"messages": [{"role": "system", "content": "You are helpful assistant."}, {"role": "user", "content": "How far is New York from Boston?"}, {"role": "assistant", "content": "215 miles via I-95N"}]}
+```
+
+Note that conversational format cannot be used for fine-tuning completion model (while `chat_template` is not available from the tokenizer).
+
+**Tokenized Data**
+
+Alternatively, you can also use tokenized data for fine-tuning your model. For example:
+```
+{"input_ids":[1,733,16289,28793,995,622,347,2078,264,7526,302,...]}
+{"input_ids":[1,733,16289,28793,995,460,396,16107,13892,28723,...]}
+```
+
+During fine-tuning, no formatting or tokenization will be done on tokenized data.
+
 
 ### Fine-Tune a Model
 
