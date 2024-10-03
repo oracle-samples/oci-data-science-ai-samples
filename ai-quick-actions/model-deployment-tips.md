@@ -8,7 +8,7 @@ Table of Contents:
 - [Model Fine Tuning](fine-tuning-tips.md)
 - [Model Evaluation](evaluation-tips.md)
 - [Model Registration](register-tips.md)
-- [Mulit Modal Inferencing](multimodal-models-tips.md)
+- [Multi Modal Inferencing](multimodal-models-tips.md)
 
 ## Introduction to Model Inference and Serving
 
