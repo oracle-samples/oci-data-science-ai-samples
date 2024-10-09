@@ -62,7 +62,7 @@ For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/ope
 #### Using oci-cli
 
 ```bash
-oci raw-request --http-method POST --target-uri <model-deployment-url> --request-body '{
+oci raw-request --http-method POST --target-uri <model_deployment_url>/predict --request-body '{
         "model": "odsc-llm",
         "prompt":"what are activation functions?",
         "max_tokens":250,
