@@ -93,7 +93,7 @@ By clicking on one of the "Ready to Fine Tune" models, you will see more details
 There are a few configurations for fine-tuning the model:
 
 - **Model Information** Here you may customize the name and description of the model.
-- *Dataset** You may choose a dataset file from object storage location or select a new dataset from your notebook session. Here you will also specify the percentage of the dataset you would like to split for training/validation (evaluation).
+- **Dataset** You may choose a dataset file from object storage location or select a new dataset from your notebook session. Here you will also specify the percentage of the dataset you would like to split for training/validation (evaluation).
 - **Model Version Set** You may group the fine-tuned models with model version sets.
 - **Results** Here you specify the object storage location for saving the outputs of the fine-tuned model. 
 
