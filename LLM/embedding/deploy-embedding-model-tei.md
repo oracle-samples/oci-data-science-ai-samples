@@ -1,12 +1,16 @@
 # Overview
 
-Hugging Face's text-embeddings-inference (TEI) allows us to serve embedding models, and supports /v1/embeddings OpenAI spec. 
+Hugging Face's [text-embeddings-inference](https://github.com/huggingface/text-embeddings-inference) (TEI) allows us to serve embedding models, and supports OpenAI spec for inference. 
 TEI supports Nomic, BERT, CamemBERT, XLM-RoBERTa models with absolute positions, JinaBERT model with Alibi positions and 
-Mistral, Alibaba GTE and Qwen2 models with Rope positions. 
+Mistral, Alibaba GTE and Qwen2 models with Rope positions. TEI also supports sequence classification and re-ranking models, 
+but the scope of this example is limited to deploying embedding models. 
 
-Currently, TEI can be used to serve more than 10k embedding models available on Hugging Face Hub, 
+
+TEI can serve more than 10k embedding models available on Hugging Face Hub, 
 with support for most popular models. Currently, users can deploy any embedding model on OCI Data Science platform 
-supported by TEI. 
+supported by TEI. While TEI offers `/embed` endpoint as default method to get embeddings, the following example
+will use the OpenAI compatible route, i.e. `/v1/embeddings`. For more details, check the list of endpoints available 
+[here](https://huggingface.github.io/text-embeddings-inference/#/). 
 
 # Required IAM Policies
 
