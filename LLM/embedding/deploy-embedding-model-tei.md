@@ -1,4 +1,4 @@
-# Overview
+# Deploying embedding models with Text Embedding Inference on OCI MD
 
 Hugging Face's [text-embeddings-inference](https://github.com/huggingface/text-embeddings-inference) (TEI) allows us to serve embedding models, and supports OpenAI spec for inference. 
 TEI supports Nomic, BERT, CamemBERT, XLM-RoBERTa models with absolute positions, JinaBERT model with Alibi positions and 
@@ -12,25 +12,27 @@ supported by TEI. While TEI offers `/embed` endpoint as default method to get em
 will use the OpenAI compatible route, i.e. `/v1/embeddings`. For more details, check the list of endpoints available 
 [here](https://huggingface.github.io/text-embeddings-inference/#/). 
 
-# Required IAM Policies
+## Pre-Requisites
+To be able to run the example on this page, ensure you have access to Oracle Data Science notebook in your tenancy. 
+
+### Required IAM Policies
 
 Add these [policies](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/model-deployment/containers/llama2#required-iam-policies) 
 to grant access to OCI services.
 
-# Setup
+### Install Desktop Container Management
 
-Install dependencies.
+This example requires a desktop tool to build, run, launch and push the containers. We support:
 
-```
-# install and/or update required python packages
- pip install oracle-ads oci huggingface_hub -U
-```
+* [Docker Desktop](https://docs.docker.com/get-docker)
+* [Rancher Desktop](https://rancherdesktop.io/)
+
 
 # Prepare Inference Container
 TEI ships with multiple docker images that we can use to deploy an embedding model in OCI Data Science platform. 
 For more details on images, visit the official Github repository section 
 [here](https://github.com/huggingface/text-embeddings-inference/tree/main?tab=readme-ov-file#docker-images). 
-Here, we show an example with one of the images:
+Here, we show an example with one of the images. Run the following in the desktop when docker is installed.
 
 ```
 docker pull ghcr.io/huggingface/text-embeddings-inference:1.5.0
@@ -61,6 +63,17 @@ docker tag ghcr.io/huggingface/text-embeddings-inference:1.5.0 -t <region>.ocir.
 docker push <region>.ocir.io/<tenancy>/text-embeddings-inference:1.5.0
 ```
 
+# Setup
+
+Install dependencies in the notebook session. This is needed to prepare the artifacts, create a model
+and deploy it in OCI Data Science.
+
+Run this in the terminal in a notebook session:
+```
+# install and/or update required python packages
+ pip install oracle-ads oci huggingface_hub -U
+```
+
 # Prepare the model artifacts
 
 To prepare model artifacts for deployment:
@@ -71,8 +84,9 @@ To prepare model artifacts for deployment:
 
 ## Downloading model from Hugging Face Hub
 
-You can to [HuggingFace documentation](https://github.com/huggingface/huggingface_hub) for details. Here, we'll deploy one of the most popular embedding models from the hub that is supported by TEI.
+You can refer to [HuggingFace Hub documentation](https://huggingface.co/docs/hub/en/index) for details. Here, we'll deploy one of the most popular embedding models from the hub that is supported by TEI.
 
+Run this in the terminal in a notebook session:
 ```
 # Login to huggingface
 huggingface-cli login --token "<your-huggingface-token>"
@@ -85,12 +99,16 @@ huggingface-cli download BAAI/bge-base-en-v1.5 --local-dir BAAI/bge-base-en-v1.5
 
 Once models are downloaded, use the terminal to upload the artifacts to object storage. Make sure that the bucket is versioned as mentioned above.
 
+Run this in the terminal in a notebook session:
 ```
 oci os object bulk-upload -bn <bucket> -ns <namespace> --auth resource_principal --prefix BAAI/bge-base-en-v1.5/ --src-dir BAAI/bge-base-en-v1.5/ --no-overwrite
 ```
 
 # Create Model by reference using ADS
 
+Create a notebook with the default python kernel where the python library in the setup section. 
+
+We first set up the variables needed for creating and deploying the model.
 ```
 import ads
 ads.set_auth("resource_principal")
@@ -110,6 +128,7 @@ instance_shape = "VM.GPU.A10.1"
 container_image = "<region>.ocir.io/<tenancy>/text-embeddings-inference:1.5.0"
 ```
 
+Next, create a model catalog entry with the artifact in the object storage bucket where it was uploaded.
 ```
 from ads.model.datascience_model import DataScienceModel
  
@@ -122,6 +141,8 @@ model = (DataScienceModel()
 ```
 
 # Deploy embedding model
+
+In order to deploy the model we just created, we set up the infrastructure and container runtime first.
 
 ## Import Model Deployment Modules
 
@@ -158,10 +179,14 @@ infrastructure = (
 
 ## Configure Model Deployment Runtime
 
+We set the `MODEL_DEPLOY_PREDICT_ENDPOINT` endpoint environment variable with `/v1/embeddings` so that we can 
+access the corresponding endpoint from the TEI container. One additional configuration we need to add is `cmd_var`, which
+specifies the location of artifacts that will be downloaded within model deployment. For models created by reference, the 
+default artifact location is `/opt/ds/model/deployed_model/` and we need to append the object storage bucket prefix to this path.
+
 ```
 env_var = {
-    'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/embeddings',
-    'MODEL_DEPLOY_ENABLE_STREAMING': 'true'
+    'MODEL_DEPLOY_PREDICT_ENDPOINT': '/v1/embeddings'
 }
 # note that the model path inside the container will have the format /opt/ds/model/deployed_model/{artifact_path_prefix}
 cmd_var = ["--model-id", "/opt/ds/model/deployed_model/BAAI/bge-base-en-v1.5/", "--port", "8080", "--hostname", "0.0.0.0"]
@@ -181,6 +206,7 @@ container_runtime = (
 
 ## Deploy Model Using Container Runtime
 
+Once the infrastructure and runtime is configured, we can deploy the model. 
 ```
 deployment = (
     ModelDeployment()
@@ -238,7 +264,8 @@ The raw output (response) has an array of three lists with embedding for the abo
 
 # Testing Embeddings generated by the model
 
-Here, we have 3 sentences - two of which have similar meaning, and the third one is distinct.
+Here, we have 3 sentences - two of which have similar meaning, and the third one is distinct. We'll run a simple test to 
+find how similar or dissimilar these sentences are, using cosine similarity as a comparison metric.
 
 ```
 from sklearn.metrics.pairwise import cosine_similarity
