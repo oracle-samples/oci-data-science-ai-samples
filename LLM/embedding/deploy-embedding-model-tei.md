@@ -16,7 +16,7 @@ will use the OpenAI compatible route, i.e. `/v1/embeddings`. For more details, c
 ## Overview
 This guide demonstrates how to deploy and perform inference of embedding models with Oracle Data Science Service 
 through a Bring Your Own Container (BYOC) approach. In this example, we will use a model downloaded from 
-Hugging Face—specifically, `BAAI/bge-base-en-v1.5` from Meta, and the container is powered by Text Embedding Inference (TEI).
+Hugging Face—specifically, `BAAI/bge-base-en-v1.5`, and the container is powered by Text Embedding Inference (TEI).
 
 
 
