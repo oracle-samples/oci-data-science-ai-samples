@@ -114,7 +114,7 @@ oci os object bulk-upload -bn <bucket> -ns <namespace> --auth resource_principal
 
 ## Create Model by reference using ADS
 
-Create a notebook with the default python kernel where the python library in the setup section. 
+Create a notebook using the default Python kernel with the Python library specified in the setup section. 
 
 We first set up the variables needed for creating and deploying the model.
 ```
