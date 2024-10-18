@@ -40,7 +40,11 @@ For a full list of shapes and their definitions see the [compute shape docs](htt
 The relationship between model parameter size and GPU memory is roughly 2x parameter count in GB, so for example a model that has 7B parameters will need a minimum of 14 GB for inference. At runtime the
 memory is used for both holding the weights, along with the concurrent contexts for the user's requests.
 
-The model will spin up and become available after some time, then you're able to try out the model 
+The "inference mode" allows you to choose between the default completion endpoint(`/v1/completions`) and the chat endpoint (`/v1/chat/completions`).
+* The default completion endpoint is designed for text completion tasks. It’s suitable for generating text based on a given prompt.
+* The chat endpoint is tailored for chatbot-like interactions. It allows for more dynamic and interactive conversations by using a list of messages with roles (system, user, assistant). This is ideal for applications requiring back-and-forth dialogue, maintaining context over multiple turns. It is recommended that you deploy chat models (e.g. `meta-llama/Llama-3.1-8B-Instruct`) using the chat endpoint.
+
+Once deployed, the model will spin up and become available after some time, then you're able to try out the model 
 from the deployments tab using the test model, or programmatically.
 
 ![Try Model](web_assets/try-model.png)
