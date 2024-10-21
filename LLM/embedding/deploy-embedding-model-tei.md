@@ -67,7 +67,7 @@ If your tenancy is federated with Oracle Identity Cloud Service, use the format 
 You can then push the container image to the OCI Registry.
 
 ```
-docker tag ghcr.io/huggingface/text-embeddings-inference:1.5.0 -t <region>.ocir.io/<tenancy>/text-embeddings-inference:1.5.0
+docker tag ghcr.io/huggingface/text-embeddings-inference:1.5.0 <region>.ocir.io/<tenancy>/text-embeddings-inference:1.5.0
 docker push <region>.ocir.io/<tenancy>/text-embeddings-inference:1.5.0
 ```
 
