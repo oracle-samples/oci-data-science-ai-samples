@@ -199,35 +199,7 @@ then create a folder `oci://<bucket>@namespace/path/to/model/config`.
             "replica": 1
         }
     },
-    "finetuning_params": "--trust_remote_code True",
-    "configuration":
-    {
-        "micro_batch_size": 1,
-        "gradient_accumulation_steps": 1,
-        "gradient_checkpointing": true,
-        "val_set_size": 0.1,
-        "sequence_len": 2048,
-        "sample_packing": true,
-        "pad_to_sequence_len": true,
-        "optimizer": "adamw_torch",
-        "lr_scheduler": "cosine",
-        "learning_rate": 0.0002,
-        "flash_attention": true,
-        "bf16": true,
-        "fp16": false,
-        "tf32": false,
-        "logging_steps": 1,
-        "adapter": "lora",
-        "lora_r": 32,
-        "lora_alpha": 16,
-        "lora_dropout": 0.05,
-        "lora_target_linear": true,
-        "lora_target_modules":
-        [
-            "q_proj",
-            "k_proj"
-        ]
-    }
+    "finetuning_params": "--trust_remote_code True"
 }
 ```
 This JSON file lists all available shapes that can be used to fine-tune a model via AI Quick Actions. It also has additional
