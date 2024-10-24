@@ -99,7 +99,7 @@ docker push <image-name:tag>
 To deploy the model, simply call the `deploy()` function with your settings:
 * For most application, a CPU shape would be sufficient.
 * Specify log group and log OCID to enable logging for the deployment.
-* Custom networking with internet access is required for accessing external APIs or OCI Generative AI APIs in a different region.
+* [Custom networking](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-create-cus-net.htm) with internet access is required for accessing external APIs or OCI Generative AI APIs in a different region.
 * Add environments variables as needed by your application, including any API keys or endpoints.
 * You may set the `DEFAULT_MODULE` for invoking the default app
 
