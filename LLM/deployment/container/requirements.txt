@@ -1,0 +1,8 @@
+flask
+langchain>=0.3
+langchain-community>=0.3
+langchain-openai>=0.2
+langchain-experimental>=0.3
+langgraph>=0.2
+oracle-ads>=2.12
+pyuwsgi
