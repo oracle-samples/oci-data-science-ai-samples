@@ -1,4 +1,4 @@
-# Container for serving LLM apps with Flask and uWSGI
+# Container for Serving LLM Apps and Agents with Flask and uWSGI
 
 This directory contains files for building a container image for serving LLM applications on OCI Data Science model deployment service.
 * `Dockerfile`: The Dockerfile for building the image based on Oracle Linux 9.
