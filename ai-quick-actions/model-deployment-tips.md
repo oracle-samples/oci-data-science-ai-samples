@@ -20,12 +20,14 @@ replacement for applications using OpenAI API. Model deployments are a managed r
 the OCI Data Science service. For more details about Model Deployment and managing it through 
 the OCI console please see the [OCI docs](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-about.htm).
 
-### Deploying an LLM
+## Deploying an LLM
 
 After picking a model from the model explorer, if the "Deploy Model" is enabled you can use this
 form to quickly deploy the model:
 
 ![Deploy Model](web_assets/deploy-model.png)
+
+### Compute Shape
 
 The compute shape selection is critical, the list available is selected to be suitable for the 
 chosen model.
@@ -40,16 +42,13 @@ For a full list of shapes and their definitions see the [compute shape docs](htt
 The relationship between model parameter size and GPU memory is roughly 2x parameter count in GB, so for example a model that has 7B parameters will need a minimum of 14 GB for inference. At runtime the
 memory is used for both holding the weights, along with the concurrent contexts for the user's requests.
 
-The "inference mode" allows you to choose between the default completion endpoint(`/v1/completions`) and the chat endpoint (`/v1/chat/completions`).
-* The default completion endpoint is designed for text completion tasks. It’s suitable for generating text based on a given prompt.
-* The chat endpoint is tailored for chatbot-like interactions. It allows for more dynamic and interactive conversations by using a list of messages with roles (system, user, assistant). This is ideal for applications requiring back-and-forth dialogue, maintaining context over multiple turns. It is recommended that you deploy chat models (e.g. `meta-llama/Llama-3.1-8B-Instruct`) using the chat endpoint.
+### Advanced Options
 
-Once deployed, the model will spin up and become available after some time, then you're able to try out the model 
-from the deployments tab using the test model, or programmatically.
+You may click on the "Show Advanced Options" to configure options for "inference container" and "inference mode".
 
-![Try Model](web_assets/try-model.png)
+![Advanced Options](web_assets/deploy-model-advanced-options.png)
 
-### Advanced Deployment Options
+### Inference Container Configuration
 
 The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on 
 the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format 
@@ -58,12 +57,24 @@ the type of inference container used for deployment, i.e. vLLM or TGI, the param
 For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) or 
 [TGI](https://huggingface.co/docs/text-generation-inference/en/basic_tutorials/launcher) documentation to know more about the parameters accepted by the respective containers. 
 
-![Model Deployment Parameters](web_assets/model-deployment-params.png)
+### Inference Mode
+
+The "inference mode" allows you to choose between the default completion endpoint(`/v1/completions`) and the chat endpoint (`/v1/chat/completions`).
+* The default completion endpoint is designed for text completion tasks. It’s suitable for generating text based on a given prompt.
+* The chat endpoint is tailored for chatbot-like interactions. It allows for more dynamic and interactive conversations by using a list of messages with roles (system, user, assistant). This is ideal for applications requiring back-and-forth dialogue, maintaining context over multiple turns. It is recommended that you deploy chat models (e.g. `meta-llama/Llama-3.1-8B-Instruct`) using the chat endpoint.
 
 
-### Inferencing Model
+### Test Your Model
 
-#### Using oci-cli
+Once deployed, the model will spin up and become available after some time, then you're able to try out the model 
+from the deployments tab using the test model, or programmatically.
+
+![Try Model](web_assets/try-model.png)
+
+
+## Inferencing Model
+
+### Using oci-cli
 
 ```bash
 oci raw-request --http-method POST --target-uri <model_deployment_url>/predict --request-body '{
@@ -78,7 +89,7 @@ oci raw-request --http-method POST --target-uri <model_deployment_url>/predict -
 Note: Currently `oci-cli` does not support streaming response, use Python or Java SDK instead.
 
 
-#### Using Python SDK (without streaming)
+### Using Python SDK (without streaming)
 
 ```python
 # The OCI SDK must be installed for this example to function properly.
@@ -120,7 +131,7 @@ res = requests.post(endpoint, json=body, auth=auth, headers={}).json()
 print(res)
 ```
 
-#### Using Python SDK (with streaming)
+### Using Python SDK (with streaming)
 
 To consume streaming Server-sent Events (SSE), install [sseclient-py](https://pypi.org/project/sseclient-py/) using `pip install sseclient-py`.
 
@@ -176,7 +187,7 @@ for event in client.events():
 #        print(line)
 ```
 
-#### Using Java (with streaming)
+### Using Java (with streaming)
 
 ```java
 /**
@@ -305,7 +316,7 @@ public class RestExample {
 ```
 
 
-### Troubleshooting
+## Troubleshooting
 
 If the model should fail to deploy, reasons might include lack of GPU availability, or policy permissions.
 
