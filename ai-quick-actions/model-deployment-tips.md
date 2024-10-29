@@ -315,7 +315,7 @@ public class RestExample {
 
 ```
 
-### Advanced Configuration Update Options
+## Advanced Configuration Update Options
 
 The available shapes for models in AI Quick Actions are pre-configured for both registration and 
 deployment for models available in the Model Explorer. However, if you need to add more shapes to the list of 
