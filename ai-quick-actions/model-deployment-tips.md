@@ -40,7 +40,11 @@ For a full list of shapes and their definitions see the [compute shape docs](htt
 The relationship between model parameter size and GPU memory is roughly 2x parameter count in GB, so for example a model that has 7B parameters will need a minimum of 14 GB for inference. At runtime the
 memory is used for both holding the weights, along with the concurrent contexts for the user's requests.
 
-The model will spin up and become available after some time, then you're able to try out the model 
+The "inference mode" allows you to choose between the default completion endpoint(`/v1/completions`) and the chat endpoint (`/v1/chat/completions`).
+* The default completion endpoint is designed for text completion tasks. It’s suitable for generating text based on a given prompt.
+* The chat endpoint is tailored for chatbot-like interactions. It allows for more dynamic and interactive conversations by using a list of messages with roles (system, user, assistant). This is ideal for applications requiring back-and-forth dialogue, maintaining context over multiple turns. It is recommended that you deploy chat models (e.g. `meta-llama/Llama-3.1-8B-Instruct`) using the chat endpoint.
+
+Once deployed, the model will spin up and become available after some time, then you're able to try out the model 
 from the deployments tab using the test model, or programmatically.
 
 ![Try Model](web_assets/try-model.png)
@@ -298,6 +302,94 @@ public class RestExample {
     }
 }
 
+```
+
+### Advanced Configuration Update Options
+
+The available shapes for models in AI Quick Actions are pre-configured for both registration and 
+deployment for models available in the Model Explorer. However, if you need to add more shapes to the list of 
+available options, you can do so by updating the relevant configuration file. Currently, this 
+update option is only available for models that users can register.
+
+#### For Custom Models:
+To add shapes for custom models, follow these steps:
+
+1. **Register the model**: Ensure the model is registered via AI Quick Actions UI or CLI.
+
+2. **Navigate to the model's artifact directory**: After registration, locate the directory where the model's artifacts are stored in the object storage. 
+
+3. **Create a configuration folder**: Inside the artifact directory, create a new folder named config. For example, if the model path is `oci://<bucket>@namespace/path/to/model/`
+then create a folder `oci://<bucket>@namespace/path/to/model/config`.
+
+4. **Add a deployment configuration file**: Within the config folder, create a file named `deployment_config.json` with the following content:
+
+
+```
+{
+  "configuration": {
+    "VM.Standard.A1.Flex": {
+      "parameters": {},
+      "shape_info": {
+        "configs": [
+          {
+            "memory_in_gbs": 128,
+            "ocpu": 20
+          },
+          {
+            "memory_in_gbs": 256,
+            "ocpu": 40
+          },
+          {
+            "memory_in_gbs": 384,
+            "ocpu": 60
+          },
+          {
+            "memory_in_gbs": 512,
+            "ocpu": 80
+          }
+        ],
+        "type": "CPU"
+      }
+    }
+  },
+  "shape": [
+    "VM.GPU.A10.1",
+    "VM.GPU.A10.2",
+    "BM.GPU.A10.4",
+    "BM.GPU4.8",
+    "BM.GPU.L40S-NC.4",
+    "BM.GPU.A100-v2.8",
+    "BM.GPU.H100.8",
+    "VM.Standard.A1.Flex"
+  ]
+}
+```
+
+This JSON file lists all available GPU and CPU shapes for AI Quick Actions. 
+The CPU shapes include additional configuration details required for model deployment, 
+such as memory and OCPU settings.
+
+5. Modify shapes as needed: If you want to add or remove any 
+[shapes supported](https://docs.oracle.com/en-us/iaas/data-science/using/supported-shapes.htm) by 
+the OCI Data Science platform, you can directly edit this `deployment_config.json` file.
+
+6. The `configuration` field in this json file can also support parameters for vLLM and TGI inference containers. For example,
+if a model can be deployed by either one of these containers, and you want to set the server parameters through configuration file, then 
+you can add the corresponding shape along with the parameter value inside the `configuration` field. You can achieve the same
+using [Advanced Deployment Options](#advanced-deployment-options) from AI Quick Actions UI as well. 
+
+
+```
+  "configuration": {
+    "VM.GPU.A10.1": {
+      "parameters": {
+        "TGI_PARAMS": "--max-stop-sequences 6",
+        "VLLM_PARAMS": "--max-model-len 4096"
+      }
+    }
+    ...
+    ...
+  }
 ```
 
 
