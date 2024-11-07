@@ -49,6 +49,85 @@ Once the upload is complete, provide the object storage location in the Register
 After registration, this model will be available in the "My Models" tab in the Model Explorer for further use.
 
 
+## Register an Embedding Model
+
+### Deploy using vLLM container 
+
+With vLLM now supporting deployment of embedding models, you can register and deploy an embedding model using AI Quick Actions. The current vLLM Service Managed Container (SMC) offered by 
+AI Quick Actions is backed by vLLM 0.6.2, hence only `intfloat/e5-mistral-7b-instruct` is supported. The subsequent 
+update of the SMC will enable you to deploy the other supported models listed [here](https://docs.vllm.ai/en/latest/models/supported_models.html#text-embedding).
+
+
+### Bring Your Own Container Approach
+
+AI Quick Actions now supports deployment of embedding models from Hugging Face Hub that support [Text Embedding Inference (TEI)](https://github.com/huggingface/text-embeddings-inference) serving container. 
+To find the eligible models supported by TEI, visit the HuggingFace model listing page [here](https://huggingface.co/models?other=text-embeddings-inference). 
+
+The TEI repo has the [list of images](https://github.com/huggingface/text-embeddings-inference?tab=readme-ov-file#docker-images) you can deploy, 
+and currently AI Quick Actions supports deployment using the following shapes:
+
+* VM.GPU.A10.1
+* VM.GPU.A10.2
+* BM.GPU.A10.4
+* BM.GPU4.8
+* BM.GPU.L40S-NC.4
+* VM.Standard.E3.Flex
+* VM.Standard.E4.Flex
+* VM.Standard3.Flex
+* VM.Optimized3.Flex
+
+
+#### Install Desktop Container Management
+This example requires a desktop tool to build, run, launch and push the containers. We support:
+
+* [Docker Desktop](https://docs.docker.com/get-docker)
+* [Rancher Desktop](https://rancherdesktop.io/)
+
+#### Prepare Inference Container
+
+TEI ships with multiple docker images that we can use to deploy an embedding model using AI Quick Actions. 
+Run the following in the desktop when docker is installed.
+
+```bash
+docker pull ghcr.io/huggingface/text-embeddings-inference:1.5.0
+```
+
+Currently, OCI Data Science Model Deployment only supports container images residing in the OCI Registry.
+Before we can push the pulled TEI container, make sure you have created a repository in your tenancy.
+
+* Go to your tenancy Container Registry
+* Click on the Create repository button
+* Select Private under Access types
+* Set a name for Repository name. We are using "text-embeddings-inference" in the example.
+* Click on Create button
+
+You may need to docker login to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before in 
+order to push the image. To login, you have to use your API Auth Token that can be created under your Oracle Cloud Account->Auth Token. 
+You need to login only once. Replace with the OCI region you are using.
+
+```bash
+docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
+```
+
+If your tenancy is federated with Oracle Identity Cloud Service, use the format /oracleidentitycloudservice/. 
+You can then push the container image to the OCI Registry.
+
+```bash
+docker tag ghcr.io/huggingface/text-embeddings-inference:1.5.0 <region>.ocir.io/<tenancy>/text-embeddings-inference:1.5.0
+docker push <region>.ocir.io/<tenancy>/text-embeddings-inference:1.5.0
+```
+
+If you wish to deploy the embedding model on a CPU shape, use the official CPU docker image named
+`ghcr.io/huggingface/text-embeddings-inference:cpu-1.5`. Currently, deployment on ARM shapes is not supported.
+
+#### BYOC policies
+
+Check the [policies](policies/README.md) page to make sure that the  container specific policy is added so that 
+custom container can be picked up by OCI Model Deployment. Specifically, you need to allow the dynamic group to read
+the custom container or tenancy, if the repository is in the root compartment. Additional documentation is available
+[here](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-policies-auth.htm#model_dep_policies_auth__access-custom-container).
+
+
 Table of Contents:
 
 - [Home](README.md)
