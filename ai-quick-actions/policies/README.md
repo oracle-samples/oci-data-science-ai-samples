@@ -18,6 +18,8 @@
 
 > **Note:** Even if you already have the policies to use Data Science service, you still need to use the terraform configuration file to set up the policies to use AI Quick Actions. To successfully execute the Terraform script, you must have administrative rights.
 
+> **Note:** Policies can only be applied via (ORM) stack, if they are being applied from the home region.
+
 Before running the Terraform script, ensure you have the following permissions granted:
 
 ```bash
