@@ -187,6 +187,24 @@ for event in client.events():
 #        print(line)
 ```
 
+### Using Python SDK for v1/chat/completions endpoint
+
+To access the model deployed with `v1/chat/completions` endpoint for inference, update the body and replace `prompt` field
+with `messages`.
+
+```python
+...
+body = {
+    "model": "odsc-llm", # this is a constant
+    "messages":[{"role":"user","content":[{"type":"text","text":"Who wrote the book Harry Potter?"}]}],
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+}
+...
+```
+For multi-modal inference, refer the page [Multimodal Model Tips](multimodal-models-tips.md) for an example to access `v1/chat/completions` endpoint.
+
 ### Using Java (with streaming)
 
 ```java
