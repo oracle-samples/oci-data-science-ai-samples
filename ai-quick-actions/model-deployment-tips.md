@@ -12,12 +12,12 @@ Table of Contents:
 
 ## Introduction to Model Inference and Serving
 
-The Data Science server has prebuilt service containers that make deploying and serving a large 
+The Data Science server has prebuilt service containers that make deploying and serving a large
 language model very easy. Either one of [vLLM](https://github.com/vllm-project/vllm) (a high-throughput and memory-efficient inference and serving
 engine for LLMs) or [TGI](https://github.com/huggingface/text-generation-inference) (a high-performance text generation server for the popular open-source LLMs) is used in the service container to host the model, the end point created
 supports the OpenAI API protocol.  This allows the model deployment to be used as a drop-in
-replacement for applications using OpenAI API. Model deployments are a managed resource in 
-the OCI Data Science service. For more details about Model Deployment and managing it through 
+replacement for applications using OpenAI API. Model deployments are a managed resource in
+the OCI Data Science service. For more details about Model Deployment and managing it through
 the OCI console please see the [OCI docs](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-about.htm).
 
 ## Deploying an LLM
@@ -29,7 +29,7 @@ form to quickly deploy the model:
 
 ### Compute Shape
 
-The compute shape selection is critical, the list available is selected to be suitable for the 
+The compute shape selection is critical, the list available is selected to be suitable for the
 chosen model.
 
 - VM.GPU.A10.1 has 24GB of GPU memory and 240GB of CPU memory. The limiting factor is usually the
@@ -50,12 +50,12 @@ You may click on the "Show Advanced Options" to configure options for "inference
 
 ### Inference Container Configuration
 
-The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on 
-the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format 
+The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on
+the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format
 `(--param-name, param-value)`.
 
-For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) or 
-[TGI](https://huggingface.co/docs/text-generation-inference/en/basic_tutorials/launcher) documentation to know more about the parameters accepted by the respective containers. 
+For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) or
+[TGI](https://huggingface.co/docs/text-generation-inference/en/basic_tutorials/launcher) documentation to know more about the parameters accepted by the respective containers.
 
 ### Inference Mode
 
@@ -66,7 +66,7 @@ The "inference mode" allows you to choose between the default completion endpoin
 
 ### Test Your Model
 
-Once deployed, the model will spin up and become available after some time, then you're able to try out the model 
+Once deployed, the model will spin up and become available after some time, then you're able to try out the model
 from the deployments tab using the test model, or programmatically.
 
 ![Try Model](web_assets/try-model.png)
@@ -94,7 +94,7 @@ Note: Currently `oci-cli` does not support streaming response, use Python or Jav
 ```python
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
- 
+
 import requests
 import oci
 from oci.signer import Signer
@@ -138,7 +138,7 @@ To consume streaming Server-sent Events (SSE), install [sseclient-py](https://py
 ```python
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
- 
+
 import requests
 import oci
 from oci.signer import Signer
@@ -315,11 +315,85 @@ public class RestExample {
 
 ```
 
+### Using `Langchain` with streaming
+
+#### Installation
+The LangChain OCIModelDeployment integration is part of the [`langchain-community`](https://python.langchain.com/docs/integrations/chat/oci_data_science/)  package. Use the following command to install `langchain-community` along with its required dependencies.
+
+```python
+%pip install -qU langchain-community langchain-openai oracle-ads
+```
+
+#### Using Langchain for Completion Endpoint
+```python
+import ads
+from langchain_community.llms import OCIModelDeploymentLLM
+
+# Set authentication through ads
+# Use resource principal are operating within a
+# OCI service that has resource principal based
+# authentication configured
+ads.set_auth("resource_principal")
+
+# Create an instance of OCI Model Deployment Endpoint
+# Replace the endpoint uri and model name with your own
+# Using generic class as entry point, you will be able
+# to pass model parameters through model_kwargs during
+# instantiation.
+llm = OCIModelDeploymentLLM(
+    endpoint="https://modeldeployment.<region>.oci.customer-oci.com/<md_ocid>/predict",
+    model="odsc-llm",
+    streaming=True,
+    model_kwargs={
+        "temperature": 0.2,
+        "max_tokens": 512,
+    },  # other model params...
+)
+
+# Run the LLM
+response = lm.invoke("Who is the first president of United States?")
+
+print(response.content)
+
+```
+
+#### Using Langchain for Chat Completion Endpoint
+```python
+import ads
+from langchain_community.chat_models import ChatOCIModelDeployment
+
+# Use resource principals for authentication
+ads.set_auth(auth="resource_principal")
+
+endpoint = "https://modeldeployment.<region>.oci.customer-oci.com/<md_ocid>/predict"
+# Initialize the chat model with streaming support
+chat = ChatOCIModelDeployment(
+    model="odsc-llm",
+    endpoint=endpoint,
+    # Optionally you can specify additional keyword arguments for the model.
+    max_tokens=1024,
+    # Enable streaming
+    streaming=True
+)
+
+#Invocation
+messages = [
+    (
+        "system",
+        "You are a helpful assistant that translates English to French. Translate the user sentence.",
+    ),
+    ("human", "I love programming."),
+]
+
+response = chat.invoke(messages)
+print(response.content)
+```
+
 ## Advanced Configuration Update Options
 
-The available shapes for models in AI Quick Actions are pre-configured for both registration and 
-deployment for models available in the Model Explorer. However, if you need to add more shapes to the list of 
-available options, you can do so by updating the relevant configuration file. Currently, this 
+The available shapes for models in AI Quick Actions are pre-configured for both registration and
+deployment for models available in the Model Explorer. However, if you need to add more shapes to the list of
+available options, you can do so by updating the relevant configuration file. Currently, this
 update option is only available for models that users can register.
 
 #### For Custom Models:
@@ -327,7 +401,7 @@ To add shapes for custom models, follow these steps:
 
 1. **Register the model**: Ensure the model is registered via AI Quick Actions UI or CLI.
 
-2. **Navigate to the model's artifact directory**: After registration, locate the directory where the model's artifacts are stored in the object storage. 
+2. **Navigate to the model's artifact directory**: After registration, locate the directory where the model's artifacts are stored in the object storage.
 
 3. **Create a configuration folder**: Inside the artifact directory, create a new folder named config. For example, if the model path is `oci://<bucket>@namespace/path/to/model/`
 then create a folder `oci://<bucket>@namespace/path/to/model/config`.
@@ -376,18 +450,18 @@ then create a folder `oci://<bucket>@namespace/path/to/model/config`.
 }
 ```
 
-This JSON file lists all available GPU and CPU shapes for AI Quick Actions. 
-The CPU shapes include additional configuration details required for model deployment, 
+This JSON file lists all available GPU and CPU shapes for AI Quick Actions.
+The CPU shapes include additional configuration details required for model deployment,
 such as memory and OCPU settings.
 
-5. Modify shapes as needed: If you want to add or remove any 
-[shapes supported](https://docs.oracle.com/en-us/iaas/data-science/using/supported-shapes.htm) by 
+5. Modify shapes as needed: If you want to add or remove any
+[shapes supported](https://docs.oracle.com/en-us/iaas/data-science/using/supported-shapes.htm) by
 the OCI Data Science platform, you can directly edit this `deployment_config.json` file.
 
 6. The `configuration` field in this json file can also support parameters for vLLM and TGI inference containers. For example,
-if a model can be deployed by either one of these containers, and you want to set the server parameters through configuration file, then 
+if a model can be deployed by either one of these containers, and you want to set the server parameters through configuration file, then
 you can add the corresponding shape along with the parameter value inside the `configuration` field. You can achieve the same
-using [Advanced Deployment Options](#advanced-deployment-options) from AI Quick Actions UI as well. 
+using [Advanced Deployment Options](#advanced-deployment-options) from AI Quick Actions UI as well.
 
 
 ```
@@ -411,7 +485,7 @@ If the model should fail to deploy, reasons might include lack of GPU availabili
 The logs are a good place to start to diagnose the issue. The logs can be accessed from the UI, or you can
 use the ADS Log watcher, see [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/opctl/_template/monitoring.html) for more details.
 
-From the **General Information** section the **Log Groups** and **Log** sections are clickable links to 
+From the **General Information** section the **Log Groups** and **Log** sections are clickable links to
 begin the diagnosis.
 
 ![General Information](web_assets/gen-info-deployed-model.png)
