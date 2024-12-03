@@ -318,10 +318,10 @@ public class RestExample {
 ### Using `Langchain` with streaming
 
 #### Installation
-The LangChain OCIModelDeployment integration is part of the [`langchain-community`](https://python.langchain.com/docs/integrations/chat/oci_data_science/)  package. Use the following command to install `langchain-community` along with its required dependencies.
+The LangChain OCIModelDeployment integration is part of the [`langchain-community`](https://python.langchain.com/docs/integrations/chat/oci_data_science/)  package.  The chat model integration requires **Python 3.9** or newer. Use the following command to install `langchain-community` along with its required dependencies.
 
 ```python
-%pip install -qU langchain-community langchain-openai oracle-ads
+%pip install langgraph "langchain>=0.3" "langchain-community>=0.3" "langchain-openai>=0.2.3" "oracle-ads>2.12"
 ```
 
 #### Using Langchain for Completion Endpoint
