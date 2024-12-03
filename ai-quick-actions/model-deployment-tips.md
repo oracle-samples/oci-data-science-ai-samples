@@ -388,6 +388,8 @@ response = chat.invoke(messages)
 print(response.content)
 ```
 
+***Note:*** Mistral's instruction-tuned models, such as Mistral-7B-Instruct and Mixtral-8x7B-Instruct, do not natively support system prompts using the {"role": "system"} format.
+
 ## Advanced Configuration Update Options
 
 The available shapes for models in AI Quick Actions are pre-configured for both registration and
