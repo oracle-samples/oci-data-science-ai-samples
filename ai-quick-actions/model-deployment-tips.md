@@ -365,11 +365,10 @@ from langchain_community.chat_models import ChatOCIModelDeployment
 # Use resource principals for authentication
 ads.set_auth(auth="resource_principal")
 
-endpoint = "https://modeldeployment.<region>.oci.customer-oci.com/<md_ocid>/predict"
 # Initialize the chat model with streaming support
 chat = ChatOCIModelDeployment(
     model="odsc-llm",
-    endpoint=endpoint,
+    endpoint="https://modeldeployment.<region>.oci.customer-oci.com/<md_ocid>/predict",
     # Optionally you can specify additional keyword arguments for the model.
     max_tokens=1024,
     # Enable streaming
