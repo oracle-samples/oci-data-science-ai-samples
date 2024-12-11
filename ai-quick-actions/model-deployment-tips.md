@@ -9,6 +9,7 @@ Table of Contents:
 - [Model Evaluation](evaluation-tips.md)
 - [Model Registration](register-tips.md)
 - [Multi Modal Inferencing](multimodal-models-tips.md)
+- [Private_Endpoints](model-deployment-private-endpoint-tips.md)
 
 ## Introduction to Model Inference and Serving
 
