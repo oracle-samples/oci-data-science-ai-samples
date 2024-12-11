@@ -187,6 +187,24 @@ for event in client.events():
 #        print(line)
 ```
 
+### Using Python SDK for v1/chat/completions endpoint
+
+To access the model deployed with `v1/chat/completions` endpoint for inference, update the body and replace `prompt` field
+with `messages`.
+
+```python
+...
+body = {
+    "model": "odsc-llm", # this is a constant
+    "messages":[{"role":"user","content":[{"type":"text","text":"Who wrote the book Harry Potter?"}]}],
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+}
+...
+```
+For multi-modal inference, refer the page [Multimodal Model Tips](multimodal-models-tips.md) for an example to access `v1/chat/completions` endpoint.
+
 ### Using Java (with streaming)
 
 ```java
@@ -389,6 +407,30 @@ print(response.content)
 ```
 
 ***Note:*** Mistral's instruction-tuned models, such as Mistral-7B-Instruct and Mixtral-8x7B-Instruct, do not natively support system prompts using the {"role": "system"} format.
+
+## Multiple Inference endpoints
+
+The support for multiple model deployment inference endpoints ensures flexibility and enables users to perform inferencing on any endpoint, regardless of the endpoint specified during deployment creation.
+
+To access the supported endpoint by TGI/vLLM, you need to include `--request-headers '{"route":"<inference_endpoint>"}'` in the command and update the `--request-body`  according to the endpoint's contract.
+
+```bash
+oci raw-request --http-method POST --target-uri <model_deployment_url>/predict --request-headers '{"route":<inference_endpoint>}' --request-body  <request_body> --auth <auth_method>
+```
+
+```bash
+## If "/v1/completions" was selected during deployment using vLLM SMC and "/v1/chat/completions" endpoint is required later on.
+
+oci raw-request --http-method POST --target-uri  <model_deployment_url>/predict --request-headers '{"route":"/v1/chat/completions"}' --request-body '
+      {
+          "model": "odsc-llm", # this is a constant
+          "messages":[{"role":"user","content":[{"type":"text","text":"Who wrote the book Harry Potter?"}]}],
+          "max_tokens": 500,
+          "temperature": 0.7,
+          "top_p": 0.8,
+      }' --auth security_token
+
+```
 
 ## Advanced Configuration Update Options
 
