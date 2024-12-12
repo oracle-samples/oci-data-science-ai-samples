@@ -258,7 +258,7 @@ Example: `iad.ocir.io/<your_tenancy>/<your_image>:<tag>`
 ### Example
 
 ```bash
-ads aqua model register --model_id ocid1.compartment.oc1..<ocid> --os_path oci://<bucket>@<namespace>/<prefix> --download_from_hf True --inference_container odsc-vllm-serving --finetuning_container odsc-llm-fine-tuning
+ads aqua model register --model mistralai/Mistral-7B-Instruct-v0.1 --os_path oci://<bucket>@<namespace>/<prefix> --download_from_hf True --inference_container odsc-vllm-serving --finetuning_container odsc-llm-fine-tuning
 ```
 
 #### CLI Output
@@ -270,7 +270,7 @@ ads aqua model register --model_id ocid1.compartment.oc1..<ocid> --os_path oci:/
     "id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
     "is_fine_tuned_model": false,
     "license": "Apache 2.0",
-    "name": "Mistral-7B-Instruct-v0.1",
+    "name": "mistralai/Mistral-7B-Instruct-v0.1",
     "organization": "Mistral AI",
     "project_id": "ocid1.datascienceproject.oc1.iad.<ocid>",
     "tags": {
