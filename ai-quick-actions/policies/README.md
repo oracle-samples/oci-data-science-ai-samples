@@ -66,13 +66,6 @@ After the stack is created and its Stack details page opens, click Plan from the
 
 - ``aqua_policies``
   ```bash
-  Define tenancy datascience as ocid1.tenancy.oc1..aaaaaaaax5hdic7ya6r5rxsgpifff4l6xdxzltnrncdzp3m75ubbvzqqzn3q
-
-  Endorse any-user to read data-science-models in tenancy datascience where ALL {target.compartment.name='service-managed-models'}
-
-  Endorse any-user to inspect data-science-models in tenancy datascience where ALL {target.compartment.name='service-managed-models'}
-
-  Endorse any-user to read object in tenancy datascience where ALL {target.compartment.name='service-managed-models', target.bucket.name='service-managed-models'}
 
   Allow dynamic-group aqua-dynamic-group to manage data-science-model-deployments in compartment <your-compartment-name>
 
