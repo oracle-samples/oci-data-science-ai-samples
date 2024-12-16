@@ -1,5 +1,6 @@
 ## Introduction to Model Deployment Private Endpoints
 OCI Data Science Model Deployment service now supports a way for customers to access their Model Deployments via a private network.Enterprise customers, in some use cases, require that their Model Deployment traffic does not traverse the public internet. With model deployment private endpoint support, these private endpoints ensure that the inference traffic remains within the customer's private network and all other traffic is rejected, enhancing security and compliance.
+Please refer to [OCI DataScience Private Endpoints](https://docs.oracle.com/en-us/iaas/data-science/using/pe-network.htm) document for more details.
 
 ## PREREQUISITE
 
