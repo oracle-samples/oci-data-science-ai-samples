@@ -5,6 +5,10 @@ This Readme walks through how to use NIM - [ Meta-Llama-3-8B-Instruct](https://h
 * [llama3](https://github.com/meta-llama/llama3) from Meta.
 * [NIM](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct) by Nvidia
 
+We describe two approaches to create this Model Deployment on OCI:
+* Download Model using API-KEY from NGC Nvidia (described below)
+* Utilising Object storage to store the model and creating a model catalog pointing to Object storage bucket [Refer](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/model-deployment/containers/nim/README-MODEL-CATALOG.md)
+
 ## Prerequisites
 * Access the corresponding NIM container for the model. For example for llama3, fetch the latest available image from [NGC catalog](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). If you are a first time user,  you need to sign up a developer account and wait for access to be granted to required container image.
 Click Get Container Button and click Request Access for NIM. At the time of writing this blog, you need a business email address to get access to NIM.
@@ -36,6 +40,8 @@ When experimenting with new frameworks and models, it is highly advisable to att
   docker build -f Dockerfile -t odsc-nim-llama3 .
   ```
 
+##### To directly get image from Nvidia NIM catalogue and upload to OCIR check: ```./README-SOURCE-NIM-TO-OCIR.MD```
+
 ## OCI Container Registry
 
 * You need to `docker login` to the Oracle Cloud Container Registry (OCIR) first, if you haven't done so before been able to push the image. To login, you have to use your [API Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) that can be created under your `Oracle Cloud Account->Auth Token`. You need to login only once.
@@ -51,13 +57,16 @@ When experimenting with new frameworks and models, it is highly advisable to att
     ```bash
     docker push `odsc-nim-llama3:latest`
     ```
+  
+
+##### To directly get image from Nvidia NIM catalogue and upload to OCIR check: ```./README-SOURCE-NIM-TO-OCIR.MD```
 
 ## Deploy on OCI Data Science Model Deployment
 
-Once you built and pushed the NIM container, you can now use the `Bring Your Own Container` Deployment in OCI Data Science to deploy the Llama3 model.
+Once you built and pushed the NIM container, you can now use the `Bring Your Own Container` Deployment in OCI Data Science to deploy the Llama3 model
 
 ### Creating Model catalog
-NIM container will download the model directly using publicly exposed NGC catalog APIs. To provide authorization token to download, we will save API key in a file and creaate a zip out of it. This zip file will then be used to create a model catalog resource.
+NIM container will download the model directly using publicly exposed NGC catalog APIs. To provide authorization token to download, we will save API key in a file and create a zip out of it. This zip file will then be used to create a model catalog resource.
 Sample file content named `token`:
 ```bash
 nvapi-..........
@@ -66,8 +75,8 @@ This file will be available to container on location `/opt/ds/model/deployed_mod
 
 ### Create Model deploy
 
-* To deploy the model now in the console, go back to your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
-  * Select the project you created earlier and then select `Model Deployment`
+* To deploy the model now in the console, navigate to your [OCI Data Science Project](https://cloud.oracle.com/data-science/project)
+  * Select the project created earlier and then select `Model Deployment`
   * Click on `Create model deployment`
   * Under `Default configuration` set following custom environment variables
       * Key: `MODEL_DEPLOY_PREDICT_ENDPOINT`, Value: `/v1/completions`

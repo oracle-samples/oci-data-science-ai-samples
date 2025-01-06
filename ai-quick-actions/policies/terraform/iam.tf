@@ -26,13 +26,6 @@ locals {
   is_compartment_tenancy = length(regexall(".*tenancy.*", var.compartment_ocid)) > 0
   compartment_policy_string = local.is_compartment_tenancy ? "tenancy" :  "compartment id ${var.compartment_ocid}"
   policy_tenancy = local.is_resource_policy_only? var.compartment_ocid : var.tenancy_ocid
-  // Contains only necessary admin policies. These policies will be created in the tenancy. When the user selects "Only admin policies" these policies will be created.
-  aqua_admin_only_policies = local.is_admin_policies_only?[
-    "Define tenancy datascience as ocid1.tenancy.oc1..aaaaaaaax5hdic7ya6r5rxsgpifff4l6xdxzltnrncdzp3m75ubbvzqqzn3q",
-    "Endorse any-user to read data-science-models in tenancy datascience where ALL {target.compartment.name='service-managed-models'}",
-    "Endorse any-user to inspect data-science-models in tenancy datascience where ALL {target.compartment.name='service-managed-models'}",
-    "Endorse any-user to read object in tenancy datascience where ALL {target.compartment.name='service-managed-models', target.bucket.name='service-managed-models'}",
-  ]:[]
 
   tenancy_map = ({
     oc1: "ocid1.tenancy.oc1..aaaaaaaax5hdic7ya6r5rxsgpifff4l6xdxzltnrncdzp3m75ubbvzqqzn3q"
@@ -43,10 +36,6 @@ locals {
 
   // These are encompassing policies that will be created in the tenancy. When the user selects "All policies" these policies will be created.
   aqua_all_policies = local.is_all_policies? [
-    "Define tenancy datascience as ${local.service_tenancy_ocid}",
-    "Endorse any-user to read data-science-models in tenancy datascience where ALL {target.compartment.name='service-managed-models'}",
-    "Endorse any-user to inspect data-science-models in tenancy datascience where ALL {target.compartment.name='service-managed-models'}",
-    "Endorse any-user to read object in tenancy datascience where ALL {target.compartment.name='service-managed-models', target.bucket.name='service-managed-models'}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to manage data-science-model-deployments in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to manage data-science-models in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to use logging-family in ${local.compartment_policy_string}",
@@ -60,7 +49,8 @@ locals {
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read buckets in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read objectstorage-namespaces in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to inspect compartments in tenancy"
-    ]:[]
+    "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read repos in ${local.compartment_policy_string} where any {request.operation='ReadDockerRepositoryMetadata',request.operation='ReadDockerRepositoryManifest',request.operation='PullDockerLayer'}"
+  ]:[]
 
   // Aqua resource only policies. These policies will be created in a specific compartment. When the user selects "Only resource policies" these policies will be created.
   aqua_resource_only_policies = local.is_resource_policy_only? [
@@ -77,9 +67,10 @@ locals {
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read buckets in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read objectstorage-namespaces in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to inspect compartments in ${local.compartment_policy_string}"
+    "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read repos in ${local.compartment_policy_string} where any {request.operation='ReadDockerRepositoryMetadata',request.operation='ReadDockerRepositoryManifest',request.operation='PullDockerLayer'}"
   ]:[]
 
-  policies_to_use = local.is_admin_policies_only ? local.aqua_admin_only_policies : local.is_resource_policy_only ? local.aqua_resource_only_policies : local.aqua_all_policies
+  policies_to_use = local.is_admin_policies_only ? [] : local.is_resource_policy_only ? local.aqua_resource_only_policies : local.aqua_all_policies
 
   all_buckets = concat(var.user_model_buckets, var.user_data_buckets)
   bucket_names = join(", ", formatlist("target.bucket.name='%s'", local.all_buckets))

@@ -1,0 +1,39 @@
+create table DOCUMENTS
+("ID" NUMBER NOT NULL,
+"NAME" VARCHAR2(100) NOT NULL,
+PRIMARY KEY ("ID")
+);
+
+create table CHUNKS
+(ID VARCHAR2(64) NOT NULL,
+CHUNK CLOB,
+PAGE_NUM VARCHAR2(10),
+DOCUMENTS_ID NUMBER,
+PRIMARY KEY ("ID"),
+CONSTRAINT fk_book
+        FOREIGN KEY (DOCUMENTS_ID)
+        REFERENCES DOCUMENTS (ID)
+);
+
+create table VECTORS
+("ID" VARCHAR2(64) NOT NULL,
+"VEC" VECTOR(768, FLOAT64),
+PRIMARY KEY ("ID")
+);
+
+create table Partner(ID NUMBER NOT NULL,
+NAME VARCHAR2(100) NOT NULL,
+Region VARCHAR2(100) NOT NULL,
+Category VARCHAR2(100) NOT NULL,
+Partner_since DATE NOT NULL,
+Last_renewal DATE NOT NULL,
+Licensed  DATE NOT NULL,
+Oracle_Products VARCHAR2(100) NOT NULL,
+Nominated VARCHAR2(100) NOT NULL,
+Nomination_date DATE,
+Past_Awards_years_comma_seperated_list VARCHAR2(100),
+Customer_satisfaction_rating NUMBER NOT NULL,
+Number_of_customers NUMBER NOT NULL,
+Oracle_contact_email VARCHAR2(100) NOT NULL,
+PRIMARY KEY (ID)
+);

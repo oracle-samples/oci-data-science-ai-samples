@@ -17,6 +17,7 @@ You'll need the latest version of ADS to run these, installation instructions ar
 - [Models](#models)
   - [List Models](#list-models)
   - [Get Model Details](#get-model-details)
+  - [Register Model](#register-model)
 - [Model Deployment](#model-deployment)
   - [Create Deployment](#create-model-deployment)
   - [List Model Deployments](#list-model-deployments)
@@ -34,7 +35,7 @@ You'll need the latest version of ADS to run these, installation instructions ar
 
 ### Description
 
-Lists all Aqua models within a specified compartment and/or project.  If `compartment_id` is not specified, 
+Lists all active Aqua models within a specified compartment and/or project.  If `compartment_id` is not specified, 
 the method defaults to returning the service models within the pre-configured default compartment.
 
 ### Usage
@@ -52,6 +53,12 @@ The ID of the compartment in which the aqua models are available. If not provide
 `--project_id [str]`
 
 The ID of the project in which the aqua models are available. If not provided, then it defaults to the user's project.
+
+`--model_type [str]`
+
+The type of model in the user compartment, which can be either FT or BASE. FT represents the Fine-Tuned models created by the user in the user's compartment. BASE models are those which are created by
+the user by explicitly registering the model when model artifacts are either imported from object storage or by importing from the HuggingFace Hub.  By default, FT is selected if this value is not set. 
+This filtering is only applied when `compartment_id` is also set as input.
 
 `**kwargs`
 
@@ -87,7 +94,21 @@ ads aqua model list --compartment_id ocid1.compartment.oc1..<ocid>
         "https://cloud.oracle.com/data-science/models/ocid1.datasciencemodel.oc1.iad.<ocid>?region=us-ashburn-1"
     ],
     "search_text": "llama2,code_synthesis,,Meta",
-    "ready_to_deploy": true
+    "ready_to_deploy": true,
+    "ready_to_finetune": true,
+    "ready_to_import": false,
+    "nvidia_gpu_supported": true,
+    "arm_cpu_supported": false,
+    "model_file": "",
+    "model_formats": [
+        "SAFETENSORS"
+    ],
+    "model_card": "<model-card-readme-string>",
+    "inference_container": "odsc-vllm-serving",
+    "inference_container_uri": null,
+    "finetuning_container": "odsc-llm-fine-tuning",
+    "evaluation_container": "odsc-llm-evaluate",
+    "artifact_location": "service_models/MCodeLlama-34b-Instruct-hf/123456/artifact"
 }
 ```
 
@@ -140,7 +161,144 @@ ads aqua model get --model_id ocid1.datasciencemodel.oc1.iad.<ocid>
   ],
   "search_text": "The Mistral-7B-Instruct-v0.1 Large Language Model (LLM) is a instruct fine-tuned version of the Mistral-7B-v0.1 generative text model using a variety of publicly available conversation datasets. Apache 2.0,text_generation,,Mistral AI",
   "ready_to_deploy": true,
-  "model_card": "---\nlicense: apache-2.0\npipeline_tag: text-generation\ntags:\n- finetuned\ninference:\n  parameters:\n    temperature: 0.7\n---\n\n# Model Card for Mistral-7B-Instruct-v0.1\n\nThe Mistral-7B-Instruct-v0.1 Large Language Model (LLM) is a instruct fine-tuned version of the [Mistral-7B-v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) generative text model using a variety of publicly available conversation datasets.\n\nFor full details of this model please read our [release blog post](https://mistral.ai/news/announcing-mistral-7b/)\n\n## Instruction format\n\nIn order to leverage instruction fine-tuning, your prompt should be surrounded by `[INST]` and `[\\INST]` tokens. The very first instruction should begin with a begin of sentence id. The next instructions should not. The assistant generation will be ended by the end-of-sentence token id.\n\nE.g.\n```\ntext = \"<s>[INST] What is your favourite condiment? [/INST]\"\n\"Well, I'm quite partial to a good squeeze of fresh lemon juice. It adds just the right amount of zesty flavour to whatever I'm cooking up in the kitchen!</s> \"\n\"[INST] Do you have mayonnaise recipes? [/INST]\"\n```\n\nThis format is available as a [chat template](https://huggingface.co/docs/transformers/main/chat_templating) via the `apply_chat_template()` method:\n\n```python\nfrom transformers import AutoModelForCausalLM, AutoTokenizer\n\ndevice = \"cuda\" # the device to load the model onto\n\nmodel = AutoModelForCausalLM.from_pretrained(\"mistralai/Mistral-7B-Instruct-v0.1\")\ntokenizer = AutoTokenizer.from_pretrained(\"mistralai/Mistral-7B-Instruct-v0.1\")\n\nmessages = [\n    {\"role\": \"user\", \"content\": \"What is your favourite condiment?\"},\n    {\"role\": \"assistant\", \"content\": \"Well, I'm quite partial to a good squeeze of fresh lemon juice. It adds just the right amount of zesty flavour to whatever I'm cooking up in the kitchen!\"},\n    {\"role\": \"user\", \"content\": \"Do you have mayonnaise recipes?\"}\n]\n\nencodeds = tokenizer.apply_chat_template(messages, return_tensors=\"pt\")\n\nmodel_inputs = encodeds.to(device)\nmodel.to(device)\n\ngenerated_ids = model.generate(model_inputs, max_new_tokens=1000, do_sample=True)\ndecoded = tokenizer.batch_decode(generated_ids)\nprint(decoded[0])\n```\n\n## Model Architecture\nThis instruction model is based on Mistral-7B-v0.1, a transformer model with the following architecture choices:\n- Grouped-Query Attention\n- Sliding-Window Attention\n- Byte-fallback BPE tokenizer\n\n## Troubleshooting\n- If you see the following error:\n```\nTraceback (most recent call last):\nFile \"\", line 1, in\nFile \"/transformers/models/auto/auto_factory.py\", line 482, in from_pretrained\nconfig, kwargs = AutoConfig.from_pretrained(\nFile \"/transformers/models/auto/configuration_auto.py\", line 1022, in from_pretrained\nconfig_class = CONFIG_MAPPING[config_dict[\"model_type\"]]\nFile \"/transformers/models/auto/configuration_auto.py\", line 723, in getitem\nraise KeyError(key)\nKeyError: 'mistral'\n```\n\nInstalling transformers from source should solve the issue\npip install git+https://github.com/huggingface/transformers\n\nThis should not be required after transformers-v4.33.4.\n\n## Limitations\n\nThe Mistral 7B Instruct model is a quick demonstration that the base model can be easily fine-tuned to achieve compelling performance. \nIt does not have any moderation mechanisms. We're looking forward to engaging with the community on ways to\nmake the model finely respect guardrails, allowing for deployment in environments requiring moderated outputs.\n\n## The Mistral AI Team\n\nAlbert Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra Singh Chaplot, Diego de las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lélio Renard Lavaud, Lucile Saulnier, Marie-Anne Lachaux, Pierre Stock, Teven Le Scao, Thibaut Lavril, Thomas Wang, Timothée Lacroix, William El Sayed."
+  "ready_to_finetune": true,
+  "ready_to_import": false,
+  "nvidia_gpu_supported": true,
+  "arm_cpu_supported": false,
+  "model_file": "",
+  "model_formats": [
+      "SAFETENSORS"
+  ],
+  "model_card": "<model-card-readme-string>",
+  "inference_container": "odsc-vllm-serving",
+  "inference_container_uri": null,
+  "finetuning_container": "odsc-llm-fine-tuning",
+  "evaluation_container": "odsc-llm-evaluate",
+  "artifact_location": "service_models/Mistral-7B-Instruct-v0.1/123456/artifact"
+}
+```
+
+## Register Model
+
+### Description
+
+Import the model from object storage or HuggingFace Hub and registers as Model in Data Science Model catalog as an Aqua Model.
+These models do not have artifacts, and the user is expected to download the artifact from HuggingFace Hub or have the model
+artifacts available in an object storage location.
+
+### Usage
+
+```bash
+ads aqua model register [OPTIONS]
+```
+
+### Required Parameters
+
+`--model [str]`
+
+The OCID of the Aqua model that is marked as `Ready to Register`. These models are tested and certified to be working on Aqua components, and comes with the requisite defaults for
+deployment and fine-tuning. 
+The `model` parameter also accepts model name as it appears on HuggingFace Hub. In this case, the artifacts will be
+downloaded from the Hub and will be associated with the model. <br>
+Example: `--model ocid1.datasciencemodel.oc1.<region>.<ocid>` or `--model intfloat/e5-mistral-7b-instruct`
+
+
+`--os_path [str]`
+
+The dataset path where the artifacts will be downloaded or are already present. Must be an object storage path. <br>
+Example: `oci://<bucket>@<namespace>/path/to/the/dataset`
+
+`--inference_container [str]`
+
+Associates the default inference container to the model being registered. The options currently
+supported are one of `{'odsc-vllm-serving', 'odsc-tgi-serving', 'odsc-llama-cpp-serving' and 'odsc-tei-serving}'`. 
+If registering models marked as `Ready to Register`, the default is already set and can be changed later on during model deployment.
+
+
+### Optional Parameters
+
+`--download_from_hf [bool]`
+
+If set to `True`, the expectation is that the model artifacts will be downloaded from HuggingFace Hub. If set to `False`, the `os_path` should have
+the model artifacts already downloaded. Default is set to `True`.
+
+`--local_dir [str]`
+
+If specified, makes a copy of the artifacts in local directory.
+
+`--finetuning_container [str]`
+
+Associates the default inference container to the model being registered. Currently, only
+`odsc-llm-fine-tuning` is supported.
+
+`--compartment_id [str]`
+
+The compartment OCID where model is to be created. If not provided, then it defaults to user's compartment.
+
+`--project_id [str]`
+
+The project OCID where model is to be created. If not provided, then it defaults to user's project.
+
+`--model_file [str]`
+
+The model file name for registering GGUF models. If the file is inside a folder within the artifact location, then folder
+prefix should be added as well. This parameter is only required for GGUF models.
+
+Example: `Phi-3-mini-4k-instruct-fp16.gguf` or `gguf/Phi-3-mini-4k-instruct-fp16.gguf`
+
+
+`--inference_container_uri [str]`
+
+The URI of the inference container associated with the model being registered. This is available for 
+models that will be registered and deployed using Bring Your Own Container (BYOC) approach.
+
+Example: `iad.ocir.io/<your_tenancy>/<your_image>:<tag>`
+
+
+### Example
+
+```bash
+ads aqua model register --model mistralai/Mistral-7B-Instruct-v0.1 --os_path oci://<bucket>@<namespace>/<prefix> --download_from_hf True --inference_container odsc-vllm-serving --finetuning_container odsc-llm-fine-tuning
+```
+
+#### CLI Output
+
+```json
+{                                                                                                                                                                                                                 
+    "compartment_id": "ocid1.compartment.oc1..<ocid>",
+    "icon": "",
+    "id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
+    "is_fine_tuned_model": false,
+    "license": "Apache 2.0",
+    "name": "mistralai/Mistral-7B-Instruct-v0.1",
+    "organization": "Mistral AI",
+    "project_id": "ocid1.datascienceproject.oc1.iad.<ocid>",
+    "tags": {
+        "license": "Apache 2.0",
+        "task": "text_generation",
+        "OCI_AQUA": "active",
+        "organization": "Mistral AI",
+        "ready_to_fine_tune": "true"
+    },
+    "task": "text_generation",
+    "time_created": "2024-02-27 14:08:15.564000+00:00",
+    "console_link": "https://cloud.oracle.com/data-science/models/ocid1.datasciencemodel.oc1.iad.<ocid>?region=us-ashburn-1",
+    "search_text": "The Mistral-7B-Instruct-v0.1 Large Language Model (LLM) is a instruct fine-tuned version of the Mistral-7B-v0.1 generative text model using a variety of publicly available conversation datasets. Apache 2.0,text_generation,active,Mistral AI,true",
+    "ready_to_deploy": true,
+    "ready_to_finetune": true,
+    "ready_to_import": false,
+    "nvidia_gpu_supported": true,
+    "arm_cpu_supported": false,
+    "model_file": "",
+    "model_formats": [
+        "SAFETENSORS"
+    ],
+    "model_card": "---\nlicense: apache-2.0\npipeline_tag: text-generation\ntags:\n- finetuned\ninference:\n  parameters:\n    temperature: 0.7\n---\n\n# Model Card for Mistral-7B-Instruct-v0.1\n\nThe Mistral-7B-Instruct-v0.1 Large Language Model (LLM) is a instruct fine-tuned version of the [Mistral-7B-v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) generative text model using a variety of publicly available conversation datasets.",
+    "inference_container": "odsc-vllm-serving",
+    "inference_container_uri": null,
+    "finetuning_container": "odsc-llm-fine-tuning",
+    "evaluation_container": "odsc-llm-evaluate",
+    "artifact_location": "service_models/Mistral-7B-Instruct-v0.1/3dc28cf/artifact"
 }
 ```
 
@@ -220,11 +378,46 @@ The health check port for docker container image. Defaults to 8080.
 
 Environment variable for the model deployment, defaults to None.
 
+`--container_family [str]`
+
+The image family of model deployment container runtime. Currently, one of
+`{'odsc-vllm-serving', 'odsc-tgi-serving', 'odsc-llama-cpp-serving' and 'odsc-tei-serving}'` is supported. The default value
+is already set at the model level, but user can choose to override.
+
+
+`--memory_in_gbs [float]`
+
+The memory in gbs for the shape selected, applicable only for Flex shape supported for deploying GGUF models.
+
+`--ocpus [float]`
+
+The ocpu count for the shape selected, applicable only for Flex shape supported for deploying GGUF models.
+
+
+`--model_file [str]`
+
+The model file name for GGUF models. If the file is inside a folder within the artifact location, then folder
+prefix should be added as well. This parameter is only required for GGUF models. The default value
+is already set at the model level, but user can choose to override.
+
+`--private_endpoint_id [str]`
+
+The private endpoint id of model deployment.
+
+`--container_image_uri [str]`
+
+The URI of the inference container associated with the model being registered. This is available for 
+models that will be registered and deployed using Bring Your Own Container (BYOC) approach.
+
+`--cmd_var [List[str]]`
+
+The cmd of model deployment container runtime. This is available for 
+models that will be registered and deployed using Bring Your Own Container (BYOC) approach.
 
 ### Example
 
 ```bash
-ads aqua deployment create --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --instance_shape "VM.GPU.A10.1" --display_name "falcon7b MD with Aqua CLI"
+ads aqua deployment create --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --instance_shape "VM.GPU.A10.1" --display_name "modelDeployment_Mistral-7B-v0.1 FT"
 ```
 
 #### CLI Output
@@ -232,23 +425,47 @@ ads aqua deployment create --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --
 ```json
 {
     "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "display_name": "falcon7b MD with Aqua CLI",
-    "aqua_service_model": true,
-    "state": "CREATING",
+    "display_name": "modelDeployment_Mistral-7B-v0.1 FT",
+    "aqua_service_model": false,
+    "aqua_model_name": "Mistral-7B-v0.1 FT Model EXT",
+    "state": "ACTIVE",
     "description": null,
-    "created_on": "2024-02-03 21:21:31.952000+00:00",
-    "created_by": "ocid1.user.oc1..<ocid>",
-    "endpoint": "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "created_on": "2024-10-30 04:58:16.931000+00:00",
+    "created_by": "ocid1.datasciencenotebooksession.oc1.iad.<ocid>",
+    "endpoint": "https://modeldeployment.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "private_endpoint_id": "",
     "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>?region=us-ashburn-1",
+    "lifecycle_details": "Model Deployment is Active.",
     "shape_info": {
         "instance_shape": "VM.GPU.A10.1",
         "instance_count": 1,
-        "ocpus": 1.0,
-        "memory_in_gbs": 16.0
+        "ocpus": null,
+        "memory_in_gbs": null
     },
     "tags": {
-        "aqua_service_model": "ocid1.datasciencemodel.oc1.iad.<ocid>#falcon-7b",
-        "OCI_AQUA": ""
+        "aqua_fine_tuned_model": "ocid1.datasciencemodel.oc1.iad.<ocid>#Mistral-7B-v0.1",
+        "OCI_AQUA": "active",
+        "aqua_model_name": "Mistral-7B-v0.1 FT Model EXT"
+    },
+    "environment_variables": {
+        "PARAMS": "--served-model-name odsc-llm --seed 42  --max-model-len 4096",
+        "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions",
+        "BASE_MODEL": "service_models/Mistral-7B-v0.1/78814a9/artifact",
+        "FT_MODEL": "ui-test/ocid1.datasciencejob.oc1.iad.<ocid>",
+        "MODEL_DEPLOY_ENABLE_STREAMING": "true",
+        "PORT": "8080",
+        "HEALTH_CHECK_PORT": "8080"
+    },
+    "cmd": [],
+    "log_group": {
+        "id": "ocid1.loggroup.oc1.iad.<ocid>",
+        "name": "aqua-model-deploy-log-group",
+        "url": "https://cloud.oracle.com/logging/log-groups/ocid1.loggroup.oc1.iad.<ocid>?region=us-ashburn-1"
+    },
+    "log": {
+        "id": "ocid1.log.oc1.iad.<ocid>",
+        "name": "aqua-model-deploy-logs",
+        "url": "https://cloud.oracle.com/logging/search?searchQuery=search \"ocid1.compartment.oc1..<ocid>/ocid1.loggroup.oc1.iad.<ocid>/ocid1.log.oc1.iad.<ocid>\" | source='ocid1.datasciencemodeldeployment.oc1.iad.<ocid>' | sort by datetime desc&regions=us-ashburn-1"
     }
 }
 ```
@@ -286,26 +503,53 @@ ads aqua deployment list
 
 ```json
 {
-    "id": "ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>",
-    "display_name": "Mistral-7B-v0.1 MD",
+    "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "display_name": "modelDeployment_Mistral-7B-v0.1 FT",
     "aqua_service_model": false,
-    "state": "INACTIVE",
+    "aqua_model_name": "Mistral-7B-v0.1 FT Model EXT",
+    "state": "ACTIVE",
     "description": null,
-    "created_on": "2024-03-16 21:57:21.143000+00:00",
-    "created_by": "ocid1.user.oc1..<ocid>",
-    "endpoint": "https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>",
-    "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>?region=us-ashburn-1",
-    "lifecycle_details": "",
+    "created_on": "2024-10-30 04:58:16.931000+00:00",
+    "created_by": "ocid1.datasciencenotebooksession.oc1.iad.<ocid>",
+    "endpoint": "https://modeldeployment.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "private_endpoint_id": "",
+    "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>?region=us-ashburn-1",
+    "lifecycle_details": "Model Deployment is Active.",
     "shape_info": {
-        "instance_shape": "VM.GPU.A10.2",
+        "instance_shape": "VM.GPU.A10.1",
         "instance_count": 1,
         "ocpus": null,
         "memory_in_gbs": null
     },
     "tags": {
-        "OCI_AQUA": ""
+        "aqua_fine_tuned_model": "ocid1.datasciencemodel.oc1.iad.<ocid>#Mistral-7B-v0.1",
+        "OCI_AQUA": "active",
+        "aqua_model_name": "Mistral-7B-v0.1 FT Model EXT"
+    },
+    "environment_variables": {
+        "PARAMS": "--served-model-name odsc-llm --seed 42  --max-model-len 4096",
+        "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions",
+        "BASE_MODEL": "service_models/Mistral-7B-v0.1/78814a9/artifact",
+        "FT_MODEL": "ui-test/ocid1.datasciencejob.oc1.iad.<ocid>",
+        "MODEL_DEPLOY_ENABLE_STREAMING": "true",
+        "PORT": "8080",
+        "HEALTH_CHECK_PORT": "8080"
+    },
+    "cmd": [],
+    "log_group": {
+        "id": "ocid1.loggroup.oc1.iad.<ocid>",
+        "name": "aqua-model-deploy-log-group",
+        "url": "https://cloud.oracle.com/logging/log-groups/ocid1.loggroup.oc1.iad.<ocid>?region=us-ashburn-1"
+    },
+    "log": {
+        "id": "ocid1.log.oc1.iad.<ocid>",
+        "name": "aqua-model-deploy-logs",
+        "url": "https://cloud.oracle.com/logging/search?searchQuery=search \"ocid1.compartment.oc1..<ocid>/ocid1.loggroup.oc1.iad.<ocid>/ocid1.log.oc1.iad.<ocid>\" | source='ocid1.datasciencemodeldeployment.oc1.iad.<ocid>' | sort by datetime desc&regions=us-ashburn-1"
     }
 }
+...
+...
+...
 ```
 
 ## Get Model Deployment Details
@@ -333,23 +577,25 @@ Additional keyword arguments that can be used to filter the results for OCI get_
 ### Example
 
 ```bash
-ads aqua deployment get --model_deployment_id "ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>"
+ads aqua deployment get --model_deployment_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>"
 ```
 
 #### CLI Output
 
 ```json
 {
-    "id": "ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>",
-    "display_name": "MD for falcon7b Model",
+    "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "display_name": "modelDeployment_Mistral-7B-v0.1 FT",
     "aqua_service_model": false,
-    "state": "DELETED",
+    "aqua_model_name": "Mistral-7B-v0.1 FT Model EXT",
+    "state": "ACTIVE",
     "description": null,
-    "created_on": "2024-02-22 05:00:29.520000+00:00",
-    "created_by": "ocid1.user.oc1..<ocid>",
-    "endpoint": "https://modeldeployment-int.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>",
-    "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>?region=us-ashburn-1",
-    "lifecycle_details": "Model Deployment with all associated resources has been deleted",
+    "created_on": "2024-10-30 04:58:16.931000+00:00",
+    "created_by": "ocid1.datasciencenotebooksession.oc1.iad.<ocid>",
+    "endpoint": "https://modeldeployment.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "private_endpoint_id": "",
+    "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>?region=us-ashburn-1",
+    "lifecycle_details": "Model Deployment is Active.",
     "shape_info": {
         "instance_shape": "VM.GPU.A10.1",
         "instance_count": 1,
@@ -357,17 +603,29 @@ ads aqua deployment get --model_deployment_id "ocid1.datasciencemodeldeploymenti
         "memory_in_gbs": null
     },
     "tags": {
-        "OCI_AQUA": ""
+        "aqua_fine_tuned_model": "ocid1.datasciencemodel.oc1.iad.<ocid>#Mistral-7B-v0.1",
+        "OCI_AQUA": "active",
+        "aqua_model_name": "Mistral-7B-v0.1 FT Model EXT"
     },
+    "environment_variables": {
+        "PARAMS": "--served-model-name odsc-llm --seed 42  --max-model-len 4096",
+        "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions",
+        "BASE_MODEL": "service_models/Mistral-7B-v0.1/78814a9/artifact",
+        "FT_MODEL": "ui-test/ocid1.datasciencejob.oc1.iad.<ocid>",
+        "MODEL_DEPLOY_ENABLE_STREAMING": "true",
+        "PORT": "8080",
+        "HEALTH_CHECK_PORT": "8080"
+    },
+    "cmd": [],
     "log_group": {
         "id": "ocid1.loggroup.oc1.iad.<ocid>",
-        "name": "log_name",
+        "name": "aqua-model-deploy-log-group",
         "url": "https://cloud.oracle.com/logging/log-groups/ocid1.loggroup.oc1.iad.<ocid>?region=us-ashburn-1"
     },
     "log": {
         "id": "ocid1.log.oc1.iad.<ocid>",
-        "name": "llm-deployments",
-        "url": "https://cloud.oracle.com/logging/search?searchQuery=search \"ocid1.compartment.oc1..<ocid>/ocid1.loggroup.oc1.iad.<ocid>/ocid1.log.oc1.iad.<ocid>\" | source='ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>' | sort by datetime desc®ions=us-ashburn-1"
+        "name": "aqua-model-deploy-logs",
+        "url": "https://cloud.oracle.com/logging/search?searchQuery=search \"ocid1.compartment.oc1..<ocid>/ocid1.loggroup.oc1.iad.<ocid>/ocid1.log.oc1.iad.<ocid>\" | source='ocid1.datasciencemodeldeployment.oc1.iad.<ocid>' | sort by datetime desc&regions=us-ashburn-1"
     }
 }  
 ```
@@ -421,12 +679,6 @@ Example: `VM.Standard.E3.Flex, VM.Standard.E4.Flex, VM.Standard3.Flex, VM.Optimi
 
 The storage for the evaluation job infrastructure.
 
-`--metrics [list]`
-
-The metrics for the evaluation, currently BERTScore and ROGUE are supported. <br>
-Example: `'[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]`
-
-
 ### Optional Parameters
 
 `--compartment_id [str]`
@@ -469,6 +721,14 @@ The log group id for the evaluation job infrastructure. Defaults to None.
 
 The log id for the evaluation job infrastructure. Defaults to None.
 
+`--metrics [list]`
+
+The metrics for the evaluation, currently BERTScore and ROGUE are supported. <br>
+Example: `'[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]`
+
+`--force_overwrite [bool]`
+
+A flag to indicate whether to force overwrite the existing evaluation file in object storage if already present. Defaults to `False`.
 
 ### Example
 
@@ -481,7 +741,7 @@ ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeploy
 ```json
 {
     "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "display_name": "test_evaluation",
+    "name": "test_evaluation",
     "aqua_service_model": true,
     "state": "CREATING",
     "description": null,
@@ -499,7 +759,7 @@ ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeploy
         "aqua_service_model": "ocid1.datasciencemodel.oc1.iad.<ocid>#Llama-2-13b",
         "OCI_AQUA": ""
     }
-}  
+}
 ```
 
 ## List Model Evaluations
@@ -754,6 +1014,9 @@ The log group id for the evaluation job infrastructure. Defaults to None.
 
 The log id for the evaluation job infrastructure. Defaults to None.
 
+`--force_overwrite [bool]`
+
+A flag to indicate whether to force overwrite the existing evaluation file in object storage if already present. Defaults to `False`.
 
 ### Example
 

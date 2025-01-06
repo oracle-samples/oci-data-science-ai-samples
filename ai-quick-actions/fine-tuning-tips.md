@@ -47,19 +47,42 @@ All linear modules in the model are used as the `target_modules` for LoRA fine-t
 
 The success of fine-tuning LLMs heavily relies on the quality and diversity of the training dataset. Preparing a dataset for fine-tuning involves several critical steps to ensure the model can effectively learn and adapt to the specific domain or task at hand. The process begins with collecting or creating a dataset that is representative of the domain or task, ensuring it covers the necessary variations and nuances. Once the dataset is assembled, it must be preprocessed, which includes cleaning the data by removing irrelevant information, normalizing text, and possibly anonymizing sensitive information to adhere to privacy standards.
 
-For fine-tuning in AI Quick Actions, the dataset
+Fine-tuning with AI Quick Actions requires dataset in JSONL format. Each row in the JSONL file must be a valid JSON, and all rows in the file must have the same JSON format.
 
-- Must be in [jsonl](https://jsonlines.org/) format
-- Should contain keys: `prompt` and `completion` for each row
+The following JSON formats are supported:
 
-The `prompt` is the input to the LLM and the `completion` is the expected output from the LLM. You may want to format the `prompt` with a specific template depending on your task.
+**Instruction format**:
 
-Here are a couple of examples in the dataset prepared for the task of summarizing conversations. The raw data is taken from the [samsum dataset](https://huggingface.co/datasets/samsum) and formatted to be used by fine-tuning in AI Quick Actions:
-
-```json
-{"prompt": "Summarize this dialog:\nAmanda: I baked  cookies. Do you want some?\r\nJerry: Sure!\r\nAmanda: I'll bring you some tomorrow :-)\n---\nSummary:\n", "completion": "Amanda baked cookies and will bring some for Jerry tomorrow."}
-{"prompt": "Summarize this dialog:\nOlivia: Who are you voting for in this election? \r\nOliver: Liberals as always.\r\nOlivia: Me too!!\r\nOliver: Great\n---\nSummary:\n", "completion": "Olivia and Olivier are voting for liberals in this election. "}
+Instruction format is mainly for fine-tuning completion model. Each JSON should contain a `prompt` and a `completion`:
 ```
+{"prompt": "Where's the headquarter of Oracle?", "completion": "Austin, TX"}
+{"prompt": "Who's Shakespeare?", "completion": "William Shakespeare was ..."}
+{"prompt": "How far is New York from Boston?", "completion": "215 miles via I-95N"}
+```
+
+The `prompt` is the input to the LLM and the `completion` is the expected output from the LLM. You may want to format the `prompt` with a specific template depending on your task. For chat model, training data in instruction format will be converted to conversational format automatically, if the `chat_template` is available from the tokenizer.
+
+**Conversational format**:
+
+Conversational format is mainly for fine-tuning chat model. Each JSON should contain a list of `messages`, each `message` may have different `role` and `content`.
+```
+{"messages": [{"role": "system", "content": "You are helpful assistant."}, {"role": "user", "content": "Where's the headquarter of Oracle?"}, {"role": "assistant", "content": "Austin, TX"}]}
+{"messages": [{"role": "system", "content": "You are helpful assistant."}, {"role": "user", "content": "Who's Shakespeare?"}, {"role": "assistant", "content": "William Shakespeare was ..."}]}
+{"messages": [{"role": "system", "content": "You are helpful assistant."}, {"role": "user", "content": "How far is New York from Boston?"}, {"role": "assistant", "content": "215 miles via I-95N"}]}
+```
+
+Note that conversational format cannot be used for fine-tuning completion model (while `chat_template` is not available from the tokenizer).
+
+**Tokenized Data**
+
+Alternatively, you can also use tokenized data for fine-tuning your model. For example:
+```
+{"input_ids":[1,733,16289,28793,995,622,347,2078,264,7526,302,...]}
+{"input_ids":[1,733,16289,28793,995,460,396,16107,13892,28723,...]}
+```
+
+During fine-tuning, no formatting or tokenization will be done on tokenized data.
+
 
 ### Fine-Tune a Model
 
@@ -70,7 +93,7 @@ By clicking on one of the "Ready to Fine Tune" models, you will see more details
 There are a few configurations for fine-tuning the model:
 
 - **Model Information** Here you may customize the name and description of the model.
-- *Dataset** You may choose a dataset file from object storage location or select a new dataset from your notebook session. Here you will also specify the percentage of the dataset you would like to split for training/validation (evaluation).
+- **Dataset** You may choose a dataset file from object storage location or select a new dataset from your notebook session. Here you will also specify the percentage of the dataset you would like to split for training/validation (evaluation).
 - **Model Version Set** You may group the fine-tuned models with model version sets.
 - **Results** Here you specify the object storage location for saving the outputs of the fine-tuned model. 
 
@@ -115,6 +138,81 @@ Once the fine-tuning job is successfully submitted, a fine-tuned model will be c
 The accuracy metric reflects the proportion of correct completions made by the model on a given dataset. A higher accuracy indicates that the model is performing well in terms of making correct completions. On the other hand, the loss metric represents the model's error. It quantifies how far the model's completions are from the actual target completions. The goal during training is to minimize this loss function, which typically involves optimizing the model's weights to reduce the error on the training data.
 
 As the training progresses, monitoring both accuracy and loss provides insights into the model's learning dynamics. A decreasing loss alongside increasing accuracy suggests that the model is learning effectively. However, it's important to watch for signs of over-fitting, where the model performs exceptionally well on the training data but fails to generalize to new, unseen data. This can be detected if the validation loss stops decreasing or starts increasing, even as training loss continues to decline.
+
+### Advanced Configuration Update Options
+
+The available shapes for models in AI Quick Actions are pre-configured for fine-tuning for the models available in the Fine-Tuned model tab. 
+However, if you need to add more shapes to the list of 
+available options, you can do so by updating the relevant configuration file. Currently, this 
+update option is only available for models that users can register.
+
+#### For Custom Models:
+To add shapes for custom models, follow these steps:
+
+1. **Register the model**: Ensure the model is registered via AI Quick Actions UI or CLI.
+
+2. **Navigate to the model's artifact directory**: After registration, locate the directory where the model's artifacts are stored in the object storage. 
+
+3. **Create a configuration folder**: Inside the artifact directory, create a new folder named config. For example, if the model path is `oci://<bucket>@namespace/path/to/model/`
+then create a folder `oci://<bucket>@namespace/path/to/model/config`.
+
+4. **Add a fine-tuning configuration file**: Within the config folder, create a file named `ft_config.json` with the following content:
+
+
+```
+{
+    "shape":
+    {
+        "VM.GPU.A10.1":
+        {
+            "batch_size": 1,
+            "replica": "1-10"
+        },
+        "VM.GPU.A10.2":
+        {
+            "batch_size": 1,
+            "replica": "1-10"
+        },
+        "BM.GPU.A10.4":
+        {
+            "batch_size": 1,
+            "replica": 1
+        },
+        "BM.GPU4.8":
+        {
+            "batch_size": 4,
+            "replica": 1
+        },
+        "BM.GPU.L40S-NC.4":
+        {
+            "batch_size": 4,
+            "replica": 1
+        },
+        "BM.GPU.A100-v2.8":
+        {
+            "batch_size": 6,
+            "replica": 1
+        },
+        "BM.GPU.H100.8":
+        {
+            "batch_size": 6,
+            "replica": 1
+        }
+    },
+    "finetuning_params": "--trust_remote_code True"
+}
+```
+This JSON file lists all available shapes that can be used to fine-tune a model via AI Quick Actions. It also has additional
+configuration that can be set via the configuration field.
+
+5. Modify shapes or configuration as needed: If you want to add or remove any 
+[shapes supported](https://docs.oracle.com/en-us/iaas/data-science/using/supported-shapes.htm) by 
+the OCI Data Science platform, you can directly edit this `ft_config.json` file. 
+6. In addition to the shapes list, you can also use other configuration listed in the above json.  Another field called 
+`finetuning_params` is available if you want to explicitly pass additional parameters to the launch of the fine-tuning container. 
+For example, the field `"finetuning_params": "--trust_remote_code True"` might be required if the model
+needs to execute the code that resides on the Hugging Face Hub rather than natively in the Transformers library.  
+
 
 Table of Contents:
 
