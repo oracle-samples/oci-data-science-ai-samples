@@ -26,6 +26,7 @@ How-To Blogs:
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
 - [Model Registration](register-tips.md)
+- [AI Quick Actions Container List](ai-quick-actions-containers.md)
 
 
 ## Use Case Example
