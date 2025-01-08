@@ -87,11 +87,10 @@ This file will be available to container on location `/opt/ds/model/deployed_mod
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.1` instance
     * Under `Networking` choose the `Custom Networking` option and bring the VCN and subnet, which allows Internet access.
     * Under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
-    * Click on `Show advanced options` at the bottom
-    * Select the checkbox `Use a custom container image`
+    * Select the checkbox `Use a Custom Container Image` and click `Select`
     * Select the OCIR repository and image we pushed earlier
-    * Use port 8000.
-    * Leave CMD and Entrypoint blank
+    * Leave the ports as the default port is 8080.
+    * Leave CMD and Entrypoint blank, as we have already configured in Dockerfile
     * Click on `Create` button to create the model deployment
 
 * Once the model is deployed and shown as `Active`, you can execute inference against it.
