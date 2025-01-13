@@ -112,6 +112,47 @@ ads aqua model list --compartment_id ocid1.compartment.oc1..<ocid>
 }
 ```
 
+## Search Model OCID by Name
+
+### Description
+
+Gets the OCID of an Aqua model. This OCID is required for performing an AI Quick Actions operations like
+registering, deploying or fine-tuning a model.
+
+### Usage
+
+```bash
+ADS_AQUA_LOG_LEVEL=ERROR ads aqua model get [OPTIONS]  | jq -r 'select(.name=="<model_name>") | .id'
+```
+The `model_name` value should match the full model name that is available in Aqua console, for example, 
+`Mistral-7B-Instruct-v0.1` or `meta-llama/Llama-3.2-3B-Instruct`. For `[OPTIONS]`, check the Optional Parameters 
+section of the [List Models](#list-models) API. Note that we set the logging level to `ERROR` so that the Aqua logs do not cause issues when `jq` command parses the 
+CLI output. 
+
+### Examples
+#### Get Service Model OCID
+
+These models are ready to deploy directly on the OCI Data Science platform. Some models already include the model artifacts,
+whereas for some models, models need to be registered and the artifacts need to be downloaded by
+the user during the registration process either via Hugging Face or make them available via Object Storage. 
+
+```bash
+ADS_AQUA_LOG_LEVEL=ERROR ads aqua model list | jq -r 'select(.name=="Mistral-7B-Instruct-v0.1") | .id'
+```
+
+#### Get User Registered Model OCID
+These models are successfully registered and now are ready to be deployed or fine-tuned.
+
+```bash
+ADS_AQUA_LOG_LEVEL=ERROR ads aqua model list --compartment_id $PROJECT_COMPARTMENT_OCID --model_type BASE | jq -r 'select(.name=="meta-llama/Meta-Llama-3.1-8B-Instruct") | .id'
+```
+
+#### Get Fine-Tuned Model OCID
+These models are fine-tuned and now are ready to be deployed.
+```bash
+ADS_AQUA_LOG_LEVEL=ERROR ads aqua model list --compartment_id $PROJECT_COMPARTMENT_OCID --model_type FT | jq -r 'select(.name=="tunedModel_google/gemma-2b-it_20241206") | .id'
+```
+
 ## Get Model Details
 
 ### Description
@@ -501,7 +542,7 @@ ads aqua deployment list
 
 #### CLI Output
 
-```json
+```
 {
     "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
     "display_name": "modelDeployment_Mistral-7B-v0.1 FT",
@@ -550,6 +591,38 @@ ads aqua deployment list
 ...
 ...
 ...
+```
+
+## Search Model Deployment OCID by Name
+
+### Description
+
+Gets the OCID of an Aqua model deployment. This OCID is required for performing evaluation of the Aqua model
+or to perform inference.
+
+### Usage
+
+```bash
+ADS_AQUA_LOG_LEVEL=ERROR ads aqua deployment get [OPTIONS]  | jq -r 'select(<field>=="<field_value>") | .id'
+```
+The `field_value` value should match the either full model name or model deployment name. For `[OPTIONS]`, check the Optional Parameters 
+section of the [List Model Deployments](#list-model-deployments) API. Note that we set the logging level to `ERROR` so that the Aqua logs do not cause issues when `jq` command parses the 
+CLI output. 
+
+### Examples
+#### Get Service Model Deployment OCID
+
+These deployments are ready to be evaluated (if active). 
+
+To get the OCID using model deployment name, use:
+
+```bash
+ADS_AQUA_LOG_LEVEL=ERROR ads aqua deployment list | jq -r 'select(.display_name=="gemma-2b-it-md") | .id'
+```
+
+To get the OCID using model name, use:
+```bash
+ADS_AQUA_LOG_LEVEL=ERROR ads aqua deployment list | jq -r 'select(.aqua_model_name=="google/gemma-2b-it") | .id'
 ```
 
 ## Get Model Deployment Details
