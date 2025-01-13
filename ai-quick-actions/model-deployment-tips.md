@@ -357,6 +357,23 @@ oci raw-request --http-method POST --target-uri  <model_deployment_url>/predict 
 
 ```
 
+## Inferencing Embedding model endpoints
+
+Embedding models deployed via AI Quick Actions can be accessed in the similar way as the examples shown above for 
+generative models, however, the input request format is different. For accessing OpenAI compatible 
+`/v1/embedding` endpoint for models deployed on vLLM or TEI container, the request format will be:
+
+```python
+body = {
+    "input": ["What are activation functions?", "What is deep learning?"],
+    "model": "odsc-vllm",
+}
+```
+
+For more parameters, check the documentation for [vLLM](https://platform.openai.com/docs/api-reference/embeddings/create) and 
+[Text Embedding Inference (TEI)](https://huggingface.github.io/text-embeddings-inference/#/Text%20Embeddings%20Inference/openai_embed) 
+inference containers.  
+
 ## Advanced Configuration Update Options
 
 The available shapes for models in AI Quick Actions are pre-configured for both registration and
