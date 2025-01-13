@@ -366,7 +366,7 @@ generative models, however, the input request format is different. For accessing
 ```python
 body = {
     "input": ["What are activation functions?", "What is deep learning?"],
-    "model": "odsc-vllm", # use custom name for TEI
+    "model": "odsc-vllm", # use custom name for BYOC TEI
 }
 ```
 
