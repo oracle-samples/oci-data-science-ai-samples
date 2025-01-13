@@ -366,13 +366,13 @@ generative models, however, the input request format is different. For accessing
 ```python
 body = {
     "input": ["What are activation functions?", "What is deep learning?"],
-    "model": "odsc-vllm",
+    "model": "odsc-vllm", # use custom name for TEI
 }
 ```
 
 For more parameters, check the documentation for [vLLM](https://platform.openai.com/docs/api-reference/embeddings/create) and 
 [Text Embedding Inference (TEI)](https://huggingface.github.io/text-embeddings-inference/#/Text%20Embeddings%20Inference/openai_embed) 
-inference containers.  
+inference containers. 
 
 ## Advanced Configuration Update Options
 
