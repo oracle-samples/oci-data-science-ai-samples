@@ -14,6 +14,9 @@ To enable tool calling within AQUA, you must specify additional parameters **dur
   --tool-call-parser llama3_json
 ```
 
+By default, if `/v1/completions` endpoint is selected in the AQUA console for your model deployment,
+switch to `/v1/chat/completions` endpoint in the Inference Mode under the Advanced options in order to enable tool calling.
+
 Note: Each group of models in VLLM may require a different tool call parser. For the latest list of supported models and parsers, refer to the official VLLM [documentation](https://docs.vllm.ai/en/latest/features/tool_calling.html).
 
 
