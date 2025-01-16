@@ -23,6 +23,12 @@ Note: Each group of models in VLLM may require a different tool call parser. For
 ## Usage
 Below is a Python example demonstrating how to set up and use tool calling with the VLLM container and **LLama-3** model in AQUA. This code snippet uses the `langchain_community.chat_models.ChatOCIModelDeployment` class and a simple tool function to query an external exchange rate API. Alternatively, you can use the `ads.llm.ChatOCIModelDeployment` class, which may include the most recent code updates. For more details visit the ADS official [documentation](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/large_language_model/langchain_models.html#tool-calling)
 
+Note: The `LangChain` integration requires `python>=3.9`, `langchain>=0.3` and `langchain-openai`.
+
+```bash
+pip install oracle-ads[llm] langchain langchain-openai
+```
+
 ```python
 import os
 import requests
