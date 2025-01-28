@@ -48,6 +48,19 @@ Once the upload is complete, provide the object storage location in the Register
 
 After registration, this model will be available in the "My Models" tab in the Model Explorer for further use.
 
+## Filter model artifacts while registering
+
+Some models on Hugging Face Hub may have very large artifacts that are not required for the model you wish to deploy. 
+For example, [meta-llama/Llama-3.3-70B-Instruct](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/tree/main) model
+has an `original` folder that contains the model checkpoints which are not required if deploying this model using a vLLM container.
+Similarly, most GGUF models on Hugging Face Hub like [bartowski/Llama-3.3-70B-Instruct-GGUF](https://huggingface.co/bartowski/Llama-3.3-70B-Instruct-GGUF/tree/main)
+may have different large sized quantized models.
+
+In that case, you may exclude certain folders and files using standard wildcards. In case of `meta-llama/Llama-3.3-70B-Instruct` model,
+if we wish to exclude `original/` folder and `.gitattributes` file, we can simply add the following wildcard in the Exclusion List section in the Register screen, under Advanced Options.
+
+![register-excusion-list](web_assets/register-excusion-list.png)
+
 
 ## Register an Embedding Model
 
