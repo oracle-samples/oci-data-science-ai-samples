@@ -2,8 +2,8 @@
 
 | Server                                                                                                          | Version     |Supported Formats|Supported Shapes| Supported Models/Architectures                                                                                                  |
 |-----------------------------------------------------------------------------------------------------------------|-------------|-----------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
-| [vLLM](https://github.com/vllm-project/vllm/releases/tag/v0.6.4.post1)                                          | 0.6.4.post1 |safe-tensors|A10, A100, H100| [v0.6.4.post1 supported models](https://docs.vllm.ai/en/v0.6.4.post1/models/supported_models.html)                   |
-| [Text Generation Inference (TGI)](https://github.com/huggingface/text-generation-inference/releases/tag/v2.0.1) | 2.0.1.4     |safe-tensors|A10, A100, H100| [v2.0.1 supported models](https://github.com/huggingface/text-generation-inference/blob/v2.0.1/docs/source/supported_models.md) |
+| [vLLM](https://github.com/vllm-project/vllm/releases/tag/v0.6.4.post1)                                          | 0.6.4.post1.1 |safe-tensors|A10, A100, H100| [v0.6.4.post1 supported models](https://docs.vllm.ai/en/v0.6.4.post1/models/supported_models.html)                   |
+| [Text Generation Inference (TGI)](https://github.com/huggingface/text-generation-inference/releases/tag/v3.0.1) | 3.0.1.10     |safe-tensors|A10, A100, H100| [v3.0.1 supported models](https://github.com/huggingface/text-generation-inference/blob/v3.0.1/docs/source/supported_models.md) |
 | [Llama-cpp](https://github.com/abetlen/llama-cpp-python/releases/tag/v0.2.78)                                   | 0.2.78.0    |gguf|Amphere ARM| [llama.cpp@fd5ea0f supported models](https://github.com/ggerganov/llama.cpp/tree/fd5ea0f897ecb3659d6c269ef6f3d833e865ead7)      |
 
 
