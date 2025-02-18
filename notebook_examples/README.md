@@ -851,3 +851,20 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
 <sub>Universal Permissive License v 1.0</sup>
 
 ---
+### <a name="train-mysql-heatwave-deploy-xgboost.ipynb"></a> - Train and Deploy an XGBoost Model for OCI MySQL Heatwave
+
+
+<sub>Updated: 02/19/2025</sub>
+#### [`train-mysql-heatwave-deploy-xgboost.ipynb`](train-mysql-heatwave-deploy-xgboost.ipynb)
+
+ 
+Train and Deploy an XGBoost Model for OCI MySQL Heatwave
+
+This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+
+ 
+`xgboost`  `deploy model`  `heatwave`  `train model` `mysql`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
