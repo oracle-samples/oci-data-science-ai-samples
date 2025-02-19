@@ -64,7 +64,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Using feature store for synthetic data generation using openai](#feature_store_medical_synthetic_data_openai.ipynb)
  - [Working with Pipelines](#pipelines-ml_lifecycle.ipynb)
  - [XGBoost with RAPIDS](#xgboost-with-rapids.ipynb)
-
+ - [XGBoost for MySQL Heatwave](#train-mysql-heatwave-deploy-xgboost.ipynb)
 
 ## Notebooks
 ### <a name="automlx-anomaly_detection.ipynb"></a> - Building and Explaining an Anomaly Detector using AutoMLx - Experimental
