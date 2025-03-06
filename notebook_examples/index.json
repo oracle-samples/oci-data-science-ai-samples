@@ -705,5 +705,22 @@
     "summary": "Train, register, and deploy an XGBoost model.",
     "time_created": "2023-03-26T22:51:01",
     "title": "Train, Register, and Deploy an XGBoost Model"
+  },
+    {
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "filename": "train-mysql-heatwave-deploy-xgboost.ipynb",
+    "keywords": [
+      "xgboost",
+      "deploy model",
+      "mysql heatwave",
+      "linear regression",
+      "random forest",
+      "train model"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 12075,
+    "summary": "Train and Deploy an XGBoost Model for OCI MySQL Heatwave.",
+    "time_created": "2025-02-19T22:51:01",
+    "title": "Train and Deploy an XGBoost Model for OCI MySQL Heatwave."
   }
 ]

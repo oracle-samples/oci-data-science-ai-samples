@@ -49,7 +49,8 @@ locals {
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read buckets in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read objectstorage-namespaces in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to inspect compartments in tenancy"
-    ]:[]
+    "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read repos in ${local.compartment_policy_string} where any {request.operation='ReadDockerRepositoryMetadata',request.operation='ReadDockerRepositoryManifest',request.operation='PullDockerLayer'}"
+  ]:[]
 
   // Aqua resource only policies. These policies will be created in a specific compartment. When the user selects "Only resource policies" these policies will be created.
   aqua_resource_only_policies = local.is_resource_policy_only? [
@@ -66,6 +67,7 @@ locals {
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read buckets in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read objectstorage-namespaces in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to inspect compartments in ${local.compartment_policy_string}"
+    "Allow dynamic-group id ${oci_identity_dynamic_group.aqua-dynamic-group[0].id} to read repos in ${local.compartment_policy_string} where any {request.operation='ReadDockerRepositoryMetadata',request.operation='ReadDockerRepositoryManifest',request.operation='PullDockerLayer'}"
   ]:[]
 
   policies_to_use = local.is_admin_policies_only ? [] : local.is_resource_policy_only ? local.aqua_resource_only_policies : local.aqua_all_policies
