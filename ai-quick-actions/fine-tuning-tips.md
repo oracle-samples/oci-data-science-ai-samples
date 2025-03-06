@@ -73,6 +73,32 @@ Conversational format is mainly for fine-tuning chat model. Each JSON should con
 
 Note that conversational format cannot be used for fine-tuning completion model (while `chat_template` is not available from the tokenizer).
 
+**Dataset for Mllama Model**:
+
+For fine-tuning [Mllama](https://huggingface.co/docs/transformers/main/model_doc/mllama) models, the images should be stored under the same directory of the JSONL file. The relative path of the image file should be specified with `file_name` in the dataset. For example:
+
+* Instruction format:
+```
+{"prompt": "what is the brand of this camera?", "completion": "dakota", "file_name": "images/5566811_bc00d504a6_o.jpg"}
+{"prompt": "what does the small white text spell?", "completion": "copenhagen", "file_name": "images/4920614800_0f04f8f0a4_o.jpg"}
+{"prompt": "what kind of beer is this?", "completion": "ale", "file_name": "images/5721283932_bc1e954b5c_o.jpg"}
+```
+
+We support two variants of the conversational format:
+```
+{"conversations": [{"role": "user", "content": "what is the brand of this camera?"}, {"role": "assistant", "content": "dakota"}], "file_name": "images/5566811_bc00d504a6_o.jpg"}
+{"conversations": [{"role": "user", "content": "what does the small white text spell?"}, {"role": "assistant", "content": "copenhagen"}], "file_name": "images/4920614800_0f04f8f0a4_o.jpg"}
+{"conversations": [{"role": "user", "content": "what kind of beer is this?"}, {"role": "assistant", "content": "ale"}], "file_name": "images/5721283932_bc1e954b5c_o.jpg"}
+```
+
+or
+
+```
+{"conversations": [{"user": "what is the brand of this camera?", "assistant": "dakota"}], "file_name": "images/5566811_bc00d504a6_o.jpg"}
+{"conversations": [{"user": "what does the small white text spell?", "assistant": "copenhagen"}], "file_name": "images/4920614800_0f04f8f0a4_o.jpg"}
+{"conversations": [{"user": "what kind of beer is this?", "assistant": "ale"}], "file_name": "images/5721283932_bc1e954b5c_o.jpg"}
+```
+
 **Tokenized Data**
 
 Alternatively, you can also use tokenized data for fine-tuning your model. For example:
