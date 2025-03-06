@@ -72,8 +72,34 @@ oci raw-request --http-method POST --target-uri https://modeldeployment.us-ashbu
 
 Note: Currently `oci-cli` does not support streaming response, use Python or Java SDK instead.
 
+#### Request body for /v1/completions VS /v1/chat/completions
+
+For /v1/completion endpoints, use the "prompt" key.
+```
+body = {
+    "model": "odsc-llm", # this is a constant
+    "prompt": "what are activation functions?",
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+}
+```
+
+For v1/chat/completions, use the "messages" key and a list of JSONs.
+```
+body = {
+    "model": "odsc-llm", # this is a constant
+    "messages": [{"content" : "what model are you?", "role":"user"}],
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "stream": True
+}
+```
 
 #### Using Python SDK (without streaming)
+- note that the following request body is for the **/v1/completions** endpoint 
+- See **/v1/chat/completions** request body [here](#request-body-for-/v1/completions-vs-/v1/chat/completions)
 
 ```python
 # The OCI SDK must be installed for this example to function properly.
@@ -117,8 +143,11 @@ print(res)
 
 #### Using Python SDK (with streaming)
 
+
 To consume streaming Server-sent Events (SSE), install [sseclient-py](https://pypi.org/project/sseclient-py/) using `pip install sseclient-py`.
 
+- note that the following request body is for the **/v1/completions** endpoint 
+- See **/v1/chat/completions** request body [here](#request-body-for-/v1/completions-vs-/v1/chat/completions)
 ```python
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
