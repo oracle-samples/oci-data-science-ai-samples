@@ -9,6 +9,16 @@ Table of Contents:
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
 
+
+## Prerequisites
+
+1. Ensure that the necessary [policies](policies/README.md) are enacted.
+2. Create an OCI Object Storage Bucket with Object Versioning.
+
+![Bucket w/ Object Versioning](web_assets/object-versioning.png)
+
+## Upload model artifact to Object Storage
+
 The AI Quick Action model explorer allows you to register a model from Hugging Face or Object Storage with a few clicks.
 
 ![Register new model](web_assets/register-button.png)
