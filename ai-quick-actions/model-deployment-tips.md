@@ -19,6 +19,12 @@ replacement for applications using OpenAI API. Model deployments are a managed r
 the OCI Data Science service. For more details about Model Deployment and managing it through 
 the OCI console please see the [OCI docs](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-about.htm).
 
+### Prerequisites
+1. Ensure that the necessary [policies](policies/README.md) are enacted.
+2. Create an OCI Object Storage Bucket with Object Versioning.
+
+![Bucket w/ Object Versioning](web_assets/object-versioning.png)
+
 ### Deploying an LLM
 
 After picking a model from the model explorer, if the "Deploy Model" is enabled you can use this

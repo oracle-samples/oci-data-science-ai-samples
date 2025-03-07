@@ -9,6 +9,12 @@ Table of Contents:
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
 
+## Prerequisites
+1. Ensure that the necessary [policies](policies/README.md) are enacted.
+2. Create an OCI Object Storage Bucket with Object Versioning.
+
+![Bucket w/ Object Versioning](web_assets/object-versioning.png)
+
 ## Upload model artifact to Object Storage
 
 AI Quick Actions supports user-provided models that can be deployed, fined-tuned and evaluated. You can now upload 
