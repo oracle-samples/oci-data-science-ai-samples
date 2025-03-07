@@ -25,7 +25,7 @@ log_id = "cid1.log.oc1.xxx.xxxxx"
 instance_shape = "VM.GPU.A10.2"
 region = "us-ashburn-1"
 
-container_image = "dsmc://odsc-vllm-serving:0.6.0"
+container_image = "dsmc://odsc-vllm-serving:0.6.2"
 
 bucket = "<bucket_name>"  # this should be a versioned bucket
 namespace = "<bucket_namespace>"
