@@ -1,0 +1,14 @@
+.venv
+**/.venv
+.env
+**/.env
+ml-application/target/**
+.idea/**
+**/.terraform*
+**/.terraform/**
+# infrastructure/environments/dev-test/terraform.tfstate file stored only for internal needs
+**/terraform.tfstate*
+.run/**
+ml-application/default_env
+debugging
+**/lib_version.hash
