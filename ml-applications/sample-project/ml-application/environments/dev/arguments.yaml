@@ -1,0 +1,8 @@
+data_science_log_group_id: "ocid1.loggroup.oc1.phx.amaaaaaay75uckqa6cthxl3ecx6pgfr4vmsziorsinpttcqweiqkyhgrssvq"
+data_science_pipeline_log_id: "ocid1.log.oc1.phx.amaaaaaay75uckqabi7hoje56m447vd2opzawktcp5rgpplmghohmp4zlpsq"
+data_science_project_id: "ocid1.datascienceproject.oc1.phx.amaaaaaay75uckqareay5ju4akgbw65fivutt7p6us2324gfmmjwtaupo2ya"
+mlapps_tag_namespace: "MlApplicationsFetalriskDev"
+model_deployment_access_log_id: "ocid1.log.oc1.phx.amaaaaaay75uckqaxy777xw3az5rj6suen3x4gcoiwjtoux26pd6rdeolpaq"
+model_deployment_predict_log_id: "ocid1.log.oc1.phx.amaaaaaay75uckqasq52r5puqdsjfnndl44no6i466iqxt5fz2vi2drao7ka"
+schedule_log_id: "ocid1.log.oc1.phx.amaaaaaay75uckqapnha3jrcvbacwotgahktcwmlbd37bdgfhplq4yqg52xq"
+subnet_id: "ocid1.subnet.oc1.phx.aaaaaaaa3xnuf4m4va3boa63uinpaq2wlrbtxcbzrwn3bpvh7u7oa5sdfypa"

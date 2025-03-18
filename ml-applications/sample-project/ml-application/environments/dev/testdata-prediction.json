@@ -1,0 +1,4 @@
+{
+	"data": "[{\"abnormal_short_term_variability\":1.053106264,\"accelerations\":-5.1993375826,\"fetal_movement\":-5.1993375826,\"histogram_max\":-2.8778461189,\"histogram_mean\":0.0238390632,\"histogram_min\":-0.7413876038,\"histogram_mode\":-0.9033006223,\"histogram_number_of_zeroes\":-5.1993375826,\"histogram_tendency\":5.1993375827,\"histogram_variance\":1.179401751,\"histogram_width\":0.0301141999,\"light_decelerations\":-5.1993375826,\"mean_value_of_long_term_variability\":-0.8790403848,\"mean_value_of_short_term_variability\":-0.4183712879,\"percentage_of_time_with_abnormal_long_term_variability\":0.8808881196,\"prolongued_decelerations\":-5.1993375826,\"severe_decelerations\":-5.1993375826,\"uterine_contractions\":-5.1993375826}]",
+	"data_type": "pandas.core.frame.DataFrame"
+}

@@ -1,0 +1,18 @@
+#environment_name: dev
+environment_naming_suffix: -dev
+
+# Environment application specific compartment (same value as in _infrastructure/environment/<your-env-dir>/input_variables.tfvars_)
+environment_compartment_id: ocid1.compartment.oc1..aaaaaaaafrobyownitwra7gqjv3hjsnsjraexuv42eujql2fax4hkg3ge7ta
+
+# OCI profile (it must be presented in your oci configuration file)
+# For more information refer to: https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdkconfig.htm
+# (This is not used if you use mlapp CLI with Resource Principal)
+oci_profile: DEFAULT
+
+# OCI Region where all resources should be located (e.g. "us-ashburn-1")
+# For list of regions and their identifiers: https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm
+# Note: specify only for environments with single region (for environments which has multiple regions, region must be provided to script as parameter)
+region: us-phoenix-1
+
+# ML Application integration environment (remove if you use production version of OCI Data Science service)
+#datascience_service_endpoint_url: "https://datascience-int.us-ashburn-1.oci.oc-test.com"

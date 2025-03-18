@@ -42,6 +42,10 @@ Distributed training support with Jobs for machine learning for faster and more 
 
 Pipelines are essential for complex machine learning and data science tasks as they streamline and automate the model building and deployment process, enabling faster and more consistent results. They could be used when there is a need to build, train, and deploy complex models with multiple components and steps, and when there is a need to automate the machine learning process to reduce manual labor and errors. The Oracle Cloud Infrastructure [Data Science Pipelines](https://docs.oracle.com/en-us/iaas/data-science/using/pipelines-about.htm) services helps automates and streamlines the process of building and deploying machine learning pipelines.
 
+### [ML Applications](ml-applications/)
+
+[ML Applications](https://docs.oracle.com/en-us/iaas/data-science/using/ml-apps-about.htm) is a self-contained representation of ML use cases in Data Science. It delivers a robust MLOps platform for AI/ML delivery. It standardizes the packaging and deployment of AI/ML functionality, enabling you to build, deploy, and operate machine learning as a service. With ML Applications, you can leverage Data Science to implement AI/ML use cases and provision them into production for your applications or customers. By shortening the development lifecycle from months to weeks, ML Applications quickens the time to market while reducing operational complexity and total cost of ownership. It provides an end-to-end platform for deploying, validating, and promoting ML solutions through every stage - from development and QA to preproduction and production.
+
 ### [Data Labeling Examples](data_labeling_examples/)
 
 The [data labeling service](https://docs.oracle.com/en-us/iaas/data-labeling/data-labeling/using/home.htm) helps identify properties (labels) of documents, text, and images (records) and annotates (labels) them with those properties. This section contains Python and Java scripts to annotate bulk numbers of records in OCI Data Labeling Service (DLS).

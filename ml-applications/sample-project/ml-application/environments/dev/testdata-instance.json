@@ -1,0 +1,13 @@
+{
+    "displayName": "test-instance",
+    "authConfiguration": {
+        "type": "IAM"
+    },
+    "configuration": [
+        {
+            "key": "external_data_source",
+            "value": "oci://test_data_fetalrisk_dev@idtlxnfdweil/test_data.csv"
+        }
+    ],
+    "isEnabled": true
+}

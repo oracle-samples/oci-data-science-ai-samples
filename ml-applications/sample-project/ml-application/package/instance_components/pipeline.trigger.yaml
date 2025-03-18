@@ -1,0 +1,52 @@
+apiVersion: v1-beta
+kind: ml-application-trigger
+metadata:
+  name: TrainingTrigger
+spec:
+  condition:
+    requests:
+      - source: providerEndpoint
+      - source: consumerEndpoint
+    events:
+      - source: "mlApplicationInstance"
+        type: "onCreate"
+  target:
+    type: DataSciencePipelineRun
+    template: {
+        projectId: "${app_impl.package_arguments.data_science_project_id}",
+        displayName: "training-pipeline-${app_instance.id}",
+        compartmentId: "${app.compartment_id}",
+        pipelineId: "${app_impl.application_components.oci_datascience_pipeline.test_pipeline.id}",
+        stepOverrideDetails: [
+          { stepName: "Ingestion",
+            stepConfigurationDetails: {
+              environmentVariables: {
+                "INSTANCE_BUCKET_NAME": "${app_instance.instance_components.oci_objectstorage_bucket.data_storage_bucket.name}",
+                "EXTERNAL_DATA_SOURCE": "${app_instance.configuration.external_data_source}"
+              },
+              commandLineArguments: "defaultParam",
+              maximumRuntimeInMinutes: "30"
+            }
+          },
+          { stepName: "Transformation",
+            stepConfigurationDetails: {
+              environmentVariables: {
+                "INSTANCE_BUCKET_NAME": "${app_instance.instance_components.oci_objectstorage_bucket.data_storage_bucket.name}"
+              },
+              commandLineArguments: "defaultParam",
+              maximumRuntimeInMinutes: "30"
+            }
+          },
+          { stepName: "Training",
+            stepConfigurationDetails: {
+              environmentVariables: {
+                "INSTANCE_BUCKET_NAME": "${app_instance.instance_components.oci_objectstorage_bucket.data_storage_bucket.name}",
+                "MODEL_DEPLOYMENT_ID": "${app_instance.instance_components.oci_datascience_model_deployment.tf_model_deployment.id}",
+                "INSTANCE_ID": "${app_instance.id}"
+              },
+              commandLineArguments: "defaultParam",
+              maximumRuntimeInMinutes: "30"
+            }
+          }
+        ]
+     }
