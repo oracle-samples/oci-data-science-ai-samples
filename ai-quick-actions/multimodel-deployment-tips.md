@@ -1,209 +1,264 @@
-# **AI Quick Actions MultiModel Deployment using CLI**
+# **AI Quick Actions MultiModel Deployment (Available through CLI only)**
 
 # Table of Contents
 
 - [Models](#models)
-  - [List Models](#list-models)
-  - [Get Model Details](#get-model-details)
 - [MultiModel Deployment](#multimodel-deployment)
+  - [List Available Shapes](#list-available-shapes)
+  - [Get MultiModel Configuration](#get-multimodel-configuration)
   - [Create Deployment](#create-multimodel-deployment)
   - [List Model Deployments](#list-multimodel-deployments)
   - [Get Model Deployment Details](#get-multimodel-deployment-details)
 - [MultiModel Inferencing](#multimodel-inferencing)
 - [MultiModel Evaluation](#multimodel-evaluation)
   - [Create Model Evaluation](#create-model-evaluations)
-  - [List Model Evaluations](#list-model-evaluations)
-  - [Get Model Evaluation Details](#get-model-evaluation-details)
 
 
 # Introduction to MultiModel Deployment and Serving
 
-MultiModel inference and serving refers to efficiently hosting and managing multiple large language models simultaneously to serve inference requests. The Data Science server has prebuilt vLLM service container that make deploying and serving multiple large language model very easy, simplifying the deployment process and reducing operational complexity. This container comes with preinstalled [LiteLLM proxy server](https://docs.litellm.ai/docs/simple_proxy) which routes requests to the appropriate model, ensuring seamless prediction.
+MultiModel inference and serving refers to efficiently hosting and managing multiple large language models simultaneously to serve inference requests using shared resources. The Data Science server has prebuilt **vLLM service container** that make deploying and serving multiple large language model on **single GPU Compute shape** very easy, simplifying the deployment process and reducing operational complexity. This container comes with preinstalled [**LiteLLM proxy server**]https://docs.litellm.ai/docs/simple_proxy) which routes requests to the appropriate model, ensuring seamless prediction.
 
-MultiModel deployment is currently available for service and cached models with GPU shape support. This document provides documentation on how to use ADS CLI to create MultiModel deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models.
-You'll need the latest version of ADS to run these, installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
+**Multi-Model Deployment is currently in beta and is only available through the CLI. At this time, only base service LLM models are supported, and fine-tuned/registered models cannot be deployed.**
+
+This document provides documentation on how to use ADS CLI to create MultiModel deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models. you'll need the latest version of ADS to run these, installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
 
 
 # Models
 
-## List Models
+First step in process is to get the OCIDs of the desired base service LLM AQUA models, which are required to initiate the MultiModel deployment process. Refer to [AQUA CLI tips](cli-tips.md) for detailed instructions on how to obtain the OCIDs of base service LLM AQUA models.
+
+# MultiModel Deployment
+
+
+## List Available Shapes
 
 ### Description
 
-Lists all active Aqua models within a specified compartment and/or project.  If `compartment_id` is not specified,
-the method defaults to returning the service models within the pre-configured default compartment. This is the first step to get the OCIDs of the desired service AQUA models, which are required to initiate the MultiModel deployment process.
+Lists the avilable **Compute Shapes** with basic information .
 
 ### Usage
 
 ```bash
-ads aqua model list [OPTIONS]
+ads aqua deployment list_shapes
 ```
-
-### Optional Parameters
-
-`--compartment_id [str]`
-
-The ID of the compartment in which the aqua models are available. If not provided, then it defaults to the service compartment identified by the environment variable `ODSC_MODEL_COMPARTMENT_OCID`.
-
-`--project_id [str]`
-
-The ID of the project in which the aqua models are available. If not provided, then it defaults to the user's project.
-
-`--model_type [str]`
-
-The type of model in the user compartment, which can be either FT or BASE. FT represents the Fine-Tuned models created by the user in the user's compartment. BASE models are those which are created by
-the user by explicitly registering the model when model artifacts are either imported from object storage or by importing from the HuggingFace Hub.  By default, FT is selected if this value is not set.
-This filtering is only applied when `compartment_id` is also set as input.
-
-`**kwargs`
-
-Additional keyword arguments that can be used to filter the results for OCI list_models API. For more details on acceptable parameters, see [ListModels API](https://docs.oracle.com/iaas/api/#/en/data-science/20190101/ModelSummary/ListModels).
-
 ### Example
-
 ```bash
-ads aqua model list --compartment_id ocid1.compartment.oc1..<ocid>
+ads aqua deployment list_shapes
 ```
-
-#### CLI Output
+##### CLI Output
 
 ```json
-{
-    "compartment_id": "ocid1.compartment.oc1..<ocid>",
-    "icon": "",
-    "id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-    "is_fine_tuned_model": false,
-    "license": "llama2",
-    "name": "CodeLlama-34b-Instruct-hf",
-    "organization": "Meta",
-    "project_id": "",
-    "tags": {
-        "license": "llama2",
-        "task": "code_synthesis",
-        "OCI_AQUA": "",
-        "organization": "Meta"
-    },
-    "task": "code_synthesis",
-    "time_created": "2024-03-13T12:34:16.959000+00:00",
-    "console_link": [
-        "https://cloud.oracle.com/data-science/models/ocid1.datasciencemodel.oc1.iad.<ocid>?region=us-ashburn-1"
-    ],
-    "search_text": "llama2,code_synthesis,,Meta",
-    "ready_to_deploy": true,
-    "ready_to_finetune": true,
-    "ready_to_import": false,
-    "nvidia_gpu_supported": true,
-    "arm_cpu_supported": false,
-    "model_file": "",
-    "model_formats": [
-        "SAFETENSORS"
-    ],
-    "model_card": "<model-card-readme-string>",
-    "inference_container": "odsc-vllm-serving",
-    "inference_container_uri": null,
-    "finetuning_container": "odsc-llm-fine-tuning",
-    "evaluation_container": "odsc-llm-evaluate",
-    "artifact_location": "service_models/MCodeLlama-34b-Instruct-hf/123456/artifact"
-}
+    {
+        "core_count": 64,
+        "memory_in_gbs": 1024,
+        "name": "BM.GPU.A10.4",
+        "shape_series": "NVIDIA_GPU",
+        "gpu_specs": {
+            "gpu_memory_in_gbs": 96,
+            "gpu_count": 4,
+            "gpu_type": "A10"
+        }
+    }
+    {
+        "core_count": 112,
+        "memory_in_gbs": 1024,
+        "name": "BM.GPU.L40S-NC.4",
+        "shape_series": "NVIDIA_GPU",
+        "gpu_specs": {
+            "gpu_memory_in_gbs": 192,
+            "gpu_count": 4,
+            "gpu_type": "L40S"
+        }
+    }
+    {
+        "core_count": 15,
+        "memory_in_gbs": 240,
+        "name": "VM.GPU.A10.1",
+        "shape_series": "NVIDIA_GPU",
+        "gpu_specs": {
+            "gpu_memory_in_gbs": 24,
+            "gpu_count": 1,
+            "gpu_type": "A10"
+        }
+    }
+    {
+        "core_count": 30,
+        "memory_in_gbs": 480,
+        "name": "VM.GPU.A10.2",
+        "shape_series": "NVIDIA_GPU",
+        "gpu_specs": {
+            "gpu_memory_in_gbs": 48,
+            "gpu_count": 2,
+            "gpu_type": "A10"
+        }
+    }
+
 ```
 
-## Search Model OCID by Name
+## Get MultiModel Configuration
 
 ### Description
 
-Gets the OCID of an Aqua model. This OCID is required for performing an AI Quick Actions operations like
-deploying MultiModel.
+Retrieves the deployment configuration for multiple base Aqua service models and calculates the GPU allocations for all compatible shapes.
 
 ### Usage
 
 ```bash
-ADS_AQUA_LOG_LEVEL=ERROR ads aqua model get [OPTIONS]  | jq -r 'select(.name=="<model_name>") | .id'
-```
-The `model_name` value should match the full model name that is available in Aqua console, for example,
-`Mistral-7B-Instruct-v0.1` or `meta-llama/Llama-3.2-3B-Instruct`. For `[OPTIONS]`, check the Optional Parameters
-section of the [List Models](#list-models) API. Note that we set the logging level to `ERROR` so that the Aqua logs do not cause issues when `jq` command parses the
-CLI output.
-
-### Examples
-
-#### Get Service Model OCID
-
-These models are ready to deploy directly on the OCI Data Science platform. Some models already include the model artifacts,
-whereas for some models, models need to be registered and the artifacts need to be downloaded by
-the user during the registration process either via Hugging Face or make them available via Object Storage.
-
-```bash
-ADS_AQUA_LOG_LEVEL=ERROR ads aqua model list | jq -r 'select(.name=="Mistral-7B-Instruct-v0.1") | .id'
-```
-## Get Model Details
-
-### Description
-
-Gets the information of an Aqua model.
-
-### Usage
-
-```bash
-ads aqua model get [OPTIONS]
+ads aqua deployment get_multimodel_deployment_config [OPTIONS]
 ```
 
 ### Required Parameters
 
-`--model_id [str]`
+`--model_ids  [list]`
 
-The OCID of the Aqua model.
+A list of OCIDs for the Aqua models <br>
+Example: `["ocid1.datasciencemodel.oc1.iad...","ocid1.datasciencemodel.oc1.iad...."]`
+
+### Optional Parameters
+
+`--primary_model_id [str]`
+
+The OCID of the primary Aqua model. If provided, GPU allocation will prioritize this model. Otherwise, GPUs will be evenly allocated. <br>
+
+For example, there is one compatible shape "BM.GPU.H100.8" for three models A, B, C, and each model has a gpu count as below:
+
+A - BM.GPU.H100.8 - 1, 2, 4, 8
+B - BM.GPU.H100.8 - 1, 2, 4, 8
+C - BM.GPU.H100.8 - 1, 2, 4, 8
+
+If no primary model is provided, the gpu allocation for A, B, C could be [2, 4, 2], [2, 2, 4] or [4, 2, 2]
+If B is the primary model, the gpu allocation is [2, 4, 2] as B always gets the maximum gpu count.
+
+`**kwargs`
+
+compartment_id: str The compartment OCID to retrieve the model deployment shapes.
 
 ### Example
 
 ```bash
-ads aqua model get --model_id ocid1.datasciencemodel.oc1.iad.<ocid>
+ads aqua deployment get_multimodel_deployment_config --model_ids '["ocid1.datasciencemodel.oc1.iad.<ocid1>","ocid1.datasciencemodel.oc1.iad.<ocid2>"]'
+
 ```
 
-#### CLI Output
+##### CLI Output
 
 ```json
 {
-  "compartment_id": "ocid1.compartment.oc1..<ocid>",
-  "icon": "",
-  "id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-  "is_fine_tuned_model": false,
-  "license": "Apache 2.0",
-  "name": "Mistral-7B-Instruct-v0.1",
-  "organization": "Mistral AI",
-  "project_id": "ocid1.datascienceproject.oc1.iad.<ocid>",
-  "tags": {
-    "license": "Apache 2.0",
-    "task": "text_generation",
-    "OCI_AQUA": "",
-    "organization": "Mistral AI"
-  },
-  "task": "text_generation",
-  "time_created": "2024-02-27T14:08:15.564000+00:00",
-  "console_link": [
-    "https://cloud.oracle.com/data-science/models/ocid1.datasciencemodel.oc1.iad.<ocid>?region=us-ashburn-1"
-  ],
-  "search_text": "The Mistral-7B-Instruct-v0.1 Large Language Model (LLM) is a instruct fine-tuned version of the Mistral-7B-v0.1 generative text model using a variety of publicly available conversation datasets. Apache 2.0,text_generation,,Mistral AI",
-  "ready_to_deploy": true,
-  "ready_to_finetune": true,
-  "ready_to_import": false,
-  "nvidia_gpu_supported": true,
-  "arm_cpu_supported": false,
-  "model_file": "",
-  "model_formats": [
-      "SAFETENSORS"
-  ],
-  "model_card": "<model-card-readme-string>",
-  "inference_container": "odsc-vllm-serving",
-  "inference_container_uri": null,
-  "finetuning_container": "odsc-llm-fine-tuning",
-  "evaluation_container": "odsc-llm-evaluate",
-  "artifact_location": "service_models/Mistral-7B-Instruct-v0.1/123456/artifact"
+    "deployment_config": {
+        "ocid1.datasciencemodel.oc1.iad.<ocid1>": {
+            "shape": [
+                "VM.GPU.A10.1",
+                "VM.GPU.A10.2"
+            ],
+            "configuration": {
+                "VM.GPU.A10.1": {
+                    "parameters": {
+                        "VLLM_PARAMS": "--max-model-len 4096"
+                    },
+                    "multi_model_deployment": [],
+                    "shape_info": {
+                        "configs": [],
+                        "type": ""
+                    }
+                },
+                "VM.GPU.A10.2": {
+                    "parameters": {},
+                    "multi_model_deployment": [
+                        {
+                            "gpu_count": 1,
+                            "parameters": {
+                                "VLLM_PARAMS": "--max-model-len 4096"
+                            }
+                        }
+                    ],
+                    "shape_info": {
+                        "configs": [],
+                        "type": ""
+                    }
+                }
+            }
+        },
+        "ocid1.datasciencemodel.oc1.iad.<ocid2>": {
+            "shape": [
+                "VM.GPU.A10.1",
+                "VM.GPU.A10.2",
+                "BM.GPU.A10.4",
+            ],
+            "configuration": {
+                "VM.GPU.A10.1": {
+                    "parameters": {
+                        "VLLM_PARAMS": "--max-model-len 4096"
+                    },
+                    "multi_model_deployment": [],
+                    "shape_info": {
+                        "configs": [],
+                        "type": ""
+                    }
+                },
+                "VM.GPU.A10.2": {
+                    "parameters": {
+                        "VLLM_PARAMS": "--max-model-len 8192"
+                    },
+                    "multi_model_deployment": [
+                        {
+                            "gpu_count": 1,
+                            "parameters": {
+                                "VLLM_PARAMS": "--max-model-len 4096"
+                            }
+                        }
+                    ],
+                    "shape_info": {
+                        "configs": [],
+                        "type": ""
+                    }
+                },
+                "BM.GPU.A10.4": {
+                    "parameters": {},
+                    "multi_model_deployment": [
+                        {
+                            "gpu_count": 1,
+                            "parameters": {
+                                "VLLM_PARAMS": "--max-model-len 4096"
+                            }
+                        },
+                        {
+                            "gpu_count": 2,
+                            "parameters": {
+                                "VLLM_PARAMS": "--max-model-len 8192"
+                            }
+                        }
+                    ],
+                    "shape_info": {
+                        "configs": [],
+                        "type": ""
+                    }
+                }
+            }
+        }
+    },
+    "gpu_allocation": {
+        "VM.GPU.A10.2": {
+            "models": [
+                {
+                    "ocid": "ocid1.datasciencemodel.oc1.iad.<ocid1>",
+                    "gpu_count": 1
+                },
+                {
+                    "ocid": "ocid1.datasciencemodel.oc1.iad.<ocid2>",
+                    "gpu_count": 1
+                }
+            ],
+            "total_gpus_available": 2
+        }
+    },
+    "error_message": null
 }
 ```
 
-# MultiModel Deployment
-
 ## Create MultiModel Deployment
+
+Only **base service LLM models** are supported for MultiModel Deployment. All selected models will run on the same **GPU shape**, sharing the available compute resources. Make sure to choose a shape that meets the needs of all models in your deployment using [MultiModel Configuration command](#get-multimodel-configuration)
+
 
 ### Description
 
@@ -219,7 +274,7 @@ ads aqua deployment create [OPTIONS]
 
 `--models [str]`
 
-The String representation of a JSON array, where each object defines a model’s OCID and the number of GPUs assigned to it. <br>
+The String representation of a JSON array, where each object defines a model’s OCID and the number of GPUs assigned to it. The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**. <br>
 Example: `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape
 
 
@@ -1016,160 +1071,5 @@ ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeploy
 }
 ```
 
-## List Model Evaluations
-
-### Description
-
-Lists all Aqua model evaluations within a specified compartment and/or project.
-
-### Usage
-
-```bash
-ads aqua evaluation list [OPTIONS]
-```
-
-### Required Parameters
-
-`--compartment_id [text]`
-
-The ID of the compartment in which the aqua model evaluations are available.
-
-
-### Example
-
-```bash
-ads aqua evaluation list --compartment_id ocid1.compartment.oc1..<ocid>
-```
-
-#### CLI Output
-
-```json
-{
-    "id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-    "name": "test-eval",
-    "console_url": "https://cloud.oracle.com/data-science/models/ocid1.datasciencemodel.oc1.iad.<ocid>?region=us-ashburn-1",
-    "lifecycle_state": "SUCCEED",
-    "lifecycle_details": "",
-    "time_created": "2024-03-18T00:31:28.026000+00:00",
-    "tags": {
-        "aqua_evaluation": "aqua_evaluation"
-    },
-    "experiment": {
-        "id": "ocid1.datasciencemodelversionset.oc1.iad.<ocid>",
-        "name": "experiment_name",
-        "url": "https://cloud.oracle.com/data-science/model-version-sets/ocid1.datasciencemodelversionset.oc1.iad.<ocid>?region=us-ashburn-1"
-    },
-    "source": {
-        "id": "ocid1.datasciencemodeldeploymentint.oc1.iad.ocid",
-        "name": "mistral-classifier",
-        "url": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>?region=us-ashburn-1"
-    },
-    "job": {
-        "id": "ocid1.datasciencejobrunint.oc1.iad.<ocid>",
-        "name": "test-eval",
-        "url": "https://cloud.oracle.com/data-science/job-runs/ocid1.datasciencejobrunint.oc1.iad.<ocid>?region=us-ashburn-1"
-    },
-    "parameters": {
-        "max_tokens": 500,
-        "top_p": 1,
-        "top_k": 50,
-        "temperature": 0.7,
-        "presence_penalty": 0,
-        "frequency_penalty": 0,
-        "stop": [],
-        "shape": "VM.Standard.E3.Flex",
-        "dataset_path": "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl",
-        "report_path": "oci://<bucket>@<namespace>/report/path"
-    }
-}
-```
-
-## Get Model Evaluation Details
-
-### Description
-
-Gets the information of an Aqua model evaluation.
-
-### Usage
-
-```bash
-ads aqua evaluation get [OPTIONS]
-```
-
-### Required Parameters
-
-`--eval_id [str]`
-
-The OCID of the Aqua model evaluation.
-
-
-### Example
-
-```bash
-ads aqua evaluation get --eval_id "ocid1.datasciencemodel.oc1.iad.<ocid>"
-```
-
-#### CLI Output
-
-```json
-{
-    "id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-    "name": "test-eval",
-    "console_url": "https://cloud.oracle.com/data-science/models/ocid1.datasciencemodel.oc1.iad.<ocid>?region=us-ashburn-1",
-    "lifecycle_state": "SUCCEED",
-    "lifecycle_details": "",
-    "time_created": "2024-03-18T00:06:07.994000+00:00",
-    "tags": {
-        "aqua_evaluation": "aqua_evaluation"
-    },
-    "experiment": {
-        "id": "ocid1.datasciencemodelversionset.oc1.iad.<ocid>",
-        "name": "experiment_name",
-        "url": "https://cloud.oracle.com/data-science/model-version-sets/ocid1.datasciencemodelversionset.oc1.iad.<ocid>?region=us-ashburn-1"
-    },
-    "source": {
-        "id": "ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>",
-        "name": "mistral-classifier",
-        "url": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>?region=us-ashburn-1"
-    },
-    "job": {
-        "id": "ocid1.datasciencejobrunint.oc1.iad.<ocid>",
-        "name": "test-eval",
-        "url": "https://cloud.oracle.com/data-science/job-runs/ocid1.datasciencejobrunint.oc1.iad.<ocid>?region=us-ashburn-1"
-    },
-    "parameters": {
-        "max_tokens": 500,
-        "top_p": 1,
-        "top_k": 50,
-        "temperature": 0.7,
-        "presence_penalty": 0,
-        "frequency_penalty": 0,
-        "stop": [],
-        "shape": "VM.Standard.E3.Flex",
-        "dataset_path": "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl",
-        "report_path": "oci://<bucket>@<namespace>/report/path"
-    },
-    "log_group": {
-        "id": "",
-        "name": null,
-        "url": ""
-    },
-    "log": {
-        "id": "",
-        "name": null,
-        "url": ""
-    },
-    "introspection": {
-        "aqua_evaluate": {
-            "output_report_path": {
-                "key": "output_report_path",
-                "category": "aqua_evaluate",
-                "description": "Verify output report path.",
-                "error_msg": "The destination folder does not exist or cannot be accessed for writing. Please verify that the folder exists and has the appropriate write permissions.",
-                "success": false
-            }
-        }
-    }
-}
-```
+For other operations related to **Evaluation**, such as listing evaluations and retrieving evaluation details, please refer to [AQUA CLI tips](cli-tips.md)
 
