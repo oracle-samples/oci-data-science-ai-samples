@@ -1,0 +1,45 @@
+descriptorSchemaVersion: 1.0
+mlApplicationVersion: 1.0
+packageVersion: {generated-version}
+packageArguments:
+  subnet_id:
+    type: ocid
+    mandatory: true
+    description: "Subnet OCID for ML Job"
+  data_science_project_id:
+    type: ocid
+    mandatory: true
+    description: "Project OCID for ML Job"
+  data_science_log_group_id:
+    type: ocid
+    mandatory: true
+    description: "Log Group OCID for this ML Application"
+  data_science_pipeline_log_id:
+    type: ocid
+    mandatory: true
+    description: "Log OCID for ML Pipeline"
+  model_deployment_access_log_id:
+    type: ocid
+    mandatory: true
+    description: "Log OCID for access log of Model Deployment"
+  model_deployment_predict_log_id:
+    type: ocid
+    mandatory: true
+    description: "Log OCID for predict log of Model Deployment"
+  schedule_log_id:
+    type: ocid
+    mandatory: true
+    description: "Log OCID for schedule"
+  mlapps_tag_namespace:
+    type: ocid
+    mandatory: true
+    validationRegexp: "MlApplications.*"
+    description: "Name of namespace with defined tag used for tenant isolation (tag MlApplicationInstanceId). Namespace should be different for different environments"
+configurationSchema:
+  external_data_source:
+    type: string
+    mandatory: true
+    description: "External Data Source (OCI Object Storage Service URI in form of oci://<bucket_name>@<namespace>/<object_name>"
+    sampleValue: "oci://test_data_fetalrisk@mynamespace/test_data.csv"
+onlinePredictionUseCases:
+  - name: "fetalrisk"

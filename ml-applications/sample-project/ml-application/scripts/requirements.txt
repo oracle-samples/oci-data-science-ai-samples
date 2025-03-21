@@ -1,0 +1,4 @@
+pip==21.3.1; python_version < '3.7'
+PyYAML==6.0.1
+requests==2.32.2; python_version >= "3.7"
+requests==2.27.1; python_version < '3.7'

@@ -9,18 +9,28 @@ Table of Contents:
 - [Model Evaluation](evaluation-tips.md)
 - [Model Registration](register-tips.md)
 - [Multi Modal Inferencing](multimodal-models-tips.md)
+- [Private_Endpoints](model-deployment-private-endpoint-tips.md)
+- [Tool Calling](model-deployment-tool-calling-tips.md)
 
 ## Introduction to Model Inference and Serving
 
-The Data Science server has prebuilt service containers that make deploying and serving a large 
+The Data Science server has prebuilt service containers that make deploying and serving a large
 language model very easy. Either one of [vLLM](https://github.com/vllm-project/vllm) (a high-throughput and memory-efficient inference and serving
 engine for LLMs) or [TGI](https://github.com/huggingface/text-generation-inference) (a high-performance text generation server for the popular open-source LLMs) is used in the service container to host the model, the end point created
 supports the OpenAI API protocol.  This allows the model deployment to be used as a drop-in
-replacement for applications using OpenAI API. Model deployments are a managed resource in 
-the OCI Data Science service. For more details about Model Deployment and managing it through 
+replacement for applications using OpenAI API. Model deployments are a managed resource in
+the OCI Data Science service. For more details about Model Deployment and managing it through
 the OCI console please see the [OCI docs](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-about.htm).
 
-## Deploying an LLM
+
+### Prerequisites
+
+1. Ensure that the necessary [policies](policies/README.md) are enacted.
+2. Create an OCI Object Storage Bucket with Object Versioning.
+
+![Bucket w/ Object Versioning](web_assets/object-versioning.png)
+
+### Deploying an LLM
 
 After picking a model from the model explorer, if the "Deploy Model" is enabled you can use this
 form to quickly deploy the model:
@@ -29,7 +39,7 @@ form to quickly deploy the model:
 
 ### Compute Shape
 
-The compute shape selection is critical, the list available is selected to be suitable for the 
+The compute shape selection is critical, the list available is selected to be suitable for the
 chosen model.
 
 - VM.GPU.A10.1 has 24GB of GPU memory and 240GB of CPU memory. The limiting factor is usually the
@@ -50,12 +60,12 @@ You may click on the "Show Advanced Options" to configure options for "inference
 
 ### Inference Container Configuration
 
-The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on 
-the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format 
+The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on
+the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format
 `(--param-name, param-value)`.
 
-For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) or 
-[TGI](https://huggingface.co/docs/text-generation-inference/en/basic_tutorials/launcher) documentation to know more about the parameters accepted by the respective containers. 
+For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) or
+[TGI](https://huggingface.co/docs/text-generation-inference/en/basic_tutorials/launcher) documentation to know more about the parameters accepted by the respective containers.
 
 ### Inference Mode
 
@@ -66,7 +76,7 @@ The "inference mode" allows you to choose between the default completion endpoin
 
 ### Test Your Model
 
-Once deployed, the model will spin up and become available after some time, then you're able to try out the model 
+Once deployed, the model will spin up and become available after some time, then you're able to try out the model
 from the deployments tab using the test model, or programmatically.
 
 ![Try Model](web_assets/try-model.png)
@@ -88,13 +98,38 @@ oci raw-request --http-method POST --target-uri <model_deployment_url>/predict -
 
 Note: Currently `oci-cli` does not support streaming response, use Python or Java SDK instead.
 
+#### Request body for /v1/completions VS /v1/chat/completions
 
-### Using Python SDK (without streaming)
+For /v1/completion endpoints, use the "prompt" key.
+```
+body = {
+    "model": "odsc-llm", # this is a constant
+    "prompt": "what are activation functions?",
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+}
+```
+
+For v1/chat/completions, use the "messages" key and a list of JSONs.
+```
+body = {
+    "model": "odsc-llm", # this is a constant
+    "messages": [{"content" : "what model are you?", "role":"user"}],
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "stream": True
+}
+```
+#### Using Python SDK (without streaming)
+- note that the following request body is for the **/v1/completions** endpoint 
+- See **/v1/chat/completions** request body [here](#request-body-for-/v1/completions-vs-/v1/chat/completions)
 
 ```python
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
- 
+
 import requests
 import oci
 from oci.signer import Signer
@@ -132,13 +167,14 @@ print(res)
 ```
 
 ### Using Python SDK (with streaming)
-
 To consume streaming Server-sent Events (SSE), install [sseclient-py](https://pypi.org/project/sseclient-py/) using `pip install sseclient-py`.
 
+- note that the following request body is for the **/v1/completions** endpoint 
+- See **/v1/chat/completions** request body [here](#request-body-for-/v1/completions-vs-/v1/chat/completions)
 ```python
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
- 
+
 import requests
 import oci
 from oci.signer import Signer
@@ -186,6 +222,24 @@ for event in client.events():
 #    if line:
 #        print(line)
 ```
+
+### Using Python SDK for v1/chat/completions endpoint
+
+To access the model deployed with `v1/chat/completions` endpoint for inference, update the body and replace `prompt` field
+with `messages`.
+
+```python
+...
+body = {
+    "model": "odsc-llm", # this is a constant
+    "messages":[{"role":"user","content":[{"type":"text","text":"Who wrote the book Harry Potter?"}]}],
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+}
+...
+```
+For multi-modal inference, refer the page [Multimodal Model Tips](multimodal-models-tips.md) for an example to access `v1/chat/completions` endpoint.
 
 ### Using Java (with streaming)
 
@@ -315,11 +369,52 @@ public class RestExample {
 
 ```
 
+## Multiple Inference endpoints
+
+The support for multiple model deployment inference endpoints ensures flexibility and enables users to perform inferencing on any endpoint, regardless of the endpoint specified during deployment creation.
+
+To access the supported endpoint by TGI/vLLM, you need to include `--request-headers '{"route":"<inference_endpoint>"}'` in the command and update the `--request-body`  according to the endpoint's contract.
+
+```bash
+oci raw-request --http-method POST --target-uri <model_deployment_url>/predict --request-headers '{"route":<inference_endpoint>}' --request-body  <request_body> --auth <auth_method>
+```
+
+```bash
+## If "/v1/completions" was selected during deployment using vLLM SMC and "/v1/chat/completions" endpoint is required later on.
+
+oci raw-request --http-method POST --target-uri  <model_deployment_url>/predict --request-headers '{"route":"/v1/chat/completions"}' --request-body '
+      {
+          "model": "odsc-llm", # this is a constant
+          "messages":[{"role":"user","content":[{"type":"text","text":"Who wrote the book Harry Potter?"}]}],
+          "max_tokens": 500,
+          "temperature": 0.7,
+          "top_p": 0.8,
+      }' --auth security_token
+
+```
+
+## Inferencing Embedding model endpoints
+
+Embedding models deployed via AI Quick Actions can be accessed in the similar way as the examples shown above for 
+generative models, however, the input request format is different. For accessing OpenAI compatible 
+`/v1/embedding` endpoint for models deployed on vLLM or TEI container, the request format will be:
+
+```python
+body = {
+    "input": ["What are activation functions?", "What is deep learning?"],
+    "model": "odsc-vllm", # use custom name for BYOC TEI
+}
+```
+
+For more parameters, check the documentation for [vLLM](https://platform.openai.com/docs/api-reference/embeddings/create) and 
+[Text Embedding Inference (TEI)](https://huggingface.github.io/text-embeddings-inference/#/Text%20Embeddings%20Inference/openai_embed) 
+inference containers. 
+
 ## Advanced Configuration Update Options
 
-The available shapes for models in AI Quick Actions are pre-configured for both registration and 
-deployment for models available in the Model Explorer. However, if you need to add more shapes to the list of 
-available options, you can do so by updating the relevant configuration file. Currently, this 
+The available shapes for models in AI Quick Actions are pre-configured for both registration and
+deployment for models available in the Model Explorer. However, if you need to add more shapes to the list of
+available options, you can do so by updating the relevant configuration file. Currently, this
 update option is only available for models that users can register.
 
 #### For Custom Models:
@@ -327,7 +422,7 @@ To add shapes for custom models, follow these steps:
 
 1. **Register the model**: Ensure the model is registered via AI Quick Actions UI or CLI.
 
-2. **Navigate to the model's artifact directory**: After registration, locate the directory where the model's artifacts are stored in the object storage. 
+2. **Navigate to the model's artifact directory**: After registration, locate the directory where the model's artifacts are stored in the object storage.
 
 3. **Create a configuration folder**: Inside the artifact directory, create a new folder named config. For example, if the model path is `oci://<bucket>@namespace/path/to/model/`
 then create a folder `oci://<bucket>@namespace/path/to/model/config`.
@@ -376,18 +471,18 @@ then create a folder `oci://<bucket>@namespace/path/to/model/config`.
 }
 ```
 
-This JSON file lists all available GPU and CPU shapes for AI Quick Actions. 
-The CPU shapes include additional configuration details required for model deployment, 
+This JSON file lists all available GPU and CPU shapes for AI Quick Actions.
+The CPU shapes include additional configuration details required for model deployment,
 such as memory and OCPU settings.
 
-5. Modify shapes as needed: If you want to add or remove any 
-[shapes supported](https://docs.oracle.com/en-us/iaas/data-science/using/supported-shapes.htm) by 
+5. Modify shapes as needed: If you want to add or remove any
+[shapes supported](https://docs.oracle.com/en-us/iaas/data-science/using/supported-shapes.htm) by
 the OCI Data Science platform, you can directly edit this `deployment_config.json` file.
 
 6. The `configuration` field in this json file can also support parameters for vLLM and TGI inference containers. For example,
-if a model can be deployed by either one of these containers, and you want to set the server parameters through configuration file, then 
+if a model can be deployed by either one of these containers, and you want to set the server parameters through configuration file, then
 you can add the corresponding shape along with the parameter value inside the `configuration` field. You can achieve the same
-using [Advanced Deployment Options](#advanced-deployment-options) from AI Quick Actions UI as well. 
+using [Advanced Deployment Options](#advanced-deployment-options) from AI Quick Actions UI as well.
 
 
 ```
@@ -411,7 +506,7 @@ If the model should fail to deploy, reasons might include lack of GPU availabili
 The logs are a good place to start to diagnose the issue. The logs can be accessed from the UI, or you can
 use the ADS Log watcher, see [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/opctl/_template/monitoring.html) for more details.
 
-From the **General Information** section the **Log Groups** and **Log** sections are clickable links to 
+From the **General Information** section the **Log Groups** and **Log** sections are clickable links to
 begin the diagnosis.
 
 ![General Information](web_assets/gen-info-deployed-model.png)
@@ -424,3 +519,6 @@ Table of Contents:
 - [Model Fine Tuning](fine-tuning-tips.md)
 - [Model Evaluation](evaluation-tips.md)
 - [Model Registration](register-tips.md)
+- [Multi Modal Inferencing](multimodal-models-tips.md)
+- [Private_Endpoints](model-deployment-private-endpoint-tips.md)
+- [Tool Calling](model-deployment-tool-calling-tips.md)
