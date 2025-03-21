@@ -20,7 +20,7 @@ huggingface-hub==0.23.3
 humanfriendly==10.0
 langchain==0.2.5
 langchain-community==0.2.5
-langchain-core==0.2.7
+langchain-core==0.2.43
 langchain-text-splitters==0.2.1
 langsmith==0.1.77
 llama-index==0.10.45
