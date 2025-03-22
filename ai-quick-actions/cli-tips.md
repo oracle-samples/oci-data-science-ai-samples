@@ -299,7 +299,12 @@ Example: `iad.ocir.io/<your_tenancy>/<your_image>:<tag>`
 ### Example
 
 ```bash
-ads aqua model register --model mistralai/Mistral-7B-Instruct-v0.1 --os_path oci://<bucket>@<namespace>/<prefix> --download_from_hf True --inference_container odsc-vllm-serving --finetuning_container odsc-llm-fine-tuning
+ads aqua model register \
+  --model mistralai/Mistral-7B-Instruct-v0.1 \
+  --os_path oci://<bucket>@<namespace>/<prefix> \
+  --download_from_hf True \
+  --inference_container odsc-vllm-serving \
+  --finetuning_container odsc-llm-fine-tuning
 ```
 
 #### CLI Output
@@ -458,7 +463,10 @@ models that will be registered and deployed using Bring Your Own Container (BYOC
 ### Example
 
 ```bash
-ads aqua deployment create --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --instance_shape "VM.GPU.A10.1" --display_name "modelDeployment_Mistral-7B-v0.1 FT"
+ads aqua deployment create \
+  --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" \
+  --instance_shape "VM.GPU.A10.1" \
+  --display_name "modelDeployment_Mistral-7B-v0.1 FT"
 ```
 
 #### CLI Output
@@ -510,7 +518,21 @@ ads aqua deployment create --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --
     }
 }
 ```
-
+#### With Model Deployment settings
+The start up parameters for the container is passed using environment variable called PARAMS. Here is an example to set the max-model-len.
+Refer to the vllm docs to find the parameter to setup 
+```bash
+ads aqua deployment create \
+    --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>"  \
+    --instance_shape "VM.GPU.A10.1" \
+    --display_name "Lora Deployment" \
+    --project-id $PROJECT_OCID  \
+    --log_group_id "ocid1.loggroup.oc1.iad.<ocid>" \
+    --access_log_id "ocid1.log.oc1.iad.<ocid>" \
+    --predict_log_id "ocid1.log.oc1.iad.<ocid>" \
+    --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions", "PARAMS": "--max-model-len 6000 "}'
+   
+```
 ## List Model Deployments
 
 ### Description
@@ -806,7 +828,14 @@ A flag to indicate whether to force overwrite the existing evaluation file in ob
 ### Example
 
 ```bash
-ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" --evaluation_name "test_evaluation" --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" --report_path "oci://<bucket>@<namespace>/report/path/" --model_parameters '{"max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}' --shape_name "VM.Standard.E4.Flex" --block_storage_size 50 --metrics '[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]
+ads aqua evaluation create  \
+  --evaluation_source_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" \
+  --evaluation_name "test_evaluation" \
+  --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" \
+  --report_path "oci://<bucket>@<namespace>/report/path/" \
+  --model_parameters '{"max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}' \
+  --shape_name "VM.Standard.E4.Flex" --block_storage_size 50 \
+  --metrics '[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]
 ```
 
 #### CLI Output
@@ -1093,8 +1122,22 @@ A flag to indicate whether to force overwrite the existing evaluation file in ob
 
 ### Example
 
+Subnet is optional in the below command
+
 ```bash
-ads aqua fine_tuning create --ft_source_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --ft_name "Mistral-7B-Instruct-v0.1 FT" --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" --report_path "oci://<bucket>@<namespace>/report/path" --ft_parameters '{"epochs": 10, "learning_rate": 0.0002}' --shape_name "VM.GPU.A10.2" --replica 2 --validation_set_size 0.5 --subnet_id "ocid1.subnet.oc1.iad.<ocid>" --log_group_id "ocid1.loggroup.oc1.iad.<ocid>" --log_id "ocid1.log.oc1.iad.<ocid>" --experiment_id "ocid1.datasciencemodelversionset.oc1.iad.<ocid>"
+ads aqua fine_tuning create \
+  --ft_source_id "ocid1.datasciencemodel.oc1.iad.<ocid>" \
+  --ft_name "Mistral-7B-Instruct-v0.1 FT" \
+  --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" \
+  --report_path "oci://<bucket>@<namespace>/report/path" \
+  --ft_parameters '{"epochs": 10, "learning_rate": 0.0002}' \
+  --shape_name "VM.GPU.A10.2" \
+  --replica 1 \
+  --validation_set_size 0.5 \
+  --subnet_id "ocid1.subnet.oc1.iad.<ocid>" \
+  --log_group_id "ocid1.loggroup.oc1.iad.<ocid>" \
+  --log_id "ocid1.log.oc1.iad.<ocid>" \
+  --experiment_id "my_sample_experiment"
 ```
 
 #### CLI Output
