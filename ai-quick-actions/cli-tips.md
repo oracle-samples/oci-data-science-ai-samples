@@ -510,7 +510,21 @@ ads aqua deployment create --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" --
     }
 }
 ```
-
+#### With Model Deployment settings
+The start up parameters for the container is passed using environment variable called PARAMS. Here is an example to set the max-model-len.
+Refer to the vllm docs to find the parameter to setup 
+```bash
+ads aqua deployment create \
+    --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>"  \
+    --instance_shape "VM.GPU.A10.1" \
+    --display_name "Lora Deployment" \
+    --project-id $PROJECT_OCID  \
+    --log_group_id "ocid1.loggroup.oc1.iad.<ocid>" \
+    --access_log_id "ocid1.log.oc1.iad.<ocid>" \
+    --predict_log_id "ocid1.log.oc1.iad.<ocid>" \
+    --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions", "PARAMS": "--max-model-len 6000 "}'
+   
+```
 ## List Model Deployments
 
 ### Description
