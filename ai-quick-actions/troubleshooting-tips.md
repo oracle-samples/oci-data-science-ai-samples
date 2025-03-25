@@ -58,9 +58,9 @@ If your log message appears like the above, then you have two options -
 2) Try quantization:
 
     You can set reduce the memory footprint of the model by enabling quantization. Here are the steps to enable quantization - 
-    a. Go to create model deployment and select the model you want to deploy
-    b. Click on advanced section 
-    c. Input the quantization option as per the documentation of the inference container. Eg. If you are using vLLM, you can input `--quantization` for Name and `fp8` for value. This will load the model in 8bit reducing the memory requirement by half. You can try `--quantization bitsandbytes` and `--load-format bitsandbytes` to load in 4 bits. 
+    1. Go to create model deployment and select the model you want to deploy
+    2. Click on advanced section 
+    3. Input the quantization option as per the documentation of the inference container. Eg. If you are using vLLM, you can input `--quantization` for Name and `fp8` for value. This will load the model in 8bit reducing the memory requirement by half. You can try `--quantization bitsandbytes` and `--load-format bitsandbytes` to load in 4 bits. 
 
 II. The model supports large context length and there is not enough room for creating KV cache. 
 
