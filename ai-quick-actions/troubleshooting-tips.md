@@ -116,7 +116,7 @@ If you are using Text Generation Inference, visit [TGI Support models page](http
 
 You see a message "There is currently no capacity for the specified shape. Choose a different shape or region". This happens because there currently all the instances of the selected shape are in use in that region. This is different from the limits.
 
-The shapes are provisioned from a common pool by default. You could create a capacity reservation for more predictable availability of the shape.
+The shapes are provisioned from a common pool by default. You could create a capacity reservation for more predictable availability of the shape. More information [here](https://docs.oracle.com/en-us/iaas/data-science/using/gpu-using.htm#gpu-use-reserve)
 
 ### Chat payload is not working
 TODO
