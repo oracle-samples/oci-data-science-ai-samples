@@ -1,0 +1,164 @@
+# Model Deployment
+
+## Logs
+
+To successfully debug an issue, always select logging while creating model deployment. 
+
+Once the model deployment is intiated, you can monitor the logs by running on your notebook terminal- 
+
+`ads watch <your modeldepoyment ocid> --auth resource_principal`
+
+To fetch the model deployement ocid - 
+1. Go to model deployments tab on AI Quick Actions
+2. Click on the model deployment for which you want to fetch the logs. This will open up details page.
+3. **Confirm** that the log group and the log link is displayed on the details page.
+3. For you see log group and log link is displaey, copy the OCID from the details page.
+
+## Understanding GPU requirement for models
+
+By default the models are deployed with 16 bit precision. For a model with 7 billion paramenter model, you would need 14GB (2 * 7) GPU memory to load the model. Depending on the context length, you would need extra about 20% memory to serve the model.
+If you are selecting a shape with A10 cards, each A10 card will give you about 23GB. 8B parameter model with large context length will perform better with 2 cards. You can run it on single card as well with reduced context length. This is a general guideline. Exact memory requirement will vary depending on the model architecture. You can learn more [here](https://blog.eleuther.ai/transformer-math/#inference).
+
+## Issues and Resolutions
+
+
+### Service Timeout Error
+If you see service timeout error, it means the model deployment could not load the model and start the inference container within the stipulated time. To understand the reason behind service timeout, check your logs. Fetch logs using `ads watch` command as described in section [Logs](#Logs). **If this returns empty, confirm that log groups and log links are displayed on the model deployment details page**.
+
+If logs are attached and you run the `ads watch` comand and successfully retrieve the logs, proceed below - 
+
+Here are some frequently found issues. Please note it could fail for reasons not listed here, but they form the bulk of the issues seen by the users - 
+
+#### Out of Memory (OOM) error. 
+
+Check the error message in the logging to understand if you need to higher GPU or need to limit the context length. Here are some tips
+
+
+I. Model is bigger than the GPU shape 
+
+The log message should look something like the following - 
+
+```log
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 32.00 MiB. GPU 1 has a total capacity of 22.07 GiB of which 14.25 MiB is free. Process 241484 has 22.05 GiB memory in use. Of the allocated memory 21.68 GiB is allocated by PyTorch, and 24.24 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240] Exception in worker VllmWorkerProcess while processing method load_model.
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240] Traceback (most recent call last):
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240]   File "/opt/conda/envs/vllm/lib/python3.12/site-packages/vllm/executor/multiproc_worker_utils.py", line 234, in _run_worker_process
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240]     output = run_method(worker, method, args, kwargs)
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240]   File "/opt/conda/envs/vllm/lib/python3.12/site-packages/vllm/utils.py", line 2208, in run_method
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240]     return func(*args, **kwargs)
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240]            ^^^^^^^^^^^^^^^^^^^^^
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240]   File "/opt/conda/envs/vllm/lib/python3.12/site-packages/vllm/worker/worker.py", line 182, in load_model
+(VllmWorkerProcess pid=440) ERROR 03-25 21:01:39 multiproc_worker_utils.py:240]     self.model_runner.load_model()
+```
+If your log message appears like the above, then you have two options - 
+
+1) Try bigger shape. Refer to the memory calcuation [discussion](#Understanding-GPU-requirement-for-models)
+
+2) Try quantization:
+
+    You can set reduce the memory footprint of the model by enabling quantization. Here are the steps to enable quantization - 
+    a. Go to create model deployment and select the model you want to deploy
+    b. Click on advanced section 
+    c. Input the quantization option as per the documentation of the inference container. Eg. If you are using vLLM, you can input `--quantization` for Name and `fp8` for value. This will load the model in 8bit reducing the memory requirement by half. You can try `--quantization bitsandbytes` and `--load-format bitsandbytes` to load in 4 bits. 
+
+II. The model supports large context length and there is not enough room for creating KV cache. 
+
+In this case the log message would like something like this - 
+```log
+INFO 03-25 21:32:47 model_runner.py:1116] Loading model weights took 14.9888 GB
+INFO 03-25 21:32:48 worker.py:266] Memory profiling takes 0.71 seconds
+INFO 03-25 21:32:48 worker.py:266] the current vLLM instance can use total_gpu_memory (22.07GiB) x gpu_memory_utilization (0.90) = 19.86GiB
+INFO 03-25 21:32:48 worker.py:266] model weights take 14.99GiB; non_torch_memory takes 0.05GiB; PyTorch activation peak memory takes 0.22GiB; the rest of the memory reserved for KV Cache is 4.60GiB.
+INFO 03-25 21:32:48 executor_base.py:108] # CUDA blocks: 2356, # CPU blocks: 2048
+INFO 03-25 21:32:48 executor_base.py:113] Maximum concurrency for 131072 tokens per request: 0.29x
+ERROR 03-25 21:32:48 engine.py:387] The model's max seq len (131072) is larger than the maximum number of tokens that can be stored in KV cache (37696). Try increasing `gpu_memory_utilization` or decreasing `max_model_len` when initializing the engine.
+ERROR 03-25 21:32:48 engine.py:387] Traceback (most recent call last):
+ERROR 03-25 21:32:48 engine.py:387]   File "/opt/conda/envs/vllm/lib/python3.12/site-packages/vllm/engine/multiprocessing/engine.py", line 378, in run_mp_engine
+ERROR 03-25 21:32:48 engine.py:387]     engine = MQLLMEngine.from_engine_args(engine_args=engine_args,
+ERROR 03-25 21:32:48 engine.py:387]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERROR 03-25 21:32:48 engine.py:387]   File "/opt/conda/envs/vllm/lib/python3.12/site-packages/vllm/engine/multiprocessing/engine.py", line 121, in from_engine_args
+```
+The key line in this log is **The model's max seq len (131072) is larger than the maximum number of tokens that can be stored in KV cache (37696). Try increasing `gpu_memory_utilization` or decreasing `max_model_len` when initializing the engine.**
+If you see such a message, constrain the context length by - 
+a. Go to create model deployment and select the model you want to deploy
+b. Click on advanced section 
+c. Add name as `--max-model-len` and for value, use the hint in the log. As per the above log we can set `37696`. Better to leave some room and go lower.
+
+#### Trusting remote code
+
+Sometimes, the inference container will not have native support for the model, but can still be side loaded using the code provided by the model provider. A model failed for such reason will have error such as below - 
+
+```log
+requires you to execute the configuration file in that repo on your local machine. Make sure you have read the code there to avoid malicious use, then set the option `trust_remote_code=True` to remove this error.
+```
+If you see such a message, - 
+a. Go to create model deployment and select the model you want to deploy
+b. Click on advanced section 
+c. Add name as `--trust-remote-code` and leave value as blank.
+
+
+#### Architecture Not support
+
+vLLM container may not support the model that you are tring to load. Here is a sample log snippet in such cases - 
+
+```log
+ValueError: Model architectures ['<SOME NAME>'] are not supported for now. Supported architectures: dict_keys(['AquilaModel', 'AquilaForCausalLM', 'ArcticForCausalLM', 'BaiChuanForCausalLM', 'BaichuanForCausalLM', 'BloomForCausalLM', 'CohereForCausalLM', 'Cohere2ForCausalLM', 'DbrxForCausalLM', 'DeciLMForCausalLM', 'DeepseekForCausalLM', 'DeepseekV2ForCausalLM', 'DeepseekV3ForCausalLM', 'ExaoneForCausalLM', 'FalconForCausalLM', 'Fairseq2LlamaForCausalLM', 'GemmaForCausalLM', 'Gemma2ForCausalLM', 'GlmForCausalLM', 'GPT2LMHeadModel', 'GPTBigCodeForCausalLM', 'GPTJForCausalLM', 'GPTNeoXForCausalLM', 'GraniteForCausalLM', 'GraniteMoeForCausalLM', 'GritLM', 'InternLMForCausalLM', 'InternLM2ForCausalLM', 'InternLM2VEForCausalLM', 'InternLM3ForCausalLM', 'JAISLMHeadModel', 'JambaForCausalLM', 'LlamaForCausalLM', 'LLaMAForCausalLM', 'MambaForCausalLM', 'FalconMambaForCausalLM', 'MiniCPMForCausalLM', 'MiniCPM3ForCausalLM', 'MistralForCausalLM', 'MixtralForCausalLM', 'QuantMixtralForCausalLM', 'MptForCausalLM', 'MPTForCausalLM', 'NemotronForCausalLM', 'OlmoForCausalLM', 'Olmo2ForCausalLM', 'OlmoeForCausalLM', 'OPTForCausalLM', 'OrionForCausalLM', 'PersimmonForCausalLM', 'PhiForCausalLM', 'Phi3ForCausalLM', 'Phi3SmallForCausalLM', 'PhiMoEForCausalLM', 'Qwen2ForCausalLM', 'Qwen2MoeForCausalLM', 'RWForCausalLM', 'StableLMEpochForCausalLM', 'StableLmForCausalLM', 'Starcoder2ForCausalLM', 'SolarForCausalLM', 'TeleChat2ForCausalLM', 'XverseForCausalLM', 'BartModel', 'BartForConditionalGeneration', 'Florence2ForConditionalGeneration', 'BertModel', 'RobertaModel', 'RobertaForMaskedLM', 'XLMRobertaModel', 'Gemma2Model', 'InternLM2ForRewardModel', 'JambaForSequenceClassification', 'LlamaModel', 'MistralModel', 'Qwen2Model', 'Qwen2ForRewardModel', 'Qwen2ForProcessRewardModel', 'LlavaNextForConditionalGeneration', 'Phi3VForCausalLM', 'Qwen2VLForConditionalGeneration', 'Qwen2ForSequenceClassification', 'BertForSequenceClassification', 'RobertaForSequenceClassification', 'XLMRobertaForSequenceClassification', 'AriaForConditionalGeneration', 'Blip2ForConditionalGeneration', 'ChameleonForConditionalGeneration', 'ChatGLMModel', 'ChatGLMForConditionalGeneration', 'DeepseekVLV2ForCausalLM', 'FuyuForCausalLM', 'H2OVLChatModel', 'InternVLChatModel', 'Idefics3ForConditionalGeneration', 'LlavaForConditionalGeneration', 'LlavaNextVideoForConditionalGeneration', 'LlavaOnevisionForConditionalGeneration', 'MantisForConditionalGeneration', 'MiniCPMO', 'MiniCPMV', 'MolmoForCausalLM', 'NVLM_D', 'PaliGemmaForConditionalGeneration', 'PixtralForConditionalGeneration', 'QWenLMHeadModel', 'Qwen2AudioForConditionalGeneration', 'UltravoxModel', 'MllamaForConditionalGeneration', 'WhisperForConditionalGeneration', 'EAGLEModel', 'MedusaModel', 'MLPSpeculatorPreTrainedModel'])
+Exiting vLLM. 
+```
+In such cases, you will have to follow [BYOC](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/deploy-llm-byoc.md) appproach. Check [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/ai-quick-actions-containers.md) for the supported containers by AI Quick Actions.
+
+### Chat payload is not working
+TODO
+
+### Image Payload not working
+TODO
+### Prompt completion payload is not working
+TODO
+# Authorization Issues
+
+Authorization issues arise due to missing policy. Please refer to [policy document](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/policies/README.md) to setup policies. We strongly encourage using ORM option mentioned in the policy document.
+
+If you see authorization issues after setting up the policies here are possible cases - 
+1. The dynamic group definition used while setting up ORM stack identifies the notebook from where AI quick actions is being used. The notebook session has to be in the same compartment as the one defined by the dynamic group.
+2. If the UI is not able to list the buckets or fetch namespace you maybe missing following policy - 
+    ```
+    Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
+    Allow dynamic-group <Your dynamic group> to read objectstorage-namespaces in compartment <your-compartment-name>
+    ```
+3. While registering the model, AI Quick Actions is not able to reach the object storage location specified - 
+    ```
+    Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
+    ```
+4. While registering the model, AI Quick Actions is not able to create model in model catalog - 
+    ```
+    Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
+    ```
+5. Unable to fetch model details for fine tuned models - 
+    ```
+    Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
+    ```
+6. Unable to create a model version set or not able to fetch model version set information during finetuning or evaluation step - 
+    ```
+    Allow dynamic-group aqua-dynamic-group to manage data-science-modelversionsets in compartment <your-compartment-name>
+    ```
+7. Unable to fetch resource limits information where you select shape - 
+    ```
+    Allow dynamic-group aqua-dynamic-group to read resource-availability in compartment <your-compartment-name>
+    ```
+8. The dropdown for log group or log does not show anything and gives authorization error - 
+    ```
+    Allow dynamic-group aqua-dynamic-group to use logging-family in compartment <your-compartment-name>
+    ```
+9. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
+    ```
+    Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartment <your-compartment-name>
+    ```
+10. Authorization error related to listing, creating or managing model deplyoyments - 
+    ```
+    Allow dynamic-group aqua-dynamic-group to manage data-science-model-deployments in compartment <your-compartment-name>
+    ```
+11. Allowing AI Quick Actions to use defined tags - 
+    ```
+    Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
+    ```
