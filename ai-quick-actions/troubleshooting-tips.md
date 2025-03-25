@@ -25,16 +25,16 @@ If you are selecting a shape with A10 cards, each A10 card will give you about 2
 ### Service Timeout Error
 If you see service timeout error, it means the model deployment could not load the model and start the inference container within the stipulated time. To understand the reason behind service timeout, check your logs. Fetch logs using `ads watch` command as described in section [Logs](#Logs). **If this returns empty, confirm that log groups and log links are displayed on the model deployment details page**.
 
-If logs are attached and you run the `ads watch` command and successfully retrieve the logs, proceed below - 
+If logs are attached, run the `ads watch` command to retrieve the logs. Once log is fetched, proceed below - 
 
-Here are some frequently found issues. Please note it could fail for reasons not listed here, but they form the bulk of the issues seen by the users - 
+Here are some frequently encountered issues. Please note it could fail for reasons not listed here, but these form most commonly encountered ones - 
 
 #### Out of Memory (OOM) error. 
 
-Check the error message in the logging to understand if you need to higher GPU or need to limit the context length. Here are some tips
+Check the error message in the logging to understand if you need to allocate more GPUs or need to limit the context length. Here are some tips
 
 
-I. Model is bigger than the GPU shape 
+I. Model is requires more GPU memory 
 
 The log message should look something like the following - 
 
@@ -64,7 +64,7 @@ If your log message appears like the above, then you have two options -
 
 II. The model supports large context length and there is not enough room for creating KV cache. 
 
-In this case the log message would like something like this - 
+In this case the log message would look something like this - 
 ```log
 INFO 03-25 21:32:47 model_runner.py:1116] Loading model weights took 14.9888 GB
 INFO 03-25 21:32:48 worker.py:266] Memory profiling takes 0.71 seconds
@@ -81,21 +81,22 @@ ERROR 03-25 21:32:48 engine.py:387]   File "/opt/conda/envs/vllm/lib/python3.12/
 ```
 The key line in this log is **The model's max seq len (131072) is larger than the maximum number of tokens that can be stored in KV cache (37696). Try increasing `gpu_memory_utilization` or decreasing `max_model_len` when initializing the engine.**
 If you see such a message, constrain the context length by - 
-a. Go to create model deployment and select the model you want to deploy
-b. Click on advanced section 
-c. Add name as `--max-model-len` and for value, use the hint in the log. As per the above log we can set `37696`. Better to leave some room and go lower.
+
+1. Go to create model deployment and select the model you want to deploy
+2. Click on advanced section 
+3. Add name as `--max-model-len` and for value, use the hint in the log. As per the above log we can set `37696`. Better to leave some room and go lower.
 
 #### Trusting remote code
 
-Sometimes, the inference container will not have native support for the model, but can still be side loaded using the code provided by the model provider. A model failed for such reason will have error such as below - 
+Sometimes, the inference container will not have native support for the model, but the model can still be side loaded using the code provided by the model provider. In such cases error message could look like below - 
 
 ```log
 requires you to execute the configuration file in that repo on your local machine. Make sure you have read the code there to avoid malicious use, then set the option `trust_remote_code=True` to remove this error.
 ```
 If you see such a message, - 
-a. Go to create model deployment and select the model you want to deploy
-b. Click on advanced section 
-c. Add name as `--trust-remote-code` and leave value as blank.
+1. Go to create model deployment and select the model you want to deploy
+2. Click on advanced section 
+3. Add name as `--trust-remote-code` and leave value as blank.
 
 
 #### Architecture Not support
@@ -106,7 +107,10 @@ vLLM container may not support the model that you are trying to load. Here is a 
 ValueError: Model architectures ['<SOME NAME>'] are not supported for now. Supported architectures: dict_keys(['AquilaModel', 'AquilaForCausalLM', 'ArcticForCausalLM', 'BaiChuanForCausalLM', 'BaichuanForCausalLM', 'BloomForCausalLM', 'CohereForCausalLM', 'Cohere2ForCausalLM', 'DbrxForCausalLM', 'DeciLMForCausalLM', 'DeepseekForCausalLM', 'DeepseekV2ForCausalLM', 'DeepseekV3ForCausalLM', 'ExaoneForCausalLM', 'FalconForCausalLM', 'Fairseq2LlamaForCausalLM', 'GemmaForCausalLM', 'Gemma2ForCausalLM', 'GlmForCausalLM', 'GPT2LMHeadModel', 'GPTBigCodeForCausalLM', 'GPTJForCausalLM', 'GPTNeoXForCausalLM', 'GraniteForCausalLM', 'GraniteMoeForCausalLM', 'GritLM', 'InternLMForCausalLM', 'InternLM2ForCausalLM', 'InternLM2VEForCausalLM', 'InternLM3ForCausalLM', 'JAISLMHeadModel', 'JambaForCausalLM', 'LlamaForCausalLM', 'LLaMAForCausalLM', 'MambaForCausalLM', 'FalconMambaForCausalLM', 'MiniCPMForCausalLM', 'MiniCPM3ForCausalLM', 'MistralForCausalLM', 'MixtralForCausalLM', 'QuantMixtralForCausalLM', 'MptForCausalLM', 'MPTForCausalLM', 'NemotronForCausalLM', 'OlmoForCausalLM', 'Olmo2ForCausalLM', 'OlmoeForCausalLM', 'OPTForCausalLM', 'OrionForCausalLM', 'PersimmonForCausalLM', 'PhiForCausalLM', 'Phi3ForCausalLM', 'Phi3SmallForCausalLM', 'PhiMoEForCausalLM', 'Qwen2ForCausalLM', 'Qwen2MoeForCausalLM', 'RWForCausalLM', 'StableLMEpochForCausalLM', 'StableLmForCausalLM', 'Starcoder2ForCausalLM', 'SolarForCausalLM', 'TeleChat2ForCausalLM', 'XverseForCausalLM', 'BartModel', 'BartForConditionalGeneration', 'Florence2ForConditionalGeneration', 'BertModel', 'RobertaModel', 'RobertaForMaskedLM', 'XLMRobertaModel', 'Gemma2Model', 'InternLM2ForRewardModel', 'JambaForSequenceClassification', 'LlamaModel', 'MistralModel', 'Qwen2Model', 'Qwen2ForRewardModel', 'Qwen2ForProcessRewardModel', 'LlavaNextForConditionalGeneration', 'Phi3VForCausalLM', 'Qwen2VLForConditionalGeneration', 'Qwen2ForSequenceClassification', 'BertForSequenceClassification', 'RobertaForSequenceClassification', 'XLMRobertaForSequenceClassification', 'AriaForConditionalGeneration', 'Blip2ForConditionalGeneration', 'ChameleonForConditionalGeneration', 'ChatGLMModel', 'ChatGLMForConditionalGeneration', 'DeepseekVLV2ForCausalLM', 'FuyuForCausalLM', 'H2OVLChatModel', 'InternVLChatModel', 'Idefics3ForConditionalGeneration', 'LlavaForConditionalGeneration', 'LlavaNextVideoForConditionalGeneration', 'LlavaOnevisionForConditionalGeneration', 'MantisForConditionalGeneration', 'MiniCPMO', 'MiniCPMV', 'MolmoForCausalLM', 'NVLM_D', 'PaliGemmaForConditionalGeneration', 'PixtralForConditionalGeneration', 'QWenLMHeadModel', 'Qwen2AudioForConditionalGeneration', 'UltravoxModel', 'MllamaForConditionalGeneration', 'WhisperForConditionalGeneration', 'EAGLEModel', 'MedusaModel', 'MLPSpeculatorPreTrainedModel'])
 Exiting vLLM. 
 ```
-In such cases, you will have to follow [BYOC](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/deploy-llm-byoc.md) appproach. Check [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/ai-quick-actions-containers.md) for the supported containers by AI Quick Actions.
+In such cases, you will have to follow [BYOC](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/deploy-llm-byoc.md) approach. Check [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/ai-quick-actions-containers.md) for the supported containers by AI Quick Actions.
+
+Visit [vLLM supported models](https://docs.vllm.ai/en/latest/models/supported_models.html) to know what models are supported.
+If you are using Text Generation Inference, visit [TGI Support models page](https://huggingface.co/docs/text-generation-inference/en/supported_models)
 
 ### Chat payload is not working
 TODO
