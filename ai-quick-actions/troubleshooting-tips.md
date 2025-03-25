@@ -8,15 +8,15 @@ Once the model deployment is intiated, you can monitor the logs by running on yo
 
 `ads watch <your modeldepoyment ocid> --auth resource_principal`
 
-To fetch the model deployement ocid - 
+To fetch the model deployment ocid - 
 1. Go to model deployments tab on AI Quick Actions
 2. Click on the model deployment for which you want to fetch the logs. This will open up details page.
 3. **Confirm** that the log group and the log link is displayed on the details page.
-3. For you see log group and log link is displaey, copy the OCID from the details page.
+3. For you see log group and log link is displayed, copy the OCID from the details page.
 
 ## Understanding GPU requirement for models
 
-By default the models are deployed with 16 bit precision. For a model with 7 billion paramenter model, you would need 14GB (2 * 7) GPU memory to load the model. Depending on the context length, you would need extra about 20% memory to serve the model.
+By default the models are deployed with 16 bit precision. For a model with 7 billion parameter model, you would need 14GB (2 * 7) GPU memory to load the model. Depending on the context length, you would need extra about 20% memory to serve the model.
 If you are selecting a shape with A10 cards, each A10 card will give you about 23GB. 8B parameter model with large context length will perform better with 2 cards. You can run it on single card as well with reduced context length. This is a general guideline. Exact memory requirement will vary depending on the model architecture. You can learn more [here](https://blog.eleuther.ai/transformer-math/#inference).
 
 ## Issues and Resolutions
@@ -25,7 +25,7 @@ If you are selecting a shape with A10 cards, each A10 card will give you about 2
 ### Service Timeout Error
 If you see service timeout error, it means the model deployment could not load the model and start the inference container within the stipulated time. To understand the reason behind service timeout, check your logs. Fetch logs using `ads watch` command as described in section [Logs](#Logs). **If this returns empty, confirm that log groups and log links are displayed on the model deployment details page**.
 
-If logs are attached and you run the `ads watch` comand and successfully retrieve the logs, proceed below - 
+If logs are attached and you run the `ads watch` command and successfully retrieve the logs, proceed below - 
 
 Here are some frequently found issues. Please note it could fail for reasons not listed here, but they form the bulk of the issues seen by the users - 
 
@@ -53,7 +53,7 @@ torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 32.00 MiB. GPU 1 h
 ```
 If your log message appears like the above, then you have two options - 
 
-1) Try bigger shape. Refer to the memory calcuation [discussion](#Understanding-GPU-requirement-for-models)
+1) Try bigger shape. Refer to the memory calculation [discussion](#Understanding-GPU-requirement-for-models)
 
 2) Try quantization:
 
@@ -100,7 +100,7 @@ c. Add name as `--trust-remote-code` and leave value as blank.
 
 #### Architecture Not support
 
-vLLM container may not support the model that you are tring to load. Here is a sample log snippet in such cases - 
+vLLM container may not support the model that you are trying to load. Here is a sample log snippet in such cases - 
 
 ```log
 ValueError: Model architectures ['<SOME NAME>'] are not supported for now. Supported architectures: dict_keys(['AquilaModel', 'AquilaForCausalLM', 'ArcticForCausalLM', 'BaiChuanForCausalLM', 'BaichuanForCausalLM', 'BloomForCausalLM', 'CohereForCausalLM', 'Cohere2ForCausalLM', 'DbrxForCausalLM', 'DeciLMForCausalLM', 'DeepseekForCausalLM', 'DeepseekV2ForCausalLM', 'DeepseekV3ForCausalLM', 'ExaoneForCausalLM', 'FalconForCausalLM', 'Fairseq2LlamaForCausalLM', 'GemmaForCausalLM', 'Gemma2ForCausalLM', 'GlmForCausalLM', 'GPT2LMHeadModel', 'GPTBigCodeForCausalLM', 'GPTJForCausalLM', 'GPTNeoXForCausalLM', 'GraniteForCausalLM', 'GraniteMoeForCausalLM', 'GritLM', 'InternLMForCausalLM', 'InternLM2ForCausalLM', 'InternLM2VEForCausalLM', 'InternLM3ForCausalLM', 'JAISLMHeadModel', 'JambaForCausalLM', 'LlamaForCausalLM', 'LLaMAForCausalLM', 'MambaForCausalLM', 'FalconMambaForCausalLM', 'MiniCPMForCausalLM', 'MiniCPM3ForCausalLM', 'MistralForCausalLM', 'MixtralForCausalLM', 'QuantMixtralForCausalLM', 'MptForCausalLM', 'MPTForCausalLM', 'NemotronForCausalLM', 'OlmoForCausalLM', 'Olmo2ForCausalLM', 'OlmoeForCausalLM', 'OPTForCausalLM', 'OrionForCausalLM', 'PersimmonForCausalLM', 'PhiForCausalLM', 'Phi3ForCausalLM', 'Phi3SmallForCausalLM', 'PhiMoEForCausalLM', 'Qwen2ForCausalLM', 'Qwen2MoeForCausalLM', 'RWForCausalLM', 'StableLMEpochForCausalLM', 'StableLmForCausalLM', 'Starcoder2ForCausalLM', 'SolarForCausalLM', 'TeleChat2ForCausalLM', 'XverseForCausalLM', 'BartModel', 'BartForConditionalGeneration', 'Florence2ForConditionalGeneration', 'BertModel', 'RobertaModel', 'RobertaForMaskedLM', 'XLMRobertaModel', 'Gemma2Model', 'InternLM2ForRewardModel', 'JambaForSequenceClassification', 'LlamaModel', 'MistralModel', 'Qwen2Model', 'Qwen2ForRewardModel', 'Qwen2ForProcessRewardModel', 'LlavaNextForConditionalGeneration', 'Phi3VForCausalLM', 'Qwen2VLForConditionalGeneration', 'Qwen2ForSequenceClassification', 'BertForSequenceClassification', 'RobertaForSequenceClassification', 'XLMRobertaForSequenceClassification', 'AriaForConditionalGeneration', 'Blip2ForConditionalGeneration', 'ChameleonForConditionalGeneration', 'ChatGLMModel', 'ChatGLMForConditionalGeneration', 'DeepseekVLV2ForCausalLM', 'FuyuForCausalLM', 'H2OVLChatModel', 'InternVLChatModel', 'Idefics3ForConditionalGeneration', 'LlavaForConditionalGeneration', 'LlavaNextVideoForConditionalGeneration', 'LlavaOnevisionForConditionalGeneration', 'MantisForConditionalGeneration', 'MiniCPMO', 'MiniCPMV', 'MolmoForCausalLM', 'NVLM_D', 'PaliGemmaForConditionalGeneration', 'PixtralForConditionalGeneration', 'QWenLMHeadModel', 'Qwen2AudioForConditionalGeneration', 'UltravoxModel', 'MllamaForConditionalGeneration', 'WhisperForConditionalGeneration', 'EAGLEModel', 'MedusaModel', 'MLPSpeculatorPreTrainedModel'])
@@ -138,7 +138,7 @@ If you see authorization issues after setting up the policies here are possible 
     ```
     Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
     ```
-6. Unable to create a model version set or not able to fetch model version set information during finetuning or evaluation step - 
+6. Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
     ```
     Allow dynamic-group aqua-dynamic-group to manage data-science-modelversionsets in compartment <your-compartment-name>
     ```
@@ -154,7 +154,7 @@ If you see authorization issues after setting up the policies here are possible 
     ```
     Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartment <your-compartment-name>
     ```
-10. Authorization error related to listing, creating or managing model deplyoyments - 
+10. Authorization error related to listing, creating or managing model deployments - 
     ```
     Allow dynamic-group aqua-dynamic-group to manage data-science-model-deployments in compartment <your-compartment-name>
     ```
