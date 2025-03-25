@@ -23,7 +23,7 @@ If you are selecting a shape with A10 cards, each A10 card will give you about 2
 
 
 ### Service Timeout Error
-If you see service timeout error, it means the model deployment could not load the model and start the inference container within the stipulated time. To understand the reason behind service timeout, check your logs. Fetch logs using `ads watch` command as described in section [Logs](#Logs). **If this returns empty, confirm that log groups and log links are displayed on the model deployment details page**.
+If you see service timeout error, it means the model deployment could not load the model and start the inference container within the stipulated time. To understand the reason behind service timeout, check your logs. Fetch logs using `ads watch` command as described in section [Logs](#logs). **If this returns empty, confirm that log groups and log links are displayed on the model deployment details page**.
 
 If logs are attached, run the `ads watch` command to retrieve the logs. Once log is fetched, proceed below - 
 
@@ -53,7 +53,7 @@ torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 32.00 MiB. GPU 1 h
 ```
 If your log message appears like the above, then you have two options - 
 
-1) Try bigger shape. Refer to the memory calculation [discussion](#Understanding-GPU-requirement-for-models)
+1) Try bigger shape. Refer to the memory calculation [discussion](#understanding-gpu-requirement-for-models)
 
 2) Try quantization:
 
