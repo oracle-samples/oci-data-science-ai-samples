@@ -99,7 +99,7 @@ If you see such a message, -
 3. Add name as `--trust-remote-code` and leave value as blank.
 
 
-#### Architecture Not support
+#### Architecture Not supported
 
 vLLM container may not support the model that you are trying to load. Here is a sample log snippet in such cases - 
 
@@ -112,13 +112,21 @@ In such cases, you will have to follow [BYOC](https://github.com/oracle-samples/
 Visit [vLLM supported models](https://docs.vllm.ai/en/latest/models/supported_models.html) to know what models are supported.
 If you are using Text Generation Inference, visit [TGI Support models page](https://huggingface.co/docs/text-generation-inference/en/supported_models)
 
+### Capacity Issues
+
+You see a message "There is currently no capacity for the specified shape. Choose a different shape or region". This happens because there currently all the instances of the selected shape are in use in that region. This is different from the limits.
+
+The shapes are provisioned from a common pool by default. You could create a capacity reservation for more predictable availability of the shape.
+
 ### Chat payload is not working
 TODO
 
 ### Image Payload not working
 TODO
+
 ### Prompt completion payload is not working
 TODO
+
 # Authorization Issues
 
 Authorization issues arise due to missing policy. Please refer to [policy document](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/policies/README.md) to setup policies. We strongly encourage using ORM option mentioned in the policy document.
