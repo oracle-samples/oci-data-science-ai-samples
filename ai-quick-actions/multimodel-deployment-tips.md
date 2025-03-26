@@ -6,19 +6,19 @@
 - [MultiModel Deployment](#multimodel-deployment)
   - [List Available Shapes](#list-available-shapes)
   - [Get MultiModel Configuration](#get-multimodel-configuration)
-  - [Create Deployment](#create-multimodel-deployment)
-  - [List Model Deployments](#list-multimodel-deployments)
-  - [Get Model Deployment Details](#get-multimodel-deployment-details)
+  - [Create MultiModel Deployment](#create-multimodel-deployment)
+  - [Manage MultiModel Deployments](#manage-multimodel-deployments)
 - [MultiModel Inferencing](#multimodel-inferencing)
 - [MultiModel Evaluation](#multimodel-evaluation)
   - [Create Model Evaluation](#create-model-evaluations)
+- [Limitation](#limitations)
 
 
 # Introduction to MultiModel Deployment and Serving
 
-MultiModel inference and serving refers to efficiently hosting and managing multiple large language models simultaneously to serve inference requests using shared resources. The Data Science server has prebuilt **vLLM service container** that make deploying and serving multiple large language model on **single GPU Compute shape** very easy, simplifying the deployment process and reducing operational complexity. This container comes with preinstalled [**LiteLLM proxy server**]https://docs.litellm.ai/docs/simple_proxy) which routes requests to the appropriate model, ensuring seamless prediction.
+MultiModel inference and serving refers to efficiently hosting and managing multiple large language models simultaneously to serve inference requests using shared resources. The Data Science server has prebuilt **vLLM service container** that make deploying and serving multiple large language model on **single GPU Compute shape** very easy, simplifying the deployment process and reducing operational complexity. This container comes with preinstalled [**LiteLLM proxy server**](https://docs.litellm.ai/docs/simple_proxy) which routes requests to the appropriate model, ensuring seamless prediction.
 
-**Multi-Model Deployment is currently in beta and is only available through the CLI. At this time, only base service LLM models are supported, and fine-tuned/registered models cannot be deployed.**
+**MultiModel Deployment is currently in beta and is only available through the CLI. At this time, only base service LLM models are supported, and fine-tuned/registered models cannot be deployed.**
 
 This document provides documentation on how to use ADS CLI to create MultiModel deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models. you'll need the latest version of ADS to run these, installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
 
@@ -27,6 +27,8 @@ This document provides documentation on how to use ADS CLI to create MultiModel 
 
 First step in process is to get the OCIDs of the desired base service LLM AQUA models, which are required to initiate the MultiModel deployment process. Refer to [AQUA CLI tips](cli-tips.md) for detailed instructions on how to obtain the OCIDs of base service LLM AQUA models.
 
+You can also obtain the OCID  from the AQUA user interface by clicking on the model card and selecting the `Copy OCID` button from the `More Options` dropdown in the top-right corner of the screen.
+
 # MultiModel Deployment
 
 
@@ -34,13 +36,20 @@ First step in process is to get the OCIDs of the desired base service LLM AQUA m
 
 ### Description
 
-Lists the avilable **Compute Shapes** with basic information .
+Lists the available **Compute Shapes** with basic information such as name, configuration, CPU/GPU specifications, and memory capacity for the shapes supported by the Model Deployment service in your compartment.
 
 ### Usage
 
 ```bash
 ads aqua deployment list_shapes
 ```
+
+### Optional Parameters
+
+`--compartment_id [str]`
+
+The compartment OCID where model deployment is to be created. If not provided, then it defaults to user's compartment.
+
 ### Example
 ```bash
 ads aqua deployment list_shapes
@@ -48,28 +57,7 @@ ads aqua deployment list_shapes
 ##### CLI Output
 
 ```json
-    {
-        "core_count": 64,
-        "memory_in_gbs": 1024,
-        "name": "BM.GPU.A10.4",
-        "shape_series": "NVIDIA_GPU",
-        "gpu_specs": {
-            "gpu_memory_in_gbs": 96,
-            "gpu_count": 4,
-            "gpu_type": "A10"
-        }
-    }
-    {
-        "core_count": 112,
-        "memory_in_gbs": 1024,
-        "name": "BM.GPU.L40S-NC.4",
-        "shape_series": "NVIDIA_GPU",
-        "gpu_specs": {
-            "gpu_memory_in_gbs": 192,
-            "gpu_count": 4,
-            "gpu_type": "L40S"
-        }
-    }
+
     {
         "core_count": 15,
         "memory_in_gbs": 240,
@@ -112,7 +100,6 @@ ads aqua deployment get_multimodel_deployment_config [OPTIONS]
 `--model_ids  [list]`
 
 A list of OCIDs for the Aqua models <br>
-Example: `["ocid1.datasciencemodel.oc1.iad...","ocid1.datasciencemodel.oc1.iad...."]`
 
 ### Optional Parameters
 
@@ -120,18 +107,18 @@ Example: `["ocid1.datasciencemodel.oc1.iad...","ocid1.datasciencemodel.oc1.iad..
 
 The OCID of the primary Aqua model. If provided, GPU allocation will prioritize this model. Otherwise, GPUs will be evenly allocated. <br>
 
-For example, there is one compatible shape "BM.GPU.H100.8" for three models A, B, C, and each model has a gpu count as below:
+For example, there is one compatible shape "BM.GPU.H100.8" for three models A, B, C, and each model has a gpu count as below: <br>
 
-A - BM.GPU.H100.8 - 1, 2, 4, 8
-B - BM.GPU.H100.8 - 1, 2, 4, 8
-C - BM.GPU.H100.8 - 1, 2, 4, 8
+A - BM.GPU.H100.8 - 1, 2, 4, 8 <br>
+B - BM.GPU.H100.8 - 1, 2, 4, 8 <br>
+C - BM.GPU.H100.8 - 1, 2, 4, 8 <br>
 
-If no primary model is provided, the gpu allocation for A, B, C could be [2, 4, 2], [2, 2, 4] or [4, 2, 2]
-If B is the primary model, the gpu allocation is [2, 4, 2] as B always gets the maximum gpu count.
+If no primary model is provided, the gpu allocation for A, B, C could be [2, 4, 2], [2, 2, 4] or [4, 2, 2] <br>
+If B is the primary model, the gpu allocation is [2, 4, 2] as B always gets the maximum gpu count. <br>
 
-`**kwargs`
+`--compartment_id: [str]`
 
-compartment_id: str The compartment OCID to retrieve the model deployment shapes.
+The compartment OCID to retrieve the models and available model deployment shapes.
 
 ### Example
 
@@ -275,7 +262,7 @@ ads aqua deployment create [OPTIONS]
 `--models [str]`
 
 The String representation of a JSON array, where each object defines a model’s OCID and the number of GPUs assigned to it. The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**. <br>
-Example: `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape
+Example: `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape. <br>
 
 
 `--instance_shape [str]`
@@ -289,7 +276,9 @@ The name of model deployment.
 
 `--container_image_uri [str]`
 
-The URI of the inference container associated with the model being registered. In case of MultiModel, the value is vLLM container URI.
+The URI of the inference container associated with the model being registered. In case of MultiModel, the value is vLLM container URI. <br>
+Example: `dsmc://odsc-vllm-serving:0.6.4.post1.2` or `dsmc://odsc-vllm-serving:0.8.1.2`
+
 
 ### Optional Parameters
 
@@ -347,7 +336,12 @@ The private endpoint id of model deployment.
 #### Create MultiModel deployment with `/v1/completions`
 
 ```bash
-ads aqua deployment create --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1},{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' --instance_shape "VM.GPU.A10.2" --display_name "modelDeployment_multmodel_model1_model2"
+ads aqua deployment create \
+  --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
+  --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' \
+  --instance_shape "VM.GPU.A10.2" \
+  --display_name "modelDeployment_multmodel_model1_model2"
+
 ```
 
 ##### CLI Output
@@ -401,7 +395,13 @@ ads aqua deployment create --container_image_uri "dsmc://odsc-vllm-serving:0.6.4
 #### Create MultiModel deployment with `/v1/chat/completions`
 
 ```bash
-ads aqua deployment create --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1},{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' --env-var '{"MODEL_DEPLOY_PREDICT_ENDPOINT":"/v1/chat/completions"}' --instance_shape "VM.GPU.A10.2" --display_name "modelDeployment_multmodel_model1_model2"
+ads aqua deployment create \
+  --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
+  --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' \
+  --env-var '{"MODEL_DEPLOY_PREDICT_ENDPOINT":"/v1/chat/completions"}' \
+  --instance_shape "VM.GPU.A10.2" \
+  --display_name "modelDeployment_multmodel_model1_model2"
+
 ```
 
 ##### CLI Output
@@ -453,200 +453,13 @@ ads aqua deployment create --container_image_uri "dsmc://odsc-vllm-serving:0.6.4
 ```
 
 
-## List MultiModel Deployments
+## Manage MultiModel Deployments
 
 ### Description
 
-Lists all AQUA deployments (both MultiModel and single model) within a specified compartment and/or project, along with their associated tags.
+To list all AQUA deployments (both MultiModel and single-model) within a specified compartment or project, or to get detailed information on a specific MultiModel deployment, kindly refer to the [AQUA CLI tips](cli-tips.md) documentation.
 
-### Usage
-
-```bash
-ads aqua deployment list [OPTIONS]
-```
-
-### Optional Parameters
-
-`--compartment_id [text]`
-
-The ID of the compartment in which the aqua deployments(both MultiModel and single model) are available. If not provided, then it defaults to the user's compartment.
-
-`**kwargs`
-
-Additional keyword arguments that can be used to filter the results for OCI list_model_deployments API. For more details on acceptable parameters, see [List Model Deployments API](https://docs.oracle.com/iaas/api/#/en/data-science/20190101/ModelDeploymentSummary/ListModelDeployments).
-
-
-### Example
-
-```bash
-ads aqua deployment list
-```
-
-#### CLI Output
-
-```json
-{
-    "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "display_name": "Multi model deployment of Mistral-7B-v0.1 and falcon-7b on A10.2",
-    "aqua_service_model": false,
-    "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-    "models": [],
-    "aqua_model_name": "",
-    "state": "ACTIVE",
-    "description": null,
-    "created_on": "2025-03-10 19:09:40.793000+00:00",
-    "created_by": "ocid1.user.oc1..<ocid>",
-    "endpoint": "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "private_endpoint_id": null,
-    "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "lifecycle_details": "",
-    "shape_info": {
-        "instance_shape": "VM.GPU.A10.2",
-        "instance_count": 1,
-        "ocpus": null,
-        "memory_in_gbs": null
-    },
-    "tags": {
-        "aqua_model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-        "aqua_multimodel": "true",
-        "OCI_AQUA": "active"
-    },
-    "environment_variables": {
-        "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions",
-        "MULTI_MODEL_CONFIG": "{\"models\": [{\"params\": \"--served-model-name mistralai/Mistral-7B-v0.1 --seed 42 --tensor-parallel-size 1 --max-model-len 4096\", \"model_path\": \"service_models/Mistral-7B-v0.1/78814a9/artifact\"}, {\"params\": \"--served-model-name tiiuae/falcon-7b --seed 42 --tensor-parallel-size 1 --trust-remote-code\", \"model_path\": \"service_models/falcon-7b/f779652/artifact\"}]}",
-        "MODEL_DEPLOY_ENABLE_STREAMING": "true",
-        "PORT": "8080",
-        "HEALTH_CHECK_PORT": "8080"
-    },
-    "cmd": []
-}
-...
-...
-...
-```
-MultiModel deployment will have  tag `"aqua_multimodel": "true",` associated with them.
-
-## Search MultiModel Deployment OCID by Name
-
-### Description
-
-Gets the OCID of an Aqua MultiModel deployment. This OCID is required to perform an evaluation or to run inference.
-
-### Usage
-
-```bash
-ADS_AQUA_LOG_LEVEL=ERROR ads aqua deployment get [OPTIONS]  | jq -r 'select(<field>=="<field_value>") | .id'
-```
-The `field_value` value should match the either full model name or model deployment name. For `[OPTIONS]`, check the Optional Parameters
-section of the [List Model Deployments](#list-model-deployments) API. Note that we set the logging level to `ERROR` so that the Aqua logs do not cause issues when `jq` command parses the
-CLI output.
-
-### Examples
-#### Get Service Model Deployment OCID
-
-These deployments are ready to be evaluated (if active).
-
-To get the OCID using model deployment name, use:
-
-```bash
-ADS_AQUA_LOG_LEVEL=ERROR ads aqua deployment list | jq -r 'select(.display_name=="gemma-2b-it-md") | .id'
-```
-
-To get the OCID using model name, use:
-```bash
-ADS_AQUA_LOG_LEVEL=ERROR ads aqua deployment list | jq -r 'select(.aqua_model_name=="google/gemma-2b-it") | .id'
-```
-
-## Get MultiModel Deployment Details
-
-### Description
-
-Gets the information of an Aqua MultiModel deployment.
-
-### Usage
-
-```bash
-ads aqua deployment get [OPTIONS]
-```
-
-### Required Parameters
-
-`--model_deployment_id [str]`
-
-The OCID of the Aqua MultiModel deployment.
-
-`**kwargs`
-
-Additional keyword arguments that can be used to filter the results for OCI get_model_deployment API. For more details on acceptable parameters, see [Get Model Deployment API](https://docs.oracle.com/iaas/api/#/en/data-science/20190101/ModelDeployment/GetModelDeployment).
-
-### Example
-
-```bash
-ads aqua deployment get --model_deployment_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>"
-```
-
-#### CLI Output
-
-```json
-{
-    "id": "ocid1.datasciencemodeldeploymentint.oc1.iad.<ocid>",
-    "display_name": "Multi model deployment of Mistral-7B-v0.1 and falcon-7b on A10.2",
-    "aqua_service_model": false,
-    "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-    "models": [
-        {
-            "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-            "model_name": "mistralai/Mistral-7B-v0.1",
-            "gpu_count": 1,
-            "env_var": {}
-        },
-        {
-            "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-            "model_name": "tiiuae/falcon-7b",
-            "gpu_count": 1,
-            "env_var": {}
-        }
-    ],
-    "aqua_model_name": "",
-    "state": "ACTIVE",
-    "description": null,
-    "created_on": "2025-03-10 19:09:40.793000+00:00",
-    "created_by": "ocid1.user.oc1..<ocid>",
-     "endpoint": "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "private_endpoint_id": null,
-    "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "lifecycle_details": "Model Deployment is Active.",
-    "shape_info": {
-        "instance_shape": "VM.GPU.A10.2",
-        "instance_count": 1,
-        "ocpus": null,
-        "memory_in_gbs": null
-    },
-    "tags": {
-        "aqua_model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
-        "aqua_multimodel": "true",
-        "OCI_AQUA": "active"
-    },
-    "environment_variables": {
-        "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions",
-        "MULTI_MODEL_CONFIG": "{\"models\": [{\"params\": \"--served-model-name mistralai/Mistral-7B-v0.1 --seed 42 --tensor-parallel-size 1 --max-model-len 4096\", \"model_path\": \"service_models/Mistral-7B-v0.1/78814a9/artifact\"}, {\"params\": \"--served-model-name tiiuae/falcon-7b --seed 42 --tensor-parallel-size 1 --trust-remote-code\", \"model_path\": \"service_models/falcon-7b/f779652/artifact\"}]}",
-        "MODEL_DEPLOY_ENABLE_STREAMING": "true",
-        "PORT": "8080",
-        "HEALTH_CHECK_PORT": "8080"
-    },
-    "cmd": [],
-    "log_group": {
-        "id": "ocid1.loggroup.oc1.iad.<ocid>",
-        "name": "aqua-multimodel-deploy-log-group",
-        "url": "https://cloud.oracle.com/logging/log-groups/ocid1.loggroup.oc1.iad.<ocid>?region=us-ashburn-1"
-    },
-    "log": {
-        "id": "ocid1.log.oc1.iad.<ocid>",
-        "name": "multi-model-create",
-        "url": ""
-    }
-}
-```
+Note: MultiModel deployments are identified by the tag `"aqua_multimodel": "true",` associated with them.
 
 # MultiModel Inferencing
 
@@ -655,13 +468,18 @@ The only change required to infer a specific model from a MultiModel deployment 
 ## Using oci-cli
 
 ```bash
-oci raw-request --http-method POST --target-uri <model_deployment_url>/predict --request-body '{
-        "model": "<model_name>",
-        "prompt":"what are activation functions?",
-        "max_tokens":250,
-        "temperature": 0.7,
-        "top_p":0.8,
-    }' --auth <auth_method>
+oci raw-request \
+  --http-method POST \
+  --target-uri <model_deployment_url>/predict \
+  --request-body '{
+    "model": "<model_name>",
+    "prompt": "what are activation functions?",
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8
+  }' \
+  --auth <auth_method>
+
 ```
 
 Note: Currently `oci-cli` does not support streaming response, use Python or Java SDK instead.
@@ -927,14 +745,28 @@ oci raw-request --http-method POST --target-uri <model_deployment_url>/predict -
 ```bash
 ## If "/v1/completions" was selected during deployment using vLLM SMC and "/v1/chat/completions" endpoint is required later on.
 
-oci raw-request --http-method POST --target-uri  <model_deployment_url>/predict --request-headers '{"route":"/v1/chat/completions"}' --request-body '
+oci raw-request \
+  --http-method POST \
+  --target-uri <model_deployment_url>/predict \
+  --request-headers '{"route":"/v1/chat/completions"}' \
+  --request-body '{
+    "model": "<model_name>",
+    "messages": [
       {
-          "model": "<model_name>",
-          "messages":[{"role":"user","content":[{"type":"text","text":"Who wrote the book Harry Potter?"}]}],
-          "max_tokens": 500,
-          "temperature": 0.7,
-          "top_p": 0.8,
-      }' --auth security_token
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "Who wrote the book Harry Potter?"
+          }
+        ]
+      }
+    ],
+    "max_tokens": 500,
+    "temperature": 0.7,
+    "top_p": 0.8
+  }' \
+  --auth security_token
 
 ```
 
@@ -945,7 +777,7 @@ oci raw-request --http-method POST --target-uri  <model_deployment_url>/predict 
 
 ### Description
 
-Creates a new evaluation model using an existing Aqua MultiModel deployment. For Multi-Model deployment, evaluations must be created separately for each model using the same model deployment OCID.
+Creates a new evaluation model using an existing Aqua MultiModel deployment. For MultiModel deployment, evaluations must be created separately for each model using the same model deployment OCID.
 
 ### Usage
 
@@ -1042,7 +874,15 @@ A flag to indicate whether to force overwrite the existing evaluation file in ob
 ### Example
 
 ```bash
-ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" --evaluation_name "test_evaluation" --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" --report_path "oci://<bucket>@<namespace>/report/path/" --model_parameters '{"model":"<model_name>","max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}' --shape_name "VM.Standard.E4.Flex" --block_storage_size 50 --metrics '[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]
+ads aqua evaluation create \
+    --evaluation_source_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" \
+    --evaluation_name "test_evaluation" \
+    --dataset_path "oci://<bucket>@<namespace>/path/to/the/dataset.jsonl" \
+    --report_path "oci://<bucket>@<namespace>/report/path/" \
+    --model_parameters '{"model":"<model_name>","max_tokens": 500, "temperature": 0.7, "top_p": 1.0, "top_k": 50}' \
+    --shape_name "VM.Standard.E4.Flex" \
+    --block_storage_size 50 \
+    --metrics '[{"name": "bertscore", "args": {}}, {"name": "rouge", "args": {}}]'
 ```
 
 #### CLI Output
@@ -1072,4 +912,13 @@ ads aqua evaluation create  --evaluation_source_id "ocid1.datasciencemodeldeploy
 ```
 
 For other operations related to **Evaluation**, such as listing evaluations and retrieving evaluation details, please refer to [AQUA CLI tips](cli-tips.md)
+
+# Limitations
+
+- Currently available through CLI only (no Console UI support as of now).
+- Supports base service LLM models; fine-tuned or custom models are not supported.
+- GPU counts per model must be powers of two (1, 2, 4, 8).
+- All models in a deployment must use the same compute shape.
+- Evaluations are run per model within a MultiModel deployment.
+
 
