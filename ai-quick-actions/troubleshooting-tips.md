@@ -15,7 +15,11 @@
       - [get namespace](#get-namespace)
       - [list buckets](#list-buckets)
       - [registering the model](#registering-the-model)
+      - [put\_object](#put_object)
       - [Evaluation and Fine Tuning](#evaluation-and-fine-tuning)
+- [Invalid Tags Issues](#invalid-tags-issues)
+      - [create model](#create-model)
+      - [update model](#update-model)
   - [Logs](#logs)
   - [Understanding GPU requirement for models](#understanding-gpu-requirement-for-models)
   - [Issues and Resolutions](#issues-and-resolutions)
@@ -78,8 +82,11 @@ If the UI is not able to list the buckets, ensure that policy below is in place.
 ```
 Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
 ```
+
+
 #### registering the model
-1. AI Quick Actions is not able to reach the object storage location specified - 
+#### put_object
+1. AI Quick Actions is not able to reach the object storage location specified when registering the model.
 ```
 Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
 ```
@@ -110,6 +117,21 @@ Allow dynamic-group <Your dynamic group> to manage data-science-models in compar
     ```
     Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
     ```
+
+# Invalid Tags Issues
+
+#### create model
+The AQUA UI currently does not support adding freeform tags. Use the AQUA CLI to register a model with freeform tags. 
+
+```
+ads aqua model register --model <model-ocid> --os_path <oss-path> --download_from_hf True --compartment_id ocid1.compartment.xxx --defined_tags '{"key1":"value1", ...}' --freeform_tags '{"key1":"value1", ...}'
+```
+
+#### update model
+When creating a fine-tuned model deployment and an error occurs when submitting the UI form, add the following policy. 
+```
+Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
+```
 
 
 ## Logs
