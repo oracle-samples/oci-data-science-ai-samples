@@ -1,4 +1,116 @@
-# Model Deployment
+
+# Troubleshooting Model Deployment
+
+<!-- TOC -->
+<!-- /TOC -->
+
+
+- [Troubleshooting Model Deployment](#troubleshooting-model-deployment)
+- [Authorization Issues](#authorization-issues)
+  - [Types of Authorization Errors](#types-of-authorization-errors)
+      - [list model deployment](#list-model-deployment)
+      - [list models](#list-models)
+      - [list log groups](#list-log-groups)
+      - [list data science private endpoints](#list-data-science-private-endpoints)
+      - [get namespace](#get-namespace)
+      - [list buckets](#list-buckets)
+      - [registering the model](#registering-the-model)
+      - [Evaluation and Fine Tuning](#evaluation-and-fine-tuning)
+  - [Logs](#logs)
+  - [Understanding GPU requirement for models](#understanding-gpu-requirement-for-models)
+  - [Issues and Resolutions](#issues-and-resolutions)
+    - [Service Timeout Error](#service-timeout-error)
+      - [Out of Memory (OOM) error.](#out-of-memory-oom-error)
+      - [Trusting remote code](#trusting-remote-code)
+      - [Architecture Not supported](#architecture-not-supported)
+    - [Capacity Issues](#capacity-issues)
+    - [Chat payload is not working](#chat-payload-is-not-working)
+    - [Image Payload not working](#image-payload-not-working)
+    - [Prompt completion payload is not working](#prompt-completion-payload-is-not-working)
+
+# Authorization Issues
+
+Authorization issues arise due to missing policy and/or using non-versioned OCI Object Storage Buckets with AQUA.
+1. Set up policies for AQUA as seen [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/policies/README.md) 
+   - We strongly encourage using ORM option (automated setup of policies, not manual) mentioned in the policy document.
+2. The notebook session has to be in the **same compartment** as the one defined by the dynamic group. 
+   - The dynamic group definition used while setting up ORM stack identifies the notebook from where AI Quick Actions is being used. 
+3. Ensure that the bucket used with AQUA has object versioning enabled
+   
+  ![object versioning](./web_assets/object-versioning.png)
+
+
+## Types of Authorization Errors
+If you see authorization issues after setting up the policies, ensuring that the notebook is in the **same compartment** as the one defined by the dynamic group, and the bucket is versioned, here are the following cases:
+
+
+#### list model deployment
+Authorization error related to listing, creating or managing model deployments, ensure that policy below is in place.
+```
+Allow dynamic-group aqua-dynamic-group to manage data-science-model-deployments in compartment <your-compartment-name>
+```
+
+#### list models
+Authorization error related to listing, creating, or registering models, ensure that policy below is in place.
+```
+Allow dynamic-group aqua-dynamic-group to manage data-science-models in compartment <your-compartment-name>
+```
+
+#### list log groups
+The dropdown for log group or log does not show anything and gives authorization error, ensure policy below is in place.
+```
+Allow dynamic-group aqua-dynamic-group to use logging-family in compartment <your-compartment-name>
+```
+#### list data science private endpoints 
+Authorization error does not list the private endpoints in the specified compartment on UI, ensure policy below is in place.
+```
+Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartment <your-compartment-name>
+```
+
+#### get namespace
+If the UI is unable to fetch namespace, ensure policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
+Allow dynamic-group <Your dynamic group> to read objectstorage-namespaces in compartment <your-compartment-name>
+```
+#### list buckets
+If the UI is not able to list the buckets, ensure that policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
+```
+#### registering the model
+1. AI Quick Actions is not able to reach the object storage location specified - 
+```
+Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
+```
+2. AI Quick Actions is not able to create model in model catalog, ensure that policy below is in place. 
+```
+Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
+```
+
+#### Evaluation and Fine Tuning
+1. Unable to fetch model details for fine tuned models 
+    ```
+    Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
+    ```
+2. Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
+    ```
+    Allow dynamic-group aqua-dynamic-group to manage data-science-modelversionsets in compartment <your-compartment-name>
+    ```
+3. Unable to fetch resource limits information when selecting instance shape - 
+    ```
+    Allow dynamic-group aqua-dynamic-group to read resource-availability in compartment <your-compartment-name>
+    ```
+4. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
+    ```
+    Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartment <your-compartment-name>
+    ```
+   
+5.  Allowing AI Quick Actions to use defined tags - 
+    ```
+    Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
+    ```
+
 
 ## Logs
 
@@ -127,50 +239,3 @@ TODO
 ### Prompt completion payload is not working
 TODO
 
-# Authorization Issues
-
-Authorization issues arise due to missing policy. Please refer to [policy document](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/policies/README.md) to setup policies. We strongly encourage using ORM option mentioned in the policy document.
-
-If you see authorization issues after setting up the policies here are possible cases - 
-1. The dynamic group definition used while setting up ORM stack identifies the notebook from where AI quick actions is being used. The notebook session has to be in the same compartment as the one defined by the dynamic group.
-2. If the UI is not able to list the buckets or fetch namespace you maybe missing following policy - 
-    ```
-    Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
-    Allow dynamic-group <Your dynamic group> to read objectstorage-namespaces in compartment <your-compartment-name>
-    ```
-3. While registering the model, AI Quick Actions is not able to reach the object storage location specified - 
-    ```
-    Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
-    ```
-4. While registering the model, AI Quick Actions is not able to create model in model catalog - 
-    ```
-    Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
-    ```
-5. Unable to fetch model details for fine tuned models - 
-    ```
-    Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
-    ```
-6. Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
-    ```
-    Allow dynamic-group aqua-dynamic-group to manage data-science-modelversionsets in compartment <your-compartment-name>
-    ```
-7. Unable to fetch resource limits information where you select shape - 
-    ```
-    Allow dynamic-group aqua-dynamic-group to read resource-availability in compartment <your-compartment-name>
-    ```
-8. The dropdown for log group or log does not show anything and gives authorization error - 
-    ```
-    Allow dynamic-group aqua-dynamic-group to use logging-family in compartment <your-compartment-name>
-    ```
-9. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
-    ```
-    Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartment <your-compartment-name>
-    ```
-10. Authorization error related to listing, creating or managing model deployments - 
-    ```
-    Allow dynamic-group aqua-dynamic-group to manage data-science-model-deployments in compartment <your-compartment-name>
-    ```
-11. Allowing AI Quick Actions to use defined tags - 
-    ```
-    Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
-    ```
