@@ -4,7 +4,6 @@
 <!-- TOC -->
 <!-- /TOC -->
 
-
 - [Troubleshooting Model Deployment](#troubleshooting-model-deployment)
 - [Authorization Issues](#authorization-issues)
   - [Types of Authorization Errors](#types-of-authorization-errors)
@@ -14,12 +13,12 @@
       - [list data science private endpoints](#list-data-science-private-endpoints)
       - [get namespace](#get-namespace)
       - [list buckets](#list-buckets)
-      - [registering the model](#registering-the-model)
-      - [put\_object](#put_object)
+      - [create model](#create-model)
+        - [list model version sets](#list-model-version-sets)
       - [Evaluation and Fine Tuning](#evaluation-and-fine-tuning)
 - [Invalid Tags Issues](#invalid-tags-issues)
-      - [create model](#create-model)
-      - [update model](#update-model)
+      - [create model invalid tags](#create-model-invalid-tags)
+      - [update model invalid tags](#update-model-invalid-tags)
   - [Logs](#logs)
   - [Understanding GPU requirement for models](#understanding-gpu-requirement-for-models)
   - [Issues and Resolutions](#issues-and-resolutions)
@@ -72,20 +71,19 @@ Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartm
 ```
 
 #### get namespace
-If the UI is unable to fetch namespace, ensure policy below is in place.
+If the UI is unable to fetch namespace or list object storage buckets ensure policy below is in place.
 ```
 Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
 Allow dynamic-group <Your dynamic group> to read objectstorage-namespaces in compartment <your-compartment-name>
 ```
 #### list buckets
-If the UI is not able to list the buckets, ensure that policy below is in place.
+If the UI is unable to list buckets, ensure the following:
+- If using custom networking, configure NAT gateway and SGW gateway
+- ensure the policy below is in place
 ```
 Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
 ```
-
-
-#### registering the model
-#### put_object
+#### create model
 1. AI Quick Actions is not able to reach the object storage location specified when registering the model.
 ```
 Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
@@ -95,39 +93,36 @@ Allow dynamic-group <Your dynamic group> to manage object-family in compartment 
 Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
 ```
 
+##### list model version sets
+Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
+ ```
+ Allow dynamic-group aqua-dynamic-group to manage data-science-modelversionsets in compartment <your-compartment-name>
+ ```
+ 
 #### Evaluation and Fine Tuning
 1. Unable to fetch model details for fine tuned models 
     ```
     Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
     ```
-2. Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
-    ```
-    Allow dynamic-group aqua-dynamic-group to manage data-science-modelversionsets in compartment <your-compartment-name>
-    ```
-3. Unable to fetch resource limits information when selecting instance shape - 
+2. Unable to fetch resource limits information when selecting instance shape - 
     ```
     Allow dynamic-group aqua-dynamic-group to read resource-availability in compartment <your-compartment-name>
     ```
-4. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
+3. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
     ```
     Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartment <your-compartment-name>
-    ```
-   
-5.  Allowing AI Quick Actions to use defined tags - 
-    ```
-    Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
     ```
 
 # Invalid Tags Issues
 
-#### create model
+#### create model invalid tags
 The AQUA UI currently does not support adding freeform tags. Use the AQUA CLI to register a model with freeform tags. 
 
 ```
 ads aqua model register --model <model-ocid> --os_path <oss-path> --download_from_hf True --compartment_id ocid1.compartment.xxx --defined_tags '{"key1":"value1", ...}' --freeform_tags '{"key1":"value1", ...}'
 ```
 
-#### update model
+#### update model invalid tags
 When creating a fine-tuned model deployment and an error occurs when submitting the UI form, add the following policy. 
 ```
 Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
