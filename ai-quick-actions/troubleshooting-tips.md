@@ -132,6 +132,8 @@ TODO
 
 Authorization issues arise due to missing policy. Please refer to [policy document](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/policies/README.md) to setup policies. We strongly encourage using ORM option mentioned in the policy document.
 
+**Note**: `<Your dynamic group>` in the policy below has to be replaced with dynamic group that you defined while using the ORM stack.
+
 If you see authorization issues after setting up the policies here are possible cases - 
 1. The dynamic group definition used while setting up ORM stack identifies the notebook from where AI quick actions is being used. The notebook session has to be in the same compartment as the one defined by the dynamic group.
 2. If the UI is not able to list the buckets or fetch namespace you maybe missing following policy - 
