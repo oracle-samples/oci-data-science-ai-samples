@@ -1,8 +1,9 @@
 # **AI Quick Actions MultiModel Deployment (Available through CLI only)**
 
 # Table of Contents
-
+- # Introduction to MultiModel Deployment and Serving
 - [Models](#models)
+    - [Custom Models](#custom-models)
 - [MultiModel Deployment](#multimodel-deployment)
   - [List Available Shapes](#list-available-shapes)
   - [Get MultiModel Configuration](#get-multimodel-configuration)
@@ -29,8 +30,106 @@ First step in process is to get the OCIDs of the desired base service LLM AQUA m
 
 You can also obtain the OCID  from the AQUA user interface by clicking on the model card and selecting the `Copy OCID` button from the `More Options` dropdown in the top-right corner of the screen.
 
-# MultiModel Deployment
+## Custom Models
 
+Out of the box, MultiModel Deployment currently supports only AI Quick Actions service LLM models (see [requirements](#introduction-to-multimodel-deployment-and-serving) above). However, it is also possible to enable support for *custom-registered* models by manually adding a deployment configuration to the model artifact folder in Object Storage.
+
+Follow the steps below to enable MultiModel Deployment support for your custom models:
+
+- **Register the model**
+
+  Register your model using either the **AI Quick Actions UI** or **ADS CLI**. This will upload the model to the Object Storage and associate it with a Model Catalog record.
+
+- **Navigate to the model's artifact directory**
+
+  Identify the Object Storage path where your model’s artifacts were uploaded during registration.
+
+  Example:
+
+  ```bash
+  oci://<bucket>@<namespace>/path/to/model/
+  ```
+
+- **Create a configuration folder**
+  Inside the model’s artifact path, create a new folder called `config`
+
+  Example:
+  ```bash
+  oci://<bucket>@<namespace>/path/to/model/config/
+  ```
+
+- **Add a deployment configuration file**
+
+  Inside the `config/` folder, create a file named `deployment_config.json`.
+  This file will define the list of supported shapes and their configuration for multi-model deployment.
+
+  **Below is a sample template:**
+
+  ```json
+  {
+    "shape": [
+      "VM.GPU.A10.1",
+      "VM.GPU.A10.2",
+      "BM.GPU.A10.4",
+    ],
+    "configuration": {
+      "VM.GPU.A10.2": {
+        "multi_model_deployment": [
+          {
+            "gpu_count": 1,
+            "parameters": {
+              "VLLM_PARAMS": "--max-model-len 4096"
+            }
+          }
+        ]
+      },
+      "VM.GPU.A10.4": {
+        "multi_model_deployment": [
+          {
+            "gpu_count": 1,
+            "parameters": {
+              "VLLM_PARAMS": "--max-model-len 4096"
+            }
+          },
+          {
+            "gpu_count": 2,
+          }
+        ]
+      }
+    }
+  }
+  ```
+  **Note:** Only shapes that include the `multi_model_deployment` section are eligible for MultiModel Deployment.
+
+- **Customize as Needed**
+
+  - You may modify the shape list based on the shapes supported by your model. Refer to the [shapes supported](https://docs.oracle.com/en-us/iaas/data-science/using/supported-shapes.htm) documentation.
+  - The parameters field under configuration can include additional server-level settings such as `VLLM_PARAMS`, specific to each shape or GPU allocation.
+
+  ```json
+    "configuration": {
+      "VM.GPU.A10.4": {
+        "multi_model_deployment": [
+            {
+                "gpu_count": 1,
+                "parameters": {
+                    "VLLM_PARAMS": "--max-model-len 4096"
+                }
+            },
+        ],
+      },
+      ...
+      ...
+    }
+  ```
+
+- **Verify the Deployment Configuration**
+
+  Once added, this configuration will be automatically recognized by the CLI and used during MultiModel Deployment creation, just like the standard AQUA service models.
+
+  Use the [MultiModel Configuration command](#get-multimodel-configuration) to check whether the selected model is compatible with multi-model deployment now.
+
+# MultiModel Deployment
 
 ## List Available Shapes
 
@@ -912,6 +1011,7 @@ ads aqua evaluation create \
 ```
 
 For other operations related to **Evaluation**, such as listing evaluations and retrieving evaluation details, please refer to [AQUA CLI tips](cli-tips.md)
+
 
 # Limitations
 
