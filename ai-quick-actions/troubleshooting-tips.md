@@ -57,7 +57,7 @@ If your log message appears like the above, then you have two options -
 
 2) Try quantization:
 
-    You can set reduce the memory footprint of the model by enabling quantization. Here are the steps to enable quantization - 
+    You can reduce the memory footprint of the model by enabling quantization. Here are the steps to enable quantization - 
     1. Go to create model deployment and select the model you want to deploy
     2. Click on advanced section 
     3. Input the quantization option as per the documentation of the inference container. Eg. If you are using vLLM, you can input `--quantization` for Name and `fp8` for value. This will load the model in 8bit reducing the memory requirement by half. You can try `--quantization bitsandbytes` and `--load-format bitsandbytes` to load in 4 bits. 
@@ -110,11 +110,12 @@ Exiting vLLM.
 In such cases, you will have to follow [BYOC](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/deploy-llm-byoc.md) approach. Check [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/ai-quick-actions-containers.md) for the supported containers by AI Quick Actions.
 
 Visit [vLLM supported models](https://docs.vllm.ai/en/latest/models/supported_models.html) to know what models are supported.
+
 If you are using Text Generation Inference, visit [TGI Support models page](https://huggingface.co/docs/text-generation-inference/en/supported_models)
 
 ### Capacity Issues
 
-You see a message "There is currently no capacity for the specified shape. Choose a different shape or region". This happens because there currently all the instances of the selected shape are in use in that region. This is different from the limits.
+You see a message "There is currently no capacity for the specified shape. Choose a different shape or region". This happens because currently all the instances of the selected shape are in use in that region. This is different from the limits.
 
 The shapes are provisioned from a common pool by default. You could create a capacity reservation for more predictable availability of the shape. More information [here](https://docs.oracle.com/en-us/iaas/data-science/using/gpu-using.htm#gpu-use-reserve)
 
@@ -130,6 +131,8 @@ TODO
 # Authorization Issues
 
 Authorization issues arise due to missing policy. Please refer to [policy document](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/policies/README.md) to setup policies. We strongly encourage using ORM option mentioned in the policy document.
+
+**Note**: `<Your dynamic group>` in the policy below has to be replaced with dynamic group that you defined while using the ORM stack.
 
 If you see authorization issues after setting up the policies here are possible cases - 
 1. The dynamic group definition used while setting up ORM stack identifies the notebook from where AI quick actions is being used. The notebook session has to be in the same compartment as the one defined by the dynamic group.
@@ -152,25 +155,30 @@ If you see authorization issues after setting up the policies here are possible 
     ```
 6. Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
     ```
-    Allow dynamic-group aqua-dynamic-group to manage data-science-modelversionsets in compartment <your-compartment-name>
+    Allow dynamic-group <Your dynamic group> to manage data-science-modelversionsets in compartment <your-compartment-name>
     ```
 7. Unable to fetch resource limits information where you select shape - 
     ```
-    Allow dynamic-group aqua-dynamic-group to read resource-availability in compartment <your-compartment-name>
+    Allow dynamic-group <Your dynamic group> to read resource-availability in compartment <your-compartment-name>
     ```
 8. The dropdown for log group or log does not show anything and gives authorization error - 
     ```
-    Allow dynamic-group aqua-dynamic-group to use logging-family in compartment <your-compartment-name>
+    Allow dynamic-group <Your dynamic group> to use logging-family in compartment <your-compartment-name>
     ```
 9. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
     ```
-    Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartment <your-compartment-name>
+    Allow dynamic-group <Your dynamic group> to use virtual-network-family in compartment <your-compartment-name>
     ```
 10. Authorization error related to listing, creating or managing model deployments - 
     ```
-    Allow dynamic-group aqua-dynamic-group to manage data-science-model-deployments in compartment <your-compartment-name>
+    Allow dynamic-group <Your dynamic group> to manage data-science-model-deployments in compartment <your-compartment-name>
     ```
 11. Allowing AI Quick Actions to use defined tags - 
     ```
-    Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
+    Allow dynamic-group <Your dynamic group> to use tag-namespaces in tenancy
+    ```
+12. Unable to create finetuning or evaluation jobs - create_job
+    ```
+    Allow dynamic-group <Your dynamic group> to manage data-science-jobs in compartment <your-compartment-name>
+    Allow dynamic-group <Your dynamic group> to manage data-science-job-runs in compartment <your-compartment-name>
     ```
