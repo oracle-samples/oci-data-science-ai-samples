@@ -7,18 +7,16 @@
 - [Troubleshooting Model Deployment](#troubleshooting-model-deployment)
 - [Authorization Issues](#authorization-issues)
   - [Types of Authorization Errors](#types-of-authorization-errors)
-      - [list model deployment](#list-model-deployment)
-      - [list models](#list-models)
-      - [list log groups](#list-log-groups)
-      - [list data science private endpoints](#list-data-science-private-endpoints)
-      - [get namespace](#get-namespace)
-      - [list buckets](#list-buckets)
-      - [create model](#create-model)
-        - [list model version sets](#list-model-version-sets)
+      - [List Model Deployment](#list-model-deployment)
+      - [List Models](#list-models)
+      - [List Log Groups](#list-log-groups)
+      - [List Data Science Private Endpoints](#list-data-science-private-endpoints)
+      - [Get Namespace](#get-namespace)
+      - [List Buckets](#list-buckets)
+      - [Update Model](#update-model)
+      - [Create Model](#create-model)
+        - [List Model Version Sets](#list-model-version-sets)
       - [Evaluation and Fine Tuning](#evaluation-and-fine-tuning)
-- [Invalid Tags Issues](#invalid-tags-issues)
-      - [create model invalid tags](#create-model-invalid-tags)
-      - [update model invalid tags](#update-model-invalid-tags)
   - [Logs](#logs)
   - [Understanding GPU requirement for models](#understanding-gpu-requirement-for-models)
   - [Issues and Resolutions](#issues-and-resolutions)
@@ -47,43 +45,50 @@ Authorization issues arise due to missing policy and/or using non-versioned OCI 
 If you see authorization issues after setting up the policies, ensuring that the notebook is in the **same compartment** as the one defined by the dynamic group, and the bucket is versioned, here are the following cases:
 
 
-#### list model deployment
+#### List Model Deployment
 Authorization error related to listing, creating or managing model deployments, ensure that policy below is in place.
 ```
 Allow dynamic-group aqua-dynamic-group to manage data-science-model-deployments in compartment <your-compartment-name>
 ```
 
-#### list models
+#### List Models
 Authorization error related to listing, creating, or registering models, ensure that policy below is in place.
 ```
 Allow dynamic-group aqua-dynamic-group to manage data-science-models in compartment <your-compartment-name>
 ```
 
-#### list log groups
+#### List Log Groups
 The dropdown for log group or log does not show anything and gives authorization error, ensure policy below is in place.
 ```
 Allow dynamic-group aqua-dynamic-group to use logging-family in compartment <your-compartment-name>
 ```
-#### list data science private endpoints 
+#### List Data Science Private Endpoints 
 Authorization error does not list the private endpoints in the specified compartment on UI, ensure policy below is in place.
 ```
 Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartment <your-compartment-name>
 ```
 
-#### get namespace
+#### Get Namespace
 If the UI is unable to fetch namespace or list object storage buckets ensure policy below is in place.
 ```
 Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
 Allow dynamic-group <Your dynamic group> to read objectstorage-namespaces in compartment <your-compartment-name>
 ```
-#### list buckets
+#### List Buckets
 If the UI is unable to list buckets, ensure the following:
 - If using custom networking, configure NAT gateway and SGW gateway
 - ensure the policy below is in place
 ```
 Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
 ```
-#### create model
+
+#### Update Model
+When creating a fine-tuned model deployment and an error occurs when submitting the UI form, add the following policy. 
+```
+Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
+```
+
+#### Create Model
 1. AI Quick Actions is not able to reach the object storage location specified when registering the model.
 ```
 Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
@@ -92,8 +97,13 @@ Allow dynamic-group <Your dynamic group> to manage object-family in compartment 
 ```
 Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
 ```
+3. The AQUA UI currently does not support adding freeform tags. Use the AQUA CLI to register a model with freeform tags. 
 
-##### list model version sets
+```
+ads aqua model register --model <model-ocid> --os_path <oss-path> --download_from_hf True --compartment_id ocid1.compartment.xxx --defined_tags '{"key1":"value1", ...}' --freeform_tags '{"key1":"value1", ...}'
+```
+
+##### List Model Version Sets
 Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
  ```
  Allow dynamic-group aqua-dynamic-group to manage data-science-modelversionsets in compartment <your-compartment-name>
@@ -112,21 +122,6 @@ Unable to create a model version set or not able to fetch model version set info
     ```
     Allow dynamic-group aqua-dynamic-group to use virtual-network-family in compartment <your-compartment-name>
     ```
-
-# Invalid Tags Issues
-
-#### create model invalid tags
-The AQUA UI currently does not support adding freeform tags. Use the AQUA CLI to register a model with freeform tags. 
-
-```
-ads aqua model register --model <model-ocid> --os_path <oss-path> --download_from_hf True --compartment_id ocid1.compartment.xxx --defined_tags '{"key1":"value1", ...}' --freeform_tags '{"key1":"value1", ...}'
-```
-
-#### update model invalid tags
-When creating a fine-tuned model deployment and an error occurs when submitting the UI form, add the following policy. 
-```
-Allow dynamic-group <dynamic-group> to use tag-namespaces in tenancy
-```
 
 
 ## Logs
