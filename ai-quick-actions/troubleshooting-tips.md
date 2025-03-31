@@ -1,4 +1,133 @@
-# Model Deployment
+
+# Troubleshooting Model Deployment
+
+<!-- TOC -->
+<!-- /TOC -->
+
+- [Troubleshooting Model Deployment](#troubleshooting-model-deployment)
+- [Authorization Issues](#authorization-issues)
+  - [Types of Authorization Errors](#types-of-authorization-errors)
+      - [List Model Deployment](#list-model-deployment)
+      - [List Models](#list-models)
+      - [List Log Groups](#list-log-groups)
+      - [List Data Science Private Endpoints](#list-data-science-private-endpoints)
+      - [Get Namespace](#get-namespace)
+      - [List Buckets](#list-buckets)
+      - [Update Model](#update-model)
+      - [Create Model](#create-model)
+        - [List Model Version Sets](#list-model-version-sets)
+      - [Evaluation and Fine Tuning](#evaluation-and-fine-tuning)
+  - [Logs](#logs)
+  - [Understanding GPU requirement for models](#understanding-gpu-requirement-for-models)
+  - [Issues and Resolutions](#issues-and-resolutions)
+    - [Service Timeout Error](#service-timeout-error)
+      - [Out of Memory (OOM) Error](#out-of-memory-oom-error)
+      - [Trusting Remote Code](#trusting-remote-code)
+      - [Architecture Not Supported](#architecture-not-supported)
+    - [Capacity Issues](#capacity-issues)
+    - [Chat payload is Not Working](#chat-payload-is-not-working)
+    - [Image Payload is Not Working](#image-payload-is-not-working)
+    - [Prompt Completion Payload is Not Working](#prompt-completion-payload-is-not-working)
+
+# Authorization Issues
+
+Authorization issues arise due to missing policy and/or using non-versioned OCI Object Storage Buckets with AQUA.
+1. Set up policies for AQUA as seen [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/policies/README.md) 
+   - We strongly encourage using ORM option (automated setup of policies, not manual) mentioned in the policy document.
+2. The notebook session has to be in the **same compartment** as the one defined by the dynamic group. 
+   - The dynamic group definition used while setting up ORM stack identifies the notebook from where AI Quick Actions is being used. 
+3. Ensure that the bucket used with AQUA has object versioning enabled
+   
+  ![object versioning](./web_assets/object-versioning.png)
+
+
+## Types of Authorization Errors
+If you see authorization issues after setting up the policies, ensuring that the notebook is in the **same compartment** as the one defined by the dynamic group, and the bucket is versioned, here are the following cases:
+
+
+#### List Model Deployment
+Authorization error related to listing, creating or managing model deployments, ensure that policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to manage data-science-model-deployments in compartment <your-compartment-name>
+```
+
+#### List Models
+Authorization error related to listing, creating, or registering models, ensure that policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
+```
+
+#### List Log Groups
+The dropdown for log group or log does not show anything and gives authorization error, ensure policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to use logging-family in compartment <your-compartment-name>
+```
+#### List Data Science Private Endpoints 
+Authorization error does not list the private endpoints in the specified compartment on UI, ensure policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to use virtual-network-family in compartment <your-compartment-name>
+```
+
+#### Get Namespace
+If the UI is unable to fetch namespace or list object storage buckets ensure policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
+Allow dynamic-group <Your dynamic group> to read objectstorage-namespaces in compartment <your-compartment-name>
+```
+#### List Buckets
+If the UI is unable to list buckets, ensure the following:
+- If using custom networking, configure NAT gateway and SGW gateway
+- ensure the policy below is in place
+```
+Allow dynamic-group <dynamic group> to read buckets in compartment <your-compartment-name>
+```
+
+#### Update Model
+When creating a fine-tuned model deployment and an error occurs when submitting the UI form, add the following policy. 
+```
+Allow dynamic-group <Your dynamic group> to use tag-namespaces in tenancy
+```
+
+#### Create Model
+1. AI Quick Actions is not able to reach the object storage location specified when registering the model.
+```
+Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
+```
+2. AI Quick Actions is not able to create model in model catalog, ensure that policy below is in place. 
+```
+Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
+```
+3. The AQUA UI currently does not support adding freeform tags. Use the AQUA CLI to register a model with freeform tags. 
+
+```
+ads aqua model register --model <model-ocid> --os_path <oss-path> --download_from_hf True --compartment_id ocid1.compartment.xxx --defined_tags '{"key1":"value1", ...}' --freeform_tags '{"key1":"value1", ...}'
+```
+
+##### List Model Version Sets
+Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
+ ```
+ Allow dynamic-group <Your dynamic group> to manage data-science-modelversionsets in compartment <your-compartment-name>
+ ```
+ 
+#### Evaluation and Fine Tuning
+1. Unable to fetch model details for fine tuned models 
+    ```
+    Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
+    ```
+2. Unable to create finetuning or evaluation jobs - create_job
+    ```
+    Allow dynamic-group <Your dynamic group> to manage data-science-jobs in compartment <your-compartment-name>
+    Allow dynamic-group <Your dynamic group> to manage data-science-job-runs in compartment <your-compartment-name>
+    ```
+3. Unable to fetch resource limits information when selecting instance shape - 
+    ```
+    Allow dynamic-group <Your dynamic group> to read resource-availability in compartment <your-compartment-name>
+    ```
+4. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
+    ```
+    Allow dynamic-group <Your dynamic group> to use virtual-network-family in compartment <your-compartment-name>
+    ```
+
 
 ## Logs
 
@@ -29,7 +158,7 @@ If logs are attached, run the `ads watch` command to retrieve the logs. Once log
 
 Here are some frequently encountered issues. Please note it could fail for reasons not listed here, but these form most commonly encountered ones - 
 
-#### Out of Memory (OOM) error. 
+#### Out of Memory (OOM) Error 
 
 Check the error message in the logging to understand if you need to allocate more GPUs or need to limit the context length. Here are some tips
 
@@ -57,7 +186,7 @@ If your log message appears like the above, then you have two options -
 
 2) Try quantization:
 
-    You can reduce the memory footprint of the model by enabling quantization. Here are the steps to enable quantization - 
+    You can set reduce the memory footprint of the model by enabling quantization. Here are the steps to enable quantization - 
     1. Go to create model deployment and select the model you want to deploy
     2. Click on advanced section 
     3. Input the quantization option as per the documentation of the inference container. Eg. If you are using vLLM, you can input `--quantization` for Name and `fp8` for value. This will load the model in 8bit reducing the memory requirement by half. You can try `--quantization bitsandbytes` and `--load-format bitsandbytes` to load in 4 bits. 
@@ -86,7 +215,7 @@ If you see such a message, constrain the context length by -
 2. Click on advanced section 
 3. Add name as `--max-model-len` and for value, use the hint in the log. As per the above log we can set `37696`. Better to leave some room and go lower.
 
-#### Trusting remote code
+#### Trusting Remote Code
 
 Sometimes, the inference container will not have native support for the model, but the model can still be side loaded using the code provided by the model provider. In such cases error message could look like below - 
 
@@ -99,7 +228,7 @@ If you see such a message, -
 3. Add name as `--trust-remote-code` and leave value as blank.
 
 
-#### Architecture Not supported
+#### Architecture Not Supported
 
 vLLM container may not support the model that you are trying to load. Here is a sample log snippet in such cases - 
 
@@ -110,75 +239,19 @@ Exiting vLLM.
 In such cases, you will have to follow [BYOC](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/deploy-llm-byoc.md) approach. Check [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/ai-quick-actions-containers.md) for the supported containers by AI Quick Actions.
 
 Visit [vLLM supported models](https://docs.vllm.ai/en/latest/models/supported_models.html) to know what models are supported.
-
 If you are using Text Generation Inference, visit [TGI Support models page](https://huggingface.co/docs/text-generation-inference/en/supported_models)
 
 ### Capacity Issues
 
-You see a message "There is currently no capacity for the specified shape. Choose a different shape or region". This happens because currently all the instances of the selected shape are in use in that region. This is different from the limits.
+You see a message "There is currently no capacity for the specified shape. Choose a different shape or region". This happens because there currently all the instances of the selected shape are in use in that region. This is different from the limits.
 
 The shapes are provisioned from a common pool by default. You could create a capacity reservation for more predictable availability of the shape. More information [here](https://docs.oracle.com/en-us/iaas/data-science/using/gpu-using.htm#gpu-use-reserve)
 
-### Chat payload is not working
+### Chat payload is Not Working
 TODO
 
-### Image Payload not working
+### Image Payload is Not Working
 TODO
 
-### Prompt completion payload is not working
+### Prompt Completion Payload is Not Working
 TODO
-
-# Authorization Issues
-
-Authorization issues arise due to missing policy. Please refer to [policy document](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/policies/README.md) to setup policies. We strongly encourage using ORM option mentioned in the policy document.
-
-**Note**: `<Your dynamic group>` in the policy below has to be replaced with dynamic group that you defined while using the ORM stack.
-
-If you see authorization issues after setting up the policies here are possible cases - 
-1. The dynamic group definition used while setting up ORM stack identifies the notebook from where AI quick actions is being used. The notebook session has to be in the same compartment as the one defined by the dynamic group.
-2. If the UI is not able to list the buckets or fetch namespace you maybe missing following policy - 
-    ```
-    Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
-    Allow dynamic-group <Your dynamic group> to read objectstorage-namespaces in compartment <your-compartment-name>
-    ```
-3. While registering the model, AI Quick Actions is not able to reach the object storage location specified - 
-    ```
-    Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
-    ```
-4. While registering the model, AI Quick Actions is not able to create model in model catalog - 
-    ```
-    Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
-    ```
-5. Unable to fetch model details for fine tuned models - 
-    ```
-    Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
-    ```
-6. Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
-    ```
-    Allow dynamic-group <Your dynamic group> to manage data-science-modelversionsets in compartment <your-compartment-name>
-    ```
-7. Unable to fetch resource limits information where you select shape - 
-    ```
-    Allow dynamic-group <Your dynamic group> to read resource-availability in compartment <your-compartment-name>
-    ```
-8. The dropdown for log group or log does not show anything and gives authorization error - 
-    ```
-    Allow dynamic-group <Your dynamic group> to use logging-family in compartment <your-compartment-name>
-    ```
-9. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
-    ```
-    Allow dynamic-group <Your dynamic group> to use virtual-network-family in compartment <your-compartment-name>
-    ```
-10. Authorization error related to listing, creating or managing model deployments - 
-    ```
-    Allow dynamic-group <Your dynamic group> to manage data-science-model-deployments in compartment <your-compartment-name>
-    ```
-11. Allowing AI Quick Actions to use defined tags - 
-    ```
-    Allow dynamic-group <Your dynamic group> to use tag-namespaces in tenancy
-    ```
-12. Unable to create finetuning or evaluation jobs - create_job
-    ```
-    Allow dynamic-group <Your dynamic group> to manage data-science-jobs in compartment <your-compartment-name>
-    Allow dynamic-group <Your dynamic group> to manage data-science-job-runs in compartment <your-compartment-name>
-    ```
