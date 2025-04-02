@@ -7,15 +7,20 @@
 - [Troubleshooting Model Deployment](#troubleshooting-model-deployment)
 - [Authorization Issues](#authorization-issues)
   - [Types of Authorization Errors](#types-of-authorization-errors)
-      - [List Model Deployment](#list-model-deployment)
+      - [Create Model](#create-model)
       - [List Models](#list-models)
+      - [Create Model Deployment](#create-model-deployment)
+      - [List Model Deployment](#list-model-deployment)
+      - [Create Model Version Sets](#create-model-version-sets)
+      - [List Model Version Sets](#list-model-version-sets)
+      - [Create Job](#create-job)
+      - [Create Job Run](#create-job-run)
       - [List Log Groups](#list-log-groups)
       - [List Data Science Private Endpoints](#list-data-science-private-endpoints)
       - [Get Namespace](#get-namespace)
+      - [Put Object](#put-object)
       - [List Buckets](#list-buckets)
       - [Update Model](#update-model)
-      - [Create Model](#create-model)
-        - [List Model Version Sets](#list-model-version-sets)
       - [Evaluation and Fine Tuning](#evaluation-and-fine-tuning)
   - [Logs](#logs)
   - [Understanding GPU requirement for models](#understanding-gpu-requirement-for-models)
@@ -44,17 +49,50 @@ Authorization issues arise due to missing policy and/or using non-versioned OCI 
 ## Types of Authorization Errors
 If you see authorization issues after setting up the policies, ensuring that the notebook is in the **same compartment** as the one defined by the dynamic group, and the bucket is versioned, here are the following cases:
 
-
-#### List Model Deployment
-Authorization error related to listing, creating or managing model deployments, ensure that policy below is in place.
+#### Create Model
+1. AI Quick Actions is not able to reach the object storage location specified when registering the model.
 ```
-Allow dynamic-group <Your dynamic group> to manage data-science-model-deployments in compartment <your-compartment-name>
+Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
 ```
+1. AI Quick Actions is not able to create model in model catalog, ensure that policy below is in place. 
+```
+Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
+```
+1. The AQUA UI currently does not support adding freeform tags. Use the AQUA CLI to register a model with freeform tags. 
 
+```
+ads aqua model register --model <model-ocid> --os_path <oss-path> --download_from_hf True --compartment_id ocid1.compartment.xxx --defined_tags '{"key1":"value1", ...}' --freeform_tags '{"key1":"value1", ...}'
+```
 #### List Models
 Authorization error related to listing, creating, or registering models, ensure that policy below is in place.
 ```
 Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
+```
+
+#### Create Model Deployment
+#### List Model Deployment
+Authorization error related to creating, listing, or managing model deployments, ensure that policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to manage data-science-model-deployments in compartment <your-compartment-name>
+```
+
+#### Create Model Version Sets
+#### List Model Version Sets
+Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step, ensure the policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to manage data-science-modelversionsets in compartment <your-compartment-name>
+```
+
+#### Create Job
+Unable to create a job during evaluation or fine tuning. Ensure the policy below is in place.
+```
+Allow dynamic-group <Your dynamic group> to manage data-science-job-runs in compartment <your-compartment-name>
+```
+
+#### Create Job Run
+Unable to create a job run during fine tuning or evaluation. Ensure the policy below is in place.
+```
+Allow dynamic-group aqua-dynamic-group to manage data-science-job-runs in compartment <your-compartment-name>
 ```
 
 #### List Log Groups
@@ -74,6 +112,15 @@ If the UI is unable to fetch namespace or list object storage buckets ensure pol
 Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
 Allow dynamic-group <Your dynamic group> to read objectstorage-namespaces in compartment <your-compartment-name>
 ```
+
+#### Put Object
+If an object storage bucket (with Object Versioning enabled) is unable to be accessed, ensure these policies are in place.
+```
+Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
+Allow dynamic-group <Your dynamic group> to read buckets in compartment <your-compartment-name>
+Allow dynamic-group <Your dynamic group> to read objectstorage-namespaces in compartment <your-compartment-name>
+```
+
 #### List Buckets
 If the UI is unable to list buckets, ensure the following:
 - If using custom networking, configure NAT gateway and SGW gateway
@@ -88,42 +135,16 @@ When creating a fine-tuned model deployment and an error occurs when submitting 
 Allow dynamic-group <Your dynamic group> to use tag-namespaces in tenancy
 ```
 
-#### Create Model
-1. AI Quick Actions is not able to reach the object storage location specified when registering the model.
-```
-Allow dynamic-group <Your dynamic group> to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
-```
-2. AI Quick Actions is not able to create model in model catalog, ensure that policy below is in place. 
-```
-Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
-```
-3. The AQUA UI currently does not support adding freeform tags. Use the AQUA CLI to register a model with freeform tags. 
-
-```
-ads aqua model register --model <model-ocid> --os_path <oss-path> --download_from_hf True --compartment_id ocid1.compartment.xxx --defined_tags '{"key1":"value1", ...}' --freeform_tags '{"key1":"value1", ...}'
-```
-
-##### List Model Version Sets
-Unable to create a model version set or not able to fetch model version set information during fine tuning or evaluation step - 
- ```
- Allow dynamic-group <Your dynamic group> to manage data-science-modelversionsets in compartment <your-compartment-name>
- ```
- 
 #### Evaluation and Fine Tuning
 1. Unable to fetch model details for fine tuned models 
     ```
     Allow dynamic-group <Your dynamic group> to manage data-science-models in compartment <your-compartment-name>
     ```
-2. Unable to create finetuning or evaluation jobs - create_job
-    ```
-    Allow dynamic-group <Your dynamic group> to manage data-science-jobs in compartment <your-compartment-name>
-    Allow dynamic-group <Your dynamic group> to manage data-science-job-runs in compartment <your-compartment-name>
-    ```
-3. Unable to fetch resource limits information when selecting instance shape - 
+2. Unable to fetch resource limits information when selecting instance shape - 
     ```
     Allow dynamic-group <Your dynamic group> to read resource-availability in compartment <your-compartment-name>
     ```
-4. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
+3. Unable to list any VCN or subnet while creating Fine Tuning job or Evaluation Job - 
     ```
     Allow dynamic-group <Your dynamic group> to use virtual-network-family in compartment <your-compartment-name>
     ```
