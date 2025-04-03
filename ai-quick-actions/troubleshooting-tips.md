@@ -1,5 +1,4 @@
 
-# Troubleshooting Model Deployment
 
 <!-- TOC -->
 <!-- /TOC -->
@@ -33,6 +32,7 @@
       - [List Buckets](#list-buckets)
       - [Update Model](#update-model)
       - [Evaluation and Fine Tuning](#evaluation-and-fine-tuning)
+# Troubleshooting Model Deployment
 
 ## Logs
 
