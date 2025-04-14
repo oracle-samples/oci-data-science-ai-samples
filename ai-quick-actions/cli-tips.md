@@ -299,7 +299,7 @@ Example: `iad.ocir.io/<your_tenancy>/<your_image>:<tag>`
 
 The defined tags to be added for the registered model. 
 
-Example: `{"key1":"value1","key2":"value2"}`
+Example: `{"defined-tag-namespace-1":{"tag-key-1":"tag-value-1","tag-key-2":"tag-value-2"},"defined-tag-namespace-2":{"sample-tag-key":"sample-tag-value"}}`
 
 `--freeform_tags`
 
@@ -311,7 +311,7 @@ Example: `{"key1":"value1","key2":"value2"}`
 ### Example
 
 ```bash
-ads aqua model register --model mistralai/Mistral-7B-Instruct-v0.1 --os_path oci://<bucket>@<namespace>/<prefix> --download_from_hf True --inference_container odsc-vllm-serving --finetuning_container odsc-llm-fine-tuning --defined_tags '{"key1":"value1","key2":"value2"}' --freeform_tags '{"key1":"value1","key2":"value2"}'
+ads aqua model register --model mistralai/Mistral-7B-Instruct-v0.1 --os_path oci://<bucket>@<namespace>/<prefix> --download_from_hf True --inference_container odsc-vllm-serving --finetuning_container odsc-llm-fine-tuning --defined_tags '{"defined-tag-namespace-1":{"tag-key-1":"tag-value-1","tag-key-2":"tag-value-2"}}' --freeform_tags '{"key1":"value1","key2":"value2"}'
 ```
 
 #### CLI Output
