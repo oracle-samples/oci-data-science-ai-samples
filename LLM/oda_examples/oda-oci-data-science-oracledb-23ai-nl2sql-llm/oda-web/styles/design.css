@@ -1,0 +1,375 @@
+/**
+ * Copyright (c) 2021 Oracle and/or its affiliates.
+ * Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+ */
+
+body,
+input {
+    font-family: "Oracle Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    color: #100f0e;
+    font-size: 1rem;
+    line-height: 1.4;
+    margin: 20px auto;
+    padding: 0 20px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/*! BASE - REDWOOD */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-repeat: no-repeat;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+html {
+    height: 100%
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    color: #100f0e;
+    min-width: 280px;
+    height: 100%;
+    font-size: 1.6rem;
+    line-height: 1.4;
+    opacity: 1 !important
+}
+
+html {
+    font-size: 62.5%;
+    height: 100%
+}
+
+@media (max-width: 2560px) {
+    html {
+        font-size: 50%;
+        -webkit-text-size-adjust: 100%;
+        -moz-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    body {
+        font-size: 1.85rem
+    }
+    html {
+        font-size: 50%;
+        -webkit-text-size-adjust: 100%;
+        -moz-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%
+    }
+}
+
+/* Card Layout CSS */
+
+.oda-chat-footer-form {
+  display: none;
+}
+
+.oda-chat-card{
+    border-radius: 0px !important;
+    padding: 2px !important;
+}
+.oda-chat-card-image {
+    height: 188px !important;
+    max-width: 100%;
+    width: 330px !important;
+}
+.oda-chat-card-title{
+    font-weight: bold !important;
+    margin: 0px !important;
+    white-space: normal !important;
+    text-align: left !important;
+    padding: 10px;
+}
+
+.oda-chat-card-description{
+    font-size: small !important;
+}
+
+.oda-chat-message-global-actions {
+    justify-content: space-evenly !important;
+    flex-direction: row !important;
+    margin-top: 5px !important;
+    width: 330px !important;
+}
+
+.oda-chat-action-postback:first-of-type {
+    margin-top: 4px !important;
+}
+
+.oda-chat-action-postback:last-of-type {
+    margin-bottom: 4px !important;
+}
+
+.oda-chat-action-postback {
+    padding: 10px !important;
+    font-size: 13px !important;
+    display: inline !important;
+    flex: none !important;
+}
+
+.oda-chat-round{
+    height: 36px !important;
+    width: 24px !important;
+}
+
+.video-player{
+    height: 181px !important;
+    max-width: 100%;
+    width: 330px !important;
+}
+
+/*  Message Layout CSS  */
+
+.oda-chat-message-bubble{
+    padding: 10px !important;
+}
+
+.oda-chat-left .oda-chat-message-bubble{
+    border-radius: 20px 20px 20px 0 !important;
+}
+
+.oda-chat-message-content{
+    margin: 1px !important;
+    white-space: normal !important;
+}
+
+
+/* Story Layout CSS */
+
+.Bot-SE2-Story-readNext {
+    outline:none;
+}
+.Bot-SE2-Story-readNext .Bot-contentWrapper {
+    height: 100%;
+}
+.Bot-SE2-Story-readNext .Bot-imgDiv {
+    float: right;
+    width: 43%;
+    height: 100%;
+    padding-right: 0px;
+    background-color: #655f5c;
+    position: relative;
+    outline:none;
+    display: flex;
+}
+.Bot-SE2-Story-readNext .Bot-imgDiv img {
+    width:100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: top;
+    outline:none;
+}
+.Bot-SE2-Story-readNext .Bot-imgDiv video {
+    width:100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: top;
+    background: black;
+    outline:none;
+}
+.Bot-SE2-Story-readNext .Bot-imgDiv video:hover,
+.Bot-SE2-Story-readNext .Bot-imgDiv video:focus {
+    cursor: pointer;
+}
+.Bot-SE2-Story-readNext .Bot-TextDiv {
+    float: left;
+    width: 53%;
+    height: 100%;
+    position: relative;
+    outline:none;
+}
+.Bot-SE2-Story-readNext .Bot-NoMediaTextDiv {
+    width:100%;
+    height:100%;
+    position: relative;
+    outline:none;
+}
+.Bot-SE2-Story-readNext .Bot-AuthorTitle {
+    width: 100%;
+}
+.Bot-SE2-Story-readNext .Bot-Author {
+    color:#FFFFFF;
+    font-family: HelveticaNeue;
+    display: flex;
+}
+.Bot-SE2-Story-readNext .Bot-Date {
+    padding-left: .2rem;
+}
+.Bot-SE2-Story-readNext .Bot-Title {
+    font-weight: bold;
+    position: relative;
+    outline:none;
+    padding-bottom: 3px;
+	padding-top: 2px;
+}
+.Bot-SE2-Story-readNext .Bot-Summary {
+    margin-top: 0.3125rem;
+    margin-bottom: 0.3125rem;
+    position: relative;
+    outline:none;
+}
+.Bot-font14 {
+    font-size: 13px;
+    color:#FFFFFF;
+}
+.Bot-font14-2LineEllipsis {
+    line-height: 1.214em;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    max-height: 2.428em;
+}
+.Bot-font12 {
+    font-weight: normal;
+    font-size: 9px;
+    letter-spacing: 0.43px;
+    color:#FFFFFF;
+    line-height: 1.333em;
+}
+.Bot-font12-3LineEllipsis {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    max-height: 4.5em;
+}
+.Bot-font16-1LineEllipsis {
+    -webkit-line-clamp: 1;
+    max-height: 1.375em;
+}
+
+
+
+/* Index page CSS */
+
+.landing-page{
+    min-width: 426px;
+    height: 100%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-size: 1vw;
+    line-height: 1.4em;
+}
+.page-header{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 7.833vw;
+    background: #201E1C;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.31);
+}
+.page-logo {
+    margin-left: 4vw;
+    width: 6.5vw;
+}
+.headerText{
+    font-weight: normal;
+    font-size: 1.6em;
+    color: #FFFFFF;
+    line-height: 1.4em;
+}
+.footerText {
+    font-weight: normal;
+    font-size: 1em;
+    color: #FFFFFF;
+    line-height: 1.4em;
+     margin-left: 6.125vw;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    outline: none;
+}
+.page-banner{
+    display: flex;
+    height: 52rem;
+    background-color: rgba(2,10,19,255);
+}
+.page-content{
+    display: flex;
+    /* min-height: 100vh; */
+}
+.column1{
+    flex: auto;
+    background: #3a3631;
+     padding-bottom: 5rem;
+}
+.column2{
+    background: #655F5C;
+    min-width: 416px;
+     padding-bottom: 5rem;
+}
+.page-desc{
+    margin: 6.389vw 4vw auto 4vw;
+}
+.page-topic{
+    font-weight: normal;
+    font-size: 2em;
+    color: #FEFEFE;
+    line-height: 1.4em;
+}
+.topic-underline{
+    width: 3.542vw;
+    height: 5.56px;
+    background: #2A9F8C;
+    margin-top: 1em;
+}
+.page-details{
+    font-style: normal;
+    font-size: 1.35em;
+    line-height: 2em;
+    margin-top: 3.82vw;
+    color: #FEFEFE;
+}
+.sub-Topic{
+    font-weight: 700;
+}
+.sub-details{
+    font-weight: 400;
+    padding-bottom: 0.798vw;
+    padding-left: 0.347vw;
+}
+.page-footer {
+    width: 100%;
+    height: 7.833vw;
+    background: #201E1C;
+    display: flex;
+    align-items: center;
+}
+.footer-img{
+    width: 22.75vw;
+    height: 7.833vw;
+    margin-left: 6.125vw;
+    float: left;
+}
+@media only screen and (max-width: 767px){
+    .column2 {
+        display: none;
+    }
+    .landing-page{
+        font-size: 7.68px;
+    }
+    .page-header{
+        height: 60.16px;
+    }
+    .page-logo {
+        width: 41.59px;
+    }
+}

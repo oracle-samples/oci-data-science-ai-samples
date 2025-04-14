@@ -1,11 +1,10 @@
 import os
-import string
 import gradio as gr
 from loguru import logger
 from inference import query
 
 
-logger.debug("App to Use LLM on Model Deployment")
+logger.debug("App to Use LLM on OCI Model Deployment")
 
 with gr.Blocks() as demo:
     with gr.Row():
@@ -18,7 +17,7 @@ with gr.Blocks() as demo:
                 height=500,
             )
 
-        with gr.Column(scale=1, offset=0.01):
+        with gr.Column(scale=1):
             max_tokens = gr.Slider(
                 256,
                 4096,
@@ -55,7 +54,7 @@ with gr.Blocks() as demo:
                 autofocus=True,
             )
 
-        with gr.Column(scale=1, offset=0.01):
+        with gr.Column(scale=1):
             send = gr.Button(value="Generate", variant="primary", scale=1)
             clear = gr.Button("Clear")
 
@@ -108,4 +107,5 @@ with gr.Blocks() as demo:
     clear.click(lambda: None, None, chatbot, queue=False)
 
     demo.queue()
+    # demo.launch(share=True)
     demo.launch()

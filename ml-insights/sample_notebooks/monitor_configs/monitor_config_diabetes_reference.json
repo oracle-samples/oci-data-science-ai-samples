@@ -1,0 +1,23 @@
+{
+  "input_schema": {
+    "Pregnancies": { "data_type": "float", "variable_type": "continuous" },
+    "BloodPressure": { "data_type": "float", "variable_type": "continuous" },
+    "SkinThickness": { "data_type": "float", "variable_type": "continuous" },
+    "Insulin": { "data_type": "float", "variable_type": "continuous" },
+    "BMI": { "data_type": "float", "variable_type": "continuous" },
+    "Age": { "data_type": "float", "variable_type": "continuous" },
+    "DiabetesPedigreeFunction": { "data_type": "float", "variable_type": "continuous"},
+    "BMICategory": { "data_type": "string", "variable_type": "nominal" }
+  },
+  "reader": {
+    "type": "CSVNativeDataReader",
+    "params": {
+      "file_path": [
+        "input_data/diabetes_prediction/2023-06-26/2023-06-26.csv"
+      ]
+    }
+  },
+  "engine_detail": {
+    "engine_name": "native"
+  }
+}

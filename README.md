@@ -18,6 +18,12 @@ The [OCI Data Science service](https://www.oracle.com/data-science/cloud-infrast
 
 This section provides examples of how to train machine learning models and deploy them on the OCI Data Science service, making it ideal for anyone looking to walk through an end-to-end problem.
 
+### [Large Language Models](LLM)
+OCI Data Science supports LLMs in several ways:
+* Fine-tune, deploy and evaluate without writing code via [AI Quick Actions](https://docs.oracle.com/en-us/iaas/data-science/using/ai-quick-actions.htm)
+* LangChain integration via [ADS](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/model_registration/large_language_model.html)
+* Directly by coding Python in the service. You can find more information [here](LLM)
+
 ### [Model Catalog Examples](model_catalog_examples/)
 
 The [Model Catalog](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/user_guide/modelcatalog/modelcatalog.html) offers a managed and centralized storage space for models. ADS helps you create the artifacts you need to use this service. However, you must provide a [`score.py`](https://docs.oracle.com/en-us/iaas/data-science/using/model_score_py.htm) file that loads the model and a function that makes predictions. The [`runtime.yaml`](https://docs.oracle.com/en-us/iaas/data-science/using/model_runtime_yaml.htm) provides information about the runtime conda environment if you want to deploy the model. You can also document a comprehensive set of metadata about the provenance of the model. This section provides examples of how to create your `score.py` and `runtime.yaml` files for various common machine learning models and configurations.
@@ -36,6 +42,10 @@ Distributed training support with Jobs for machine learning for faster and more 
 
 Pipelines are essential for complex machine learning and data science tasks as they streamline and automate the model building and deployment process, enabling faster and more consistent results. They could be used when there is a need to build, train, and deploy complex models with multiple components and steps, and when there is a need to automate the machine learning process to reduce manual labor and errors. The Oracle Cloud Infrastructure [Data Science Pipelines](https://docs.oracle.com/en-us/iaas/data-science/using/pipelines-about.htm) services helps automates and streamlines the process of building and deploying machine learning pipelines.
 
+### [ML Applications](ml-applications/)
+
+[ML Applications](https://docs.oracle.com/en-us/iaas/data-science/using/ml-apps-about.htm) is a self-contained representation of ML use cases in Data Science. It delivers a robust MLOps platform for AI/ML delivery. It standardizes the packaging and deployment of AI/ML functionality, enabling you to build, deploy, and operate machine learning as a service. With ML Applications, you can leverage Data Science to implement AI/ML use cases and provision them into production for your applications or customers. By shortening the development lifecycle from months to weeks, ML Applications quickens the time to market while reducing operational complexity and total cost of ownership. It provides an end-to-end platform for deploying, validating, and promoting ML solutions through every stage - from development and QA to preproduction and production.
+
 ### [Data Labeling Examples](data_labeling_examples/)
 
 The [data labeling service](https://docs.oracle.com/en-us/iaas/data-labeling/data-labeling/using/home.htm) helps identify properties (labels) of documents, text, and images (records) and annotates (labels) them with those properties. This section contains Python and Java scripts to annotate bulk numbers of records in OCI Data Labeling Service (DLS).
@@ -43,6 +53,10 @@ The [data labeling service](https://docs.oracle.com/en-us/iaas/data-labeling/dat
 ### [Notebook Lifecycle Script Examples](notebook_lifecycle_scripts_examples/)
 
 The [OCI Data Science service](https://www.oracle.com/data-science/cloud-infrastructure-data-science.html) offers managed notebook(jupyterlab) sessions. Notebook lifecycle script features execute the customer provided scripts during CREATE/ACTIVATE/DEACTIVATE/DELETE notebook session lifecycle. This folder contains the examples script which needs little to no editing and ready to be used as lifecycle scripts input.
+
+### [Feature Store](./feature_store/)
+
+The [Feature store service](https://feature-store-accelerated-data-science.readthedocs.io/en/latest/) solves many of the problems because it is a centralized way to transform and access data for training and serving time, Feature stores help define a standardised pipeline for ingestion of data and querying of data.
 
 ## Documentation
 

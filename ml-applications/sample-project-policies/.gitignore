@@ -1,0 +1,9 @@
+.venv
+**/.venv
+.env
+**/.env
+ml-application/target/**
+.idea/**
+**/.terraform*
+**/.terraform/**
+**/terraform.tfstate.backup

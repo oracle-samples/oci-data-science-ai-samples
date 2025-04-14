@@ -1,0 +1,23 @@
+#!/bin/bash
+
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+if [ "$#" -eq 1 ] && [ "$1" == "init" ]; then
+  # this is mean to be used with "source" command i.e.: "source ./mlapp init"
+  script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+  export PATH="${PATH}:${script_dir}"
+  echo -e "${GREEN}************************************************************************************************${NC}"
+  echo -e "${GREEN} ML Application CLI 'mlapp' has been initialized${NC}"
+  echo -e "${GREEN}************************************************************************************************${NC}"
+  echo "Location of 'mlapp' has been added to PATH. Feel free to use mlapp tool as regular command e.g."
+  echo "   mlapp build"
+  echo "   mlapp deploy -e dev"
+else
+  set -e
+  this_script=$(realpath "$0")
+  project_root=$(dirname "$this_script")
+
+  bash "${project_root}/scripts/exec_in_py_venv.sh" mlapp.py "$@"
+fi
+

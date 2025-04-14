@@ -112,18 +112,34 @@
     "title": "How to Read Data with fsspec from Oracle Big Data Service (BDS)"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
-    "filename": "caltech-pedestrian_detection-oracle_open_data.ipynb",
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "filename": "aqua-deploy-llm-byoc.ipynb",
     "keywords": [
-      "caltech",
-      "pedestrian detection",
-      "oracle open data"
+      "byoc",
+      "llm",
+      "quick action",
+      "deploy"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 15186,
-    "summary": "Download and process annotated video data of vehicles and pedestrians.",
-    "time_created": "2023-03-30T10:01:38",
-    "title": "Caltech Pedestrian Detection Benchmark Repository"
+    "size": 22095,
+    "summary": "Deploy and perform inferencing using AI Quick Action models.",
+    "time_created": "2024-09-19T12:37:06",
+    "title": "Deploy LLM Models using BYOC"
+  },
+  {
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "filename": "use_of_cohere_embed_models_for_semantic_search_in_oci_opensearch.ipynb",
+    "keywords": [
+      "cohere",
+      "OpenSearch",
+      "RAG",
+      "Retrieval Augmented Generative"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 13485,
+    "summary": "Set up a retrieval-augmented generative QA using OCI OpenSearch as a retriever.",
+    "time_created": "2023-12-13T09:27:01",
+    "title": "Retrieval Augmented Generative Question Answer Using OCI OpenSearch as Retriever"
   },
   {
     "developed_on": "pyspark30_p37_cpu_v5",
@@ -152,20 +168,6 @@
     "title": "Text Classification with Data Labeling Service Integration"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
-    "filename": "visualizing_data-exploring_data.ipynb",
-    "keywords": [
-      "data visualization",
-      "seaborn plot",
-      "charts"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 20715,
-    "summary": "Perform common data visualization tasks and explore data with the ADS SDK. Plotting approaches include 3D plots, pie chart, GIS plots, and Seaborn pairplot graphs.",
-    "time_created": "2023-03-30T10:32:35",
-    "title": "Visualizing Data"
-  },
-  {
     "developed_on": "pyspark30_p37_cpu_v5",
     "filename": "pyspark-data_catalog-hive_metastore.ipynb",
     "keywords": [
@@ -180,7 +182,143 @@
     "title": "Using Data Catalog Metastore with PySpark"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_quickstart.ipynb",
+    "keywords": [
+      "feature store"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 28591,
+    "summary": "Introduction to the Oracle Cloud Infrastructure Feature Store.Use feature store for feature ingestion        and feature querying",
+    "time_created": "2023-12-28T23:07:47",
+    "title": "Using feature store for feature ingestion and feature querying"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_embeddings.ipynb",
+    "keywords": [
+      "feature store",
+      "llm",
+      "embeddings"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 32540,
+    "summary": "Feature store to store embeddings, version embeddings and time travel of embeddings.",
+    "time_created": "2023-12-28T23:07:47",
+    "title": "Using feature store for storage, retrieval, versioning and time travel of embeddings"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_pii_redaction_and_transformation.ipynb",
+    "keywords": [
+      "feature store",
+      "querying"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 29015,
+    "summary": "Use feature store to perform PII data redaction, summarization, translation using openai.",
+    "time_created": "2023-12-28T23:07:47",
+    "title": "Use feature store to perform PII data redaction, summarization, translation using openai"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_schema_evolution.ipynb",
+    "keywords": [
+      "feature store",
+      "querying",
+      "schema enforcement",
+      "schema evolution"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 27955,
+    "summary": "Perform Schema Enforcement and Schema Evolution in Feature Store when materialising the data.",
+    "time_created": "2023-12-28T23:07:47",
+    "title": "Schema Enforcement and Schema Evolution in Feature Store"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_spark_magic.ipynb",
+    "keywords": [
+      "feature store",
+      "querying",
+      "spark magic",
+      "data flow"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 21964,
+    "summary": "Run Feature Store on interactive Spark workloads on a long lasting Data Flow Cluster.",
+    "time_created": "2023-12-28T23:07:47",
+    "title": "Data Flow Studio : Big Data Operations in Feature Store."
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_querying.ipynb",
+    "keywords": [
+      "feature store",
+      "querying"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 41629,
+    "summary": "Using feature store to transform, store and query your data using pandas like interface to query and join",
+    "time_created": "2023-12-28T23:07:47",
+    "title": "Feature store handling querying operations"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_medical_synthetic_data_openai.ipynb",
+    "keywords": [
+      "feature store",
+      "querying",
+      "synthetic data generation"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 29222,
+    "summary": "Feature store quickstart guide to perform synthetic data generation using openai",
+    "time_created": "2023-12-28T23:07:47",
+    "title": "Using feature store for synthetic data generation using openai"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_embeddings_openai.ipynb",
+    "keywords": [
+      "feature store",
+      "querying"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 32071,
+    "summary": "Feature store quickstart guide to perform feature querying using pandas like interface for query and join.",
+    "time_created": "2023-12-28T23:07:47",
+    "title": "Using feature store for feature querying using pandas like interface for query and join"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_ehr_data.ipynb",
+    "keywords": [
+      "feature store",
+      "querying"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 32148,
+    "summary": "Feature store quickstart guide to perform feature querying using pandas like interface for query and join.",
+    "time_created": "2023-12-28T23:07:47",
+    "title": "Using feature store for feature querying using pandas like interface for query and join"
+  },
+  {
+    "developed_on": "fspyspark32_p38_cpu_v3",
+    "filename": "feature_store_streaming_data_frame.ipynb",
+    "keywords": [
+      "feature store",
+      "querying",
+      "streaming"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 24197,
+    "summary": "Carrying out schema enforcement and schema evolution on Feature Store.",
+    "time_created": "2024-01-02T04:45:29",
+    "title": "Enhancing Real-time Capabilities: Streaming Use Cases in Feature Store."
+  },
+  {
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
     "filename": "train-register-deploy-other-frameworks.ipynb",
     "keywords": [
       "generic model",
@@ -189,7 +327,7 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 21028,
+    "size": 21046,
     "summary": "Train, register, and deploy a generic model",
     "time_created": "2023-03-26T22:51:01",
     "title": "Train, Register, and Deploy a Generic Model"
@@ -223,18 +361,6 @@
     "title": "Train, register, and deploy HuggingFace Pipeline"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
-    "filename": "hyperparameter_tuning.ipynb",
-    "keywords": [
-      "hyperparameter tuning"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 24693,
-    "summary": "Use ADSTuner to optimize an estimator using the scikit-learn API",
-    "time_created": "2023-03-30T10:01:38",
-    "title": "Introduction to ADSTuner"
-  },
-  {
     "developed_on": "sklearnex202130_p37_cpu_v1",
     "filename": "accelerate-scikit_learn-with-intel_extension.ipynb",
     "keywords": [
@@ -264,25 +390,19 @@
     "title": "Connect to Oracle Big Data Service"
   },
   {
-    "developed_on": "nlp_p37_cpu_v2",
-    "filename": "natural_language_processing.ipynb",
+    "developed_on": "pytorch21_p39_gpu_v1",
+    "filename": "deploy-langchain-as-oci-data-science-model-deployment.ipynb",
     "keywords": [
-      "language services",
-      "string manipulation",
-      "regex",
-      "regular expression",
-      "natural language processing",
-      "NLP",
-      "part-of-speech tagging",
-      "named entity recognition",
-      "sentiment analysis",
-      "custom plugins"
+      "langchain",
+      "deploy model",
+      "register model",
+      "LLM"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 36063,
-    "summary": "Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.",
-    "time_created": "2023-03-26T22:51:01",
-    "title": "Natural Language Processing"
+    "size": 14166,
+    "summary": "Deploy LangChain applications as OCI data science model deployment",
+    "time_created": "2023-12-06T13:37:52",
+    "title": "Deploy LangChain Application as OCI Data Science Model Deployment"
   },
   {
     "developed_on": "automlx_p38_cpu_v3",
@@ -307,7 +427,28 @@
     "title": "Building a Forecaster using AutoMLx"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
+    "developed_on": "nlp_p37_cpu_v2",
+    "filename": "natural_language_processing.ipynb",
+    "keywords": [
+      "language services",
+      "string manipulation",
+      "regex",
+      "regular expression",
+      "natural language processing",
+      "NLP",
+      "part-of-speech tagging",
+      "named entity recognition",
+      "sentiment analysis",
+      "custom plugins"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 36063,
+    "summary": "Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.",
+    "time_created": "2023-03-26T22:51:01",
+    "title": "Natural Language Processing"
+  },
+  {
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
     "filename": "train-register-deploy-lightgbm.ipynb",
     "keywords": [
       "lightgbm",
@@ -316,28 +457,10 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 12216,
+    "size": 12292,
     "summary": "Train, register, and deploy a LightGBM model.",
     "time_created": "2023-03-26T22:51:01",
     "title": "Train, Register, and Deploy a LightGBM Model"
-  },
-  {
-    "developed_on": "generalml_p38_cpu_v1",
-    "filename": "load_data-object_storage-hive-autonomous-database.ipynb",
-    "keywords": [
-      "loading data",
-      "autonomous database",
-      "adw",
-      "hive",
-      "pandas",
-      "dask",
-      "object storage"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 10007,
-    "summary": "Load data from sources including ADW, Object Storage, and Hive in formats like parquet, csv etc",
-    "time_created": "2023-03-26T22:51:01",
-    "title": "Loading Data With Pandas & Dask"
   },
   {
     "developed_on": "dbexp_p38_cpu_v1",
@@ -387,20 +510,6 @@
     "title": "Text Classification and Model Explanations using LIME"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
-    "filename": "genome_visualization-oracle_open_data.ipynb",
-    "keywords": [
-      "object annotation",
-      "genome visualization",
-      "oracle open data"
-    ],
-    "license": "Universal Permissive License v 1.0 (https://oss.oracle.com/licenses/upl/)",
-    "size": 14739,
-    "summary": "Load visual data, define regions, and visualize objects using metadata to connect structured images to language.",
-    "time_created": "2023-03-30T10:01:38",
-    "title": "Visual Genome Repository"
-  },
-  {
     "developed_on": "nlp_p37_cpu_v2",
     "filename": "onnx-integration-ads.ipynb",
     "keywords": [
@@ -410,11 +519,11 @@
     "license": "Universal Permissive License v 1.0",
     "size": 15896,
     "summary": "Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.",
-    "time_created": "2023-07-17T22:35:37",
+    "time_created": "2023-08-01T08:18:30",
     "title": "ONNX Integration with the Accelerated Data Science (ADS) SDK"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
     "filename": "pipelines-ml_lifecycle.ipynb",
     "keywords": [
       "pipelines",
@@ -422,7 +531,7 @@
       "jobs pipeline"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 36342,
+    "size": 36402,
     "summary": "Create and use ML pipelines through the entire machine learning lifecycle",
     "time_created": "2023-03-26T22:51:01",
     "title": "Working with Pipelines"
@@ -440,6 +549,19 @@
     "summary": "Use Oracle's Graph Analytics libraries to demonstrate graph algorithms, graph machine learning models, and use the property graph query language (PGQL)",
     "time_created": "2023-03-26T22:51:01",
     "title": "Graph Analytics and Graph Machine Learning with PyPGX"
+  },
+  {
+    "developed_on": "pyspark24_p37_cpu_v3",
+    "filename": "pyspark-data_flow-application.ipynb",
+    "keywords": [
+      "pyspark",
+      "data flow"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 10021,
+    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
+    "time_created": "2023-06-02T14:57:56",
+    "title": "PySpark"
   },
   {
     "developed_on": "pyspark32_p38_cpu_v2",
@@ -468,19 +590,6 @@
     "title": "Spark NLP within Oracle Cloud Infrastructure Data Flow Studio"
   },
   {
-    "developed_on": "pyspark24_p37_cpu_v3",
-    "filename": "pyspark-data_flow-application.ipynb",
-    "keywords": [
-      "pyspark",
-      "data flow"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 10021,
-    "summary": "Develop local PySpark applications and work with remote clusters using Data Flow.",
-    "time_created": "2023-06-02T14:57:56",
-    "title": "PySpark"
-  },
-  {
     "developed_on": "pytorch110_p38_cpu_v1",
     "filename": "train-register-deploy-pytorch.ipynb",
     "keywords": [
@@ -496,7 +605,22 @@
     "title": "Train, Register, and Deploy a PyTorch Model"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "filename": "aqua-batch-inferencing.ipynb",
+    "keywords": [
+      "quick action",
+      "batch",
+      "inferencing",
+      "llm"
+    ],
+    "license": "Universal Permissive License v 1.0",
+    "size": 19594,
+    "summary": "Perform batch inferencing on LLMs using AI Quick Actions.",
+    "time_created": "2024-09-19T14:31:00",
+    "title": "AI Quick Action - Batch inferencing"
+  },
+  {
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
     "filename": "train-register-deploy-sklearn.ipynb",
     "keywords": [
       "scikit-learn",
@@ -505,23 +629,10 @@
       "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 12896,
+    "size": 12972,
     "summary": "Train, register, and deploy an scikit-learn model.",
     "time_created": "2023-03-26T22:51:01",
     "title": "Train, register, and deploy Sklearn Model"
-  },
-  {
-    "developed_on": "generalml_p38_cpu_v1",
-    "filename": "sql_magic-commands-with-autonomous_database.ipynb",
-    "keywords": [
-      "sql magic",
-      "autonomous database"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 13044,
-    "summary": "Use SQL Magic commands to work with a database within a Jupyter notebook. This notebook shows how to to use both line and cell magics.",
-    "time_created": "2023-03-30T10:48:51",
-    "title": "Introduction to SQL Magic"
   },
   {
     "developed_on": "dataexpl_p37_cpu_v3",
@@ -565,21 +676,6 @@
     "title": "Text Extraction Using the Accelerated Data Science (ADS) SDK"
   },
   {
-    "developed_on": "generalml_p38_cpu_v1",
-    "filename": "train-register-deploy-xgboost.ipynb",
-    "keywords": [
-      "xgboost",
-      "deploy model",
-      "register model",
-      "train model"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 11999,
-    "summary": "Train, register, and deploy an XGBoost model.",
-    "time_created": "2023-03-26T22:51:01",
-    "title": "Train, Register, and Deploy an XGBoost Model"
-  },
-  {
     "developed_on": "rapids2110_p37_gpu_v1",
     "filename": "xgboost-with-rapids.ipynb",
     "keywords": [
@@ -596,165 +692,35 @@
     "title": "XGBoost with RAPIDS"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v2",
-    "filename": "feature_store_quickstart.ipynb",
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "filename": "train-register-deploy-xgboost.ipynb",
     "keywords": [
-      "pyspark",
-      "featurestore",
-      "machine learning",
-      "feature transformation",
-      "feature storage",
-      "feature validation",
-      "feature statistics"
+      "xgboost",
+      "deploy model",
+      "register model",
+      "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 21304,
-    "summary": "Introduction to the Oracle Cloud Infrastructure Feature Store.Use feature store for feature ingestion and feature querying",
-    "time_created": "2023-03-29T11:04:51",
-    "title": "Feature Store Quickstart"
+    "size": 12075,
+    "summary": "Train, register, and deploy an XGBoost model.",
+    "time_created": "2023-03-26T22:51:01",
+    "title": "Train, Register, and Deploy an XGBoost Model"
   },
-  {
-    "developed_on": "fspyspark32_p38_cpu_v2",
-    "filename": "feature_store_querying.ipynb",
+    {
+    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "filename": "train-mysql-heatwave-deploy-xgboost.ipynb",
     "keywords": [
-      "pyspark",
-      "featurestore",
-      "feature querying",
-      "feature transformation",
-      "feature storage",
-      "feature validation",
-      "feature statistics"
+      "xgboost",
+      "deploy model",
+      "mysql heatwave",
+      "linear regression",
+      "random forest",
+      "train model"
     ],
     "license": "Universal Permissive License v 1.0",
-    "size": 21304,
-    "summary": "Explore Feature Store Functionalities.Transform, Store your Data in Feature Store.Query your data using Feature Store using pandas like interface to query and join",
-    "time_created": "2023-03-29T11:04:51",
-    "title": "Feature store handling querying operations"
-  },
-  {
-    "developed_on": "fspyspark32_p38_cpu_v2",
-    "filename": "feature_store_schema_evolution.ipynb",
-    "keywords": [
-      "pyspark",
-      "featurestore",
-      "feature transformation",
-      "feature storage",
-      "schema evolution"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 21304,
-    "summary": "Perform Schema Enforcement and Schema Evolution in Feature Store when materialising the data",
-    "time_created": "2023-03-29T11:04:51",
-    "title": "Schema Enforcement and Schema Evolution in Feature Store"
-  },
-  {
-    "developed_on": "fspyspark32_p38_cpu_v2",
-    "filename": "feature_store_spark_magic.ipynb",
-    "keywords": [
-      "pyspark",
-      "featurestore",
-      "feature transformation",
-      "feature storage",
-      "schema evolution",
-      "data flow"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 21304,
-    "summary": "Run Feature Store on interactive Spark workloads on a long lasting Data Flow Cluster",
-    "time_created": "2023-03-29T11:04:51",
-    "title": "Data Flow Studio : Big Data Operations in Feature Store"
-  },
-  {
-    "developed_on": "fspyspark32_p38_cpu_v2",
-    "filename": "feature_store_embeddings.ipynb",
-    "keywords": [
-      "pyspark",
-      "featurestore",
-      "feature transformation",
-      "feature querying",
-      "embeddings",
-      "llm"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 21304,
-    "summary": "Use feature store to convert words to embeddings using transformation",
-    "time_created": "2023-11-01T11:04:51",
-    "title": "Feature store embeddings using transformation"
-  },
-  {
-    "developed_on": "fspyspark32_p38_cpu_v2",
-    "filename": "feature_store_medical_synthetic_data_openai.ipynb",
-    "keywords": [
-      "pyspark",
-      "featurestore",
-      "feature transformation",
-      "feature querying",
-      "embeddings",
-      "llm",
-      "synthetic data generation",
-      "openai"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 21304,
-    "summary": "Use feature store to perform synthetic data generation using openai",
-    "time_created": "2023-11-05T11:04:51",
-    "title": "Feature store to perform synthetic data generation using openai"
-  },
-  {
-    "developed_on": "fspyspark32_p38_cpu_v2",
-    "filename": "feature_store_pii_redaction_and_transformation.ipynb",
-    "keywords": [
-      "pyspark",
-      "featurestore",
-      "feature transformation",
-      "feature querying",
-      "embeddings",
-      "llm",
-      "pii data redaction",
-      "summarization",
-      "translation",
-      "openai"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 21304,
-    "summary": "Use feature store to perform PII data redaction, summarization, translation using openai and redact",
-    "time_created": "2023-11-05T11:04:51",
-    "title": "Feature store to perform PII data redaction, summarization, translation using openai and redact"
-  },
-  {
-    "developed_on": "fspyspark32_p38_cpu_v2",
-    "filename": "feature_store_embeddings_openai.ipynb",
-    "keywords": [
-      "pyspark",
-      "featurestore",
-      "feature transformation",
-      "feature querying",
-      "embeddings",
-      "llm",
-      "pii data redaction",
-      "summarization",
-      "translation",
-      "openai"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 21304,
-    "summary": "Use feature store to keep open ai embeddings using openai.Embedding.create",
-    "time_created": "2023-11-05T11:04:51",
-    "title": "Use feature store to keep open ai embeddings using openai.Embedding.create"
-  },
-  {
-    "developed_on": "fspyspark32_p38_cpu_v2",
-    "filename": "feature_store_ehr_data.ipynb",
-    "keywords": [
-      "pyspark",
-      "featurestore",
-      "feature transformation",
-      "feature querying"
-    ],
-    "license": "Universal Permissive License v 1.0",
-    "size": 429056,
-    "summary": "Use feature store transformations to perform feature engineering",
-    "time_created": "2023-11-05T11:04:51",
-    "title": "Use feature store transformations to perform feature engineering"
+    "size": 12075,
+    "summary": "Train and Deploy an XGBoost Model for OCI MySQL Heatwave.",
+    "time_created": "2025-02-19T22:51:01",
+    "title": "Train and Deploy an XGBoost Model for OCI MySQL Heatwave."
   }
 ]

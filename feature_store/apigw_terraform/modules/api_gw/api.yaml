@@ -1,0 +1,4375 @@
+swagger: 2.0
+x-oracle-package: com.oracle.pic.fs
+info:
+  title: FeatureStoreDataplane API
+  description: A description of the FeatureStoreDataplane API.
+  # Todo-Replace: please update the version to your estimated release date. Make sure that basePath(below) contains the version.
+  version: "20230101"
+# the domain of the service
+host: 127.0.0.1
+# array of all schemes that your API supports
+schemes:
+  - http
+  - https
+# basePath will be prefixed to all paths. Make sure to update the path in resource files and audit config in api base.conf after modifying the basePath.
+basePath: /20230101
+produces:
+  - application/json
+
+# please refer to https://confluence.oci.oraclecorp.com/display/DEX/Issue+Routing for details.
+x-obmcs-issue-routing-table:
+  default:
+    phonebookId: datascience
+    email: datascience_grp@oracle.com
+    # Todo-Replace: Update your Jira Project name - instance of https://jira.oci.oraclecorp.com against which tickets would be cut for service teams.
+    # For example, if your Jira queue is https://jira.oci.oraclecorp.com/projects/DEX/issues, then you should only mention DEX.
+    jiraProject: ODSC
+    # Todo-Replace: Update your Jira Project name - instance of jira-sd.mc1.oracleiaas.com against which tickets may be cut for operational issues.
+    # For example, if your Jira queue is https://jira-sd.mc1.oracleiaas.com/projects/SDK/queues, then you should only mention SDK.
+    opsJiraProject: ODSC
+    # For engagements related to relevant API calls on github, this user shall be tagged to respond. Please note that
+    # this list should contain at least 2 items (PM and Dev Manager). The github users should be added the Oracle
+    # organization in github. For details please check - https://confluence.oraclecorp.com/confluence/display/OGHO/Preparing+Your+GitHub+Account+for+OGHO.
+    githubUsers:
+      - githubUser1
+      - githubUser2
+
+# Todo-Replace: Update your endpoint-template.
+# As per the DNS wiki(see below), going ahead, the endpoints for web services would need to follow one of the following naming schemes:
+#  - OCI Services - <service>.<region>.oci.{secondLevelDomain}
+#  - PAAS Services - <service>.<region>.ocp.{secondLevelDomain}
+#  - SAAS Services - <service>.<region>.ocs.{secondLevelDomain}
+#
+# For non-regional endpoints it should be 'https://<service>.(oci|ocp|ocs).{secondLevelDomain}'
+# For region specific endpoints it should be 'https://<service>.{region}.(oci|ocp|ocs).{secondLevelDomain}'
+#
+# {region} -
+#   It holds a special meaning during codegen of the different SDKs/CLI and on encountering this parameter,
+#   the codegen shall generate an endpoint format that would be replaced by the region code from the equivalent of a
+#   setRegion call during client configuration.
+#
+# {secondLevelDomain} -
+#   Case sensitive parameter in this x-obmcs-endpoint-template is used to support different realms.
+#
+# For list of regions & secondLevelDomain and more information, please refer
+#  Service Endpoint Update - https://confluence.oci.oraclecorp.com/display/DEX/Service+Endpoint+Update
+#  External DNS: New Subdomain Request - https://confluence.oraclecorp.com/confluence/display/OCIID/External+DNS%3A+New+Subdomain+Request
+x-obmcs-endpoint-template: 'https://feature-store-dataplane.{region}.oci.{secondLevelDomain}'
+
+# =============================================================================
+# Anchors used to reference common headers, properties, ...etc...
+# =============================================================================
+x-anchors:
+  x-headers:
+    etag: &ref-etag
+      description: |
+        For optimistic concurrency control. See `if-match`.
+      type: string
+    opc-next-page: &ref-opc-next-page
+      description: |
+        For pagination of a list of items. When paging through a list, if this header appears in the response,
+        then a partial list might have been returned. Include this value as the `page` parameter for the
+        subsequent GET request to get the next batch of items.
+      type: string
+    opc-request-id: &ref-opc-request-id
+      description: |
+        Unique Oracle-assigned identifier for the request. If you need to contact
+        Oracle about a particular request, please provide the request ID.
+      type: string
+
+  x-properties:
+    definedTags: &ref-definedTags
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties:
+          type: object
+      description: |
+        Defined tags for this resource. Each key is predefined and scoped to a namespace.
+        Example: `{"foo-namespace": {"bar-key": "value"}}`
+
+    freeformTags: &ref-freeformTags
+      type: object
+      additionalProperties:
+        type: string
+      description: |
+        Simple key-value pair that is applied without any predefined name, type or scope. Exists for cross-compatibility only.
+        Example: `{"bar-key": "value"}`
+
+    systemTags: &ref-systemTags
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties:
+          type: object
+      description: |
+        System tags for this resource. Each key is predefined and scoped to a namespace.
+        Example: `{"orcl-cloud": {"free-tier-retained": "true"}}`
+
+paths:
+  /featureStores:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListFeatureStores
+      summary: Gets a list of all FeatureStores in a compartment
+      description: |
+        Returns a list of FeatureStores.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/FeatureStoreLifecycleStateQueryParam'
+        - $ref: '#/parameters/CreatedByQueryParam'
+        - $ref: '#/parameters/UpdatedByQueryParam'
+        - $ref: '#/parameters/OcidQueryParam'
+        - $ref: '#/parameters/LikeValueQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+
+      x-related-resource: '#/definitions/FeatureStoreCollection'
+      responses:
+        200:
+          description: A page of FeatureStoreSummary objects.
+          schema:
+            $ref: '#/definitions/FeatureStoreCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    post:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: CreateFeatureStore
+      summary: Creates a new FeatureStore
+      description: |
+        Creates a new FeatureStore.
+      parameters:
+        - name: CreateFeatureStoreDetails
+          description: Details for the new FeatureStore.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateFeatureStoreDetails'
+        - $ref: '#/parameters/RetryTokenHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/FeatureStore'
+      responses:
+        200:
+          description: The FeatureStore was successfully created.
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+          schema:
+            $ref: '#/definitions/FeatureStore'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /featureStores/{featureStoreId}:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: GetFeatureStore
+      summary: Get FeatureStore
+      description: Gets a FeatureStore by identifier
+      parameters:
+        - $ref: '#/parameters/FeatureStoreIdentifierPathParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      responses:
+        200:
+          description: Retrieves the FeatureStore with the given id
+          schema:
+            $ref: '#/definitions/FeatureStore'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    put:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: UpdateFeatureStore
+      summary: Update the FeatureStore identified by the id
+      description: Updates the FeatureStore
+      parameters:
+        - $ref: '#/parameters/FeatureStoreIdentifierPathParam'
+        - name: UpdateFeatureStoreDetails
+          description: The information to be updated.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/UpdateFeatureStoreDetails'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/FeatureStore'
+      responses:
+        200:
+          description: The FeatureStore was successfully updated.
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+          schema:
+            $ref: '#/definitions/FeatureStore'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    delete:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: DeleteFeatureStore
+      summary: Delete a provisioned FeatureStore
+      description: Deletes a FeatureStore resource by identifier
+      parameters:
+        - $ref: '#/parameters/FeatureStoreIdentifierPathParam'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/FeatureStore'
+      responses:
+        204:
+          description: The FeatureStore was successfully deleted.
+          headers:
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  # ------------------- entity ------------------------------
+  /entities:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListEntities
+      summary: Gets a list of all FeatureStore Entity construct in a compartment
+      description: |
+        Returns a list of FeatureStore Entity.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/FeatureStoreIdQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/EntityLifecycleStateQueryParam'
+        - $ref: '#/parameters/CreatedByQueryParam'
+        - $ref: '#/parameters/UpdatedByQueryParam'
+        - $ref: '#/parameters/OcidQueryParam'
+        - $ref: '#/parameters/LikeValueQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/EntityCollection'
+      responses:
+        200:
+          description: A page of FeatureStore EntityCollection objects.
+          schema:
+            $ref: '#/definitions/EntityCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+    post:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: CreateEntity
+      summary: Creates a new FeatureStore Entity.
+      description: Creates a new FeatureStore Entity.
+      parameters:
+        - name: CreateEntityDetails
+          description: Details for the new FeatureStore Entity.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateEntityDetails'
+        - $ref: '#/parameters/RetryTokenHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/Entity'
+      responses:
+        200:
+          description: Feature store entity successfully created
+          schema:
+            $ref: '#/definitions/Entity'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /entities/{entityId}:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: GetEntity
+      summary: Get FeatureStore Entity
+      description: Gets a FeatureStore entity by identifier
+      parameters:
+        - $ref: '#/parameters/FeatureStoreEntityPathParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      responses:
+        200:
+          description: Retrieves the FeatureStore entity with the given id
+          schema:
+            $ref: '#/definitions/Entity'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    put:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: UpdateEntity
+      summary: Update the FeatureStoreEntity identified by the id
+      description: Updates the FeatureStore Entity
+      parameters:
+        - $ref: '#/parameters/FeatureStoreEntityPathParam'
+        - name: UpdateEntityDetails
+          description: The information to be updated.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/UpdateEntityDetails'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/Entity'
+      responses:
+        200:
+          description: The FeatureStore Entity is successfully updated.
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+          schema:
+            $ref: '#/definitions/Entity'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+    delete:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: DeleteEntity
+      summary: Delete  FeatureStore entity
+      description: Deletes FeatureStore entity resource by identifier
+      parameters:
+        - $ref: '#/parameters/FeatureStoreEntityPathParam'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/Entity'
+      responses:
+        204:
+          description: The FeatureStore Entity was successfully deleted.
+          headers:
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  # ------------------ Transformation ------------------------
+  /transformations:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListTransformations
+      summary: Gets a list of all FeatureStore Transformation construct in a compartment
+      description: |
+        Returns a list of FeatureStore Transformation.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/FeatureStoreIdQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/TransformationLifecycleStateQueryParam'
+        - $ref: '#/parameters/CreatedByQueryParam'
+        - $ref: '#/parameters/UpdatedByQueryParam'
+        - $ref: '#/parameters/OcidQueryParam'
+        - $ref: '#/parameters/LikeValueQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/TransformationCollection'
+      responses:
+        200:
+          description: A page of FeatureStoreTransformationCollection objects.
+          schema:
+            $ref: '#/definitions/TransformationCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+    post:
+      x-obmcs-client-retries-enabled: true
+      tags:
+        - featureStore
+      summary: CreateTransformation
+      description: Creates a new Transformation.
+      operationId: CreateTransformation
+      parameters:
+        - name: CreateTransformationDetails
+          in: body
+          description: Details for creating a new Transformation.
+          required: true
+          schema:
+            $ref: "#/definitions/CreateTransformationDetails"
+        - $ref: "#/parameters/RequestIdHeader"
+        - $ref: "#/parameters/RetryTokenHeader"
+      x-related-resource: '#/definitions/Transformation'
+      responses:
+        200:
+          description: The Transformation was successfully created.
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+          schema:
+            $ref: '#/definitions/Transformation'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /transformations/{transformationId}:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags:
+        - featureStore
+      summary: GetTransformation
+      description: Gets the specified Transformation information.
+      operationId: GetTransformation
+      parameters:
+        - $ref: "#/parameters/TransformationIdPathParam"
+        - $ref: "#/parameters/RequestIdHeader"
+      x-related-resource: '#/definitions/Transformation'
+      responses:
+        200:
+          description: Retrieves the FeatureStore with the given id
+          schema:
+            $ref: '#/definitions/Transformation'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    delete:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: DeleteTransformation
+      summary: Delete a provisioned Transformation
+      description: Deletes a Transformation registered in Feature Store
+      parameters:
+        - $ref: '#/parameters/TransformationIdPathParam'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/Transformation'
+      responses:
+        204:
+          description: The Transformation was successfully deleted.
+          headers:
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+
+  # ---------------- FeatureGroup ------------------
+  /featureGroups:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListFeatureGroups
+      summary: Gets a list of all Feature Groups
+      description: |
+        Returns a list of Feature Groups.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/FeatureStoreIdQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/FeatureGroupLifecycleStateQueryParam'
+        - $ref: '#/parameters/EntityIdQueryParam'
+        - $ref: '#/parameters/CreatedByQueryParam'
+        - $ref: '#/parameters/UpdatedByQueryParam'
+        - $ref: '#/parameters/OcidQueryParam'
+        - $ref: '#/parameters/LikeValueQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+          # It is recommended to use the UDX ticket number as group name to enable/disable the feature.
+          # The UDX ticket number used here is only an example.
+      x-related-resource: '#/definitions/FeatureGroupCollection'
+      responses:
+        200:
+          description: A page of FeatureGroupCollection objects.
+          schema:
+            $ref: '#/definitions/FeatureGroupCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+    post:
+      x-obmcs-client-retries-enabled: true
+      tags:
+        - featureStore
+      summary: Creates feature group
+      description: Creates a new feature group
+      operationId: CreateFeatureGroup
+      parameters:
+        - name: CreateFeatureGroupDetails
+          in: body
+          description: Details for creating a new Feature Group.
+          required: true
+          schema:
+            $ref: "#/definitions/CreateFeatureGroupDetails"
+        - $ref: "#/parameters/RequestIdHeader"
+        - $ref: "#/parameters/RetryTokenHeader"
+      x-related-resource: '#/definitions/FeatureGroup'
+      responses:
+        200:
+          description: The FeatureGroup was successfully created.
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+          schema:
+            $ref: '#/definitions/FeatureGroup'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /featureGroups/{featureGroupId}:
+    patch:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      summary: Get
+      description: Patches the feature group
+      operationId: PatchFeatureGroup
+      parameters:
+        - name: PatchFeatureGroupDetails
+          in: body
+          description: Details for changing expectation rules in feature group
+          required: true
+          schema:
+            $ref: "#/definitions/PatchFeatureGroupDetails"
+        - $ref: "#/parameters/FeatureGroupIdPathParam"
+        - $ref: "#/parameters/RequestIdHeader"
+        - $ref: '#/parameters/IfMatchHeader'
+      x-related-resource: '#/definitions/PatchFeatureGroupDetails'
+      responses:
+        200:
+          description: Feature group expectation added successfully
+          schema:
+            $ref: '#/definitions/FeatureGroup'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        412:
+          $ref: '#/responses/412'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags:
+        - featureStore
+      summary: Get
+      description: Gets the specified FeatureGroup information.
+      operationId: GetFeatureGroup
+      parameters:
+        - $ref: "#/parameters/FeatureGroupIdPathParam"
+        - $ref: "#/parameters/RequestIdHeader"
+      x-related-resource: '#/definitions/FeatureGroup'
+      responses:
+        200:
+          description: Retrieves the FeatureGroup with the given id
+          schema:
+            $ref: '#/definitions/FeatureGroup'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    put:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      summary: update the feature group parameters
+      description: Update the feature group
+      operationId: UpdateFeatureGroup
+      parameters:
+        - name: UpdateFeatureGroupDetails
+          in: body
+          description: Details for update expectation rules, input features, primary keys in feature group
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateFeatureGroupDetails"
+        - $ref: "#/parameters/FeatureGroupIdPathParam"
+        - $ref: "#/parameters/RequestIdHeader"
+        - $ref: '#/parameters/IfMatchHeader'
+      x-related-resource: '#/definitions/UpdateFeatureGroupDetails'
+      responses:
+        200:
+          description: Feature group updated successfully
+          schema:
+            $ref: '#/definitions/FeatureGroup'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        412:
+          $ref: '#/responses/412'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    delete:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: DeleteFeatureGroup
+      summary: Delete a provisioned FeatureGroup
+      description: Deletes a FeatureGroup registered in Feature Store
+      parameters:
+        - $ref: '#/parameters/FeatureGroupIdPathParam'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/FeatureGroup'
+      responses:
+        204:
+          description: The FeatureGroup was successfully deleted.
+          headers:
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+
+  /featureGroupJobs:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListFeatureGroupJobs
+      summary: Gets a list of all FeatureStore FeatureGroup job constructs in a compartment
+      description: |
+        Returns a list of FeatureStore FeatureGroup Jobs.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/FeatureGroupLifecycleStateQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+        - $ref: '#/parameters/FeatureGroupIdQueryParam'
+      x-related-resource: '#/definitions/FeatureGroupJobCollection'
+      responses:
+        200:
+          description: A page of FeatureStoreFeatureGroupJobCollection objects.
+          schema:
+            $ref: '#/definitions/FeatureGroupJobCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+    post:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: CreateFeatureGroupJob
+      summary: Creates a new FeatureStore FeatureGroup Job.
+      description: Creates a new FeatureStore FeatureGroup Job.
+      parameters:
+        - name: CreateFeatureGroupJobDetails
+          description: Details for the new FeatureStore FeatureGroup Job.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateFeatureGroupJobDetails'
+        - $ref: '#/parameters/RetryTokenHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/FeatureGroupJob'
+      responses:
+        200:
+          description: Feature store FeatureGroupJob successfully created
+          schema:
+            $ref: '#/definitions/FeatureGroupJob'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /featureGroupJobs/{featureGroupJobId}:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: GetFeatureGroupJob
+      summary: Gets a FeatureStore FeatureGroup job constructs identified by the ID
+      description: |
+        Returns a feature FeatureGroup job.
+      parameters:
+        - $ref: "#/parameters/FeatureGroupJobIdPathParam"
+        - $ref: "#/parameters/RequestIdHeader"
+      x-related-resource: '#/definitions/FeatureGroupJob'
+      responses:
+        200:
+          description: A page of FeatureStoreFeatureGroupJobCollection objects.
+          schema:
+            $ref: '#/definitions/FeatureGroupJob'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /featureGroupJobs/{featureGroupJobId}/actions/complete:
+    post:
+      x-obmcs-client-retries-enabled: true
+      x-obmcs-terraform:
+        actionType: SPECIAL_UPDATE
+      tags: [ 'featureStore' ]
+      operationId: CompleteFeatureGroupJob
+      summary: Record output for the FeatureGroupJob identified by the id
+      description: Records output details of the FeatureGroupJob
+      parameters:
+        - $ref: '#/parameters/FeatureGroupJobIdPathParam'
+        - name: CompleteFeatureGroupJobDetails
+          description: The information to be updated.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CompleteFeatureGroupJobDetails'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+        - $ref: "#/parameters/RetryTokenHeader"
+      x-related-resource: '#/definitions/FeatureGroupJob'
+      responses:
+        200:
+          description: The FeatureGroupJob was successfully updated.
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+          schema:
+            $ref: '#/definitions/FeatureGroupJob'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  # ------------------- dataset ------------------------------
+  /datasets:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListDatasets
+      summary: Gets a list of all FeatureStore Dataset construct in a compartment
+      description: |
+        Returns a list of FeatureStore Dataset.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/FeatureStoreIdQueryParam'
+        - $ref: '#/parameters/NameQueryParam'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/DatasetLifecycleStateQueryParam'
+        - $ref: '#/parameters/CreatedByQueryParam'
+        - $ref: '#/parameters/UpdatedByQueryParam'
+        - $ref: '#/parameters/OcidQueryParam'
+        - $ref: '#/parameters/LikeValueQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/DatasetCollection'
+      responses:
+        200:
+          description: A page of FeatureStoreDatasetCollection objects.
+          schema:
+            $ref: '#/definitions/DatasetCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+    post:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: CreateDataset
+      summary: Creates a new FeatureStore Dataset.
+      description: Creates a new FeatureStore Dataset.
+      parameters:
+        - name: CreateDatasetDetails
+          description: Details for the new FeatureStore Dataset.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateDatasetDetails'
+        - $ref: '#/parameters/RetryTokenHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/Dataset'
+      responses:
+        200:
+          description: Feature store dataset successfully created
+          schema:
+            $ref: '#/definitions/Dataset'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+
+  /datasetJobs:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListDatasetJobs
+      summary: Gets a list of all FeatureStore Dataset job constructs in a compartment
+      description: |
+        Returns a list of FeatureStore Dataset Jobs.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/DatasetLifecycleStateQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+        - $ref: '#/parameters/DatasetIdQueryParam'
+      x-related-resource: '#/definitions/DatasetJobCollection'
+      responses:
+        200:
+          description: A page of FeatureStoreDatasetJobCollection objects.
+          schema:
+            $ref: '#/definitions/DatasetJobCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+    post:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: CreateDatasetJob
+      summary: Creates a new FeatureStore Dataset Job.
+      description: Creates a new FeatureStore Dataset Job.
+      parameters:
+        - name: CreateDatasetJobDetails
+          description: Details for the new FeatureStore Dataset Job.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateDatasetJobDetails'
+        - $ref: '#/parameters/RetryTokenHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/DatasetJob'
+      responses:
+        200:
+          description: Feature store dataset successfully created
+          schema:
+            $ref: '#/definitions/DatasetJob'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /datasetJobs/{datasetJobId}:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: GetDatasetJob
+      summary: Gets a FeatureStore Dataset job constructs identified by the ID
+      description: |
+        Returns a feature dataset job.
+      parameters:
+        - $ref: "#/parameters/DatasetJobIdPathParam"
+        - $ref: "#/parameters/RequestIdHeader"
+      x-related-resource: '#/definitions/DatasetJob'
+      responses:
+        200:
+          description: A page of FeatureStoreDatasetJobCollection objects.
+          schema:
+            $ref: '#/definitions/DatasetJob'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /datasetJobs/{datasetJobId}/actions/complete:
+    post:
+      x-obmcs-client-retries-enabled: true
+      x-obmcs-terraform:
+        actionType: SPECIAL_UPDATE
+      tags: [ 'featureStore' ]
+      operationId: CompleteDatasetJob
+      summary: Record output for the DatasetJob identified by the id
+      description: Records output details of the DatasetJob
+      parameters:
+        - $ref: '#/parameters/DatasetJobIdPathParam'
+        - name: CompleteDatasetJobDetails
+          description: The information to be updated.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CompleteDatasetJobDetails'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+        - $ref: "#/parameters/RetryTokenHeader"
+      x-related-resource: '#/definitions/DatasetJob'
+      responses:
+        200:
+          description: The Dataset job was successfully updated.
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+          schema:
+            $ref: '#/definitions/DatasetJob'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+
+  /datasets/{datasetId}:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      summary: Get the dataset details according to dataset id.
+      description: Gets the specified dataset information.
+      operationId: GetDataset
+      parameters:
+        - $ref: "#/parameters/DataSetIdPathParam"
+        - $ref: "#/parameters/RequestIdHeader"
+      x-related-resource: '#/definitions/Dataset'
+      responses:
+        200:
+          description: Retrieves the dataset with the given id
+          schema:
+            $ref: '#/definitions/Dataset'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    put:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      summary: Update dataset expectation details
+      description: update the dataset
+      operationId: UpdateDataset
+      parameters:
+        - name: UpdateDatasetDetails
+          in: body
+          description: Details for changing expectation rules in datase
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateDatasetDetails"
+        - $ref: "#/parameters/DataSetIdPathParam"
+        - $ref: "#/parameters/RequestIdHeader"
+        - $ref: '#/parameters/IfMatchHeader'
+      x-related-resource: '#/definitions/UpdateDatasetDetails'
+      responses:
+        200:
+          description: Dataset expectations updated successfully
+          schema:
+            $ref: '#/definitions/Dataset'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        412:
+          $ref: '#/responses/412'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    delete:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: DeleteDataset
+      summary: Delete a provisioned Dataset
+      description: Deletes a Dataset registered in Feature Store
+      parameters:
+        - $ref: '#/parameters/DataSetIdPathParam'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/Dataset'
+      responses:
+        204:
+          description: The Dataset was successfully deleted.
+          headers:
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  #  /dataset/{datasetId}/actions/addModel:
+  #    post:
+  #      x-obmcs-client-retries-enabled: true
+  #      x-obmcs-terraform:
+  #        actionType: SPECIAL_UPDATE
+  #      tags: [ 'featureStore' ]
+  #      operationId: addModel
+  #      summary: Add model id to the dataset
+  #      description: Add model id to the dataset
+  #      parameters:
+  #        - $ref: '#/parameters/DataSetIdPathParam'
+  #        - name: addModelDetails
+  #          description: The information to be updated.
+  #          required: true
+  #          in: body
+  #          schema:
+  #            $ref: '#/definitions/AddModelDetails'
+  #        - $ref: '#/parameters/IfMatchHeader'
+  #        - $ref: '#/parameters/RequestIdHeader'
+  #        - $ref: "#/parameters/RetryTokenHeader"
+  #      x-related-resource: '#/definitions/Dataset'
+  #      responses:
+  #        200:
+  #          description: Map model id with dataset
+  #          schema:
+  #            $ref: '#/definitions/Dataset'
+  #          headers:
+  #            etag: *ref-etag
+  #            opc-request-id: *ref-opc-request-id
+  #        400:
+  #          $ref: '#/responses/400'
+  #        401:
+  #          $ref: '#/responses/401'
+  #        404:
+  #          $ref: '#/responses/404'
+  #        409:
+  #          $ref: '#/responses/409'
+  #        412:
+  #          $ref: '#/responses/412'
+  #        429:
+  #          $ref: '#/responses/429'
+  #        500:
+  #          $ref: '#/responses/500'
+  #        default:
+  #          $ref: '#/responses/default'
+
+  # ------------------ Search -------------------
+  /resources:
+    post:
+      tags: [ 'featureStore' ]
+      operationId: Search
+      summary: Gets a list of all matching display names matching the search string.
+      description: Search across all constructs.
+      parameters:
+        - name: SearchDetails
+          description: A base request type that contains common criteria for searching for resources.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/SearchDetails'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      responses:
+        200:
+          description: A page searched results
+          schema:
+            $ref: '#/definitions/SearchSummaryCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  # ------------------------ Lineage --------------------------------------------
+
+  /lineage/{lineageId}:
+    get:
+      x-obmcs-client-retries-enabled: true
+      operationId: GetLineage
+      tags: [ 'featureStore' ]
+      summary: Get Lineage
+      description: Get Lineage of a given construct
+      parameters:
+        - $ref: '#/parameters/ConstructTypeQueryParam'
+        - $ref: '#/parameters/LineageIdPathParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      responses:
+        200:
+          description: Retrieves the lineage with the given id
+          schema:
+            $ref: '#/definitions/Lineage'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /featureGroupJobs/validationAnalytics:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListFeatureGroupJobValidationAnalytics
+      summary: Gets a list of all FeatureStore FeatureGroup job constructs in a compartment with validation details
+      description: |
+        Returns a list of FeatureStore FeatureGroup Jobs with validation details.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/TimeCreatedGreaterThan'
+        - $ref: '#/parameters/TimeCreatedLessThan'
+        - $ref: '#/parameters/TimeCreatedLessThanOrEqualTo'
+        - $ref: '#/parameters/TimeCreatedGreaterThanOrEqualTo'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/FeatureGroupJobValidationCollection'
+      responses:
+        200:
+          description: A page of FeatureStoreFeatureGroupJobCollection with validation details objects.
+          schema:
+            $ref: '#/definitions/FeatureGroupJobValidationCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+
+  /featureGroupJobs/statisticsAnalytics:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListFeatureGroupJobStatisticsAnalytics
+      summary: Gets a list of all FeatureStore FeatureGroup job constructs in a compartment with stats details
+      description: |
+        Returns a list of FeatureStore FeatureGroup Jobs.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/TimeCreatedGreaterThan'
+        - $ref: '#/parameters/TimeCreatedLessThan'
+        - $ref: '#/parameters/TimeCreatedLessThanOrEqualTo'
+        - $ref: '#/parameters/TimeCreatedGreaterThanOrEqualTo'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/FeatureGroupJobCollection'
+      responses:
+        200:
+          description: A page of FeatureStoreFeatureGroupJobCollection objects.
+          schema:
+            $ref: '#/definitions/FeatureGroupJobStatisticsCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /datasetJobs/validationAnalytics:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListDatasetJobValidationAnalytics
+      summary: Gets a list of all FeatureStore Dataset job constructs in a compartment
+      description: |
+        Returns a list of FeatureStore Dataset Jobs.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/TimeCreatedGreaterThan'
+        - $ref: '#/parameters/TimeCreatedLessThan'
+        - $ref: '#/parameters/TimeCreatedLessThanOrEqualTo'
+        - $ref: '#/parameters/TimeCreatedGreaterThanOrEqualTo'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/DatasetJobValidationCollection'
+      responses:
+        200:
+          description: A page of FeatureStoreDatasetJobCollection objects.
+          schema:
+            $ref: '#/definitions/DatasetJobValidationCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /datasetJobs/statisticsAnalytics:
+    get:
+      x-obmcs-client-retries-enabled: true
+      tags: [ 'featureStore' ]
+      operationId: ListDatasetJobStatisticsAnalytics
+      summary: Gets a list of all FeatureStore Dataset job constructs in a compartment
+      description: |
+        Returns a list of FeatureStore Dataset Jobs.
+      parameters:
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - $ref: '#/parameters/DisplayNameQueryParam'
+        - $ref: '#/parameters/TimeCreatedGreaterThan'
+        - $ref: '#/parameters/TimeCreatedLessThan'
+        - $ref: '#/parameters/TimeCreatedLessThanOrEqualTo'
+        - $ref: '#/parameters/TimeCreatedGreaterThanOrEqualTo'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/DatasetJobStatisticsCollection'
+      responses:
+        200:
+          description: A page of FeatureStoreDatasetJobCollection objects.
+          schema:
+            $ref: '#/definitions/DatasetJobStatisticsCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+
+definitions:
+  FeatureStore:
+    description: Description of FeatureStore.
+    type: object
+    required:
+      - id
+      - compartmentId
+      - lifecycleState
+      - timeUpdated
+      - timeCreated
+      - createdBy
+      - updatedBy
+    properties:
+      id:
+        description: The Unique Oracle ID (OCID) that is immutable on creation.
+        type: string
+      compartmentId:
+        description: The OCID of the compartment containing the FeatureStore.
+        type: string
+      offlineConfig:
+        $ref: "#/definitions/OfflineConfig"
+      description:
+        description: A short description of the feature store
+        type: string
+        minLength: 1
+        maxLength: 4000
+      name:
+        description: A user-friendly name. Does not have to be unique, and it's changeable. Avoid entering confidential information.
+        type: string
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      createdBy:
+        description: feature store created by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      updatedBy:
+        description: feature store updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      lifecycleState:
+        description: The current state of the feature store.
+        type: string
+        enum: &FEATURE_STORE_LIFECYCLESTATE
+          - ACTIVE
+          - DELETED
+          - FAILED
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+      systemTags: *ref-systemTags
+
+  FeatureStoreSummary:
+    description: Summary of the FeatureStore.
+    type: object
+    required:
+      - id
+      - compartmentId
+      - lifecycleState
+      - createdBy
+      - updatedBy
+      - timeCreated
+      - timeUpdated
+    properties:
+      id:
+        description: Unique identifier that is immutable on creation
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+      name:
+        description: FeatureStore Identifier, can be renamed
+        type: string
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      updatedBy:
+        description: feature store updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      description:
+        description: Feature Group description
+        type: string
+        minLength: 1
+        maxLength: 1024
+      createdBy:
+        description: feature store created by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      lifecycleState:
+        description: The current state of the feature store.
+        type: string
+        x-obmcs-enumref: "#/definitions/FeatureStore/lifecycleState"
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+      systemTags: *ref-systemTags
+
+  FeatureStoreCollection:
+    type: object
+    description: Results of a featureStore search. Contains both FeatureStoreSummary items and other data.
+    required:
+      - items
+    properties:
+      items:
+        description: List of featureStores.
+        type: array
+        items:
+          $ref: "#/definitions/FeatureStoreSummary"
+
+  OfflineConfig:
+    description: Offline configuration related information of FeatureStore.
+    type: object
+    required:
+      - metastoreId
+    properties:
+      metastoreId:
+        description: Hive metastore identifier.
+        type: string
+        minLength: 1
+        maxLength: 255
+
+  CreateFeatureStoreDetails:
+    description: The information about new FeatureStore.
+    type: object
+    required:
+      - name
+      - compartmentId
+    properties:
+      name:
+        description: FeatureStore Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      offlineConfig:
+        $ref: "#/definitions/OfflineConfig"
+      description:
+        description: A short description of the feature store
+        type: string
+        minLength: 1
+        maxLength: 4000
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  UpdateFeatureStoreDetails:
+    description: The information to be updated.
+    type: object
+    properties:
+      name:
+        description: FeatureStore Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      description:
+        description: A short description of the feature store
+        type: string
+        minLength: 1
+        maxLength: 4000
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  SortOrders:
+    type: string
+    description: Sort orders.
+    enum: &SORTORDERS
+      - ASC
+      - DESC
+
+  Error:
+    description: Error Information.
+    required:
+      - code
+      - message
+    properties:
+      code:
+        description: A short error code that defines the error, meant for programmatic parsing.
+        type: string
+      message:
+        description: A human-readable error string.
+        type: string
+
+  ############################ FeatureGroup ########################################
+  ExpectationType:
+    type: string
+    description: Type of expectation
+    enum: &ExpectationType
+      - STRICT
+      - LENIENT
+      - NO_EXPECTATION
+
+  ValidationEngineType:
+    type: string
+    description: Type of validation engine
+    enum: &ValidationEngineType
+      - GREAT_EXPECTATIONS
+
+  LevelType:
+    type: string
+    description: Type of level
+    enum: &LevelType
+      - ERROR
+      - WARNING
+
+  PatchFeatureGroupDetails:
+    description: Patch details for updating feature group
+    type: object
+    properties:
+      expectationDetails:
+        $ref: "#/definitions/ExpectationDetails"
+      inputFeatureDetails:
+        description: input feature group schema details
+        type: array
+        items:
+          $ref: "#/definitions/RawFeatureDetail"
+
+  UpdateDatasetDetails:
+    description: Update details for dataset
+    type: object
+    properties:
+      outputFeatureDetails:
+        $ref: "#/definitions/OutputFeatureDetailCollection"
+      expectationDetails:
+        $ref: "#/definitions/ExpectationDetails"
+      statisticsConfig:
+        $ref: "#/definitions/StatisticsConfig"
+      modelDetails:
+        $ref: "#/definitions/ModelCollection"
+      partitionKeys:
+        $ref: "#/definitions/PartitionKeyCollection"
+
+
+  ExpectationDetails:
+    description: Set of expectations for validation of features
+    type: object
+    required:
+      - name
+      - description
+      - expectationType
+      - createRuleDetails
+    properties:
+      name:
+        description: Name of expectation
+        type: string
+      description:
+        description: A short description of the expectation
+        type: string
+        minLength: 1
+        maxLength: 255
+      expectationType:
+        description: Type of expectation
+        type: string
+        x-obmcs-top-level-enum: '#/definitions/ExpectationType'
+        enum: *ExpectationType
+      validationEngineType:
+        description: Type of validation engine
+        type: string
+        x-obmcs-top-level-enum: '#/definitions/ValidationEngineType'
+        enum: *ValidationEngineType
+        default: 'GREAT_EXPECTATIONS'
+      createRuleDetails:
+        description: feature rules
+        type: array
+        items:
+          $ref: "#/definitions/CreateRuleDetail"
+
+  CreateRuleDetail:
+    description: Set of rules for validation of features
+    type: object
+    required:
+      - name
+      - ruleType
+      - levelType
+      - arguments
+    properties:
+      name:
+        description: Name of rule
+        type: string
+      ruleType:
+        description: Type of rule to be applied on a feature
+        type: string
+        minLength: 1
+        maxLength: 255
+      levelType:
+        description: Severity level of a rule
+        type: string
+        x-obmcs-top-level-enum: '#/definitions/LevelType'
+        enum: *LevelType
+      arguments:
+        description: |
+          kwargs that will be passed to the great expectation.
+          Example: `{"column": "column name"}`
+        type: object
+        additionalProperties:
+          type: object
+  StatisticsConfig:
+    description: enable/disable feature statistic computation and specify the columns for which the stats to be computed
+    type: object
+    required:
+      - isEnabled
+    properties:
+      isEnabled:
+        description: enable/disable feature statistic computation
+        type: boolean
+      columns:
+        description: column names for which the statistics to be calculated
+        type: array
+        items:
+          type: string
+
+  CreateFeatureGroupDetails:
+    description: |
+      Parameters needed to create a new feature group.
+    type: object
+    required:
+      - compartmentId
+      - name
+      - transformationId
+      - entityId
+      - featureStoreId
+      - inputFeatureDetails
+      - primaryKeys
+      - partitionKeys
+    properties:
+      name:
+        description: A user-friendly unique name for the resource.
+        type: string
+        minLength: 1
+        maxLength: 255
+      compartmentId:
+        description: The OCID for the data asset's compartment.
+        type: string
+        minLength: 1
+        maxLength: 255
+      description:
+        description: A short description of the Ai data asset
+        type: string
+        minLength: 1
+        maxLength: 4000
+      transformationId:
+        description: The OCID for the transformation.
+        type: string
+        minLength: 1
+        maxLength: 255
+      entityId:
+        description: The OCID for the entity.
+        type: string
+        minLength: 1
+        maxLength: 255
+      featureStoreId:
+        description: The OCID for the feature store.
+        type: string
+        minLength: 1
+        maxLength: 255
+      inputFeatureDetails:
+        description: input feature group schema details
+        type: array
+        items:
+          $ref: "#/definitions/RawFeatureDetail"
+      transformationParameters:
+        description: Arguments for the transformation function.
+        type: string
+      expectationDetails:
+        $ref: "#/definitions/ExpectationDetails"
+      statisticsConfig:
+        $ref: "#/definitions/StatisticsConfig"
+      primaryKeys:
+        $ref: "#/definitions/PrimaryKeyCollection"
+      partitionKeys:
+        $ref: "#/definitions/PartitionKeyCollection"
+      isInferSchema:
+        description: infer the schema or not
+        type: boolean
+
+  UpdateFeatureGroupDetails:
+    description: |
+      Parameters needed to update an existing feature group.
+    type: object
+    properties:
+      transformationId:
+        description: The ID for the transformation.
+        type: string
+        minLength: 1
+        maxLength: 255
+      inputFeatureDetails:
+        description: input feature group schema details
+        type: array
+        items:
+          $ref: "#/definitions/RawFeatureDetail"
+      outputFeatureDetails:
+        $ref: "#/definitions/OutputFeatureDetailCollection"
+      lifecycleState:
+        description: The current state of the feature group.
+        type: string
+        enum: &FEATURE_GROUP_LIFECYCLESTATE
+          - CREATING
+          - UPDATING
+          - ACTIVE
+          - DELETING
+          - DELETED
+          - FAILED
+          - NEEDS_ATTENTION
+      expectationDetails:
+        $ref: "#/definitions/ExpectationDetails"
+      primaryKeys:
+        $ref: "#/definitions/PrimaryKeyCollection"
+      partitionKeys:
+        $ref: "#/definitions/PartitionKeyCollection"
+      statisticsConfig:
+        $ref: "#/definitions/StatisticsConfig"
+      isInferSchema:
+        description: infer the schema or not
+        type: boolean
+
+  FeatureGroup:
+    description: FeatureGroup Description.
+    required:
+      - id
+      - compartmentId
+      - name
+      - lifecycleState
+      - timeCreated
+      - timeUpdated
+      - createdBy
+      - updatedBy
+      - transformationId
+      - featureStoreId
+      - entityId
+      - primaryKeys
+      - partitionKeys
+      - inputFeatureDetails
+      - datasets
+    properties:
+      id:
+        description: The Unique Oracle ID (OCID) that is immutable on creation.
+        type: string
+        minLength: 1
+        maxLength: 255
+      compartmentId:
+        description: The OCID of the compartment containing the DataAsset.
+        type: string
+        minLength: 1
+        maxLength: 255
+      name:
+        description: A user-friendly unique name
+        type: string
+        minLength: 1
+        maxLength: 255
+      description:
+        description: A short description of the data asset.
+        type: string
+        minLength: 1
+        maxLength: 400
+      transformationId:
+        description: The OCID for the transformation.
+        type: string
+        minLength: 1
+        maxLength: 255
+      entityId:
+        description: The OCID for the entity.
+        type: string
+        minLength: 1
+        maxLength: 255
+      featureStoreId:
+        description: The OCID for the feature store.
+        type: string
+        minLength: 1
+        maxLength: 255
+      primaryKeys:
+        $ref: "#/definitions/PrimaryKeyCollection"
+      partitionKeys:
+        $ref: "#/definitions/PartitionKeyCollection"
+      transformationParameters:
+        description: Arguments for the transformation function.
+        type: string
+      outputFeatureDetails:
+        $ref: "#/definitions/OutputFeatureDetailCollection"
+      datasets:
+        description: datasets linked to a particular feature group
+        type: array
+        items:
+          type: string
+      inputFeatureDetails:
+        description: input feature group schema details
+        type: array
+        items:
+          $ref: "#/definitions/RawFeatureDetail"
+      expectationDetails:
+        $ref: "#/definitions/ExpectationDetails"
+      statisticsConfig:
+        $ref: "#/definitions/StatisticsConfig"
+      isInferSchema:
+        description: infer the schema or not
+        type: boolean
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      createdBy:
+        description: Feature defintion created by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      updatedBy:
+        description: Feature defintion updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      lifecycleState:
+        description: The current state of the feature group.
+        type: string
+        enum: &FEATURE_GROUP_LIFECYCLESTATE
+          - ACTIVE
+
+  IngestionMode:
+    type: string
+    description: Possible feature ingestion mode
+    enum: &IngestionMode
+      - APPEND
+      - OVERWRITE
+      - UPSERT
+      - COMPLETE
+      - UPDATE
+      - DEFAULT
+
+  CreateFeatureGroupJobDetails:
+    description: Dataset save request
+    required:
+      - ingestionMode
+      - featureGroupId
+      - compartmentId
+    properties:
+      compartmentId:
+        description: The OCID of the compartment containing the DataAsset.
+        type: string
+        minLength: 1
+        maxLength: 255
+      displayName:
+        description: A user-friendly display name for the resource.
+        minLength: 1
+        maxLength: 255
+        type: string
+      timeFrom:
+        description: From timestamp for dataset
+        type: string
+        format: date-time
+      timeTo:
+        description: From timestamp for dataset
+        type: string
+        format: date-time
+      ingestionMode:
+        type: string
+        description: The type of the ingestion mode
+        x-obmcs-top-level-enum: '#/definitions/IngestionMode'
+        enum: *IngestionMode
+      featureOptionDetails:
+        $ref: "#/definitions/FeatureOptionDetails"
+      featureGroupId:
+        description: Id of the feature group for which job is to be created
+        type: string
+
+
+  ############################# Transformation Definitions ###################################
+  CreateTransformationDetails:
+    description: |
+      Parameters needed to create a new transformation.
+    type: object
+    required:
+      - compartmentId
+      - name
+      - sourceCode
+      - transformationMode
+      - featureStoreId
+    properties:
+      name:
+        description: A user-friendly display name for the resource. It does not have to be unique and can be modified. Avoid entering confidential information.
+        type: string
+        minLength: 1
+        maxLength: 255
+      compartmentId:
+        description: The OCID for the data asset's compartment.
+        type: string
+        minLength: 1
+        maxLength: 255
+      featureStoreId:
+        description: The OCID of feature store
+        type: string
+        minLength: 1
+        maxLength: 255
+      description:
+        description: A short description of the Ai data asset
+        type: string
+        minLength: 1
+        maxLength: 4000
+      sourceCode:
+        description: Source code for the transformation
+        type: string
+        minLength: 1
+        maxLength: 4000
+      transformationMode:
+        description: Mode of the transformation
+        type: string
+        minLength: 1
+        maxLength: 255
+
+  TransformationCollection:
+    type: object
+    description: Results of a Dataset search. Contains Transformation data.
+    required:
+      - items
+    properties:
+      items:
+        description: List of featureStore Transformation.
+        type: array
+        items:
+          $ref: "#/definitions/TransformationSummary"
+
+  TransformationSummary:
+    description: Summary of the FeatureStore transformation.
+    type: object
+    required:
+      - id
+      - compartmentId
+      - name
+      - timeCreated
+      - timeUpdated
+    properties:
+      id:
+        description: Unique identifier that is immutable on creation
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+      name:
+        description: FeatureStore transformation name, can be renamed
+        type: string
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      lifecycleState:
+        description: The current state of the FeatureStore transformation.
+        type: string
+        x-obmcs-enumref: '#/definitions/Transformation/lifecycleState'
+      featureStoreId:
+        description: The OCID of feature store
+        type: string
+        minLength: 1
+        maxLength: 255
+      createdBy:
+        description: User creation details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      updatedBy:
+        description: feature store transformation updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  Transformation:
+    description: Transformation Description.
+    required:
+      - id
+      - compartmentId
+      - name
+      - lifecycleState
+      - timeCreated
+      - sourceCode
+      - transformationMode
+      - featureStoreId
+    properties:
+      id:
+        description: The Unique Oracle ID (OCID) that is immutable on creation.
+        type: string
+        minLength: 1
+        maxLength: 255
+      compartmentId:
+        description: The OCID of the compartment containing the DataAsset.
+        type: string
+        minLength: 1
+        maxLength: 255
+      featureStoreId:
+        description: The OCID of feature store
+        type: string
+        minLength: 1
+        maxLength: 255
+      name:
+        description: A user-friendly name. Does not have to be unique, and it's changeable. Avoid entering confidential information.
+        type: string
+        minLength: 1
+        maxLength: 255
+      description:
+        description: A short description of the data asset.
+        type: string
+        minLength: 1
+        maxLength: 400
+      sourceCode:
+        description: Source code for the transformation
+        type: string
+        minLength: 1
+        maxLength: 4000
+      transformationMode:
+        description: Mode of the transformation
+        type: string
+        minLength: 1
+        maxLength: 255
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      createdBy:
+        description: User creation details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      updatedBy:
+        description: feature store transformation updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      lifecycleState:
+        description: The current state of the transformation
+        type: string
+        enum: &TRANSFORMATION_LIFECYCLESTATE
+          - ACTIVE
+          - DELETED
+          - FAILED
+  #------ Feature Store Entity Definitions --------------------------------------------------------
+
+  CreateEntityDetails:
+    description: The information about new FeatureStore entity.
+    type: object
+    required:
+      - name
+      - compartmentId
+      - featureStoreId
+    properties:
+      name:
+        description: FeatureStore entity name
+        type: string
+        minLength: 1
+        maxLength: 255
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      featureStoreId:
+        description: Id of feature store
+        type: string
+        minLength: 1
+        maxLength: 255
+      description:
+        description: feature store entity description
+        type: string
+        minLength: 1
+        maxLength: 1024
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  UpdateEntityDetails:
+    description: details for updating entity in feature store.
+    type: object
+    properties:
+      description:
+        description: feature store entity description
+        type: string
+        minLength: 1
+        maxLength: 1024
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  Entity:
+    description: Description of FeatureStore Entity.
+    type: object
+    required:
+      - id
+      - name
+      - compartmentId
+      - featureStoreId
+      - lifecycleState
+      - timeCreated
+      - timeUpdated
+    properties:
+      id:
+        description: The Unique Oracle ID (OCID) that is immutable on creation.
+        type: string
+      compartmentId:
+        description: The OCID of the compartment containing the feature store entity.
+        type: string
+      featureStoreId:
+        description: The OCID of the feature store resource containing the entity.
+        type: string
+      lifecycleState:
+        description: The current state of the entity.
+        type: string
+        enum: &ENTITY_LIFECYCLESTATE
+          - ACTIVE
+          - DELETED
+          - FAILED
+      name:
+        description: A user-friendly unique name.
+        type: string
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      description:
+        description: feature store entity description
+        type: string
+        minLength: 1
+        maxLength: 1024
+      createdBy:
+        description: feature store entity user creation details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      updatedBy:
+        description: feature store entity updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+      systemTags: *ref-systemTags
+
+  #-- Feature Store Entity Summary Details
+  EntitySummary:
+    description: Summary of the FeatureStore entity.
+    type: object
+    required:
+      - id
+      - compartmentId
+      - featureStoreId
+      - name
+      - timeCreated
+      - timeUpdated
+    properties:
+      id:
+        description: Unique identifier that is immutable on creation
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+      featureStoreId:
+        description: The OCID of the Data Science Project containing the FeatureStore entity.
+        type: string
+      name:
+        description: Unique FeatureStore entity Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      lifecycleState:
+        description: The current state of the entity.
+        type: string
+        x-obmcs-enumref: '#/definitions/Entity/lifecycleState'
+      createdBy:
+        description: User creation details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      updatedBy:
+        description: feature store entity updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+      systemTags: *ref-systemTags
+
+  EntityCollection:
+    type: object
+    description: Results of a Entity search. Contains EntitySummary data.
+    required:
+      - items
+    properties:
+      items:
+        description: List of featureStore Entity.
+        type: array
+        items:
+          $ref: "#/definitions/EntitySummary"
+
+  Dataset:
+    description: Description of FeatureStore Dataset.
+    type: object
+    required:
+      - id
+      - name
+      - compartmentId
+      - featureStoreId
+      - lifecycleState
+      - entityId
+      - partitionKeys
+      - timeCreated
+      - timeUpdated
+      - createdBy
+      - updatedBy
+    properties:
+      id:
+        description: The Unique Oracle ID (OCID) that is immutable on creation.
+        type: string
+      name:
+        description: A user-friendly unique name
+        type: string
+      compartmentId:
+        description: The OCID of the compartment containing the FeatureStore datset.
+        type: string
+      entityId:
+        description: The OCID of the Data Science entity linked with dataset.
+        type: string
+      featureStoreId:
+        description: The OCID of the Data Science Project containing the FeatureStore dataset.
+        type: string
+      lifecycleState:
+        description: The current state of the dataset
+        type: string
+        enum: &DATASET_LIFECYCLESTATE
+          - ACTIVE
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      description:
+        description: feature store entity description
+        type: string
+        minLength: 1
+        maxLength: 1024
+      createdBy:
+        description: feature store dataset created by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      updatedBy:
+        description: feature store dataset updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      query:
+        description: SQL query which will be executed to create the dataset
+        type: string
+        minLength: 1
+      datasetFeatureGroups:
+        $ref: "#/definitions/DatasetFeatureGroupCollection"
+      partitionKeys:
+        $ref: "#/definitions/PartitionKeyCollection"
+      expectationDetails:
+        $ref: "#/definitions/ExpectationDetails"
+      statisticsConfig:
+        $ref: "#/definitions/StatisticsConfig"
+      outputFeatureDetails:
+        $ref: "#/definitions/OutputFeatureDetailCollection"
+      modelDetails:
+        $ref: "#/definitions/ModelCollection"
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+      systemTags: *ref-systemTags
+
+  OutputFeatureDetailCollection:
+    type: object
+    description: Features linked to a dataset or a feature Group
+    required:
+      - items
+    properties:
+      items:
+        description: List of features.
+        type: array
+        items:
+          $ref: "#/definitions/OutputFeatureDetail"
+  DatasetCollection:
+    type: object
+    description: Results of a Dataset search. Contains DatasetSummary data.
+    required:
+      - items
+    properties:
+      items:
+        description: List of featureStore Dataset.
+        type: array
+        items:
+          $ref: "#/definitions/DatasetSummary"
+
+  DatasetSummary:
+    description: Summary of the FeatureStore dataset.
+    type: object
+    required:
+      - id
+      - compartmentId
+      - featureStoreId
+      - name
+      - timeCreated
+      - timeUpdated
+    properties:
+      id:
+        description: Unique identifier that is immutable on creation
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+      featureStoreId:
+        description: The OCID of the Data Science Project containing the FeatureStore dataset.
+        type: string
+      name:
+        description: FeatureStore dataset
+        type: string
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      lifecycleState:
+        description: The current state of the dataset.
+        type: string
+        x-obmcs-enumref: '#/definitions/Dataset/lifecycleState'
+      createdBy:
+        description: User creation details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      description:
+        description: Feature Group description
+        type: string
+        minLength: 1
+        maxLength: 1024
+      updatedBy:
+        description: feature store dataset updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  CreateDatasetJobDetails:
+    description: Dataset save request
+    required:
+      - displayName
+      - ingestionMode
+      - datasetId
+      - compartmentId
+    properties:
+      displayName:
+        description: FeatureStore dataset job Identifier, can be renamed
+        type: string
+      compartmentId:
+        description: The OCID of the compartment containing the Dataset.
+        type: string
+        minLength: 1
+        maxLength: 255
+      ingestionMode:
+        type: string
+        description: The type of the ingestion mode
+        x-obmcs-top-level-enum: '#/definitions/IngestionMode'
+        enum: *IngestionMode
+      featureOptionDetails:
+        $ref: "#/definitions/FeatureOptionDetails"
+      datasetId:
+        description: Id of the dataset for which job is to be created
+        type: string
+
+  FeatureOptionDetails:
+    type: object
+    description: feature options to be used for read / write access
+    properties:
+      featureOptionWriteConfigDetails:
+        $ref: "#/definitions/FeatureOptionWriteConfigDetails"
+      featureOptionReadConfigDetails:
+        $ref: "#/definitions/FeatureOptionReadConfigDetails"
+
+  FeatureOptionWriteConfigDetails:
+    type: object
+    description: feature options to be used for read / write access
+    properties:
+      mergeSchema:
+        type: boolean
+        description: enable this to support schema evolution
+        default: false
+      overwriteSchema:
+        type: boolean
+        description: enable this to support schema evolution
+        default: false
+
+
+  FeatureOptionReadConfigDetails:
+    type: object
+    description: feature options to be used for read / write access
+    properties:
+      versionAsOf:
+        type: integer
+        description: specify the version number required for feature materialization job access
+        default: -1
+      timestampAsOf:
+        type: string
+        description: The date and time ater which feature data is required in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+        format: "date-time"
+
+  FeatureGroupCollection:
+    type: object
+    description: Results of a DataSource search. Contains DataSource data.
+    required:
+      - items
+    properties:
+      items:
+        description: List of featureStore DataSource.
+        type: array
+        items:
+          $ref: "#/definitions/FeatureGroupSummary"
+
+  FeatureGroupSummary:
+    description: Summary of the Feature Group.
+    type: object
+    required:
+      - id
+      - compartmentId
+      - name
+      - featureStoreId
+      - lifecycleState
+      - timeCreated
+      - timeUpdated
+    properties:
+      id:
+        description: Unique identifier that is immutable on creation
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+      featureStoreId:
+        description: The OCID of the Feature Store containing the Feature Group.
+        type: string
+      name:
+        description: Feature Group
+        type: string
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeUpdated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      description:
+        description: Feature Group description
+        type: string
+        minLength: 1
+        maxLength: 1024
+      lifecycleState:
+        description: The current state of the FeatureStore feature group.
+        type: string
+        x-obmcs-enumref: '#/definitions/FeatureGroup/lifecycleState'
+      createdBy:
+        description: User creation details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      updatedBy:
+        description: feature group updated by details
+        type: string
+        minLength: 1
+        maxLength: 1024
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  CreateDatasetFeatureGroupCollectionDetails:
+    type: object
+    description: Dataset feature group collection creation details
+    required:
+      - items
+    properties:
+      items:
+        description: List of dataset feature group collection
+        type: array
+        items:
+          $ref: "#/definitions/DatasetFeatureGroupSummary"
+
+  DatasetFeatureGroupCollection:
+    type: object
+    description: Results of a dataset feature group collection
+    required:
+      - items
+      - isManualAssociation
+    properties:
+      isManualAssociation:
+        description: Boolean value indicating whether the collection was manually associated
+        type: boolean
+      items:
+        description: List of dataset feature group collection
+        type: array
+        items:
+          $ref: "#/definitions/DatasetFeatureGroupSummary"
+
+  DatasetFeatureGroupSummary:
+    description: feature group details for dataset mapping.
+    type: object
+    required:
+      - featureGroupId
+    properties:
+      featureGroupId:
+        description: ID of the feature group
+        type: string
+
+
+  PrimaryKeyCollection:
+    type: object
+    description: primary key collection summary
+    required:
+      - items
+    properties:
+      items:
+        description: List of features.
+        type: array
+        items:
+          $ref: "#/definitions/PrimaryKeySummary"
+
+  PartitionKeyCollection:
+    type: object
+    description: Partition key collection summary
+    required:
+      - items
+    properties:
+      items:
+        description: List of partition keys.
+        type: array
+        items:
+          $ref: "#/definitions/PartitionKeySummary"
+
+  PrimaryKeySummary:
+    description: Summary information for a primary key.
+    required:
+      - name
+    properties:
+      name:
+        description: Primary key name
+        type: string
+
+  PartitionKeySummary:
+    description: Summary information for a partition key.
+    required:
+      - name
+    properties:
+      name:
+        description: partition key name
+        type: string
+
+  CreateDatasetDetails:
+    description: The information about new FeatureStore entity.
+    type: object
+    required:
+      - name
+      - compartmentId
+      - featureStoreId
+      - entityId
+      - query
+      - partitionKeys
+    properties:
+      name:
+        description: A user-friendly unique name for the resource.
+        type: string
+        minLength: 1
+        maxLength: 255
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      featureStoreId:
+        description: Id of feature store
+        type: string
+        minLength: 1
+        maxLength: 255
+      entityId:
+        description: feature store entity id
+        type: string
+        minLength: 1
+        maxLength: 255
+      description:
+        description: feature store entity description
+        type: string
+        minLength: 1
+        maxLength: 1024
+      query:
+        description: SQL query which will be executed to create the dataset
+        type: string
+        minLength: 1
+      datasetFeatureGroups:
+        $ref: "#/definitions/CreateDatasetFeatureGroupCollectionDetails"
+      partitionKeys:
+        $ref: "#/definitions/PartitionKeyCollection"
+      expectationDetails:
+        $ref: "#/definitions/ExpectationDetails"
+      statisticsConfig:
+        $ref: "#/definitions/StatisticsConfig"
+      modelDetails:
+        $ref: "#/definitions/ModelCollection"
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  #---------- Features ----------------------------------------------------------------------------------------
+  FeatureType:
+    type: string
+    description: Possible feature types
+    enum: &FeatureType
+      - STRING
+      - SHORT
+      - INTEGER
+      - LONG
+      - FLOAT
+      - DOUBLE
+      - BOOLEAN
+      - DATE
+      - TIMESTAMP
+      - DECIMAL
+      - BINARY
+      - BYTE
+      - STRING_ARRAY
+      - SHORT_ARRAY
+      - INTEGER_ARRAY
+      - LONG_ARRAY
+      - FLOAT_ARRAY
+      - DOUBLE_ARRAY
+      - BINARY_ARRAY
+      - DATE_ARRAY
+      - TIMESTAMP_ARRAY
+      - BYTE_ARRAY
+      - BOOLEAN_ARRAY
+      - STRING_STRING_MAP
+      - STRING_INTEGER_MAP
+      - STRING_SHORT_MAP
+      - STRING_LONG_MAP
+      - STRING_FLOAT_MAP
+      - STRING_DOUBLE_MAP
+      - STRING_TIMESTAMP_MAP
+      - STRING_DATE_MAP
+      - STRING_BINARY_MAP
+      - STRING_BYTE_MAP
+      - STRING_BOOLEAN_MAP
+      - STRUCT
+      - UNKNOWN
+      - COMPLEX
+
+  OutputFeatureDetail:
+    description: Feature detail for a particular feature in feature group or dataset
+    type: object
+    required:
+      - name
+      - featureType
+    properties:
+      name:
+        description: feature group name.
+        type: string
+      featureType:
+        type: string
+        description: The data-type of the feature
+        x-obmcs-top-level-enum: '#/definitions/FeatureType'
+        enum: *FeatureType
+
+
+  RawFeatureDetail:
+    description: Feature details for a particular feature group
+    type: object
+    required:
+      - name
+      - featureType
+      - orderNumber
+    properties:
+      name:
+        description: feature group name.
+        type: string
+      featureType:
+        type: string
+        description: The data-type of the feature
+        x-obmcs-top-level-enum: '#/definitions/FeatureType'
+        enum: *FeatureType
+      isEventTimestamp:
+        description: True if event timestamp column
+        type: boolean
+      eventTimestampFormat:
+        description: Represents the format of timestamp column
+        type: string
+      isNullable:
+        description: True if column is nullable
+        type: boolean
+      orderNumber:
+        description: True if column is nullable
+        type: integer
+
+  # ------------------- Job ------------------------------
+
+  DatasetJob:
+    description: Job of feature store construct
+    required:
+      - id
+      - displayName
+      - timeStarted
+      - compartmentId
+      - createdBy
+      - lifecycleState
+    properties:
+      id:
+        description: The GUID of the construct.
+        minLength: 1
+        maxLength: 255
+        type: string
+      displayName:
+        description: FeatureStore dataset Identifier, can be renamed
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeStarted:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeFinished:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      createdBy:
+        description: The [OCID](/iaas/Content/General/Concepts/identifiers.htm) of the user who created the job.
+        minLength: 1
+        maxLength: 255
+        type: string
+      datasetId:
+        type: string
+        description: Dataset Id
+      lifecycleState:
+        description: The current state of the job.
+        type: string
+        enum: &DATASET_JOB_LIFECYCLE_STATE
+          - IN_PROGRESS
+          - FAILED
+          - SUCCEEDED
+      ingestionMode:
+        type: string
+        description: The type of the ingestion mode
+        x-obmcs-top-level-enum: '#/definitions/IngestionMode'
+        enum: *IngestionMode
+      featureOptionDetails:
+        $ref: "#/definitions/FeatureOptionDetails"
+      jobOutputDetails:
+        $ref: "#/definitions/DatasetJobOutputDetails"
+
+
+  DatasetJobSummary:
+    description: Job of feature store construct
+    properties:
+      id:
+        description: The GUID of the construct.
+        minLength: 1
+        maxLength: 255
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      displayName:
+        description: A user-friendly display name for the resource.
+        minLength: 1
+        maxLength: 255
+        type: string
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeStarted:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeFinished:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      createdBy:
+        description: The [OCID](/iaas/Content/General/Concepts/identifiers.htm) of the user who created the job.
+        minLength: 1
+        maxLength: 255
+        type: string
+      lifecycleState:
+        description: The current state of the job.
+        type: string
+        x-obmcs-enumref: '#/definitions/DatasetJob/lifecycleState'
+      validationDetails:
+        $ref: "#/definitions/ValidationOutputDetails"
+    required:
+      - id
+      - timeStarted
+      - compartmentId
+      - createdBy
+      - lifecycleState
+
+  DatasetJobCollection:
+    type: object
+    description: Results of a dataset job list. Contains DatasetJobSummary data.
+    required:
+      - items
+    properties:
+      items:
+        description: List of dataset jobs.
+        type: array
+        items:
+          $ref: "#/definitions/DatasetJobSummary"
+
+  ValidationOutputDetails:
+    description: Validation Details of the Job
+    properties:
+      isSuccessful:
+        description: Validation Success Result
+        type: boolean
+      evaluatedExpectations:
+        description: Total number of Evaluated Expectations
+        type: integer
+      successfulExpectations:
+        description: Total number of Successful Expectations
+        type: integer
+      unsuccessfulExpectations:
+        description: Total number of Unsuccessful Expectations
+        type: integer
+      successPercent:
+        description: Success Percentage of the Validation Result
+        type: string
+
+  FeatureGroupJobOutputDetails:
+    description: feature group job execution output details
+    properties:
+      errorDetails:
+        description: error details for the job if any errors are encountered while executing the job
+        type: string
+      validationOutput:
+        type: string
+        description: validation output
+      featureStatistics:
+        description: feature statistics for the selected features in the feature group group
+        type: string
+      commitId:
+        type: string
+        description: Commit id for the job
+      version:
+        type: integer
+        description: Version number for statistics or validation changes
+
+  DatasetJobOutputDetails:
+    description: Dataset job execution output details
+    properties:
+      errorDetails:
+        description: error details for the job if any errors are encountered while executing the job
+        type: string
+      validationOutput:
+        type: string
+        description: validation output
+      featureStatistics:
+        description: feature statistics for the selected features in the feature group group
+        type: string
+      commitId:
+        type: string
+        description: Commit id for the job
+      version:
+        type: integer
+        description: Version number for statistics or validation changes
+
+  FeatureGroupJob:
+    description: feature group job
+    properties:
+      id:
+        description: feature group job.
+        minLength: 1
+        maxLength: 255
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      displayName:
+        description: A user-friendly display name for the resource.
+        minLength: 1
+        maxLength: 255
+        type: string
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeStarted:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeFinished:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      createdBy:
+        description: The [OCID](/iaas/Content/General/Concepts/identifiers.htm) of the user who created the job.
+        minLength: 1
+        maxLength: 255
+        type: string
+      featureGroupId:
+        type: string
+        description: Id of the associated feature group
+      lifecycleState:
+        description: The current state of the job.
+        type: string
+        enum: &FEATURE_GROUP_JOB_LIFECYCLE_STATE
+          - IN_PROGRESS
+          - FAILED
+          - SUCCEEDED
+      timeFrom:
+        description: From timestamp for feature group job
+        type: string
+        format: date-time
+      timeTo:
+        description: To timestamp for feature group job
+        type: string
+        format: date-time
+      ingestionMode:
+        type: string
+        description: The type of the ingestion mode
+        x-obmcs-top-level-enum: '#/definitions/IngestionMode'
+        enum: *IngestionMode
+      featureOptionDetails:
+        $ref: "#/definitions/FeatureOptionDetails"
+      jobOutputDetails:
+        $ref: "#/definitions/FeatureGroupJobOutputDetails"
+
+  CompleteFeatureGroupJobDetails:
+    description: |
+      Parameters needed to update an existing feature group Job.
+    type: object
+    properties:
+      jobOutputDetails:
+        $ref: "#/definitions/FeatureGroupJobOutputDetails"
+
+  CompleteDatasetJobDetails:
+    description: |
+      Parameters needed to update an existing dataset Job.
+    type: object
+    properties:
+      jobOutputDetails:
+        $ref: "#/definitions/DatasetJobOutputDetails"
+
+  FeatureGroupJobSummary:
+    description: Feature group job
+    properties:
+      id:
+        description: Feature group job id.
+        minLength: 1
+        maxLength: 255
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      displayName:
+        description: A user-friendly display name for the resource.
+        minLength: 1
+        maxLength: 255
+        type: string
+      timeCreated:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeStarted:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      timeFinished:
+        type: string
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      createdBy:
+        description: The [OCID](/iaas/Content/General/Concepts/identifiers.htm) of the user who created the job.
+        minLength: 1
+        maxLength: 255
+        type: string
+      lifecycleState:
+        description: The current state of the job.
+        type: string
+        x-obmcs-enumref: '#/definitions/FeatureGroupJob/lifecycleState'
+      validationDetails:
+        $ref: "#/definitions/ValidationOutputDetails"
+    required:
+      - id
+      - compartmentId
+      - timeStarted
+      - createdBy
+      - lifecycleState
+
+  FeatureGroupJobCollection:
+    type: object
+    description: Results of a feature group job list. Contains FeatureGroupJobSummary data.
+    required:
+      - items
+    properties:
+      items:
+        description: List of feature group jobs.
+        type: array
+        items:
+          $ref: "#/definitions/FeatureGroupJobSummary"
+
+  # ------------- Search Summary --------------------
+
+  SearchDetails:
+    type: object
+    description: Search details
+    required:
+      - searchType
+    properties:
+      searchType:
+        type: string
+        description: Type of search you want to perform
+        enum:
+          - FREE_TEXT
+      text:
+        type: string
+        description: The text to search for
+
+#  FreeTextSearchDetails:
+#    type: object
+#    description: Free text search details
+#    allOf:
+#      - $ref: '#/definitions/SearchDetails'
+#      - discriminator: FREE_TEXT
+#
+#        properties:
+#          text:
+#            type: string
+#            description: The text to search for
+
+  FeatureStoreConstructType:
+    type: string
+    description: All constructs of Feature Store.
+    enum: &FeatureStoreConstruct
+      - FEATURE_STORE
+      - FEATURE_STORE_DATA_SOURCE
+      - FEATURE_STORE_ENTITY
+      - FEATURE_STORE_FEATURE_GROUP
+      - FEATURE_STORE_TRANSFORMATION
+      - FEATURE_STORE_DATASET
+      - FEATURE_STORE_FEATURE
+      - FEATURE_STORE_DATA_ASSET
+
+  SearchContext:
+    type: object
+    description: Contains search context, such as highlighting, for found resources.
+    properties:
+      highlights:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: string
+        description: |
+          Describes what in each field matched the search criteria by showing highlighted values, but only for free text searches or for structured 
+          queries that use a MATCHING clause. The list of strings represents fragments of values that matched the query conditions. Highlighted 
+          values are wrapped with &lt;h1&gt;..&lt;/h1&gt; tags. All values are HTML-encoded (except &lt;h1&gt; tags).
+    x-example: |
+      {
+        "searchContext": {
+          "highlights": {
+            "description": [
+              "Compartment for &lt;h1&gt;Jane&lt;/h1&gt; Doe to use"
+            ]
+          }
+        }
+      }
+
+  SearchSummary:
+    type: object
+    description: Search result item.
+    required:
+      - identifier
+      - compartmentId
+      - displayName
+      - resourceType
+    properties:
+      identifier:
+        type: string
+        description: The [OCID](/iaas/Content/General/Concepts/identifiers.htm) of the entity
+      compartmentId:
+        description: The OCID of the compartment containing the FeatureStore.
+        type: string
+      displayName:
+        description: A user-friendly display name for the resource.
+        minLength: 1
+        maxLength: 255
+        type: string
+      timeCreated:
+        type: string
+        description: The time that this resource was created.
+        pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+        example: "2019-05-17"
+      lifecycleState:
+        description: The current state of the resource.
+        type: string
+      resourceType:
+        type: string
+        description: The type of the entity
+        x-obmcs-top-level-enum: '#/definitions/FeatureStoreConstructType'
+        enum: *FeatureStoreConstruct
+      freeformTags:
+        type: object
+        additionalProperties:
+          type: string
+        description: |
+          Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace. 
+          For more information, see [Resource Tags](/Content/General/Concepts/resourcetags.htm). 
+          Example: `{"Department": "Finance"}`
+      definedTags:
+        type: object
+        additionalProperties:
+          type: object
+          additionalProperties:
+            type: object
+        description: |
+          Defined tags for this resource. Each key is predefined and scoped to a namespace. 
+          For more information, see [Resource Tags](/Content/General/Concepts/resourcetags.htm). 
+          Example: `{"Operations": {"CostCenter": "42"}}`
+      systemTags:
+        type: object
+        additionalProperties:
+          type: object
+          additionalProperties:
+            type: object
+        description: |
+          System tags associated with this resource, if any. System tags are set by Oracle Cloud Infrastructure services. Each key is predefined and scoped to namespaces.
+          For more information, see [Resource Tags](https://docs.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).
+          Example: `{orcl-cloud: {free-tier-retain: true}}`
+      searchContext:
+        $ref: '#/definitions/SearchContext'
+      name:
+        description: The name of the item that was found.
+        type: string
+      description:
+        description: The description of the item that was found.
+        type: string
+
+  SearchSummaryCollection:
+    type: object
+    description: Results of search.
+    required:
+      - items
+    properties:
+      items:
+        description: List of resources that matched the search query
+        type: array
+        items:
+          $ref: "#/definitions/SearchSummary"
+
+  # --------- Lineage definitions ------------------------------------------
+  Lineage:
+    description: Job of feature store construct
+    type: object
+    required:
+      - lineage
+    properties:
+      lineage:
+        $ref: "#/definitions/LineageSummaryCollection"
+      lineageType:
+        type: string
+        description: Type of lineage construct for which the lineage is required
+        enum: &LineageType
+          - FEATURE_GROUP
+          - DATASET
+
+  LineageSummaryCollection:
+    type: object
+    description: lineage summary details.
+    required:
+      - items
+    properties:
+      items:
+        description: Lineage summary for matching resources for feature group and datatset
+        type: array
+        items:
+          $ref: "#/definitions/LineageSummary"
+
+  LineageDetail:
+    description: Lineage detail for feature store constructs
+    type: object
+    required:
+      - id
+      - displayName
+    properties:
+      displayName:
+        description: Name of the feature store construct
+        type: string
+      id:
+        description: the guid for the feature store constructs
+        type: string
+        minLength: 32
+        maxLength: 128
+
+
+  LineageSummary:
+    type: object
+    description: Response of lineage query.
+    required:
+      - featureStore
+      - entity
+      - featureGroup
+    properties:
+      featureStore:
+        $ref: "#/definitions/LineageDetail"
+      entity:
+        $ref: "#/definitions/LineageDetail"
+      transformation:
+        $ref: "#/definitions/LineageDetail"
+      featureGroup:
+        $ref: "#/definitions/LineageDetail"
+      dataset:
+        $ref: "#/definitions/LineageDetail"
+      modelDetails:
+        $ref: "#/definitions/ModelCollection"
+
+  ModelCollection:
+    type: object
+    description: model ids.
+    required:
+      - items
+    properties:
+      items:
+        description: List of model ids associated with dataset
+        type: array
+        items:
+          type: string
+
+  DatasetJobStatisticsCollection:
+    type: object
+    description: Results of a dataset job list with statistics details. Contains DatasetJobStatisticsSummary data.
+    required:
+      - items
+    properties:
+      items:
+        type: array
+        description: Array of DatasetJobStatisticsSummary
+        items:
+          $ref: "#/definitions/DatasetJobStatisticsSummary"
+
+  DatasetJobStatisticsSummary:
+    description: Dataset Job of feature store construct with statistics details
+    properties:
+      id:
+        description: The GUID of the construct.
+        minLength: 1
+        maxLength: 255
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      displayName:
+        description: A user-friendly display name for the resource.
+        minLength: 1
+        maxLength: 255
+        type: string
+      timeStarted:
+        type: string
+        description: The date and time the job request was started in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      timeCreated:
+        type: string
+        description: The date and time the job request was created in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      timeFinished:
+        type: string
+        description: The date and time the job request was finished in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      statisticsDetails:
+        $ref: "#/definitions/DatasetJobStatisticsDetails"
+    required:
+      - id
+      - timeStarted
+      - compartmentId
+
+
+  DatasetJobStatisticsDetails:
+    description: Statistics details of the Job
+    type: object
+    required:
+      - items
+    properties:
+      items:
+        type: array
+        description: Array of feature statistics
+        items:
+          $ref: "#/definitions/DatasetJobStatisticsItem"
+
+  DatasetJobStatisticsItem:
+    description: Statistics details item of the Job
+    type: object
+    discriminator: featureType
+    properties:
+      feature:
+        type: string
+        description: The feature for which statistics is calculated
+      featureType:
+        type: string
+        description: The feature  type for which statistics is calculated. Either numerical or categorical
+        enum:
+          - NUMERICAL
+          - CATEGORICAL
+
+  DatasetJobNumericalFeatureStatistics:
+    description: Feature statistics for numerical type feature
+    type: object
+    allOf:
+      - $ref: '#/definitions/DatasetJobStatisticsItem'
+      - discriminator: NUMERICAL
+        properties:
+          min:
+            type: number
+            format: double
+            description: The minimum value of the feature
+          max:
+            type: number
+            format: double
+            description: The maximum value of the feature
+          median:
+            type: number
+            format: double
+            description: The median value of the feature
+          mean:
+            type: number
+            format: double
+            description: The mean value of the feature
+
+  DatasetJobCategoricalFeatureStatistics:
+    description: Feature statistics for categorical type feature
+    type: object
+    allOf:
+      - $ref: '#/definitions/DatasetJobStatisticsItem'
+      - discriminator: CATEGORICAL
+        properties:
+          distinctCount:
+            type: integer
+            description: Total distinct count of the feature
+
+  DatasetJobValidationCollection:
+    type: object
+    description: Results of a dataset job list with validation details. Contains DatasetJobValidationSummary data.
+    required:
+      - items
+    properties:
+      items:
+        type: array
+        description: Array of DatasetJobValidationSummary
+        items:
+          $ref: "#/definitions/DatasetJobValidationSummary"
+
+  DatasetJobValidationSummary:
+    description: Feature group job
+    properties:
+      id:
+        description: Feature group job id.
+        minLength: 1
+        maxLength: 255
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      displayName:
+        description: A user-friendly display name for the resource.
+        minLength: 1
+        maxLength: 255
+        type: string
+      timeCreated:
+        type: string
+        description: The date and time the job request was created in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      timeStarted:
+        type: string
+        description: The date and time the job request was started in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      timeFinished:
+        type: string
+        description: The date and time the job request was finished in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      validationDetails:
+        $ref: "#/definitions/DatasetJobValidationOutputDetails"
+    required:
+      - id
+      - compartmentId
+      - timeStarted
+
+  DatasetJobValidationOutputDetails:
+    description: Validation Details of the Job
+    properties:
+      isSuccessful:
+        description: Validation Success Result
+        type: boolean
+      evaluatedExpectations:
+        description: Total number of Evaluated Expectations
+        type: integer
+      successfulExpectations:
+        description: Total number of Successful Expectations
+        type: integer
+      unsuccessfulExpectations:
+        description: Total number of Unsuccessful Expectations
+        type: integer
+      successPercent:
+        description: Success Percentage of the Validation Result
+        type: string
+
+  FeatureGroupJobStatisticsCollection:
+    type: object
+    description: Results of a feature group job list with validation details. Contains FeatureGroupJobStatisticsSummary data.
+    required:
+      - items
+    properties:
+      items:
+        type: array
+        description: Array of FeatureGroupJobStatisticsSummary
+        items:
+          $ref: "#/definitions/FeatureGroupJobStatisticsSummary"
+
+  FeatureGroupJobStatisticsSummary:
+    description: Dataset Job of feature store construct with statistics details
+    properties:
+      id:
+        description: The GUID of the construct.
+        minLength: 1
+        maxLength: 255
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      displayName:
+        description: A user-friendly display name for the resource.
+        minLength: 1
+        maxLength: 255
+        type: string
+      timeStarted:
+        type: string
+        description: The date and time the job request was started in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      timeCreated:
+        type: string
+        description: The date and time the job request was created in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      timeFinished:
+        type: string
+        description: The date and time the job request was finished in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      statisticsDetails:
+        $ref: "#/definitions/FeatureGroupJobStatisticsDetails"
+    required:
+      - id
+      - timeStarted
+      - compartmentId
+
+  FeatureGroupJobStatisticsDetails:
+    description: Statistics details of the Job
+    type: object
+    required:
+      - items
+    properties:
+      items:
+        type: array
+        description: Array of feature statistics
+        items:
+          $ref: "#/definitions/FeatureGroupJobStatisticsItem"
+
+  FeatureGroupJobStatisticsItem:
+    description: Statistics details item of the Job
+    type: object
+    discriminator: featureType
+    properties:
+      feature:
+        type: string
+        description: The feature for which statistics is calculated
+      featureType:
+        type: string
+        description: The feature  type for which statistics is calculated. Either numerical or categorical
+        enum:
+          - NUMERICAL
+          - CATEGORICAL
+
+  FeatureGroupJobNumericalFeatureStatistics:
+    description: Feature statistics for numerical type feature
+    type: object
+    allOf:
+      - $ref: '#/definitions/FeatureGroupJobStatisticsItem'
+      - discriminator: NUMERICAL
+        properties:
+          min:
+            type: number
+            format: double
+            description: The minimum value of the feature
+          max:
+            type: number
+            format: double
+            description: The maximum value of the feature
+          median:
+            type: number
+            format: double
+            description: The median value of the feature
+          mean:
+            type: number
+            format: double
+            description: The mean value of the feature
+
+  FeatureGroupJobCategoricalFeatureStatistics:
+    description: Feature statistics for categorical type feature
+    type: object
+    allOf:
+      - $ref: '#/definitions/FeatureGroupJobStatisticsItem'
+      - discriminator: CATEGORICAL
+        properties:
+          distinctCount:
+            type: integer
+            description: Total distinct count of the feature
+
+  FeatureGroupJobValidationCollection:
+    type: object
+    description: Results of a feature group job list with validation details. Contains FeatureGroupJobValidationSummary data.
+    required:
+      - items
+    properties:
+      items:
+        type: array
+        description: Array of FeatureGroupJobValidationSummary
+        items:
+          $ref: "#/definitions/FeatureGroupJobValidationSummary"
+
+  FeatureGroupJobValidationSummary:
+    description: Feature group job
+    properties:
+      id:
+        description: Feature group job id.
+        minLength: 1
+        maxLength: 255
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      displayName:
+        description: A user-friendly display name for the resource.
+        minLength: 1
+        maxLength: 255
+        type: string
+      timeCreated:
+        type: string
+        description: The date and time the job request was created in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      timeStarted:
+        type: string
+        description: The date and time the job request was started in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      timeFinished:
+        type: string
+        description: The date and time the job request was finished in the timestamp format defined by [RFC3339](https://tools.ietf.org/html/rfc3339).
+        example: "2017-07-21T16:11:29Z"
+      validationDetails:
+        $ref: "#/definitions/FeatureGroupJobValidationOutputDetails"
+    required:
+      - id
+      - compartmentId
+      - timeStarted
+
+  FeatureGroupJobValidationOutputDetails:
+    description: Validation Details of the Job
+    properties:
+      isSuccessful:
+        description: Validation Success Result
+        type: boolean
+      evaluatedExpectations:
+        description: Total number of Evaluated Expectations
+        type: integer
+      successfulExpectations:
+        description: Total number of Successful Expectations
+        type: integer
+      unsuccessfulExpectations:
+        description: Total number of Unsuccessful Expectations
+        type: integer
+      successPercent:
+        description: Success Percentage of the Validation Result
+        type: string
+
+
+parameters:
+  TimeCreatedGreaterThan:
+    name: timeCreatedGreaterThan
+    in: query
+    required: true
+    type: string
+    format: date-time
+    description: exclusive start date, example:2022-03-01T00:00:00.000Z
+
+  TimeCreatedGreaterThanOrEqualTo:
+    name: timeCreatedGreaterThanOrEqualTo
+    in: query
+    required: true
+    type: string
+    format: date-time
+    description: Inclusive start date, example:2022-03-01T00:00:00.000Z
+
+  TimeCreatedLessThan:
+    name: timeCreatedLessThan
+    in: query
+    required: true
+    type: string
+    format: date-time
+    description: exclusive end date, example:2022-03-01T00:00:00.000Z
+
+  TimeCreatedLessThanOrEqualTo:
+    name: timeCreatedLessThanOrEqualTo
+    in: query
+    required: true
+    type: string
+    format: date-time
+    description: inclusive end date, example:2022-04-01T00:00:00.000Z
+
+  FeatureStoreIdentifierPathParam:
+    name: featureStoreId
+    type: string
+    in: path
+    required: true
+    description: Unique FeatureStore identifier
+
+  DataSourceIdentifierPathParam:
+    name: dataSourceId
+    type: string
+    in: path
+    required: true
+    description: Unique Data Source identifier
+
+  SearchStringPathParam:
+    name: searchString
+    type: string
+    in: path
+    required: true
+    description: search string to search all constructs.
+
+  FeatureGroupIdPathParam:
+    name: featureGroupId
+    type: string
+    in: path
+    required: true
+    description: Unique FeatureStore identifier
+
+  FeatureStoreEntityPathParam:
+    name: entityId
+    type: string
+    in: path
+    required: true
+    description: Unique FeatureStore entity identifier
+
+  DataSetIdPathParam:
+    name: datasetId
+    type: string
+    in: path
+    required: true
+    description: Unique FeatureStore Dataset identifier
+
+  FeatureStoreLifecycleStateQueryParam:
+    name: lifecycleState
+    in: query
+    required: false
+    type: string
+    x-obmcs-enumref: '#/definitions/FeatureStore/lifecycleState'
+    x-default-description: 'null'
+    description: A filter to return only resources their lifecycleState matches the given lifecycleState.
+
+  DatasetIdQueryParam:
+    name: datasetId
+    in: query
+    required: false
+    type: string
+    description: ID of the dataset associated with the job.
+  EntityIdQueryParam:
+    name: entityId
+    type: string
+    in: query
+    required: false
+    description: Unique FeatureStore entity identifier
+
+  FeatureStoreIdQueryParam:
+    name: featureStoreId
+    type: string
+    in: query
+    required: false
+    description: Unique FeatureStore identifier
+
+  FeatureGroupIdQueryParam:
+    name: featureGroupId
+    in: query
+    required: false
+    type: string
+    description: ID of the feature group associated with the job
+
+  DatasetJobIdPathParam:
+    name: datasetJobId
+    type: string
+    in: path
+    required: true
+    description: Unique jobId parameter
+
+  FeatureGroupJobIdPathParam:
+    name: featureGroupJobId
+    type: string
+    in: path
+    required: true
+    description: Unique jobId parameter
+
+  FeatureGroupLifecycleStateQueryParam:
+    name: lifecycleState
+    in: query
+    required: false
+    type: string
+    x-obmcs-enumref: '#/definitions/FeatureGroup/lifecycleState'
+    x-default-description: 'null'
+    description: A filter to return only resources their lifecycleState matches the given lifecycleState.
+
+  DatasetLifecycleStateQueryParam:
+    name: lifecycleState
+    in: query
+    required: false
+    type: string
+    x-obmcs-enumref: '#/definitions/Dataset/lifecycleState'
+    x-default-description: 'null'
+    description: A filter to return only resources their lifecycleState matches the given lifecycleState.
+
+  DatasetJobLifecycleStateQueryParam:
+    name: lifecycleState
+    in: query
+    required: false
+    type: string
+    x-obmcs-enumref: '#/definitions/DatasetJob/lifecycleState'
+    x-default-description: 'null'
+    description: A filter to return only resources their lifecycleState matches the given lifecycleState.
+
+  TransformationLifecycleStateQueryParam:
+    name: lifecycleState
+    in: query
+    required: false
+    type: string
+    x-obmcs-enumref: '#/definitions/Transformation/lifecycleState'
+    x-default-description: 'null'
+    description: A filter to return only resources their lifecycleState matches the given lifecycleState.
+
+  EntityLifecycleStateQueryParam:
+    name: lifecycleState
+    in: query
+    required: false
+    type: string
+    x-obmcs-enumref: '#/definitions/Entity/lifecycleState'
+    x-default-description: 'null'
+    description: A filter to return only resources their lifecycleState matches the given lifecycleState.
+
+  PaginationLimitQueryParam:
+    name: limit
+    in: query
+    type: integer
+    minimum: 1
+    maximum: 100
+    default: 10
+    description: The maximum number of items to return.
+
+  PaginationTokenQueryParam:
+    name: page
+    in: query
+    type: string
+    minLength: 1
+    description: A token representing the position at which to start retrieving results. This must come from the `opc-next-page` header field of a previous response.
+
+  LikeValueQueryParam:
+    name: likeValue
+    in: query
+    type: string
+    minLength: 1
+    x-default-description: 'null'
+    description: A map of key value pairs to filter results based on values similar to the given value.
+
+  SortOrderQueryParam:
+    name: sortOrder
+    in: query
+    type: string
+    x-obmcs-top-level-enum: '#/definitions/SortOrders'
+    enum: *SORTORDERS
+    x-default-description: |
+      The default value depends upon `sortBy`, and
+      in general is 'DESC' when sorting by time and 'ASC' otherwise.
+    description: The sort order to use, either 'ASC' or 'DESC'.
+
+  SortByQueryParam:
+    name: sortBy
+    in: query
+    type: string
+    enum:
+      - timeCreated
+      - name
+    default: 'timeCreated'
+    description: |
+      The field to sort by. Only one sort order may be provided. Default order for timeCreated is descending. Default order for displayName is ascending.
+
+  CompartmentIdQueryParam:
+    name: compartmentId
+    in: query
+    required: true
+    type: string
+    description: The ID of the compartment in which to list resources.
+
+  NameQueryParam:
+    in: query
+    maxLength: 255
+    minLength: 1
+    name: name
+    type: string
+    x-default-description: 'null'
+    description: A filter to return only resources that match the entire display name given.
+
+  DisplayNameQueryParam:
+    in: query
+    maxLength: 255
+    minLength: 1
+    name: displayName
+    type: string
+    x-default-description: 'null'
+    description: A filter to return only resources that match the entire display name given.
+
+  CreatedByQueryParam:
+    description: <b>Filter</b> results by the [OCID](/iaas/Content/General/Concepts/identifiers.htm) of the user who created the resource.
+    in: query
+    maxLength: 255
+    minLength: 1
+    name: createdBy
+    required: false
+    type: string
+    x-default-description: "null"
+
+  UpdatedByQueryParam:
+    description: <b>Filter</b> results by the [OCID](/iaas/Content/General/Concepts/identifiers.htm) of the user who updated the resource.
+    in: query
+    maxLength: 255
+    minLength: 1
+    name: updatedBy
+    required: false
+    type: string
+    x-default-description: "null"
+
+  OcidQueryParam:
+    description: |
+      <b>Filter</b> results by [OCID](/iaas/Content/General/Concepts/identifiers.htm). Must be an OCID of the correct type for the resource type.
+    in: query
+    maxLength: 255
+    minLength: 1
+    name: id
+    required: false
+    type: string
+    x-default-description: "null"
+
+  RequestIdHeader:
+    name: opc-request-id
+    in: header
+    type: string
+    description: The client request ID for tracing.
+
+  RetryTokenHeader:
+    description: |
+      A token that uniquely identifies a request so it can be retried in case of a timeout or
+      server error without risk of executing that same action again. Retry tokens expire after 24
+      hours, but can be invalidated before then due to conflicting operations. For example, if a resource
+      has been deleted and purged from the system, then a retry of the original creation request
+      might be rejected.
+    in: header
+    maxLength: 64
+    minLength: 1
+    name: opc-retry-token
+    required: false
+    type: string
+
+  IfMatchHeader:
+    description: |
+      For optimistic concurrency control. In the PUT or DELETE call
+      for a resource, set the `if-match` parameter to the value of the
+      etag from a previous GET or POST response for that resource.
+      The resource will be updated or deleted only if the etag you
+      provide matches the resource's current etag value.
+    in: header
+    name: if-match
+    required: false
+    type: string
+
+  FeatureStoreWorkRequestIdPathParam:
+    name: featureStoreWorkRequestId
+    in: path
+    description: The [GUID](/iaas/Content/General/Concepts/identifiers.htm) of the Workrequest.
+    required: true
+    type: string
+
+
+  # ----------------- Transformation --------------------------
+  TransformationIdPathParam:
+    name: transformationId
+    in: path
+    description: The [OCID](/iaas/Content/General/Concepts/identifiers.htm) of the transformation.
+    required: true
+    type: string
+
+  # --------------- Lineage ---------------------------------------
+
+  ConstructTypeQueryParam:
+    name: constructType
+    description: type of construct for lineage
+    in: query
+    required: false
+    type: string
+    x-obmcs-enumref: '#/definitions/Lineage/lineageType'
+    x-default-description: 'null'
+
+  LineageIdPathParam:
+    name: lineageId
+    in: path
+    required: true
+    type: string
+    description: An identifier of the construct
+
+#==========[ Responses ]================================================================================================
+responses:
+  400:
+    description: Bad Request
+    headers:
+      opc-request-id: *ref-opc-request-id
+    schema:
+      $ref: '#/definitions/Error'
+  401:
+    description: Unauthorized
+    headers:
+      opc-request-id: *ref-opc-request-id
+    schema:
+      $ref: '#/definitions/Error'
+  404:
+    description: Not Found
+    headers:
+      opc-request-id: *ref-opc-request-id
+    schema:
+      $ref: '#/definitions/Error'
+  409:
+    description: Conflict
+    headers:
+      opc-request-id: *ref-opc-request-id
+    schema:
+      $ref: '#/definitions/Error'
+  412:
+    description: Precondition failed
+    headers:
+      opc-request-id: *ref-opc-request-id
+    schema:
+      $ref: '#/definitions/Error'
+  429:
+    description: Too Many Requests
+    headers:
+      opc-request-id: *ref-opc-request-id
+    schema:
+      $ref: '#/definitions/Error'
+  500:
+    description: Internal Server Error
+    headers:
+      opc-request-id: *ref-opc-request-id
+    schema:
+      $ref: '#/definitions/Error'
+  default:
+    description: Unknown Error
+    headers:
+      opc-request-id: *ref-opc-request-id
+    schema:
+      $ref: '#/definitions/Error'
