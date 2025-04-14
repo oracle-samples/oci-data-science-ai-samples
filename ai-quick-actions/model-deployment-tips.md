@@ -22,7 +22,15 @@ replacement for applications using OpenAI API. Model deployments are a managed r
 the OCI Data Science service. For more details about Model Deployment and managing it through
 the OCI console please see the [OCI docs](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-about.htm).
 
-## Deploying an LLM
+
+### Prerequisites
+
+1. Ensure that the necessary [policies](policies/README.md) are enacted.
+2. Create an OCI Object Storage Bucket with Object Versioning.
+
+![Bucket w/ Object Versioning](web_assets/object-versioning.png)
+
+### Deploying an LLM
 
 After picking a model from the model explorer, if the "Deploy Model" is enabled you can use this
 form to quickly deploy the model:
@@ -90,8 +98,33 @@ oci raw-request --http-method POST --target-uri <model_deployment_url>/predict -
 
 Note: Currently `oci-cli` does not support streaming response, use Python or Java SDK instead.
 
+#### Request body for /v1/completions VS /v1/chat/completions
 
-### Using Python SDK (without streaming)
+For /v1/completion endpoints, use the "prompt" key.
+```
+body = {
+    "model": "odsc-llm", # this is a constant
+    "prompt": "what are activation functions?",
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+}
+```
+
+For v1/chat/completions, use the "messages" key and a list of JSONs.
+```
+body = {
+    "model": "odsc-llm", # this is a constant
+    "messages": [{"content" : "what model are you?", "role":"user"}],
+    "max_tokens": 250,
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "stream": True
+}
+```
+#### Using Python SDK (without streaming)
+- note that the following request body is for the **/v1/completions** endpoint 
+- See **/v1/chat/completions** request body [here](#request-body-for-/v1/completions-vs-/v1/chat/completions)
 
 ```python
 # The OCI SDK must be installed for this example to function properly.
@@ -134,9 +167,10 @@ print(res)
 ```
 
 ### Using Python SDK (with streaming)
-
 To consume streaming Server-sent Events (SSE), install [sseclient-py](https://pypi.org/project/sseclient-py/) using `pip install sseclient-py`.
 
+- note that the following request body is for the **/v1/completions** endpoint 
+- See **/v1/chat/completions** request body [here](#request-body-for-/v1/completions-vs-/v1/chat/completions)
 ```python
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm

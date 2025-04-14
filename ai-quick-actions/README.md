@@ -10,16 +10,7 @@ AI Quick Actions is a suite of actions that together can be used to deploy, eval
 Manager (ORM) or manually. For further information see [Policies](policies/README.md).
 
 ---
-
-**What's New:**
-
-How-To Blogs:
-
-1. [Deploy Meta-Llama-3-8B-Instruct with Oracle Service Managed vLLM(0.3.0) Container](llama3-with-smc.md)
-2. [Deploy ELYZA-japanese-Llama-2-13b-instruct with Oracle Service Managed vLLM(0.3.0) Container](deploy-with-smc.md)
-
----
-
+- [Release Notes](release-notes.md)
 - [Policies](policies/README.md)
 - [CLI](cli-tips.md)
 - [Model Deployment](model-deployment-tips.md)
@@ -107,6 +98,7 @@ to select more randomly from the possible outputs therefore introducing more cre
 In some cases a more sophisticated solution is needed, for example [fine tuning.](fine-tuning-tips.md)
 
 
+- [Release Notes](release-notes.md)
 - [Policies](policies/README.md)
 - [CLI](cli-tips.md)
 - [Model Deployment](model-deployment-tips.md)

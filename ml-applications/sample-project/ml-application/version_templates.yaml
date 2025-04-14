@@ -1,0 +1,2 @@
+local: "0.{timestamp}"
+release: "1.{timestamp}.{git_hash}"

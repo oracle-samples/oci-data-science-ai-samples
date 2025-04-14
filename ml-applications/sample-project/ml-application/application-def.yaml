@@ -1,0 +1,9 @@
+application:
+  name: "fetalrisk-demo"
+  description: "Fetal Risk ML Application"
+  #freeform_tags:
+  #defined_tags:
+implementation:
+  name: "fetalrisk-demo-implementation"
+  #freeform_tags:
+  #defined_tags:
