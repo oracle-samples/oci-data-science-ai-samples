@@ -295,6 +295,18 @@ models that will be registered and deployed using Bring Your Own Container (BYOC
 
 Example: `iad.ocir.io/<your_tenancy>/<your_image>:<tag>`
 
+`--defined_tags`
+
+The defined tags to be added for the registered model. 
+
+Example: `{"defined-tag-namespace-1":{"tag-key-1":"tag-value-1","tag-key-2":"tag-value-2"},"defined-tag-namespace-2":{"sample-tag-key":"sample-tag-value"}}`
+
+`--freeform_tags`
+
+The freeform tags to be added for the registered model.
+
+Example: `{"key1":"value1","key2":"value2"}`
+
 
 ### Example
 
@@ -304,7 +316,9 @@ ads aqua model register \
   --os_path oci://<bucket>@<namespace>/<prefix> \
   --download_from_hf True \
   --inference_container odsc-vllm-serving \
-  --finetuning_container odsc-llm-fine-tuning
+  --finetuning_container odsc-llm-fine-tuning \
+  --defined_tags '{"defined-tag-namespace-1":{"tag-key-1":"tag-value-1","tag-key-2":"tag-value-2"}}' \
+  --freeform_tags '{"key1":"value1","key2":"value2"}'
 ```
 
 #### CLI Output
