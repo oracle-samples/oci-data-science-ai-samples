@@ -40,7 +40,7 @@ To successfully debug an issue, always select logging while creating model deplo
 
 Once the model deployment is intiated, you can monitor the logs by running on your notebook terminal- 
 
-`ads watch <your modeldepoyment ocid> --auth resource_principal`
+`ads opctl watch <your modeldepoyment ocid> --auth resource_principal`
 
 To fetch the model deployment ocid - 
 1. Go to model deployments tab on AI Quick Actions
