@@ -1022,3 +1022,167 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 - Evaluations are run per model within a MultiModel deployment.
 
 
+# Supported Service Models
+| Model | Shape | GPU | Parameters |
+|-------|-------|-----|------------|
+| codellama/CodeLlama-13b-Instruct-hf | BM.GPU.A10.4 | 2 | --max-model-len 4096 |
+| codellama/CodeLlama-13b-Instruct-hf | BM.GPU.L40S-NC.4 | 2 | --max-model-len 4096 |
+| codellama/CodeLlama-7b-Instruct-hf | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| codellama/CodeLlama-7b-Instruct-hf | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| codellama/CodeLlama-7b-Instruct-hf | BM.GPU.A10.4 | 2 |  |
+| codellama/CodeLlama-7b-Instruct-hf | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| codellama/CodeLlama-7b-Instruct-hf | BM.GPU.L40S-NC.4 | 2 |  |
+| elyza/ELYZA-japanese-Llama-2-13b | BM.GPU.A10.4 | 2 | --max-model-len 4096 |
+| elyza/ELYZA-japanese-Llama-2-13b | BM.GPU.L40S-NC.4 | 2 | --max-model-len 4096 |
+| elyza/ELYZA-japanese-Llama-2-13b-instruct | BM.GPU.A10.4 | 2 | --max-model-len 4096 |
+| elyza/ELYZA-japanese-Llama-2-13b-instruct | BM.GPU.L40S-NC.4 | 2 | --max-model-len 4096 |
+| elyza/ELYZA-japanese-Llama-2-7b | BM.GPU.A10.4 | 2 |  |
+| elyza/ELYZA-japanese-Llama-2-7b | BM.GPU.L40S-NC.4 | 2 |  |
+| elyza/ELYZA-japanese-Llama-2-7b-instruct | BM.GPU.A10.4 | 2 |  |
+| elyza/ELYZA-japanese-Llama-2-7b-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| google/codegemma-1.1-2b | VM.GPU.A10.2 | 1 |  |
+| google/codegemma-1.1-2b | BM.GPU.A10.4 | 1 |  |
+| google/codegemma-1.1-7b-it | BM.GPU.A10.4 | 2 |  |
+| google/codegemma-1.1-7b-it | BM.GPU.L40S-NC.4 | 2 |  |
+| google/codegemma-2b | VM.GPU.A10.2 | 1 |  |
+| google/codegemma-2b | BM.GPU.A10.4 | 1 |  |
+| google/codegemma-7b | BM.GPU.A10.4 | 2 |  |
+| google/codegemma-7b | BM.GPU.L40S-NC.4 | 2 |  |
+| google/gemma-1.1-7b-it | BM.GPU.A10.4 | 2 |  |
+| google/gemma-1.1-7b-it | BM.GPU.L40S-NC.4 | 2 |  |
+| google/gemma-2b | VM.GPU.A10.2 | 1 |  |
+| google/gemma-2b | BM.GPU.A10.4 | 1 |  |
+| google/gemma-2b-it | VM.GPU.A10.2 | 1 |  |
+| google/gemma-2b-it | BM.GPU.A10.4 | 1 |  |
+| google/gemma-7b | BM.GPU.A10.4 | 2 |  |
+| google/gemma-7b | BM.GPU.L40S-NC.4 | 2 |  |
+| intfloat/e5-mistral-7b-instruct | VM.GPU.A10.2 | 1 |  |
+| intfloat/e5-mistral-7b-instruct | BM.GPU.A10.4 | 1 |  |
+| intfloat/e5-mistral-7b-instruct | BM.GPU.A10.4 | 2 |  |
+| intfloat/e5-mistral-7b-instruct | BM.GPU.L40S-NC.4 | 1 |  |
+| intfloat/e5-mistral-7b-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-1B | VM.GPU.A10.2 | 1 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 1 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.L40S-NC.4 | 1 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-1B-Instruct | VM.GPU.A10.2 | 1 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 | 1 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 1 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-3B | VM.GPU.A10.2 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-3B | BM.GPU.L40S-NC.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-3B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3-8B | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Meta-Llama-3-8B | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3-8B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-8B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-8B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Meta-Llama-3-8B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-8B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU4.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU.A100-v2.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU.H100.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU4.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.A100-v2.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.H100.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-8B | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Meta-Llama-3.1-8B | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| microsoft/phi-2 | VM.GPU.A10.2 | 1 |  |
+| microsoft/phi-2 | BM.GPU.A10.4 | 1 |  |
+| microsoft/phi-2 | BM.GPU.A10.4 | 2 |  |
+| microsoft/phi-2 | BM.GPU.L40S-NC.4 | 1 |  |
+| microsoft/phi-2 | BM.GPU.L40S-NC.4 | 2 |  |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.A10.4 | 2 | --trust-remote-code --max-model-len 4096 |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code --max-model-len 4096 |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.A100-v2.8 | 2 | --trust-remote-code --max-model-len 4096 |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.A100-v2.8 | 4 | --trust-remote-code |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code --max-model-len 4096 |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.H100.8 | 4 | --trust-remote-code |
+| microsoft/Phi-3-mini-4k-instruct | VM.GPU.A10.2 | 1 |  |
+| microsoft/Phi-3-mini-4k-instruct | BM.GPU.A10.4 | 1 |  |
+| microsoft/Phi-3-mini-4k-instruct | BM.GPU.A10.4 | 2 |  |
+| microsoft/Phi-3-mini-4k-instruct | BM.GPU.L40S-NC.4 | 1 |  |
+| microsoft/Phi-3-mini-4k-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.A10.4 | 2 | --trust-remote-code --max-model-len 32000 |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code --max-model-len 32000 |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.A100-v2.8 | 2 | --trust-remote-code --max-model-len 32000 |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.A100-v2.8 | 4 | --trust-remote-code |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code --max-model-len 32000 |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.H100.8 | 4 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A10.4 | 2 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 2 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 5 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 2 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 5 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 2 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 5 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A10.4 | 2 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 2 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 5 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 2 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 5 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 2 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 5 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A10.4 | 2 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 2 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 5 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 2 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 5 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 2 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.A10.4 | 2 |  |
+| microsoft/phi-4 | BM.GPU.L40S-NC.4 | 2 |  |
+| microsoft/phi-4 | BM.GPU4.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU4.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.A100-v2.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.A100-v2.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.H100.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.H100.8 | 5 |  |
+| mistralai/Mistral-7B-Instruct-v0.1 | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.A10.4 | 2 |  |
+| mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.L40S-NC.4 | 2 |  |
+| mistralai/Mistral-7B-Instruct-v0.2 | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.2 | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.2 | BM.GPU.A10.4 | 2 |  |
+| mistralai/Mistral-7B-Instruct-v0.2 | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.2 | BM.GPU.L40S-NC.4 | 2 |  |
+| mistralai/Mistral-7B-Instruct-v0.3 | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.3 | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.3 | BM.GPU.A10.4 | 2 | --max-model-len 8192 |
+| mistralai/Mistral-7B-Instruct-v0.3 | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.3 | BM.GPU.L40S-NC.4 | 2 | --max-model-len 8192 |
+| mistralai/Mistral-7B-v0.1 | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-v0.1 | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-v0.1 | BM.GPU.A10.4 | 2 |  |
+| mistralai/Mistral-7B-v0.1 | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-v0.1 | BM.GPU.L40S-NC.4 | 2 |  |
+| tiiuae/falcon-7b | VM.GPU.A10.2 | 1 | --trust-remote-code |
+| tiiuae/falcon-7b | BM.GPU.A10.4 | 1 | --trust-remote-code |
