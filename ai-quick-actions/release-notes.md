@@ -7,6 +7,8 @@
   - We have made UI improvements based on customer feedback to enhance troubleshooting experience. 
     - User will be able to copy the error payload for faster resolution and sharing.
   - Improved Model registration , Deployment and Evaluation flow using metadata APIs
+- **AQUA CLI Enhancements:**
+  - Added support for creating deployments with multiple verified or cached LLM (text-generation) models using the AI Quick Actions CLI. For more details, refer to the corresponding [AI Quick Actions MultiModel Deployment documentation](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/multimodel-deployment-tips.md).
 
 To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
 
@@ -19,8 +21,6 @@ To get this version of AI Quick Actions, deactivate and reactivate your notebook
   - Upgraded managed containers are now running [vLLM 0.8.3](https://github.com/vllm-project/vllm/releases/tag/v0.8.3). This version of vLLM supports the newly released Meta's Llama 4 models. 
 - **UI Enhancements:**
   - We have made UI improvements based on customer feedback and to better help customers troubleshoot, including link to the AI Quick Actions [Troubleshooting page](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/troubleshooting-tips.md). 
-- **AQUA CLI Enhancements:**
-  - Added support for creating deployments with multiple verified or cached LLM (text-generation) models using the AI Quick Actions CLI. For more details, refer to the corresponding [AI Quick Actions MultiModel Deployment documentation](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/multimodel-deployment-tips.md).
 
 To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
 
