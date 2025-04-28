@@ -366,7 +366,7 @@ Example: `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>
 
 For deploying embedding models, model_task must be specified. For best practice, model_task should be supplied. (Supported tasks: text_generation, image_text_to_text, code_synthesis, text_embedding)
 
-Example: `'[{"model_id":"<model_ocid_of_embedding_model>", "gpu_count":1, "model_task": "embedding"},{"model_id":"<model_ocid_of_image_text_to_text>", "gpu_count":1, "model_task": "image_text_to_text"}]'` for  `VM.GPU.A10.2` shape.
+Example: `'[{"model_id":"<ocid_of_embedding_model>", "gpu_count":1, "model_task": "embedding"},{"model_id":"<ocid_of_image_text_to_text_model>", "gpu_count":1, "model_task": "image_text_to_text"}]'` for  `VM.GPU.A10.2` shape.
 
 
 `--instance_shape [str]`
