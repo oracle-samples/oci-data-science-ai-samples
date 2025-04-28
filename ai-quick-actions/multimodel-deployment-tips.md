@@ -360,8 +360,13 @@ ads aqua deployment create [OPTIONS]
 
 `--models [str]`
 
-The String representation of a JSON array, where each object defines a model’s OCID and the number of GPUs assigned to it. The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**. <br>
-Example: `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape. <br>
+The String representation of a JSON array, where each object defines a model’s OCID, number of GPUs assigned to it. <br> The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**. 
+
+Example: `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape.
+
+For deploying embedding models, model_task must be specified. For best practice, model_task should be supplied. (Supported tasks: text_generation, image_text_to_text, code_synthesis, text_embedding)
+
+Example: `'[{"model_id":"<ocid_of_embedding_model>", "gpu_count":1, "model_task": "embedding"},{"model_id":"<ocid_of_image_text_to_text_model>", "gpu_count":1, "model_task": "image_text_to_text"}]'` for  `VM.GPU.A10.2` shape.
 
 
 `--instance_shape [str]`
@@ -439,7 +444,8 @@ ads aqua deployment create \
   --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
   --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' \
   --instance_shape "VM.GPU.A10.2" \
-  --display_name "modelDeployment_multmodel_model1_model2"
+  --display_name "modelDeployment_multmodel_model1_model2" \
+  --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions"}'
 
 ```
 
@@ -499,7 +505,8 @@ ads aqua deployment create \
   --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' \
   --env-var '{"MODEL_DEPLOY_PREDICT_ENDPOINT":"/v1/chat/completions"}' \
   --instance_shape "VM.GPU.A10.2" \
-  --display_name "modelDeployment_multmodel_model1_model2"
+  --display_name "modelDeployment_multmodel_model1_model2" \
+  --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions"}'
 
 ```
 
@@ -550,7 +557,23 @@ ads aqua deployment create \
         "MULTI_MODEL_CONFIG": "{\"models\": [{\"params\": \"--served-model-name mistralai/Mistral-7B-v0.1 --seed 42 --tensor-parallel-size 1 --max-model-len 4096\", \"model_path\": \"service_models/Mistral-7B-v0.1/78814a9/artifact\"}, {\"params\": \"--served-model-name tiiuae/falcon-7b --seed 42 --tensor-parallel-size 1 --trust-remote-code\", \"model_path\": \"service_models/falcon-7b/f779652/artifact\"}]}",
         "MODEL_DEPLOY_ENABLE_STREAMING": "true",
 ```
+#### Create MultiModel (1 Embedding Model, 1 LLM) deployment with `/v1/completions`
 
+Note: will need to pass {"route": "v1/embeddings"} as a header for all inference requests to embedding model
+
+```
+headers={'route':'/v1/embeddings','Content-Type':'application/json'}
+```
+- for /v1/chat/completions, modify "MODEL_DEPLOY_PREDICT_ENDPOINT"
+```bash
+ads aqua deployment create \
+  --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
+  --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1, "model_task": "embedding"}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1, "model_task": "text_generation"}]' \
+  --instance_shape "VM.GPU.A10.2" \
+  --display_name "modelDeployment_multmodel_model1_model2" \
+  --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions"}'
+
+```
 
 ## Manage MultiModel Deployments
 
