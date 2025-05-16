@@ -65,6 +65,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  - [Working with Pipelines](#pipelines-ml_lifecycle.ipynb)
  - [XGBoost with RAPIDS](#xgboost-with-rapids.ipynb)
  - [XGBoost for MySQL Heatwave](#train-mysql-heatwave-deploy-xgboost.ipynb)
+ - [XGBoost for OCI NoSQL](#train-nosql-deploy-xgboost.ipynb)
 
 ## Notebooks
 ### <a name="automlx-anomaly_detection.ipynb"></a> - Building and Explaining an Anomaly Detector using AutoMLx - Experimental
@@ -859,6 +860,24 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
 
  
 Train and Deploy an XGBoost Model for OCI MySQL Heatwave
+
+This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+
+ 
+`xgboost`  `deploy model`  `heatwave`  `train model` `mysql`
+
+<sub>Universal Permissive License v 1.0</sup>
+
+---
+---
+### <a name="train-nosql-deploy-xgboost.ipynb"></a> - Train and Deploy an XGBoost Model for OCI NoSQL
+
+
+<sub>Updated: 02/19/2025</sub>
+#### [`train-nosql-deploy-xgboost.ipynb`](train-nosql-deploy-xgboost.ipynb)
+
+ 
+Train and Deploy an XGBoost Model for OCI NoSQL
 
 This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
 
