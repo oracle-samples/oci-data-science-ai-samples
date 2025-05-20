@@ -27,12 +27,12 @@ def predict():
     predict_headers = {
         'Connection': 'keep-alive',
         'accept': 'application/json, text/event-stream',
-        'content-type': 'application/json',
-        'mcp-session-id':'<MCP-SESSION_ID>' # Can be found in predict logs
+        'content-type': 'application/json'
+        #'mcp-session-id':'<MCP-SESSION_ID>' # Can be found in predict logs, only needed when stateful deployment
     }
 
     response = requests.request("POST", predict_url, headers=predict_headers, data=predict_body, auth=get_auth(), verify=False)
-    print(response)
+    print(response.content)
 
 
 if __name__ == "__main__":

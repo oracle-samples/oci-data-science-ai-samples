@@ -7,4 +7,4 @@ Following additions are done to accommodate it on OCI -
 - Use streamable-http as the default mcp transport protocol
 
 
-Sample script on how to create a model deployment and perform inferencing is shared in [directory](./datascience).
+Sample script on how to create a model deployment is present [here](./model-deplyment.py) and perform inferencing is shared in [here](./inference.py).
