@@ -168,7 +168,7 @@ print(res)
 
 ### Using Python SDK (with streaming)
 
-**Note:** For streaming, a different endpoint must be used: `/predictWithResponseStream`.
+**Note:** For streaming, a different endpoint should be used: `/predictWithResponseStream`. You can find more details in the official documentation [here](https://docs.oracle.com/en-us/iaas/Content/data-science/using/model-dep-invoke.htm).
 
 To consume Server-Sent Events (SSE) from this endpoint, you’ll need to install the [`sseclient-py`](https://pypi.org/project/sseclient-py/) package:
 
@@ -249,7 +249,8 @@ body = {
 For multi-modal inference, refer the page [Multimodal Model Tips](multimodal-models-tips.md) for an example to access `v1/chat/completions` endpoint.
 
 ### Using Java (with streaming)
-**Note:** For streaming, a different endpoint must be used: `/predictWithResponseStream`.
+
+**Note:** For streaming, a different endpoint should be used: `/predictWithResponseStream`. You can find more details in the official documentation [here](https://docs.oracle.com/en-us/iaas/Content/data-science/using/model-dep-invoke.htm).
 
 ```java
 /**
@@ -378,7 +379,8 @@ public class RestExample {
 ```
 
 ### Using `Langchain` with streaming
-**Note:** For streaming, a different endpoint must be used: `/predictWithResponseStream`.
+
+**Note:** For streaming, a different endpoint should be used: `/predictWithResponseStream`. You can find more details in the official documentation [here](https://docs.oracle.com/en-us/iaas/Content/data-science/using/model-dep-invoke.htm).
 
 #### Installation
 The LangChain OCIModelDeployment integration is part of the [`langchain-community`](https://python.langchain.com/docs/integrations/chat/oci_data_science/)  package.  The chat model integration requires **Python 3.9** or newer. Use the following command to install `langchain-community` along with its required dependencies.
