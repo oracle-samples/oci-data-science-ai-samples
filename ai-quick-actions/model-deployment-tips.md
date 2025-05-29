@@ -119,11 +119,11 @@ body = {
     "max_tokens": 250,
     "temperature": 0.7,
     "top_p": 0.8,
-    "stream": True
 }
 ```
 #### Using Python SDK (without streaming)
-- note that the following request body is for the **/v1/completions** endpoint 
+
+- note that the following request body is for the **/v1/completions** endpoint
 - See **/v1/chat/completions** request body [here](#request-body-for-/v1/completions-vs-/v1/chat/completions)
 
 ```python
@@ -167,9 +167,16 @@ print(res)
 ```
 
 ### Using Python SDK (with streaming)
-To consume streaming Server-sent Events (SSE), install [sseclient-py](https://pypi.org/project/sseclient-py/) using `pip install sseclient-py`.
 
-- note that the following request body is for the **/v1/completions** endpoint 
+**Note:** For streaming, a different endpoint should be used: `/predictWithResponseStream`. You can find more details in the official documentation [here](https://docs.oracle.com/en-us/iaas/Content/data-science/using/model-dep-invoke.htm).
+
+To consume Server-Sent Events (SSE) from this endpoint, you’ll need to install the [`sseclient-py`](https://pypi.org/project/sseclient-py/) package:
+
+```bash
+pip install sseclient-py
+```
+
+- note that the following request body is for the **/v1/completions** endpoint
 - See **/v1/chat/completions** request body [here](#request-body-for-/v1/completions-vs-/v1/chat/completions)
 ```python
 # The OCI SDK must be installed for this example to function properly.
@@ -198,7 +205,7 @@ auth = Signer(
 # private_key = oci.signer.load_private_key_from_file(config['key_file'])
 # auth = oci.auth.signers.SecurityTokenSigner(token, private_key)
 
-endpoint = "https://modeldeployment.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeployment.oc1.iad.xxxxxxxxx/predict"
+endpoint = "https://modeldeployment.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeployment.oc1.iad.xxxxxxxxx/predictWithResponseStream"
 body = {
     "model": "odsc-llm", # this is a constant
     "prompt": "what are activation functions?",
@@ -242,6 +249,8 @@ body = {
 For multi-modal inference, refer the page [Multimodal Model Tips](multimodal-models-tips.md) for an example to access `v1/chat/completions` endpoint.
 
 ### Using Java (with streaming)
+
+**Note:** For streaming, a different endpoint should be used: `/predictWithResponseStream`. You can find more details in the official documentation [here](https://docs.oracle.com/en-us/iaas/Content/data-science/using/model-dep-invoke.htm).
 
 ```java
 /**
@@ -304,7 +313,7 @@ public class RestExample {
                 .baseUri(
                         URI.create(
                                 "${modelDeployment.modelDeploymentUrl}/")
-                                + ParamEncoder.encodePathParam("predict"));
+                                + ParamEncoder.encodePathParam("predictWithResponseStream"));
         // 3) Create a request and set the expected type header.
 
         String jsonPayload = "{}";  // Add payload here with respect to your model example shown in next line:
@@ -371,6 +380,8 @@ public class RestExample {
 
 ### Using `Langchain` with streaming
 
+**Note:** For streaming, a different endpoint should be used: `/predictWithResponseStream`. You can find more details in the official documentation [here](https://docs.oracle.com/en-us/iaas/Content/data-science/using/model-dep-invoke.htm).
+
 #### Installation
 The LangChain OCIModelDeployment integration is part of the [`langchain-community`](https://python.langchain.com/docs/integrations/chat/oci_data_science/)  package.  The chat model integration requires **Python 3.9** or newer. Use the following command to install `langchain-community` along with its required dependencies.
 
@@ -395,7 +406,7 @@ ads.set_auth("resource_principal")
 # to pass model parameters through model_kwargs during
 # instantiation.
 llm = OCIModelDeploymentLLM(
-    endpoint="https://modeldeployment.<region>.oci.customer-oci.com/<md_ocid>/predict",
+    endpoint="https://modeldeployment.<region>.oci.customer-oci.com/<md_ocid>/predictWithResponseStream",
     model="odsc-llm",
     streaming=True,
     model_kwargs={
@@ -422,7 +433,7 @@ ads.set_auth(auth="resource_principal")
 # Initialize the chat model with streaming support
 chat = ChatOCIModelDeployment(
     model="odsc-llm",
-    endpoint="https://modeldeployment.<region>.oci.customer-oci.com/<md_ocid>/predict",
+    endpoint="https://modeldeployment.<region>.oci.customer-oci.com/<md_ocid>/predictWithResponseStream",
     # Optionally you can specify additional keyword arguments for the model.
     max_tokens=1024,
     # Enable streaming
@@ -470,8 +481,8 @@ oci raw-request --http-method POST --target-uri  <model_deployment_url>/predict 
 
 ## Inferencing Embedding model endpoints
 
-Embedding models deployed via AI Quick Actions can be accessed in the similar way as the examples shown above for 
-generative models, however, the input request format is different. For accessing OpenAI compatible 
+Embedding models deployed via AI Quick Actions can be accessed in the similar way as the examples shown above for
+generative models, however, the input request format is different. For accessing OpenAI compatible
 `/v1/embedding` endpoint for models deployed on vLLM or TEI container, the request format will be:
 
 ```python
@@ -481,9 +492,9 @@ body = {
 }
 ```
 
-For more parameters, check the documentation for [vLLM](https://platform.openai.com/docs/api-reference/embeddings/create) and 
-[Text Embedding Inference (TEI)](https://huggingface.github.io/text-embeddings-inference/#/Text%20Embeddings%20Inference/openai_embed) 
-inference containers. 
+For more parameters, check the documentation for [vLLM](https://platform.openai.com/docs/api-reference/embeddings/create) and
+[Text Embedding Inference (TEI)](https://huggingface.github.io/text-embeddings-inference/#/Text%20Embeddings%20Inference/openai_embed)
+inference containers.
 
 ## Advanced Configuration Update Options
 
