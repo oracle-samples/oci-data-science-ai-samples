@@ -1,0 +1,21 @@
+name: "AI Quick Actions: Feature Request"
+description: "Suggest a new feature for AI Quick Actions"
+title: "[AI Quick Actions]: "
+labels: ["feature", "aqua", "AI Quick Actions"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature for AI Quick Actions!
+  - type: input
+    id: summary
+    attributes:
+      label: Feature Summary
+      placeholder: "Brief description of the feature"
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Detailed Description
+      placeholder: "Why is this needed? Any ideas for implementation?"
