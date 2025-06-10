@@ -13,6 +13,8 @@
 - [MultiModel Evaluation](#multimodel-evaluation)
   - [Create Model Evaluation](#create-model-evaluations)
 - [Limitation](#limitations)
+- [Supported Service Models](#supported-service-models)
+- [Tensor Parallelism VS Multi-Instance GPU (MIG)](#tensor-parallelism-vs-multi-instance-gpu)
 
 
 # Introduction to MultiModel Deployment and Serving
@@ -1209,3 +1211,44 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | mistralai/Mistral-7B-v0.1 | BM.GPU.L40S-NC.4 | 2 |  |
 | tiiuae/falcon-7b | VM.GPU.A10.2 | 1 | --trust-remote-code |
 | tiiuae/falcon-7b | BM.GPU.A10.4 | 1 | --trust-remote-code |
+
+---
+
+# Tensor Parallelism VS Multi-Instance GPU
+
+In our current multi-model deployment strategy, we utilize vLLM with `--tensor-parallel-size` to distribute individual models across multiple GPUs. This approach is particularly effective for serving large language models that exceed the memory capacity of a single GPU.
+
+Alternatively, NVIDIA's Multi-Instance GPU (MIG) technology allows a single physical GPU to be partitioned into multiple isolated instances, each functioning as an independent GPU. This method is advantageous for running multiple smaller models concurrently on a single GPU, providing hardware-level isolation and efficient resource utilization.
+
+### Key Differences
+
+| Feature         | Tensor Parallelism (`--tensor-parallel-size`)               | Multi-Instance GPU (MIG)                                  |
+| --------------- | ----------------------------------------------------------- | --------------------------------------------------------- |
+| **Purpose**     | Distribute a single large model across multiple GPUs        | Run multiple small models concurrently on one GPU         |
+| **Isolation**   | Software-level, shared resources across GPUs                | Hardware-level, complete isolation per instance           |
+| **Use Case**    | Large models requiring more memory than a single GPU offers | Multiple small models that fit within MIG instance limits |
+| **Scalability** | Limited by inter-GPU communication overhead                 | Scales with the number of MIG instances per GPU           |
+| **Complexity**  | Requires synchronization and communication between GPUs     | Simpler, each instance operates independently             |
+
+
+If you have an **H100 with 8 GPUs (e.g., `BM.GPU.H100.8`)** and want to deploy **4 small models**, using either **MIG** or **tensor-parallelism (`--tensor-parallel-size`)** are both technically possible — but they serve **very different goals**, even though both approaches can "use 2 GPUs per model."
+
+
+| Feature                       | **Tensor Parallelism (TP=2)**                                  | **MIG (2 slices per model)**                                     |
+| ----------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Deployment model**          | 4 vLLM instances, each spanning 2 full GPUs                    | 4 vLLM instances, each running on a pair of 2 MIG slices         |
+| **GPU isolation**             | Partial (2 GPUs shared within host memory, bus, etc.)          | Full (each MIG slice is isolated in hardware)                    |
+| **Memory per instance**       | \~80 GB (2× full GPU memory)                                   | \~20–40 GB (2× MIG slice memory, e.g. 10GB or 20GB slices)       |
+| **Ideal model size**          | Medium models (\~13B+), need more memory or higher throughput  | Small models (\~1B–7B) that fit in 10–20GB of memory             |
+| **Communication**             | Requires high-bandwidth NVLink between GPUs                    | No communication overhead — each model isolated                  |
+| **Scaling complexity**        | Moderate (needs NCCL, possibly port conflicts, manual mapping) | Low — each instance is self-contained and fully isolated         |
+| **Failure isolation**         | Shared node risk: GPU 0 failing affects model A + B            | Each MIG slice is isolated: failure in one doesn't affect others |
+| **Observability granularity** | Must separate logs/metrics manually per process                | Naturally isolated at container/MIG level                        |
+| **Flexibility (runtime)**     | Must re-launch with new TP config if model/GPU size changes    | MIG instances can be dynamically adjusted at runtime             |
+
+
+## Summary
+
+In our multi-model deployment strategy, we currently **do not support NVIDIA's Multi-Instance GPU (MIG)** technology. Instead, we utilize vLLM with `--tensor-parallel-size`, leveraging multiple GPUs to efficiently handle models that exceed single GPU capacity. LiteLLM serves as our router, managing requests and distributing traffic across these tensor-parallelized model instances.
+
+While MIG offers hardware-level isolation and can efficiently handle multiple smaller models concurrently, it introduces additional complexity in configuration and limits flexibility with tensor parallelism. By using tensor parallelism with LiteLLM, we effectively balance memory utilization, throughput, and deployment flexibility, making it more suitable for our use cases involving larger models or models that benefit significantly from parallelized GPU processing.

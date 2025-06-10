@@ -12,12 +12,17 @@ Manager (ORM) or manually. For further information see [Policies](policies/READM
 ---
 - [Release Notes](release-notes.md)
 - [Policies](policies/README.md)
-- [CLI](cli-tips.md)
+- [Troubleshooting Tips](troubleshooting-tips.md)
+- [Supported Container List](ai-quick-actions-containers.md)
+- [Supported GPU Shape List](supported-gpu-shapes.md)
 - [Model Deployment](model-deployment-tips.md)
-- [Model Evaluation](evaluation-tips.md)
+- [MultiModel Deployment](multimodel-deployment-tips.md)
+- [Model Deployment Private Endpoint](model-deployment-private-endpoint-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Evaluation](evaluation-tips.md)
 - [Model Registration](register-tips.md)
-- [AI Quick Actions Container List](ai-quick-actions-containers.md)
+- [MultiModal Models Tips](multimodal-models-tips.md)
+- [CLI](cli-tips.md)
 
 
 ## Use Case Example
@@ -100,8 +105,15 @@ In some cases a more sophisticated solution is needed, for example [fine tuning.
 
 - [Release Notes](release-notes.md)
 - [Policies](policies/README.md)
-- [CLI](cli-tips.md)
+- [Troubleshooting Tips](troubleshooting-tips.md)
+- [Supported Container List](ai-quick-actions-containers.md)
+- [Supported GPU Shape List](supported-gpu-shapes.md)
 - [Model Deployment](model-deployment-tips.md)
-- [Model Evaluation](evaluation-tips.md)
+- [MultiModel Deployment](multimodel-deployment-tips.md)
+- [Model Deployment Private Endpoint](model-deployment-private-endpoint-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
+- [Model Evaluation](evaluation-tips.md)
 - [Model Registration](register-tips.md)
+- [MultiModal Models Tips](multimodal-models-tips.md)
+- [CLI](cli-tips.md)
+
