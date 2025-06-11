@@ -215,7 +215,7 @@ body = {
     "stream": True,
 }
 
-headers={'Content-Type':'application/json','enable-streaming':'true', 'Accept': 'text/event-stream'}
+headers={'Content-Type':'application/json', 'Accept': 'text/event-stream'}
 response = requests.post(endpoint, json=body, auth=auth, stream=True, headers=headers)
 
 print(response.headers)
@@ -329,7 +329,6 @@ public class RestExample {
                     .createRequest(Method.POST)
                     .header("accepts", MediaType.APPLICATION_JSON)
                     .header("content-type", MediaType.APPLICATION_JSON)
-                    .header("enable-streaming", "true")
                     .body(jsonPayload);
 
             // 5) Invoke the call and get the response.
