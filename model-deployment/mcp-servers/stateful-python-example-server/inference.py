@@ -78,10 +78,10 @@ def listTools(url, mcpSessionId):
       MCP_SESSION_ID: mcpSessionId
     }
    
-    request_body = json.dumps({"method":"notifications/initialized","jsonrpc":"2.0"})
+    request_body = json.dumps({"method":"tools/list","params":{"_meta":{"progressToken":1}},"jsonrpc":"2.0","id":1})
     response = requests.request("POST", url, headers=request_headers, data=request_body, auth=get_auth(), verify=False)
     print("Listing available tools")
-    print(response)
+    print(response.content)
 
 
 def callTools(url, mcpSessionId):
