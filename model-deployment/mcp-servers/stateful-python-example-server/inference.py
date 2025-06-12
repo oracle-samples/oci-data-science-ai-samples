@@ -117,3 +117,20 @@ if __name__ == "__main__":
 
      # call streaming tool
      callTools(predict_url, mcpSessionId)
+
+# Sample run logs - 
+
+# > python3 inference.py 
+#Initialized instance
+#b'id: 825b5179-1ad3-425a-8dc3-95f3f369278b\r\nevent: message\r\ndata: {"jsonrpc":"2.0","id":0,"result":{"protocolVersion":"2025-03-26","capabilities":{"experimental":{},"tools":{"listChanged":false}},"serverInfo":{"name":"mcp-streamable-http-demo","version":"1.9.4.dev7+29c69e6"}}}\r\n\r\n'
+#{'date': 'Thu, 12 Jun 2025 06:01:19 GMT', 'server': 'uvicorn', 'cache-control': 'no-cache, no-transform', 'connection': 'keep-alive', 'content-type': 'text/event-stream', 'mcp-session-id': '4161e6185f934d289dbe7e61c32f3d97', 'x-accel-buffering': 'no', 'Transfer-Encoding': 'chunked'}
+#Initialized group
+#Listing available tools
+#<Response [202]>
+#b'id: a8beaa09-36f5-4943-bf2f-a1e141805a3c\r\nevent: message\r\ndata: {"method":"notifications/message","params":{"level":"info","logger":"notification_stream","data":"[1/5] Event from \'nipun\' - Use Last-Event-ID to resume if disconnected"},"jsonrpc":"2.0"}\r\n\r\n'
+#b'id: b81de9d0-b520-4714-8b07-75a8d57f1bc1\r\nevent: message\r\ndata: {"method":"notifications/message","params":{"level":"info","logger":"notification_stream","data":"[2/5] Event from \'nipun\' - Use Last-Event-ID to resume if disconnected"},"jsonrpc":"2.0"}\r\n\r\n'
+#b'id: 2ae71b1c-63d5-4f37-8830-e209e5beedf0\r\nevent: message\r\ndata: {"method":"notifications/message","params":{"level":"info","logger":"notification_stream","data":"[3/5] Event from \'nipun\' - Use Last-Event-ID to resume if disconnected"},"jsonrpc":"2.0"}\r\n\r\n'
+#b'id: bf26d789-170d-40f2-b67c-10c1f5f191cb\r\nevent: message\r\ndata: {"method":"notifications/message","params":{"level":"info","logger":"notification_stream","data":"[4/5] Event from \'nipun\' - Use Last-Event-ID to resume if disconnected"},"jsonrpc":"2.0"}\r\n\r\n'
+#b'id: b3bb3f5a-729f-4347-b64a-aad02a8a2d33\r\nevent: message\r\ndata: {"method":"notifications/message","params":{"level":"info","logger":"notification_stream","data":"[5/5] Event from \'nipun\' - Use Last-Event-ID to resume if disconnected"},"jsonrpc":"2.0"}\r\n\r\n'
+#b'id: aa0837f6-ac17-4aa7-97a6-3bc7046a1ead\r\nevent: message\r\ndata: {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"Sent 5 notifications with 2s interval for caller: nipun"}],"isError":false}}\r\n\r\n'
+
