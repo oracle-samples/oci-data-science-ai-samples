@@ -5,6 +5,13 @@ We use the 'name' parameter within model payloads to reach specific models. The 
 
 ![mmd-example](./web_assets/mmd-ex.png)
 
+**Note**
+
+This diagram shows one base model LLM and one Fine-tuned model (only available through AQUA CLI).
+
+For Fine-Tuned models, requests specifying the base model name (ex. model: meta-llama/Llama-3.2-1B-Instruct) are routed to the base LLM, while requests specifying the fine-tuned model (ex. model: tunedModel_meta-llama/Llama-3.2-1B) are routed to the fine-tuned model (the base model w/ applied LoRA weights). 
+
+
 # Models supported by Multi-Model Deployment
 
 **Multi-Model Deployment is currently in beta. At this time, the following is supported:**
@@ -146,8 +153,10 @@ To use a fine-tuned model in a Multi-Model Deployment, we must create the fine-t
     -  Use the Fine-Tuned Model OCID for CLI command
 
 - **Use Fine-Tuned model within a Multi-Model Deployment via AQUA CLI**
+
   - Complete the following two steps:
     - [Ensure](#2-before-deployment-check-resource-limits) that models within Multi-Model Deployment is compatible with selected compute shape and compute shape is available in your tenancy.
+    - **Note** that the GPU requirement is determined by the base model that the Fine-Tuned model uses.
     - [Using AQUA CLI](#3-create-multi-model-deployment), create a Multi-Model Deployment w/ Fine-Tuned Model as shown [here](#example-w-fine-tuned-model)
 
 ### Custom Models 
