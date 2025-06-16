@@ -7,9 +7,9 @@ We use the 'name' parameter within model payloads to reach specific models. The 
 
 **Note**
 
-This diagram shows one base model LLM and one Fine-tuned model (only available through AQUA CLI).
+This diagram shows one base model LLM and one fine-tuned model (only available through AQUA CLI).
 
-For Fine-Tuned models, requests specifying the base model name (ex. model: meta-llama/Llama-3.2-1B-Instruct) are routed to the base LLM, while requests specifying the fine-tuned model (ex. model: tunedModel_meta-llama/Llama-3.2-1B) are routed to the fine-tuned model (the base model w/ applied LoRA weights). 
+For fine-tuned models, requests specifying the base model name (ex. model: meta-llama/Llama-3.2-1B-Instruct) are routed to the base LLM, while requests specifying the fine-tuned model (ex. model: tunedModel_meta-llama/Llama-3.2-1B) are routed to the fine-tuned model (the base model w/ applied LoRA weights).
 
 
 # Models supported by Multi-Model Deployment
