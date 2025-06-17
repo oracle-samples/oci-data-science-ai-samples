@@ -3,7 +3,7 @@ Multi-Model inference and serving refers to efficiently hosting and managing mul
 
 We use the 'name' parameter within model payloads to reach specific models. The Data Science service has a prebuilt **vLLM service container** that makes deploying and serving multiple large language model on **single GPU Compute shape** very easy, simplifying the deployment process and reducing operational complexity. This container comes with preinstalled [**LiteLLM proxy server**](https://docs.litellm.ai/docs/simple_proxy) which routes requests to the appropriate model, ensuring seamless prediction.
 
-![mmd-example](./web_assets/mmd-ex.png)
+![mmd-example](web_assets/mmd-ex.png)
 
 **Note**
 
@@ -97,13 +97,13 @@ Only Multi-Model Deployments with **base service LLM models (text-generation)** 
 - For fine-tuned,registered, or custom models in Multi-Model Deployment, use the AQUA CLI as detailed [here](#using-aqua-cli-for-multi-model-deployment)
 
 ### Select the 'Create deployment' Button
-![create-deployment](./web_assets/create-deployment.png)
+![create-deployment](web_assets/create-deployment.png)
 
 ### Select 'Deploy Multi Model'
 - Based on the 'models' field, a Compute Shape will be recommended to accomidate both models.
 - Select logging and endpoints (/v1/completions | /v1/chat/completions).
 - Submit form via 'Deploy Button' at bottom.
-![mmd-form](./web_assets/deploy-mmd.png)
+![mmd-form](web_assets/deploy-mmd.png)
 
 ### Inferencing with Multi-Model Deployment
 
@@ -116,7 +116,7 @@ Once the Deployment is Active, view the model deployment details and inferencing
 
 Use the dropdown labeled 'Model parameters' to select a specific model for inference. 
 
-![mmd-details](./web_assets/mmd-details.png)
+![mmd-details](web_assets/mmd-details.png)
 
 # Using AQUA CLI for Multi-Model Deployment
 This document provides documentation on how to use ADS CLI to create Multi-Model deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models. There are three steps:
