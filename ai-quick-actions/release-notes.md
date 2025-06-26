@@ -1,6 +1,19 @@
 # AI Quick Actions Release Notes
 
 
+## v1.0.7a (Released May 29, 2025)
+**Highlights:**
+- **UI Enhancements:**
+  - Multi Model deployment support
+    - Users can now deploy multiple LLM models on a single instance, improving GPU utilization and simplifying how models are managed and served. 
+    - Inference requests are routed dynamically through LiteLLM, allowing users to pick models at runtime without redeploying.
+    - Fully validated GPU allocations across models.
+
+For more details, refer to the corresponding [AI Quick Actions MultiModel Deployment documentation](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/multimodel-deployment-tips.md).
+To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
+
+---
+
 ## v1.0.7 (Released April 23, 2025)
 **Highlights:**
 - **UI Enhancements:**
@@ -12,6 +25,7 @@
 
 To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
 
+---
 
 ## v1.0.6d (Released February April 17, 2025)
 **Highlights:**
@@ -24,6 +38,7 @@ To get this version of AI Quick Actions, deactivate and reactivate your notebook
 
 To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
 
+---
 
 ## v1.0.6b (Released February 28, 2025)
 **Highlights:**
