@@ -4,7 +4,9 @@ import os
 
 load_dotenv()
 
-MCP_TRANSPORT = os.getenv('MCP_TRANSPORT', 'streamable-http')
+MCP_TRANSPORT = os.getenv('MCP_TRANSPORT', 'stdio')
+MCP_HOST = os.getenv('MCP_HOST', '0.0.0.0')
+MCP_PORT = os.getenv('MCP_PORT', 8080)
 
 REDIS_CFG = {"host": os.getenv('REDIS_HOST', '127.0.0.1'),
              "port": int(os.getenv('REDIS_PORT',6379)),
@@ -16,7 +18,8 @@ REDIS_CFG = {"host": os.getenv('REDIS_HOST', '127.0.0.1'),
              "ssl_certfile": os.getenv('REDIS_SSL_CERTFILE', None),
              "ssl_cert_reqs": os.getenv('REDIS_SSL_CERT_REQS', 'required'),
              "ssl_ca_certs": os.getenv('REDIS_SSL_CA_CERTS', None),
-             "cluster_mode": os.getenv('REDIS_CLUSTER_MODE', False) in ('true', '1', 't')}
+             "cluster_mode": os.getenv('REDIS_CLUSTER_MODE', False) in ('true', '1', 't'),
+             "db": int(os.getenv('REDIS_DB', 0))}
 
 
 def generate_redis_uri():
@@ -24,6 +27,7 @@ def generate_redis_uri():
     scheme = "rediss" if cfg.get("ssl") else "redis"
     host = cfg.get("host", "127.0.0.1")
     port = cfg.get("port", 6379)
+    db = cfg.get("db", 0)
 
     username = cfg.get("username")
     password = cfg.get("password")
@@ -37,7 +41,7 @@ def generate_redis_uri():
         auth_part = ""
 
     # Base URI
-    base_uri = f"{scheme}://{auth_part}{host}:{port}"
+    base_uri = f"{scheme}://{auth_part}{host}:{port}/{db}"
 
     # Additional SSL query parameters if SSL is enabled
     query_params = {}

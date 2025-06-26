@@ -1,10 +1,11 @@
 from common.connection import RedisConnectionManager
 from redis.exceptions import RedisError
 from common.server import mcp
+from redis.commands.json._util import JsonType
 
 
 @mcp.tool()
-async def json_set(name: str, path: str, value: str, expire_seconds: int = None) -> str:
+async def json_set(name: str, path: str, value: JsonType, expire_seconds: int = None) -> str:
     """Set a JSON value in Redis at a given path with an optional expiration time.
 
     Args:

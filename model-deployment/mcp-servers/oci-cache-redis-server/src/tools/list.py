@@ -1,9 +1,11 @@
+import json
 from common.connection import RedisConnectionManager
 from redis.exceptions import RedisError
 from common.server import mcp
+from redis.typing import FieldT
 
 @mcp.tool()
-async def lpush(name: str, value: str, expire: int = None) -> str:
+async def lpush(name: str, value: FieldT, expire: int = None) -> str:
     """Push a value onto the left of a Redis list and optionally set an expiration time."""
     try:
         r = RedisConnectionManager.get_connection()
@@ -15,7 +17,7 @@ async def lpush(name: str, value: str, expire: int = None) -> str:
         return f"Error pushing value to list '{name}': {str(e)}"
 
 @mcp.tool()
-async def rpush(name: str, value: str, expire: int = None) -> str:
+async def rpush(name: str, value: FieldT, expire: int = None) -> str:
     """Push a value onto the right of a Redis list and optionally set an expiration time."""
     try:
         r = RedisConnectionManager.get_connection()
@@ -48,11 +50,18 @@ async def rpop(name: str) -> str:
 
 @mcp.tool()
 async def lrange(name: str, start: int, stop: int) -> list:
-    """Get elements from a Redis list within a specific range."""
+    """Get elements from a Redis list within a specific range.
+
+        Returns:
+        str: A JSON string containing the list of elements or an error message.
+    """
     try:
         r = RedisConnectionManager.get_connection()
         values = r.lrange(name, start, stop)
-        return [v for v in values] if values else f"List '{name}' is empty or does not exist."
+        if not values:
+            return f"List '{name}' is empty or does not exist."
+        else:
+            return json.dumps(values)
     except RedisError as e:
         return f"Error retrieving values from list '{name}': {str(e)}"
 

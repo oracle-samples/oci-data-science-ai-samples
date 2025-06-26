@@ -1,0 +1,5 @@
+*
+!.env
+!src
+!uv.lock
+!pyproject.toml
