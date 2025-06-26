@@ -6,10 +6,13 @@ from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 from starlette.types import Receive, Scope, Send
 from starlette.routing import Mount, Route
 
-# Initialize FastMCP server
+from common.config import MCP_PORT, MCP_HOST
 
+# Initialize FastMCP server
 mcp = FastMCP(
     "Redis MCP Server",
+    host=MCP_HOST,
+    port=MCP_PORT,
     dependencies=["redis", "dotenv", "numpy"]
 )
 
@@ -32,4 +35,3 @@ mcp._custom_starlette_routes=[
             Mount("/mcp", app=handle_streamable_http),
             Route('/health', endpoint=handle_health),
         ]
-

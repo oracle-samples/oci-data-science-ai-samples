@@ -1,3 +1,5 @@
+import sys
+
 from common.connection import RedisConnectionManager
 from redis.exceptions import RedisError
 from common.server import mcp
@@ -5,7 +7,7 @@ import numpy as np
 
 
 @mcp.tool()
-async def hset(name: str, key: str, value: str, expire_seconds: int = None) -> str:
+async def hset(name: str, key: str, value: str | int | float, expire_seconds: int = None) -> str:
     """Set a field in a hash stored at key with an optional expiration time.
 
     Args:
@@ -19,7 +21,7 @@ async def hset(name: str, key: str, value: str, expire_seconds: int = None) -> s
     """
     try:
         r = RedisConnectionManager.get_connection()
-        r.hset(name, key, value)
+        r.hset(name, key, str(value))
 
         if expire_seconds is not None:
             r.expire(name, expire_seconds)
@@ -32,11 +34,11 @@ async def hset(name: str, key: str, value: str, expire_seconds: int = None) -> s
 @mcp.tool()
 async def hget(name: str, key: str) -> str:
     """Get the value of a field in a Redis hash.
-    
+
     Args:
         name: The Redis hash key.
         key: The field name inside the hash.
-    
+
     Returns:
         The field value or an error message.
     """
@@ -50,11 +52,11 @@ async def hget(name: str, key: str) -> str:
 @mcp.tool()
 async def hdel(name: str, key: str) -> str:
     """Delete a field from a Redis hash.
-    
+
     Args:
         name: The Redis hash key.
         key: The field name inside the hash.
-    
+
     Returns:
         A success message or an error message.
     """
@@ -68,10 +70,10 @@ async def hdel(name: str, key: str) -> str:
 @mcp.tool()
 async def hgetall(name: str) -> dict:
     """Get all fields and values from a Redis hash.
-    
+
     Args:
         name: The Redis hash key.
-    
+
     Returns:
         A dictionary of field-value pairs or an error message.
     """
@@ -85,11 +87,11 @@ async def hgetall(name: str) -> dict:
 @mcp.tool()
 async def hexists(name: str, key: str) -> bool:
     """Check if a field exists in a Redis hash.
-    
+
     Args:
         name: The Redis hash key.
         key: The field name inside the hash.
-    
+
     Returns:
         True if the field exists, False otherwise.
     """
@@ -149,4 +151,4 @@ async def get_vector_from_hash(name: str, vector_field: str = "vector"):
             return f"Field '{vector_field}' not found in hash '{name}'."
 
     except RedisError as e:
-        return f"Error retrieving vector from hash '{name}' with key '{key}': {str(e)}"
+        return f"Error retrieving vector field '{vector_field}' from hash '{name}': {str(e)}"

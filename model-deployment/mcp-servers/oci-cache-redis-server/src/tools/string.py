@@ -1,10 +1,11 @@
 from common.connection import RedisConnectionManager
 from redis.exceptions import RedisError
 from common.server import mcp
+from redis.typing import EncodableT
 
 
 @mcp.tool()
-async def set(key: str, value: str, expiration: int = None) -> str:
+async def set(key: str, value: EncodableT, expiration: int = None) -> str:
     """Set a Redis string value with an optional expiration time.
 
     Args:
