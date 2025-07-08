@@ -1,26 +1,26 @@
 # Policies
 
+
 - [Home](../README.md)
-- [CLI](../cli-tips.md)
-- [Model Deployment](../model-deployment-tips.md)
-- [Model Evaluation](../evaluation-tips.md)
-- [Model Fine Tuning](../fine-tuning-tips.md)
-
-> **Note:** To get started using AI quick actions, an admin in the tenancy needs to install the required policies for AI Quick Actions.  You can use [Oracle Resource Manager](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) (ORM) stack or configure them manually.
-
 - [Policies](#policies)
-- [Setting Up Policies Using (ORM) stack](#setting-up-policies-using-orm-stack)
-- [Setting Up Policies Manually](#setting-up-policies-manually)
-  - [Dynamic Groups](#dynamic-groups)
-  - [Policies](#policies-1)
+  - [Setting Up Policies Using (ORM) stack](#setting-up-policies-using-orm-stack)
+  - [Setting Up Policies Manually](#setting-up-policies-manually)
+    - [Dynamic Groups](#dynamic-groups)
+    - [Policies](#policies-1)
+
+
+---
+To get started with AI Quick Actions, a tenancy administrator must first install the required policies. These can be configured manually or deployed using an [Oracle Resource Manager (ORM)](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) stack.
+
 
 ## Setting Up Policies Using (ORM) stack
 
-> **Note:** Even if you already have the policies to use Data Science service, you still need to use the terraform configuration file to set up the policies to use AI Quick Actions. To successfully execute the Terraform script, you must have administrative rights.
+Even if you already have policies in place for using the Data Science service, you still need to use the provided Terraform configuration to set up the additional policies required for AI Quick Actions.
 
-> **Note:** Policies can only be applied via (ORM) stack, if they are being applied from the home region.
+>>[!IMPORTANT] To run the Terraform script successfully, you must have administrator privileges. Policies can only be applied using an Oracle Resource Manager (ORM) stack if they are being created in the home region.
 
-Before running the Terraform script, ensure you have the following permissions granted:
+Before running the script, make sure you have the following permissions granted:
+
 
 ```bash
 allow group <your_admin_group> to manage orm-stacks in TENANCY
@@ -30,9 +30,13 @@ allow group <your_admin_group> to manage policies in TENANCY
 allow group <your_admin_group> to read compartments in TENANCY
 ```
 
-Click to deploy the stack  [![Deploy to Oracle Cloud][magic_button]][magic_stack] or download terraform configuration file [oci-ods-aqua-orm.zip](https://github.com/oracle-samples/oci-data-science-ai-samples/releases/latest/download/oci-ods-aqua.zip) with the infrastructure instructions for the dynamic groups and polices. 
+**To deploy the stack, click the button below:**
 
-> **Note:** For steps on creating stacks from the configuration file, see [Creating a Stack from a Zip File](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Tasks/create-stack-local.htm#top).
+[![Deploy to Oracle Cloud][magic_button]][magic_stack]
+
+Alternatively, you can [**download the Terraform configuration file** (oci-ods-aqua-orm.zip)](https://github.com/oracle-samples/oci-data-science-ai-samples/releases/latest/download/oci-ods-aqua.zip), which includes setup instructions for dynamic groups and policies.
+
+For steps on creating stacks from the configuration file, see [Creating a Stack from a Zip File](https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Tasks/create-stack-local.htm#top).
 
 While deploying the stack you can select the kind of policies that need to be deployed for AQUA:
 1. **All policies** - This will deploy all the policies needed for AQUA in one go.
@@ -49,7 +53,7 @@ After the stack is created and its Stack details page opens, click Plan from the
 
 
 ## Setting Up Policies Manually
-> **Note:** If you already have policies for the Data Science service, you will still need to implement additional policies to enable AI Quick Actions.
+>[!NOTE] If you already have policies for the Data Science service, you will still need to implement additional policies to enable AI Quick Actions.
 
 ### Dynamic Groups
 - ``aqua-dynamic-group``
@@ -94,7 +98,7 @@ After the stack is created and its Stack details page opens, click Plan from the
   Allow dynamic-group aqua-dynamic-group to inspect compartments in tenancy
 
   Allow dynamic-group aqua-dynamic-group to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
-  
+
   Allow dynamic-group <dynamic-group-name> to read repos in compartment <your-compartment-name> where any {request.operation='ReadDockerRepositoryMetadata',request.operation='ReadDockerRepositoryManifest',request.operation='PullDockerLayer'}
   ```
 
