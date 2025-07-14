@@ -74,7 +74,7 @@ locals {
 
   all_buckets = concat(var.user_model_buckets, var.user_data_buckets)
   bucket_names = join(", ", formatlist("target.bucket.name='%s'", local.all_buckets))
-  bucket_names_oss = join(", ", formatlist("all{target.bucket.name='%s', any {request.permission='OBJECT_CREATE', request.permission='OBJECT_INSPECT'}}", local.all_buckets))
+  bucket_names_oss = join(", ", formatlist("target.bucket.name='%s'", local.all_buckets))
   dt_jr_policies = local.is_resource_policy_required?[
     "Allow dynamic-group id ${oci_identity_dynamic_group.distributed_training_job_runs[0].id} to use logging-family in ${local.compartment_policy_string}",
     "Allow dynamic-group id ${oci_identity_dynamic_group.distributed_training_job_runs[0].id} to manage data-science-models in ${local.compartment_policy_string}",
