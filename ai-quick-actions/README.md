@@ -22,6 +22,7 @@ Manager (ORM) or manually. For further information see [Policies](policies/READM
 - [Model Evaluation](evaluation-tips.md)
 - [Model Registration](register-tips.md)
 - [MultiModal Models Tips](multimodal-models-tips.md)
+- [Time Series Forecasting](time-series-forecasting/README.md)
 - [CLI](cli-tips.md)
 
 
@@ -115,5 +116,6 @@ In some cases a more sophisticated solution is needed, for example [fine tuning.
 - [Model Evaluation](evaluation-tips.md)
 - [Model Registration](register-tips.md)
 - [MultiModal Models Tips](multimodal-models-tips.md)
+- [Time Series Forecasting](time-series-forecasting/README.md)
 - [CLI](cli-tips.md)
 
