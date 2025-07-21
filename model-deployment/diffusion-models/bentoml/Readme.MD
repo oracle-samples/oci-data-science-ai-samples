@@ -9,7 +9,7 @@ In this sample, we are going to deploy [Stable Diffusion 3 Medium](https://githu
 ## Dockerize
 First let's dockerize the our model serving framework using the [Dockerfile](./Dockerfile).
 ```
-docker build -f Dockerfile -t bentoml:latest
+docker build -f Dockerfile -t bentoml:latest .
 ```
 
 ## Create BentoML framework API code to serve Stable Diffusion 3 Medium on the framework
