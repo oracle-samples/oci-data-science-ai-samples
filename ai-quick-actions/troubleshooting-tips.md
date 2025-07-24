@@ -165,9 +165,10 @@ TODO
 Authorization issues arise due to missing policy and/or using non-versioned OCI Object Storage Buckets with AQUA.
 1. Set up policies for AQUA as seen [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/policies/README.md) 
    - We strongly encourage using ORM option (automated setup of policies, not manual) mentioned in the policy document.
-2. The notebook session has to be in the **same compartment** as the one defined by the dynamic group. 
+2. Verify the policies by running AQUA verification tool as mention [here](../ai-quick-actions/policies/README.md#aqua-policy-verification-tool)
+3. The notebook session has to be in the **same compartment** as the one defined by the dynamic group. 
    - The dynamic group definition used while setting up ORM stack identifies the notebook from where AI Quick Actions is being used. 
-3. Ensure that the bucket used with AQUA has object versioning enabled
+4. Ensure that the bucket used with AQUA has object versioning enabled
    
   ![object versioning](./web_assets/object-versioning.png)
 
