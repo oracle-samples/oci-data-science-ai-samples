@@ -7,6 +7,7 @@
   - [Setting Up Policies Manually](#setting-up-policies-manually)
     - [Dynamic Groups](#dynamic-groups)
     - [Policies](#policies-1)
+  - [Aqua Policy Verification Tool](#aqua-policy-verification-tool)
 
 
 ---
@@ -121,6 +122,163 @@ These policies and dynamic groups set up the necessary permissions to enable AI 
 > **Note:** To save fine-tuned models, versioning has to be enabled in the selected Object Storage bucket. See [here](https://docs.oracle.com/iaas/data-science/using/ai-quick-actions-fine-tuning.htm) for more information.
 
 ![Setup 3](../web_assets/policies3.png)
+
+## Aqua Policy Verification Tool
+
+The **Aqua Policy Verification Tool** is a command-line utility designed to **validate IAM  policies** required to use key features of AI Quick action (AQUA) platform.
+
+It simulates actual operations — like registering models, creating job runs, or accessing object storage — to determine whether the currently configured IAM user/group has sufficient permissions.
+
+Before running real workloads (deploying, fine-tuning, etc.), users can verify they have the **right access privileges**. This tool provides:
+- Immediate feedback on missing policies
+- Policy hints to help fix permission issues
+
+
+### How to Use
+
+To run the policy-checks from Notebook terminal:
+
+```bash
+ads aqua verify_policies <operation> [OPTIONS]
+```
+
+Where `<operation>` is one of:
+- `common_policies`
+- `model_register`
+- `model_deployment`
+- `evaluation`
+- `finetune`
+
+
+### Description of Policy Verification Operations
+
+Each operation simulates certain actions in AQUA and checks whether those succeed. Here’s what each one does:
+
+####  1. `common_policies`
+
+**Purpose**: Verifies basic **read-level permissions** across key Data Science resources.
+
+**Simulated actions**:
+- Listing compartments
+- Listing models and model version sets
+- Listing jobs and job runs
+- Listing object storage buckets
+- Listing logging groups
+- Getting service limits
+
+**Examples:**
+
+```bash
+ads aqua verify_policies common_policies
+```
+
+
+####  2. `model_register`
+
+**Purpose**: Verifies ability to **register a model**, which includes writing artifacts to Object Storage.
+
+**Simulated actions**:
+- Managing a specified Object Storage bucket
+- Registering a new model in the OCI Data Science platform
+- Deleting the test model (cleanup)
+
+>**Note**: This operation will create and delete the following temporary resources, which may incur charges. [[See pricing]](https://www.oracle.com/artificial-intelligence/data-science/pricing/)
+>  - A model with name `AQUA Policy Verification - Model` in OCI Data Science 
+>  - A test file with name  `AQUA Policy Verification - OBJECT STORAGE` to your specified bucket. The model and object will be deleted after verification.
+
+**Examples:**
+
+```bash
+ads aqua verify_policies model_register
+```
+or
+```bash
+ads aqua verify_policies model_register --bucket my-model-artifacts-bucket
+```
+
+
+#### 3. `model_deployment`
+
+**Purpose**: Verifies ability to **deploy a model** after registration.
+
+**Simulated actions**:
+- Registering a model (same as `model_register`)
+- Creating a model deployment
+- Deleting the deployment and the model (cleanup)
+
+> **Note**: This operation will create and delete the following temporary resources, which may incur charges. [[See pricing]](https://www.oracle.com/artificial-intelligence/data-science/pricing/):
+> - A model with name `AQUA Policy Verification - Model`
+> - A test file with name  `AQUA Policy Verification - OBJECT STORAGE` to your specified bucket. 
+> - A model deployment named `AQUA Policy Verification - Model Deployment`  
+> 	   These will be deleted after verification is complete.     
+
+**Examples:**
+
+```bash
+ads aqua verify_policies model_deployment
+```
+or
+```bash
+ads aqua verify_policies model_deployment --bucket my-model-bucket
+```
+
+#### 4. `evaluation`
+
+**Purpose**: Verifies policies required for **evaluation workflows**, such as automated testing or validation.
+
+**Simulated actions**:
+- Creating and deleting a Model Version Set (MVS)
+- Registering a model
+- Running a job and job run
+- Deleting all test resources
+
+> **Note**: This operation will create and delete the following temporary resources, which may incur charges. [[See pricing]](https://www.oracle.com/artificial-intelligence/data-science/pricing/):
+> - A **Model Version Set** named `AQUA Policy Verification - Model Version Set`
+> - A model with name `AQUA Policy Verification - Model`
+> - A test file with name  `AQUA Policy Verification - OBJECT STORAGE` to your specified bucket. 
+> - A test model (as in `model_register`)
+> - A **Job** and **Job Run** named `AQUA Policy Verification - Job` and `AQUA Policy Verification - Job Run`
+
+**Examples:**
+
+```bash
+ads aqua verify_policies evaluation
+```
+or
+```bash
+ads aqua verify_policies evaluation --bucket eval-bucket
+```
+
+
+#### 5. `finetune`
+
+**Purpose**: Verifies whether you can run a **fine-tuning workflow**, typically involving training jobs, storage, and networking.
+
+**Simulated actions**:
+- Validates bucket access (datasets, scripts, model output)
+- Optionally verifies subnet access for job runs
+- Creates and deletes MVS
+- Runs finetune jobs
+
+> **Note**: This operation will create and delete the following temporary resources, which may incur charges. [[See pricing]](https://www.oracle.com/artificial-intelligence/data-science/pricing/):
+> - A **Model Version Set** named `AQUA Policy Verification - Model Version Set`
+> - A test file with name  `AQUA Policy Verification - OBJECT STORAGE` to your specified bucket. 
+> - A **Job** and **Job Run** named `AQUA Policy Verification - Job` and `AQUA Policy Verification - Job Run`
+
+**Examples:**
+
+```bash
+ads aqua verify_policies finetune
+```
+or
+```bash
+ads aqua verify_policies finetune --bucket fine-tune-data --ignore_subnet
+```
+or
+```bash
+ads aqua verify_policies finetune --bucket fine-tune-data --subnet_id ocid1.subnet.oc1..examplesubnetID
+```
+
 - [Home](../README.md)
 - [CLI](../cli-tips.md)
 - [Model Deployment](../model-deployment-tips.md)
