@@ -182,7 +182,7 @@ ads aqua verify_policies common_policies
 - Registering a new model in the OCI Data Science platform
 - Deleting the test model (cleanup)
 
->**Note**: This operation will create the following temporary resources
+>**Note**: This operation will create and delete the following temporary resources, which may incur charges. [[See pricing]](https://www.oracle.com/artificial-intelligence/data-science/pricing/)
 >  - A model with name `AQUA Policy Verification - Model` in OCI Data Science 
 >  - A test file with name  `AQUA Policy Verification - OBJECT STORAGE` to your specified bucket. The model and object will be deleted after verification.
 
@@ -206,7 +206,7 @@ ads aqua verify_policies model_register --bucket my-model-artifacts-bucket
 - Creating a model deployment
 - Deleting the deployment and the model (cleanup)
 
-> **Note**: This operation will create the following temporary resources:
+> **Note**: This operation will create and delete the following temporary resources, which may incur charges. [[See pricing]](https://www.oracle.com/artificial-intelligence/data-science/pricing/):
 > - A model with name `AQUA Policy Verification - Model`
 > - A test file with name  `AQUA Policy Verification - OBJECT STORAGE` to your specified bucket. 
 > - A model deployment named `AQUA Policy Verification - Model Deployment`  
@@ -232,7 +232,7 @@ ads aqua verify_policies model_deployment --bucket my-model-bucket
 - Running a job and job run
 - Deleting all test resources
 
-> **Note**: This operation will create and delete the following temporary resources:
+> **Note**: This operation will create and delete the following temporary resources, which may incur charges. [[See pricing]](https://www.oracle.com/artificial-intelligence/data-science/pricing/):
 > - A **Model Version Set** named `AQUA Policy Verification - Model Version Set`
 > - A model with name `AQUA Policy Verification - Model`
 > - A test file with name  `AQUA Policy Verification - OBJECT STORAGE` to your specified bucket. 
@@ -260,7 +260,7 @@ ads aqua verify_policies evaluation --bucket eval-bucket
 - Creates and deletes MVS
 - Runs finetune jobs
 
-> **Note**: This operation will create and delete the following temporary resources:
+> **Note**: This operation will create and delete the following temporary resources, which may incur charges. [[See pricing]](https://www.oracle.com/artificial-intelligence/data-science/pricing/):
 > - A **Model Version Set** named `AQUA Policy Verification - Model Version Set`
 > - A test file with name  `AQUA Policy Verification - OBJECT STORAGE` to your specified bucket. 
 > - A **Job** and **Job Run** named `AQUA Policy Verification - Job` and `AQUA Policy Verification - Job Run`
