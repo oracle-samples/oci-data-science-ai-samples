@@ -24,7 +24,7 @@ Ideal for scenarios requiring multiple models with different architectures or fr
 
 For details on dependency management, refer to the section [Dependency Management for Heterogeneous Model Group](#dependency-management-for-heterogeneous-model-group).
 
-## Model Group Structure
+## Heterogeneous Model Group Structure
 
 ```json
 {
