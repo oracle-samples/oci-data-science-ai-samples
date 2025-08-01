@@ -4,17 +4,43 @@ import os
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
 from a2a.server.tasks import InMemoryTaskStore
+from a2a.server.agent_execution import AgentExecutor, RequestContext
+from a2a.server.events import EventQueue
+from a2a.utils import new_agent_text_message
 from a2a.types import (
     AgentCapabilities,
     AgentCard,
     AgentSkill,
 )
-from agent_executor import (
-    OCIRealmFinderAgentExecutor,
-)
 from starlette.responses import JSONResponse
 from starlette.applications import Starlette
 from starlette.requests import Request
+
+class MumbaiWeatherAgent:
+    """Provides Mumbai weather information"""
+
+    async def invoke(self) -> str:
+        return 'Mumbai Weather: 28°C, Partly Cloudy, Humidity: 75%, Wind: 12 km/h'
+
+
+class MumbaiWeatherAgentExecutor(AgentExecutor):
+    """Mumbai Weather Agent Implementation."""
+
+    def __init__(self):
+        self.agent = MumbaiWeatherAgent()
+
+    async def execute(
+        self,
+        context: RequestContext,
+        event_queue: EventQueue,
+    ) -> None:
+        result = await self.agent.invoke()
+        await event_queue.enqueue_event(new_agent_text_message(result))
+
+    async def cancel(
+        self, context: RequestContext, event_queue: EventQueue
+    ) -> None:
+        raise Exception('cancel not supported')
 
 class PrefixDispatcher:
     def __init__(self, app, prefix="/a2a"):
@@ -36,16 +62,16 @@ if __name__ == '__main__':
     agent_b_url = os.getenv('AGENT_B_URL')
 
     skill = AgentSkill(
-        id='oci_realm_finder',
-        name='Returns OCI functioning realms and their status',
-        description='just returns OCI functioning realms and their status',
-        tags=['oci', 'realm', 'finder'],
-        examples=['what are the functioning realms and their status?', 'what is the status of the OCI-1 realm?'],
+        id='mumbai_weather',
+        name='Returns Mumbai weather information',
+        description='just returns current Mumbai weather information',
+        tags=['mumbai', 'weather', 'temperature'],
+        examples=['what is the weather in Mumbai?', 'get Mumbai weather'],
     )
 
     public_agent_card = AgentCard(
-        name='OCI Realm Finder Agent',
-        description='Just a OCI realm finder agent',
+        name='Mumbai Weather Agent',
+        description='Just a Mumbai weather agent',
         # url='http://localhost:9998/a2a/',
         # url = 'https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaay75uckqayzxhro3tqig45qhlv7lpeorfijnic3tw35dli6n6mbva/predict/a2a/',
         url = agent_b_url,
@@ -58,7 +84,7 @@ if __name__ == '__main__':
     )
 
     request_handler = DefaultRequestHandler(
-        agent_executor=OCIRealmFinderAgentExecutor(),
+        agent_executor=MumbaiWeatherAgentExecutor(),
         task_store=InMemoryTaskStore(),
     )
 

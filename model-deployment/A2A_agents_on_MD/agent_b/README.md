@@ -1,6 +1,6 @@
-# Agent B - OCI Realm Finder Agent
+# Agent B - Mumbai Weather Agent
 
-An agent-to-agent communication system built with the A2A SDK that provides dummy OCI realm status. This project demonstrates how to create a specialized agent that can communicate with other agents.
+An agent-to-agent communication system built with the A2A SDK that provides Mumbai weather information. This project demonstrates how to create a specialized agent that can communicate with other agents.
 
 ## Architecture
 
@@ -9,15 +9,15 @@ An agent-to-agent communication system built with the A2A SDK that provides dumm
 │   Agent A       │ ◄─────────────────────► │   Agent B       │
 │ (External)      │                         │ (This Project)  │
 │                 │                         │                 │
-│ • Status        │                         │ • OCI Realm     │
-│   Reporter      │                         │   Finder        │
-│ • Comm. with    │                         │ • Realm Status  │
+│ • Bengaluru     │                         │ • Mumbai        │
+│   Weather       │                         │   Weather       │
+│ • Comm. with    │                         │ • Weather Info  │
 │   Agent B       │                         │   Return        │
 └─────────────────┘                         └─────────────────┘
 ```
 
 
-- **OCI Realm Status Monitoring**: Provides real-time status of OCI realms (OC1, OC2, OC3)
+- **Mumbai Weather Information**: Provides current weather data for Mumbai
 - **Agent-to-Agent Communication**: Seamless integration with other A2A-compatible agents
 - **Docker Support**: Containerized deployment for easy scaling
 - **Environment-Based Configuration**: Flexible configuration through environment variables
@@ -56,18 +56,18 @@ The agent will start on `http://localhost:9998` with the following endpoints:
 
 ### Message Processing
 - **Endpoint**: `POST /a2a/messages`
-- **Purpose**: Handles incoming A2A protocol messages and returns OCI realm status
+- **Purpose**: Handles incoming A2A protocol messages and returns Mumbai weather information
 
 ## Agent Capabilities
 
-This agent specializes in OCI realm status monitoring with the following skill:
+This agent specializes in Mumbai weather information with the following skill:
 
-- **Skill ID**: `oci_realm_finder`
-- **Description**: Returns OCI functioning realms and their status
-- **Tags**: `oci`, `realm`, `finder`
+- **Skill ID**: `mumbai_weather`
+- **Description**: Returns current Mumbai weather information
+- **Tags**: `mumbai`, `weather`, `temperature`
 - **Examples**:
-  - "what are the functioning realms and their status?"
-  - "what is the status of the OCI-1 realm?"
+  - "what is the weather in Mumbai?"
+  - "get Mumbai weather"
 
 ## Docker Deployment
 
@@ -125,8 +125,8 @@ AGENT_B_URL=https://your-model-deployment-url.com/predict/a2a
 ### Agent Card Response
 ```json
 {
-  "name": "OCI Realm Finder Agent",
-  "description": "Just a OCI realm finder agent",
+  "name": "Mumbai Weather Agent",
+  "description": "Just a Mumbai weather agent",
   "url": "https://your-deployment-url.com/predict/a2a",
   "version": "1.0.0",
   "defaultInputModes": ["text"],
@@ -136,13 +136,13 @@ AGENT_B_URL=https://your-model-deployment-url.com/predict/a2a
   },
   "skills": [
     {
-      "id": "oci_realm_finder",
-      "name": "Returns OCI functioning realms and their status",
-      "description": "just returns OCI functioning realms and their status",
-      "tags": ["oci", "realm", "finder"],
+      "id": "mumbai_weather",
+      "name": "Returns Mumbai weather information",
+      "description": "just returns current Mumbai weather information",
+      "tags": ["mumbai", "weather", "temperature"],
       "examples": [
-        "what are the functioning realms and their status?",
-        "what is the status of the OCI-1 realm?"
+        "what is the weather in Mumbai?",
+        "get Mumbai weather"
       ]
     }
   ],
@@ -150,7 +150,7 @@ AGENT_B_URL=https://your-model-deployment-url.com/predict/a2a
 }
 ```
 
-### Realm Status Response
+### Weather Response
 ```
-🟨 Old Realms status 🟨: OC1 ✅, OC2 ✅, OC3 ✅
+Mumbai Weather: 28°C, Partly Cloudy, Humidity: 75%, Wind: 12 km/h
 ```

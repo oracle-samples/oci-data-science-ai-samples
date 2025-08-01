@@ -1,6 +1,6 @@
 # Agent-to-Agent (A2A) Communication on OCI Model Deployment
 
-This project demonstrates a sophisticated agent-to-agent communication system deployed on Oracle Cloud Infrastructure (OCI) Model Deployment service. The system consists of two specialized agents that work together to provide comprehensive OCI realm status information through collaborative AI interactions.
+This project demonstrates a sophisticated agent-to-agent communication system deployed on Oracle Cloud Infrastructure (OCI) Model Deployment service. The system consists of two specialized agents that work together to provide comprehensive weather information through collaborative AI interactions.
 
 ## Architecture Overview
 
@@ -16,11 +16,12 @@ This project demonstrates a sophisticated agent-to-agent communication system de
 │  │   Agent A       │                    │   Agent B       │     │
 │  │ (Primary Agent) │                    │ (Specialized)   │     │
 │  │                 │                    │                 │     │
-│  │ • Handles OC4-6 │◄─── A2A Protocol ─►│ • Handles OC1-3 │     │
-│  │ • Orchestrates  │                    │ • Status        │     │
-│  │   Communication │                    │   Reporter      │     │
-│  │ • Aggregates    │                    │ • Data          │     │
-│  │   Results       │                    │   Processing    │     │
+│  │ • Bengaluru     │◄─── A2A Protocol ─►│ • Mumbai        │     │
+│  │   Weather       │                    │   Weather       │     │
+│  │ • Orchestrates  │                    │ • Weather Info  │     │
+│  │   Communication │                    │   Return        │     │
+│  │ • Aggregates    │                    │                 │     │
+│  │   Results       │                    │                 │     │
 │  └─────────────────┘                    └─────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -30,21 +31,21 @@ This project demonstrates a sophisticated agent-to-agent communication system de
 ### Agent A (Primary Agent)
 - **Role**: Orchestrator and aggregator
 - **Responsibilities**:
-  - Receives client requests for OCI realm status (OC1-OC6)
-  - Manages its own status data for OC4-OC6
-  - Communicates with Agent B to retrieve status for OC1-OC3
-  - Aggregates and returns comprehensive status information
+  - Receives client requests for weather information
+  - Provides Bengaluru weather information
+  - Communicates with Agent B to retrieve Mumbai weather information
+  - Aggregates and returns comprehensive weather data from both cities
 - **Port**: 9999
-- **Skills**: OCI realm status aggregation and inter-agent communication
+- **Skills**: Bengaluru weather information and inter-agent communication
 
 ### Agent B (Specialized Agent)
-- **Role**: Specialized status provider
+- **Role**: Specialized weather provider
 - **Responsibilities**:
-  - Provides status information for OC1-OC3 realms
+  - Provides Mumbai weather information
   - Responds to A2A protocol requests from Agent A
-  - Maintains focused expertise on specific realm data
+  - Maintains focused expertise on Mumbai weather data
 - **Port**: 9998
-- **Skills**: OCI realm status reporting for older realms
+- **Skills**: Mumbai weather information and reporting
 
 ## Quick Start
 
@@ -192,9 +193,11 @@ uv run python test_client.py
 ### Expected Response
 ```json
 {
-  "this_agent_result": "🟩 New Realms Status 🟩: OC4 ✅, OC5 ✅, OC6 ✅",
-  "other_agent_result": "🟨 Old Realms status 🟨: OC1 ✅, OC2 ✅, OC3 ✅"
+  "this_agent_result": "Bengaluru Weather: 25°C, Sunny, Humidity: 60%, Wind: 8 km/h",
+  "other_agent_result": "Mumbai Weather: 28°C, Partly Cloudy, Humidity: 75%, Wind: 12 km/h"
 }
 ```
 
 ---
+
+**Note**: This is a demonstration system using dummy weather data. In production, replace the dummy data with real weather API integrations for accurate weather information.

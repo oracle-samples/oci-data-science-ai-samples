@@ -1,6 +1,6 @@
-# Agent A - OCI Realm Finder Agent
+# Agent A - Bengaluru Weather Agent
 
-An agent-to-agent communication system built with the A2A SDK that enables seamless interaction between AI agents. This project demonstrates how to create an intelligent agent that can communicate with other agents to gather and process information collaboratively.
+An agent-to-agent communication system built with the A2A SDK that provides weather information for Bengaluru and collaborates with other agents to get Mumbai weather information. This project demonstrates how to create an intelligent agent that can communicate with other agents to gather and process information collaboratively.
 
 ## Architecture
 
@@ -9,10 +9,10 @@ An agent-to-agent communication system built with the A2A SDK that enables seaml
 │   Agent A       │ ◄─────────────────────► │   Agent B       │
 │ (This Project)  │                         │ (External)      │
 │                 │                         │                 │
-│ • OCI Realm     │                         │ • Status        │
-│   Finder        │                         │   Reporter      │
-│ • Authentication│                         │ • Data          │
-│ • Communication │                         │   Processing    │
+│ • Bengaluru     │                         │ • Mumbai        │
+│   Weather       │                         │   Weather       │
+│                 │                         │                 │
+│                 │                         │                 │
 └─────────────────┘                         └─────────────────┘
 ```
 

@@ -40,10 +40,10 @@ def get_auth():
     return OCISignerAuth(signer)
 
 def get_auth_rps():
-    print(f'[YashPandit] Getting RPS auth')
+    print(f'[DEBUG] Getting RPS auth')
     rps = oci.auth.signers.get_resource_principals_signer()
-    print(f'[YashPandit] RPS auth: {rps}')
-    print(f'[YashPandit] RPS token: {rps.get_security_token()}')
+    print(f'[DEBUG] RPS auth: {rps}')
+    print(f'[DEBUG] RPS token: {rps.get_security_token()}')
     return OCISignerAuth(rps)
 
 async def main() -> None:
@@ -144,7 +144,7 @@ async def main() -> None:
             print(chunk.model_dump(mode='json', exclude_none=True))
 
 async def get_agent_answer(base_url: str, question: str) -> str:
-    print(f'[YashPandit] Sending request to other agent: {base_url}')
+    print(f'[DEBUG] Sending request to other agent: {base_url}')
     PUBLIC_AGENT_CARD_PATH = '/.well-known/agent.json'
     async with httpx.AsyncClient(auth=get_auth_rps(), verify=False, headers={"Content-Length": "0"}) as httpx_client:
         resolver = A2ACardResolver(
@@ -152,7 +152,7 @@ async def get_agent_answer(base_url: str, question: str) -> str:
             base_url=base_url,
         )
         _public_card = await resolver.get_agent_card()
-        print(f'[YashPandit] Resolved agent card: {_public_card}')
+        print(f'[DEBUG] Resolved agent card: {_public_card}')
         client = A2AClient(
             httpx_client=httpx_client, agent_card=_public_card
         )
@@ -169,7 +169,7 @@ async def get_agent_answer(base_url: str, question: str) -> str:
             id=str(uuid4()), params=MessageSendParams(**send_message_payload)
         )
         response = await client.send_message(request)
-        print(f'[YashPandit] Response: {response}')
+        print(f'[DEBUG] Response: {response}')
         try:
             parts = response.result.message.parts
             for part in parts:

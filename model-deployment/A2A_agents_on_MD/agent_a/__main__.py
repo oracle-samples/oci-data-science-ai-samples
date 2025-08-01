@@ -1,20 +1,143 @@
 import uvicorn
 import os
+import logging
+from typing import Any
+from uuid import uuid4
+import httpx
+import oci
+import json
+import asyncio
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
 from a2a.server.tasks import InMemoryTaskStore
+from a2a.server.agent_execution import AgentExecutor, RequestContext
+from a2a.server.events import EventQueue
+from a2a.utils import new_agent_text_message
+from a2a.client import A2ACardResolver, A2AClient
 from a2a.types import (
     AgentCapabilities,
     AgentCard,
     AgentSkill,
-)
-from agent_executor import (
-    OCIAllRealmFinderAgentExecutor,
+    MessageSendParams,
+    SendMessageRequest,
+    SendStreamingMessageRequest,
 )
 from starlette.responses import JSONResponse
 from starlette.applications import Starlette
 from starlette.requests import Request
 
+# OCI Authentication Classes
+class OCISignerAuth(httpx.Auth):
+    def __init__(self, signer):
+        self.signer = signer
+    def auth_flow(self, request):
+        import requests
+        req = requests.Request(
+            method=request.method,
+            url=str(request.url),
+            headers=dict(request.headers),
+            data=request.content
+        ).prepare()
+        self.signer(req)
+        for k, v in req.headers.items():
+            request.headers[k] = v
+        yield request
+
+def get_auth():
+    PROFILE_NAME = 'default'
+    SECURITY_TOKEN_FILE_KEY = 'security_token_file'
+    KEY_FILE_KEY = 'key_file'
+    config = oci.config.from_file(profile_name=PROFILE_NAME)
+    token_file = config[SECURITY_TOKEN_FILE_KEY]
+    with open(token_file, 'r') as f:
+        token = f.read()
+    private_key = oci.signer.load_private_key_from_file(config[KEY_FILE_KEY])
+    signer = oci.auth.signers.SecurityTokenSigner(token, private_key)
+    return OCISignerAuth(signer)
+
+def get_auth_rps():
+    print(f'[DEBUG] Getting RPS auth')
+    rps = oci.auth.signers.get_resource_principals_signer()
+    print(f'[DEBUG] RPS auth: {rps}')
+    print(f'[DEBUG] RPS token: {rps.get_security_token()}')
+    return OCISignerAuth(rps)
+
+# Agent Communication Function
+async def get_agent_answer(base_url: str, question: str) -> str:
+    print(f'[DEBUG] Sending request to other agent: {base_url}')
+    PUBLIC_AGENT_CARD_PATH = '/.well-known/agent.json'
+    async with httpx.AsyncClient(auth=get_auth_rps(), verify=False, headers={"Content-Length": "0"}) as httpx_client:
+        resolver = A2ACardResolver(
+            httpx_client=httpx_client,
+            base_url=base_url,
+        )
+        _public_card = await resolver.get_agent_card()
+        print(f'[DEBUG] Resolved agent card: {_public_card}')
+        client = A2AClient(
+            httpx_client=httpx_client, agent_card=_public_card
+        )
+        send_message_payload: dict[str, Any] = {
+            'message': {
+                'role': 'user',
+                'parts': [
+                    {'kind': 'text', 'text': question}
+                ],
+                'messageId': uuid4().hex,
+            },
+        }
+        request = SendMessageRequest(
+            id=str(uuid4()), params=MessageSendParams(**send_message_payload)
+        )
+        response = await client.send_message(request)
+        print(f'[DEBUG] Response: {response}')
+        try:
+            parts = response.result.message.parts
+            for part in parts:
+                if 'text' in part:
+                    return part['text']
+            return str(response.model_dump(mode='json', exclude_none=True))
+        except Exception:
+            return str(response.model_dump(mode='json', exclude_none=True))
+
+# Agent Classes
+class WeatherAgent:
+    """Gets weather information for cities, with one city from this agent and another from the other agent."""
+
+    def __init__(self):
+        agent_b_url = os.getenv('AGENT_B_URL')
+        self.other_agent_url = agent_b_url
+
+    async def invoke(self) -> dict:
+        # Get string information from the other agent
+        other_agent_result = await get_agent_answer(self.other_agent_url, "Please provide some information")
+        # Weather information for Bengaluru from this agent
+        this_agent_result = '🌤️ Bengaluru Weather: 25°C, Partly Cloudy, Humidity: 70%, Wind: 8 km/h'
+        return {
+            "this_agent_result": this_agent_result,
+            "other_agent_result": other_agent_result
+        }
+
+class WeatherAgentExecutor(AgentExecutor):
+    """Test AgentProxy Implementation that delegates to the agent's invoke method."""
+
+    def __init__(self):
+        self.agent = WeatherAgent()
+
+    async def execute(
+        self,
+        context: RequestContext,
+        event_queue: EventQueue,
+    ) -> None:
+        result = await self.agent.invoke()
+        # Serialize the result dict for output, preserving Unicode (emojis)
+        await event_queue.enqueue_event(new_agent_text_message(json.dumps(result, indent=2, ensure_ascii=False)))
+
+    async def cancel(
+        self, context: RequestContext, event_queue: EventQueue
+    ) -> None:
+        raise Exception('cancel not supported')
+
+# Application Setup Classes
 class PrefixDispatcher:
     def __init__(self, app, prefix="/a2a"):
         self.app = app
@@ -28,23 +151,119 @@ class PrefixDispatcher:
                 scope["path"] = "/"
         await self.app(scope, receive, send)
 
-if __name__ == '__main__':
+# Test Client Function (for standalone testing)
+async def test_client_main() -> None:
+    PUBLIC_AGENT_CARD_PATH = '/.well-known/agent.json'
+    EXTENDED_AGENT_CARD_PATH = '/agent/authenticatedExtendedCard'
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
 
+    base_url = 'https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.tenancy.oc1..aaaaaaaafwgqzxcwlkkpl5i334qpv62s375upsw2j4ufgcizfnnhjd4l55ia/agent-a/predict'
+    async with httpx.AsyncClient(auth=get_auth(), verify=False, headers={"Content-Length": "0"}) as httpx_client:
+        resolver = A2ACardResolver(
+            httpx_client=httpx_client,
+            base_url=base_url,
+        )
+        final_agent_card_to_use: AgentCard | None = None
+        try:
+            logger.info(
+                f'Attempting to fetch public agent card from: {base_url}{PUBLIC_AGENT_CARD_PATH}'
+            )
+            _public_card = (
+                await resolver.get_agent_card()
+            )
+            logger.info('Successfully fetched public agent card:')
+            logger.info(
+                _public_card.model_dump_json(indent=2, exclude_none=True)
+            )
+            final_agent_card_to_use = _public_card
+            logger.info(
+                '\nUsing PUBLIC agent card for client initialization (default).'
+            )
+            if _public_card.supportsAuthenticatedExtendedCard:
+                try:
+                    logger.info(
+                        f'\nPublic card supports authenticated extended card. Attempting to fetch from: {base_url}{EXTENDED_AGENT_CARD_PATH}'
+                    )
+                    auth_headers_dict = {
+                        'Authorization': 'Bearer dummy-token-for-extended-card'
+                    }
+                    _extended_card = await resolver.get_agent_card(
+                        relative_card_path=EXTENDED_AGENT_CARD_PATH,
+                        http_kwargs={'headers': auth_headers_dict},
+                    )
+                    logger.info(
+                        'Successfully fetched authenticated extended agent card:'
+                    )
+                    logger.info(
+                        _extended_card.model_dump_json(
+                            indent=2, exclude_none=True
+                        )
+                    )
+                    final_agent_card_to_use = (
+                        _extended_card
+                    )
+                    logger.info(
+                        '\nUsing AUTHENTICATED EXTENDED agent card for client initialization.'
+                    )
+                except Exception as e_extended:
+                    logger.warning(
+                        f'Failed to fetch extended agent card: {e_extended}. Will proceed with public card.',
+                        exc_info=True,
+                    )
+            elif (
+                _public_card
+            ):
+                logger.info(
+                    '\nPublic card does not indicate support for an extended card. Using public card.'
+                )
+        except Exception as e:
+            logger.error(
+                f'Critical error fetching public agent card: {e}', exc_info=True
+            )
+            raise RuntimeError(
+                'Failed to fetch the public agent card. Cannot continue.'
+            ) from e
+        client = A2AClient(
+            httpx_client=httpx_client, agent_card=final_agent_card_to_use
+        )
+        logger.info('A2AClient initialized.')
+        send_message_payload: dict[str, Any] = {
+            'message': {
+                'role': 'user',
+                'parts': [
+                    {'kind': 'text', 'text': 'how much is 10 USD in INR?'}
+                ],
+                'messageId': uuid4().hex,
+            },
+        }
+        request = SendMessageRequest(
+            id=str(uuid4()), params=MessageSendParams(**send_message_payload)
+        )
+        response = await client.send_message(request)
+        print(response.model_dump(mode='json', exclude_none=True))
+        streaming_request = SendStreamingMessageRequest(
+            id=str(uuid4()), params=MessageSendParams(**send_message_payload)
+        )
+        stream_response = client.send_message_streaming(streaming_request)
+        async for chunk in stream_response:
+            print(chunk.model_dump(mode='json', exclude_none=True))
+
+# Main Application
+if __name__ == '__main__':
     agent_a_url = os.getenv('AGENT_A_URL')
 
     skill = AgentSkill(
-        id='oci_realm_finder',
-        name='Returns OCI functioning realms and their status',
-        description='just returns OCI functioning realms and their status',
-        tags=['oci', 'realm', 'finder'],
-        examples=['what are the functioning realms and their status?', 'what is the status of the OCI-1 realm?'],
+        id='bengaluru_weather_agent',
+        name='Returns weather information for Bengaluru',
+        description='returns weather information for Bengaluru and collaborates with other agents for additional information',
+        tags=['weather', 'bengaluru', 'temperature', 'collaboration'],
+        examples=['what is the weather in Bengaluru?', 'get Bengaluru weather information'],
     )
 
     public_agent_card = AgentCard(
-        name='OCI Realm Finder Agent',
-        description='Just a OCI realm finder agent',
-        # url='http://localhost:9999/', # TODO: change to the actual url of MD
-        # url='https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaay75uckqavsz3dipblcb6ckgwljls5qosxramv4osvt77tr5nnrra/predict/a2a/',
+        name='Bengaluru Weather Agent',
+        description='A weather information agent for Bengaluru that collaborates with other agents',
         url=agent_a_url,
         version='1.0.0',
         defaultInputModes=['text'],
@@ -55,7 +274,7 @@ if __name__ == '__main__':
     )
 
     request_handler = DefaultRequestHandler(
-        agent_executor=OCIAllRealmFinderAgentExecutor(),
+        agent_executor=WeatherAgentExecutor(),
         task_store=InMemoryTaskStore(),
     )
 
