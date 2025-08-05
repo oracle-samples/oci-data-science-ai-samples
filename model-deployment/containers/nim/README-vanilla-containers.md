@@ -70,6 +70,7 @@ Use any zip file to create a dummy model artifact. As we will be downloading mod
       * Key: `STORAGE_SIZE_IN_GB`, Value: `120`
       * Key: `NCCL_CUMEM_ENABLE`, Value: `0`
       * Key: `WEB_CONCURRENCY`, Value: `1`
+      * Key: `NGC_API_KEY`, Value: `<KEY_GENERATED_FROM_NGC>`
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
     * Under `Networking` choose the `Custom Networking` option and bring the VCN and subnet, which allows Internet access.
@@ -77,8 +78,7 @@ Use any zip file to create a dummy model artifact. As we will be downloading mod
     * Select the custom container option `Use a Custom Container Image` and click `Select`
     * Select the OCIR repository and image we pushed earlier
     * Leave the ports as the default port is 8080.
-    * Leave CMD as below and Entrypoint as blank. Use `Add parameter` and populate each text field with comma separated values -
-        `python3, -m, vllm_nvext.entrypoints.openai.api_server, --enforce-eager, --gpu-memory-utilization, 0.85, --max-model-len, 2048`
+    * Leave CMD and Entrypoint as blank.
     * Click on `Create` button to create the model deployment
 
 * Once the model is deployed and shown as `Active`, you can execute inference against it.
