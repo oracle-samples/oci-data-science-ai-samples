@@ -14,5 +14,4 @@ RUN uv sync
 EXPOSE 9999
 
 # Run the app
-# CMD ["python", "-m", "__main__"] 
 CMD ["uv", "run", "."]

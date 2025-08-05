@@ -73,7 +73,6 @@ if __name__ == '__main__':
         name='Mumbai Weather Agent',
         description='Just a Mumbai weather agent',
         # url='http://localhost:9998/a2a/',
-        # url = 'https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaay75uckqayzxhro3tqig45qhlv7lpeorfijnic3tw35dli6n6mbva/predict/a2a/',
         url = agent_b_url,
         version='1.0.0',
         defaultInputModes=['text'],
