@@ -196,7 +196,7 @@ cmd_var = [
     "--model",
     f"/opt/ds/model/deployed_model/{model_prefix}",
     "--tensor-parallel-size",
-    "2",
+    "8",
     "--port",
     "8080",
     "--served-model-name",
