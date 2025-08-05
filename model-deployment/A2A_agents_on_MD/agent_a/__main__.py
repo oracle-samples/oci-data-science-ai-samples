@@ -158,7 +158,7 @@ async def test_client_main() -> None:
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
-    base_url = 'https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.tenancy.oc1..aaaaaaaafwgqzxcwlkkpl5i334qpv62s375upsw2j4ufgcizfnnhjd4l55ia/agent-a/predict'
+    base_url = '<add your custom url mdocid url here taken from the invoke your model screen in model deployment console>'
     async with httpx.AsyncClient(auth=get_auth(), verify=False, headers={"Content-Length": "0"}) as httpx_client:
         resolver = A2ACardResolver(
             httpx_client=httpx_client,
