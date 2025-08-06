@@ -1,8 +1,6 @@
 # Deploy OpenAI open-source models
 
-This guide demonstrates how to deploy and perform inference using OCI Data Science Service. In this example, we will use a model downloaded from Hugging Face specifically, [openai/gpt-oss-120b](https://huggingface.co/openai/gpt-oss-120b) from OpenAI. 
-
-
+This guide demonstrates how to deploy and perform inference using OCI Data Science Service. In this example, we will use a model downloaded from Hugging Face, specifically [openai/gpt-oss-120b](https://huggingface.co/openai/gpt-oss-120b) from OpenAI. 
 
 ## Required IAM Policies
 
@@ -10,17 +8,17 @@ Add these [policies](https://github.com/oracle-samples/oci-data-science-ai-sampl
 
 ## Setup
 
-Create a data science notebook session with at least 400GB of space. We will use notebook session to - 
+Create a data science notebook session with at least 400GB of space. We will use a notebook session to: 
 1. Download model weights
 2. Create Model Catalog entry
 3. Deploy the model
 
-To prepare inference container, we will use local laptop since this step requires docker commmands. The notebook session does not come with the docker tooling.
+To prepare the inference container, we will use local laptop since this step requires Docker commands. The notebook session does not come with the docker tooling.
 
 
 # Prepare Inference container
 
-vLLM is an easy-to-use library for LLM inference and server.  You can get the container image from [DockerHub](https://hub.docker.com/r/vllm/vllm-openai/tags).
+vLLM is an easy-to-use library for LLM inference and serving.  You can get the container image from [DockerHub](https://hub.docker.com/r/vllm/vllm-openai/tags).
 
 Following commands are to run on your laptop - 
 
@@ -41,7 +39,7 @@ You may need to docker login to the Oracle Cloud Container Registry (OCIR) first
 docker login -u '<tenant-namespace>/<username>' <region>.ocir.io
 ```
 
-If your tenancy is federated with Oracle Identity Cloud Service, use the format <tenancy-namespace>/oracleidentitycloudservice/<username>. You can then push the container image to the OCI Registry
+If your tenancy is federated with Oracle Identity Cloud Service, use the format <tenancy-namespace>/oracleidentitycloudservice/<username>. You can then push the container image to the OCI Registry:
 
 ```shell
 docker tag vllm/vllm-openai:gptoss -t <region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:gptoss
@@ -78,7 +76,7 @@ wget -P models/gpt-oss-120b https://openaipublic.blob.core.windows.net/encodings
 ```
 ## Upload Model to OCI Object Storage
 
-**Note**: **The bucket has to be versioned bucket**
+**Note**: **The bucket has to be a versioned bucket**
 
 ```shell
 oci os object bulk-upload --src-dir models/gpt-oss-120b --prefix gpt-oss-120b/ -bn <bucket_name> -ns <bucket_namespace> --auth "resource_principal"
@@ -154,7 +152,7 @@ from ads.model.deployment import (
 ## Setup Model Deployment Infrastructure
 
 ```python
-container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:gptoss"  # name given to vllm image pushed to oracle  container registry
+container_image = "<region>.ocir.io/<tenancy>/vllm-odsc/vllm-openai:gptoss"  # name given to vllm image pushed to Oracle container registry
 ```
 
 ```python
