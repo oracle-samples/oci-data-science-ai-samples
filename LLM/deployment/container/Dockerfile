@@ -19,9 +19,9 @@ WORKDIR /home/$USERNAME
 RUN /opt/conda/bin/conda create -n conda_env python=3.10 pip -y
 SHELL ["/opt/conda/bin/conda", "run", "-n", "conda_env", "/bin/bash", "-c"]
 
-ADD requirements.txt /opt/requirements.txt
+COPY requirements.txt /opt/requirements.txt
 RUN pip install -r /opt/requirements.txt && pip cache purge
-ADD app.py /opt/app.py
+COPY app.py /opt/app.py
 
 ENV MODEL_DIR="/opt/ds/model/deployed_model"
 ENV PATH=/home/$USERNAME/.conda/envs/conda_env/bin:/opt/conda/bin/:$PATH
