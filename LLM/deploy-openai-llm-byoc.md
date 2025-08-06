@@ -1,4 +1,4 @@
-# Deploy LLM Models using BYOC
+# Deploy OpenAI open-source models
 
 This guide demonstrates how to deploy and perform inference using AI Quick Action registered models with Oracle Data Science Service Managed Containers (SMC) powered by vLLM. In this example, we will use a model downloaded from Hugging Face specifically, [openai/gpt-oss-120b](https://huggingface.co/openai/gpt-oss-120b) from OpenAI. 
 
@@ -204,6 +204,8 @@ cmd_var = [
     "--host",
     "0.0.0.0",
     "--trust-remote-code",
+    "--quantization",
+    "mxfp4"
 ]
 
 container_runtime = (
