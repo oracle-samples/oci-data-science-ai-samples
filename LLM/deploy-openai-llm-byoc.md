@@ -11,53 +11,19 @@ Add these [policies](https://github.com/oracle-samples/oci-data-science-ai-sampl
 
 
 
-```python
+```shell
 # Install required python packages
 
-!pip install oracle-ads
-!pip install oci
-!pip install huggingface_hub
+pip install oracle-ads
+pip install oci
+pip install huggingface_hub
 ```
 
 
-```python
-# Uncomment this code and set the correct proxy links if have to setup proxy for internet
-# import os
-# os.environ['http_proxy']="http://myproxy"
-# os.environ['https_proxy']="http://myproxy"
-
-# Use os.environ['no_proxy'] to route traffic directly
-```
-
-
-```python
-import ads
-import os
-
-ads.set_auth("resource_principal")
-```
-
-
-```python
-# Extract region information from the Notebook environment variables and signer.
-ads.common.utils.extract_region()
-```
 
 ### Common variables
 
 
-```python
-# change as required for your environment
-compartment_id = os.environ["PROJECT_COMPARTMENT_OCID"]
-project_id = os.environ["PROJECT_OCID"]
-
-log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx"
-log_id = "ocid1.log.oc1.xxx.xxxxx"
-
-instance_shape = "BM.GPU.H100.8"
-
-region = "<your-region>"
-```
 
 ## API Endpoint Usage
 
@@ -75,41 +41,79 @@ To prepare Model artifacts for LLM model deployment:
 ### Model Download from HuggingFace Model Hub
 
 
-```shell
-# Login to huggingface using env variable
-huggingface-cli login --token <HUGGINGFACE_TOKEN>
-```
 
-[This](https://huggingface.co/docs/huggingface_hub/en/guides/cli#download-an-entire-repository) provides more information on using `huggingface-cli` to download an entire repository at a given revision. Models in the HuggingFace hub are stored in their own repository.
+
+[This documentation](https://huggingface.co/docs/huggingface_hub/en/guides/cli#download-an-entire-repository) provides more information on using `huggingface-cli` to download an entire repository at a given revision. Models in the HuggingFace hub are stored in their own repository.
 
 
 ```shell
 # Select the the model that you want to deploy.
 
-huggingface-cli download openai/gpt-oss-120b --local-dir models/gpt-oss-120b
+huggingface-cli download openai/gpt-oss-120b --local-dir models/gpt-oss-120b --exclude metal/*
 ```
 
-## Upload Model to OCI Object Storage
-
+Download the titoken file - 
 
 ```shell
-oci os object bulk-upload --src-dir $local_dir --prefix gpt-oss-120b/ -bn <bucket_name> -ns <bucket_namespace> --auth "resource_principal"
+wget -P models/gpt-oss-120b https://openaipublic.blob.core.windows.net/encodings/o200k_base.tiktoken
+```
+## Upload Model to OCI Object Storage
+
+**Note**: **The bucket has to be versioned bucket**
+
+```shell
+oci os object bulk-upload --src-dir models/gpt-oss-120b --prefix gpt-oss-120b/ -bn <bucket_name> -ns <bucket_namespace> --auth "resource_principal"
 ```
 
 ## Create Model by Reference using ADS
 
+```python
+# Uncomment this code and set the correct proxy links if have to setup proxy for internet
+# import os
+# os.environ['http_proxy']="http://myproxy"
+# os.environ['https_proxy']="http://myproxy"
 
+# Use os.environ['no_proxy'] to route traffic directly
+```
+
+
+```python
+import ads
+import os
+
+ads.set_auth("resource_principal")
+
+
+# Extract region information from the Notebook environment variables and signer.
+ads.common.utils.extract_region()
+```
+
+```python
+# change as required for your environment
+compartment_id = os.environ["PROJECT_COMPARTMENT_OCID"]
+project_id = os.environ["PROJECT_OCID"]
+
+log_group_id = "ocid1.loggroup.oc1.xxx.xxxxx"
+log_id = "ocid1.log.oc1.xxx.xxxxx"
+
+instance_shape = "BM.GPU.H100.8"
+
+region = ads.common.utils.extract_region()
+```
 
 ```python
 from ads.model.datascience_model import DataScienceModel
 
-artifact_path = f"oci://{bucket}@{namespace}/{model_prefix}"
+bucket=<bucket-name>
+namespace=<namespace>
+
+artifact_path = f"oci://{bucket}@{namespace}/gpt-oss-120b"
 
 model = (
     DataScienceModel()
     .with_compartment_id(compartment_id)
     .with_project_id(project_id)
-    .with_display_name("gpt-oss-120b ")
+    .with_display_name("gpt-oss-120b")
     .with_artifact(artifact_path)
 )
 
@@ -190,11 +194,13 @@ infrastructure = (
 ```python
 env_var = {
     "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions",
+    "SHM_SIZE": "10g",
+    "TIKTOKEN_RS_CACHE_DIR":"/opt/ds/model/gpt-oss-120b"    
 }
 
 cmd_var = [
     "--model",
-    f"/opt/ds/model/deployed_model/{model_prefix}",
+    f"/opt/ds/model/deployed_model/gpt-oss-120b",
     "--tensor-parallel-size",
     "8",
     "--port",
@@ -228,8 +234,8 @@ container_runtime = (
 ```python
 deployment = (
     ModelDeployment()
-    .with_display_name(f"{model_prefix} MD with BYOC")
-    .with_description(f"Deployment of {model_prefix} MD with vLLM BYOC container")
+    .with_display_name(f"gpt-oss-120b MD with BYOC")
+    .with_description(f"Deployment of gpt-oss-120b MD with vLLM BYOC container")
     .with_infrastructure(infrastructure)
     .with_runtime(container_runtime)
 ).deploy(wait_for_completion=False)
@@ -254,8 +260,6 @@ prompt = "What amateur radio bands are best to use when there are solar flares? 
 endpoint = f"https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict"
 
 current_date = datetime.now().strftime("%d %B %Y")
-
-prompt="What amateur radio bands are best to use when there are solar flares?"
 
 body = {
     "model": "openai/gpt-oss-120b",  # this is a constant
