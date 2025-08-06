@@ -1,4 +1,4 @@
-# Deploy LLM Models using BYOC
+# Deploy OpenAI open-source models
 
 This guide demonstrates how to deploy and perform inference using AI Quick Action registered models with Oracle Data Science Service Managed Containers (SMC) powered by vLLM. In this example, we will use a model downloaded from Hugging Face specifically, [openai/gpt-oss-120b](https://huggingface.co/openai/gpt-oss-120b) from OpenAI. 
 
@@ -204,6 +204,8 @@ cmd_var = [
     "--host",
     "0.0.0.0",
     "--trust-remote-code",
+    "--quantization",
+    "mxfp4"
 ]
 
 container_runtime = (
@@ -248,7 +250,7 @@ from datetime import datetime
 
 
 auth = ads.common.auth.default_signer()["signer"]
-prompt = "What amateur radio bands are best to use when there are solar flares?"
+prompt = "What amateur radio bands are best to use when there are solar flares? Keep you response to 100 words"
 endpoint = f"https://modeldeployment.us-ashburn-1.oci.customer-oci.com/{deployment.model_deployment_id}/predict"
 
 current_date = datetime.now().strftime("%d %B %Y")
@@ -268,117 +270,4 @@ requests.post(endpoint, json=body, auth=auth, headers={}).json()
 #### Output:
 
 
-**Short answer:**  
-During a solar flare the **higher HF bands (≈10 MHz and up)** tend to work best, while the **lower HF bands (≤ 15 MHz, especially 80 m/160 m)** are usually “blacked‑out” by D‑layer absorption.  The most usable bands are generally **15 m, 12 m, 10 m and, for a short burst, 6 m** (and occasionally VHF/UHF if a sporadic‑E layer is present).
-
-Below is a practical guide that explains why, how to recognise the conditions, and what you can actually do on the air.
-
----
-
-## 1. What a solar flare does to the ionosphere
-
-| Phenomenon | How it affects propagation | Time scale |
-|------------|---------------------------|-----------|
-| **X‑ray & extreme‑UV burst** (seconds to minutes) | Sudden increase of ionisation in the **D‑layer (≈60‑90 km)** → **enhanced absorption** of HF signals, especially below ~15 MHz. | Immediate, lasts a few minutes (the “Sudden Ionospheric Disturbance”, SID). |
-| **UV/EUV hardening** (minutes) | Raises the **E‑layer MUF** (Maximum Usable Frequency) → higher‑frequency HF can travel farther. | 5–30 min after flare onset. |
-| **Cosmic‑ray induced ionisation (in the F‑layer)** | Slightly improves F‑layer density → modest long‑term HF enhancement on the high bands. | Hours‑to‑days after a large flare. |
-| **Associated CME & geomagnetic storm** (hours‑days) | If a coronal mass ejection follows, it can cause **geomagnetic disturbance** (Kp ↑) → spread‑F, auroral absorption, and HF degradation on the very high bands (often > 30 MHz). | Hours‑days later, a separate phenomenon from the prompt flare. |
-
-> **Rule of thumb:**  
-> *If you see a sudden loss of signal on 80 m/40 m/20 m right after a flare, the D‑layer is “turned on”. Switch to a band above the current MUF (typically 15 m‑10 m) and you’ll often get a clear opening.*
-
----
-
-## 2. Which amateur bands survive – and why
-
-| Band (approx.) | Typical behavior during a flare | Why it works (or fails) |
-|----------------|--------------------------------|------------------------|
-| **160 m (1.8 – 2.0 MHz)** | Almost always **dead** during the X‑ray burst. | Deep D‑layer absorption; low MUF. |
-| **80 m (3.5 – 4.0 MHz)** | Heavy fade‑out; may recover only after the X‑ray flux drops. | Still within D‑layer absorption zone. |
-| **60 m (5.3 – 5.4 MHz, US only)** | Similar to 80 m; may see short “pings” when the flare decays. | Near the edge of D‑layer absorption. |
-| **40 m (7.0 – 7.3 MHz)** | Often dead for the first 5‑15 min; may recover later if the flare is modest (C‑class). | Still vulnerable; MUF may stay < 7 MHz. |
-| **30 m (10.1 – 10.15 MHz)** | **Best of the lower HF**; can survive a weak flare but usually fades with M‑class or stronger events. | Near the D‑layer limit; occasional openings. |
-| **20 m (14.0 – 14.35 MHz)** | **Usually usable**, especially on the rising edge of the flare when the MUF is driven up. | Above the D‑layer cut‑off, and the **MUF often rises to 18‑20 MHz**. |
-| **17 m (18.068 – 18.168 MHz)** | Good, often better than 20 m during the flare peak. | MUF can exceed 20 MHz. |
-| **15 m (21.0 – 21.45 MHz)** | **Very reliable** for a few minutes to an hour after the flare begins. | Well above the absorption region; the ionosphere is “pumped up”. |
-| **12 m (24.89 – 24.99 MHz)** | Excellent when the flare is strong (M‑ or X‑class). | High MUF, low absorption. |
-| **10 m (28.0 – 29.7 MHz)** | Often the **best** band during and immediately after a strong flare; can support worldwide contacts if the Sun is active. | MUF frequently > 30 MHz; propagation driven by the F‑layer. |
-| **6 m (50‑54 MHz)** | **Sporadic‑E openings** can appear for 5‑30 min after a strong flare, giving VHF‑range contacts. | The flare can trigger short‑lived enhancements of the E‑layer irregularities. |
-| **2 m/70 cm (144‑148 MHz, 430‑440 MHz)** | Mostly unaffected except during **auroral absorption** from a subsequent geomagnetic storm. | Propagation is line‑of‑sight; solar flare impact is minimal. |
-
-**Bottom line:** **15 m, 12 m and 10 m are the “go‑to” bands** when a flare erupts. If you have a VHF setup, keep an eye on **6 m** for a brief Sporadic‑E window.
-
----
-
-## 3. How to know a flare is occurring (real‑time tools)
-
-| Tool | What it shows | How to use it for band choice |
-|------|----------------|-------------------------------|
-| **NOAA Space Weather Prediction Center (SWPC) – X‑ray flux plot** | GOES satellite X‑ray flux (C, M, X class) in 0.1‑8 Å band, updated every minute. | When **≥ M‑class** appears, expect D‑layer absorption. Move to > 10‑MHz bands. |
-| **NOAA A‑index & K‑index** | Global geomagnetic activity. A‑index spikes during flare‑related ionospheric disturbances. | A‑index > 5 → D‑layer absorption heavy; stay on high HF. |
-| **NASA DSCOVR + ACE real‑time solar wind data** | Solar wind speed, density, Bz. Useful for upcoming CME (hours later). | If a CME is inbound, plan for later geomagnetic storm; may need to drop back to lower bands after the flare fades. |
-| **Ham‑radio specific sites** (e.g., *DXMaps*, *SolarHam*, *N4EP’s Solar Flare Alerts*) | Summarise current solar flux, sunspot number, and flare alerts. | Quick check before a night‑time contest or QSO. |
-| **Propagation prediction software** (VOACAP, Ham Radio Deluxe, Hamlib *propagation* tools) | Calculates MUF and expected signal‑to‑noise for given time, band, and solar conditions. | Input current solar flux (S‑index) and A‑index to see which bands will be above the MUF. |
-
----
-
-## 4. Practical operating tips
-
-1. **Listen first.** Tune a 20 m or 15 m receiver while the flare is active. If you can hear stations that were silent before, the MUF has risen.
-2. **Keep a “band‑switch” plan.** Have a preset list:  
-   - **Start:** 20 m (if you’re already there).  
-   - **If dead:** Jump to 15 m → 12 m → 10 m.  
-   - **If you have a 6 m rig:** Try a quick “Sporadic‑E” sweep (73 – 75 MHz) after the flare’s peak.
-3. **Power & antennas.** Higher frequencies need slightly more power for the same distance because free‑space loss rises with frequency, but the reduced absorption more than compensates. A simple half‑wave dipole on 10 m or a vertical with a good ground works well.
-4. **Log the time.** Note the exact UTC time of the flare onset (you can copy the GOES timestamp). This data is useful for later propagation analysis and for other hams.
-5. **Avoid the “N‑range” (near‑field) on VHF/UHF** during an accompanying geomagnetic storm, as auroral absorption can produce erratic signal fading.
-6. **Be ready for rapid fade‑out.** Flares can cause a *Sudden Ionospheric Disturbance* that lasts only a few minutes. If you’re on a low band, you may get a brief “ripple” of S‑SB on SSB or CW before the signal disappears; switch to a higher band immediately.
-
----
-
-## 5. Example scenario
-
-| Time (UTC) | Solar event | Ionospheric effect | Recommended band(s) |
-|------------|-------------|--------------------|----------------------|
-| 12:30 | **C‑class flare** peaks (1 × 10⁻⁶ W/m²) | Mild D‑layer absorption; MUF rises to ~13 MHz. | 20 m still usable, 15 m opens. |
-| 12:35 | **M‑class flare** peaks (5 × 10⁻⁵ W/m²) | Strong D‑layer absorption; MUF climbs to 18‑20 MHz. | Switch to 15 m, 12 m, 10 m. |
-| 12:40 | **X‑class flare** peaks (1 × 10⁻⁴ W/m²) | D‑layer blackout of < 15 MHz; MUF may exceed 25 MHz for ~10 min. | 10 m is best; try 6 m if you have a VHF rig. |
-| 12:55 | Flare decays, A‑index spikes to 7 | D‑layer recovers; MUF drops back to ~16‑18 MHz. | Return to 15 m/12 m; 20 m may become usable again after ~15 min. |
-
----
-
-## 6. Quick “cheat sheet” for the radio operator
-
-| Solar flare class | Expected absorption (low HF) | MUF trend | Best bands (immediate) |
-|-------------------|------------------------------|-----------|------------------------|
-| **C‑class** | Light | 10‑13 MHz | 20 m → 15 m |
-| **M‑class** | Moderate → heavy | 15‑20 MHz | 15 m, 12 m, 10 m |
-| **X‑class** | Very heavy (D‑layer blackout) | 20‑30 MHz+ (short‑lived) | 10 m, 12 m, 15 m, 6 m (if you have it) |
-
-**Remember:**  
-- The **higher the class**, the *more* the low bands are suppressed, **but the *higher* the MUF becomes**.  
-- The **effect lasts only a few minutes** (the X‑ray burst); the **enhanced propagation on high HF may linger for 30‑60 min** as the ionosphere “settles”.
-
----
-
-## 7. Resources you can bookmark
-
-| Resource | URL | What you get |
-|----------|-----|--------------|
-| NOAA Space Weather Prediction Center (SWPC) – X‑ray flux | <https://www.swpc.noaa.gov/online-data/goes-x-ray-flux> | Real‑time flare intensities. |
-| Space Weather Live – Solar Data | <https://www.spaceweatherlive.com/> | Solar flux (S‑index), sunspot number, flare alerts. |
-| VOACAP Online (propagation predictions) | <https://qsl.net/kb9v/voacap/> | MUF, signal‑to‑noise for any band/time. |
-| Ham Radio Deluxe “Propagation” window | (Desktop software) | Instant MUF for your location. |
-| N4EP Solar Flare Alerts (email) | <https://n4ep.com/> | Short‑msg alerts for strong flares. |
-| DXMaps – Current band conditions | <https://dxmaps.com/> | Crowd‑sourced band opening reports. |
-
----
-
-### Bottom line
-
-- **When a flare erupts, drop to the **higher HF** part of the spectrum (≥ 15 m, preferably 12 m‑10 m).**  
-- **Avoid the lower HF bands** (80 m, 40 m, 30 m) while the X‑ray burst is on‑line.  
-- **If you have a VHF kit, try 6 m** after the flare’s peak for a brief Sporadic‑E window.  
-- **Monitor real‑time solar data** (GOES X‑ray, A‑index) and use a propagation tool (VOACAP) to confirm the current MUF before you switch.
-
-Happy DX’ing, and may the Sun be with you!
+During solar flares the ionospheric D‑layer becomes heavily ionized, causing severe absorption of lower HF (3–10 MHz). The most reliable amateur bands are therefore the higher HF bands that are less affected—particularly 15 m (21 MHz), 12 m (24 MHz), 10 m (28 MHz) and the VHF/UHF “line‑of‑sight” bands (50 MHz, 70 MHz, 144 MHz, 432 MHz) which can still work via sporadic E or auroral propagation. If you must use lower HF, stick to the 20 m (14 MHz) band during the flare’s peak, as it often remains usable. Keep power modest and monitor real‑time solar flux indices.
