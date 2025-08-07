@@ -11,6 +11,7 @@ Once logged in, we can directly pull image using -
 `docker pull nvcr.io/nim/nv-mistralai/mistral-nemo-12b-instruct:1.2`
 * Generate API key to interact with NIM NGC APIs. [Reference document](https://org.ngc.nvidia.com/setup/api-key).
 * Once the image is successfully pulled on your workstation, we will bring this image to Oracle Cloud Infrastructure Registry (OCIR). The necessary policies and process for OCIR interaction are mentioned in our [public docs](https://docs.oracle.com/en-us/iaas/data-science/using/mod-dep-byoc.htm).
+* For model - mistral-nemo-12b-instruct, we will be using A10.2 GPU shape. Depending on the region, user may need a reservation request to secure the VM. 
 
 ## OCI Logging
 When experimenting with new frameworks and models, it is highly advisable to attach log groups to model deployment in order to enable self assistance in debugging. Follow below steps to create log groups.
