@@ -45,7 +45,7 @@ When experimenting with new frameworks and models, it is highly advisable to att
 
 ## Deploy on OCI Data Science Model Deployment
 
-Once you built and pushed the NIM container, you can now use the `Bring Your Own Container` Deployment in OCI Data Science to deploy the Llama3 model
+Once you built and pushed the NIM container, you can now use the `Bring Your Own Container` Deployment in OCI Data Science to deploy the mistral-nemo-12b-instruct model.
 
 ### Creating Model catalog
 
