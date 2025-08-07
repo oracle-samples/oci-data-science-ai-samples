@@ -62,7 +62,6 @@ We would utilise the above created model in the next steps to create the Model D
       * Key: `MODEL_DEPLOY_HEALTH_ENDPOINT`, Value: `/v1/health/ready`
       * Key: `NIM_SERVER_PORT`, Value: `8080`
       * Key: `SHM_SIZE`, Value: `10g`
-      * Key: `NIM_MODEL_NAME`, Value: `/opt/ds/model/deployed_model`
       * Key: `OPENSSL_FORCE_FIPS_MODE`, Value: `0`
       * Key: `NGC_API_KEY`, Value: `<NGC KEY>`
       * Key: `WEB_CONCURRENCY`, Value: `1`
