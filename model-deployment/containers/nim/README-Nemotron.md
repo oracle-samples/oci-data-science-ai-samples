@@ -3,10 +3,6 @@
 The NVIDIA Nemotron family of multimodal models provides state-of-the-art agentic reasoning for graduate-level scientific reasoning, advanced math, coding, instruction following, tool calling, and visual reasoning. Nemotron models excel in vision for enterprise optical character recognition (OCR) and in reasoning for building agentic AI.
 In this guide, we are going to deploy [Mistral-Nemo-12B-Instruct](https://catalog.ngc.nvidia.com/orgs/nim/teams/nv-mistralai/containers/mistral-nemo-12b-instruct) on OCI Data Science.
 
-We will describe an [AirGap solution](https://docs.nvidia.com/nim/large-language-models/latest/deploy-air-gap.html) where all pre-requisities like model and inference engine will be first brought to OCI and then used for deployment. Hence, there will be no need for any external connectivity.
-
-* Download [nvidia/Mistral-NeMo-12B-Instruct model](https://huggingface.co/nvidia/Mistral-NeMo-12B-Instruct/tree/main) from huggingface.
-* Utilising Object storage to store the model and creating a model catalog pointing to Object storage bucket [Refer](https://github.com/oracle-samples/oci-data-science-ai-samples/tree/main/model-deployment/containers/nim/README-MODEL-CATALOG.md)
 
 ## Prerequisites
 * Access the corresponding NIM container llm. Click Get Container Button and click Request Access for NIM. At the time of writing this blog, you need a business email address to get access to NIM.
@@ -53,8 +49,7 @@ Once you built and pushed the NIM container, you can now use the `Bring Your Own
 
 ### Creating Model catalog
 
-Follow the steps mentioned [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/model-deployment/containers/llama2/README.md#model-store-export-api-for-creating-model-artifacts-greater-than-6-gb-in-size)), refer the section One time download to OCI Model Catalog. 
-
+Create a dummy model catalog entry to link it with a model deployment using any zip file.
 We would utilise the above created model in the next steps to create the Model Deployment. 
 
 ### Create Model deploy
@@ -69,9 +64,13 @@ We would utilise the above created model in the next steps to create the Model D
       * Key: `SHM_SIZE`, Value: `10g`
       * Key: `NIM_MODEL_NAME`, Value: `/opt/ds/model/deployed_model`
       * Key: `OPENSSL_FORCE_FIPS_MODE`, Value: `0`
+      * Key: `NGC_API_KEY`, Value: `<NGC KEY>`
+      * Key: `WEB_CONCURRENCY`, Value: `1`
+      * Key: `NCCL_CUMEM_ENABLE`, Value: `0`
+      * Key: `NIM_MAX_MODEL_LEN`, Value: `4000` Note: Can be increased based on instance shape used
     * Under `Models` click on the `Select` button and select the Model Catalog entry we created earlier
     * Under `Compute` and then `Specialty and previous generation` select the `VM.GPU.A10.2` instance
-    * Under `Networking` choose the `Default Networking` option.
+    * Under `Networking` choose the `Custom Networking` option and bring the VCN and subnet, which allows Internet access.
     * Under `Logging` select the Log Group where you've created your predict and access log and select those correspondingly
     * Select the custom container option `Use a Custom Container Image` and click `Select`
     * Select the OCIR repository and image we pushed earlier
@@ -90,7 +89,7 @@ We would utilise the above created model in the next steps to create the Model D
   oci raw-request \
     --http-method POST \
     --target-uri <MODEL-DEPLOY-ENDPOINT> \
-    --request-body '{"model": "/opt/ds/model/deployed_model", "messages": [ { "role":"user", "content":"Hello! How are you?" }, { "role":"assistant", "content":"Hi! I am quite well, how can I help you today?" }, { "role":"user", "content":"Can you write me a song?" } ], "top_p": 1, "n": 1, "max_tokens": 200, "stream": false, "frequency_penalty": 1.0, "stop": ["hello"] }' \
+    --request-body '{"model": "mistral-nemo-12b-instruct", "messages": [ { "role":"user", "content":"Hello! How are you?" }, { "role":"assistant", "content":"Hi! I am quite well, how can I help you today?" }, { "role":"user", "content":"Can you write me a song?" } ], "top_p": 1, "n": 1, "max_tokens": 200, "stream": false, "frequency_penalty": 1.0, "stop": ["hello"] }' \
     --auth resource_principal
   ```
 
