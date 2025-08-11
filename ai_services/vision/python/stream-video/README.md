@@ -63,27 +63,11 @@ optional arguments:
   --namespace NAMESPACE namespace of the Bucket
   --bucket BUCKET_NAME bucket name
   --prefix PREFIX prefix
-  --feature FEATURE feature
 ```
 
 ## 6. Some examples commands:
 ```
-python3.9 stream_video_demo.py --compartment-id  --camera-url "rtsp://64.181.159.98:443/stream" --namespace "idvbwij6bjry"  --bucket  "stream-test" --prefix "testing" --feature FEATURES "[
-    {
-        "featureType": "OBJECT_TRACKING",
-
-        "trackingTypes":[
-            {
-                "objects": ["face"],
-                "maxResults": 5,
-                "shouldReturnLandmarks": True,
-                "biometricStoreId": "ocid1.aibiometricstore.oc1.phx.amaaaaaat4fqliqahiowefua5gnv4vclqzejnjbt6udryjuqrmsqvppkp74a",
-                "biometricStoreCompartmentId": "ocid1.tenancy.oc1..aaaaaaaanvgztn3ytxqdpryxvcv6xfx4xaggt7n243kjzim36xstqbymdgkq"
-            }
-        ]
-    }
-]"
-
+python3.9 stream_video_demo.py --compartment-id "COMPARTMENT_ID"  --camera-url "RTSP_URL" --namespace "NAMESPACE"  --bucket  "BUCKET_NAME" --prefix "PREFIX"
 Above command will create stream source, stream job and stream group, then start and stop stream job and finally delete everything
 
 

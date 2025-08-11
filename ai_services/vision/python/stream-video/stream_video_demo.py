@@ -6,15 +6,15 @@
 # You may choose either license.
 
 ##########################################################################
-# analyze_video_demo_cv2.py
+# staream_video_demo_cv2.py
 #
 # @author: Anand Jha (anand.j.jha@oracle.com), Aug 2025
 #
 # Supports Python 3
 ##########################################################################
 # Info:
-usage: stream_video_demo.py [-h] --compartment-id [COMPARTMENT_ID] --camera-url [CAMERA_URL] --namespace [NAMESPACE] 
-    --bucket [BUCKET] --prefix [PREFIX] --feature [FEATURE] [-v]
+usage: python3.9 stream_video_demo.py --compartment-id "COMPARTMENT_ID"  --camera-url "RTSP_URL" --namespace "NAMESPACE"  --bucket  "BUCKET_NAME" --prefix "PREFIX"
+ [-v]
 
 optional arguments:
   -h, --help  show this help message and exit
@@ -45,28 +45,20 @@ class StreamVideo:
         A class to
     """
 
-    def __init__(
-            self,
-            compartment_id: str,
-            camera_url: int,
-            namespace: str,
-            bucket: str,
-            prefix: str,
-            feature: str,
-            subnet_id: str,
-            oci_config: dict,
-            service_endpoint: str
-    ):
-        
+    def __init__(self,compartment_id: str,subnet_id: str,camera_url: str, namespace: str,bucket: str,prefix: str, oci_config: dict, service_endpoint: str):
         self.compartment_id = compartment_id
-        camera_url = camera_url
-        namespace = namespace
-        bucket = bucket
-        prefix = prefix
-        feature = feature
-        subnet_id = subnet_id
+        self.camera_url = camera_url
+        self.namespace = namespace
+        self.bucket = bucket
+        self.prefix = prefix
+        self.subnet_id = subnet_id
+        token_file = oci_config['security_token_file']
+        with open(token_file, 'r') as f:
+             token = f.read()
+        private_key = oci.signer.load_private_key_from_file(config['key_file'])
+        signer = oci.auth.signers.SecurityTokenSigner(token, private_key)
         self.client = oci.ai_vision.AIServiceVisionClient(
-            config=oci_config,
+            config=oci_config, signer=signer,
             service_endpoint=service_endpoint)
          
         self.create_stream_source_details = oci.ai_vision.models.CreateStreamSourceDetails()
@@ -80,7 +72,7 @@ class StreamVideo:
         self.update_stream_group_details = oci.ai_vision.models.UpdateStreamGroupDetails()
         self.update_vision_private_endpoint_details = oci.ai_vision.models.UpdateVisionPrivateEndpointDetails()
         self.output_location = oci.ai_vision.models.ObjectStorageOutputLocation()
-
+        self.video_straming_feature = oci.ai_vision.models.VideoFeature()
     
     
     def create_private_endpoint(self, display_name="Vision_Private_Endpoint"):
@@ -90,22 +82,54 @@ class StreamVideo:
         :return: None
         """
 
+        if self.subnet_id is None and self.subnet_id != "":
+            logger.error("subnet id file not found")
+            sys.exit()
+            # return 0
+
+        if self.compartment_id is None and self.compartment_id != "":
+            logger.error("compartment id file not found")
+            sys.exit()
+            # return 0
+
+        logger.info("Starting Vision Private Endpoint Creation....")
+        
         self.create_vision_private_endpoint_details.display_name = display_name
         self.create_vision_private_endpoint_details.subnet_id = self.subnet_id
         self.create_vision_private_endpoint_details.compartment_id = self.compartment_id
-        
-        create_private_endpoint_request = self.client.create_vision_private_endpoint(self.create_vision_private_endpoint_details)
-        
-        while True:
-            create_private_endpoint_work_request = self.client.get_work_request(create_private_endpoint_request.headers['opc-work-request-id'])
 
-            if create_private_endpoint_work_request.data.status  == 'SUCCEEDED':
-                return create_private_endpoint_request.data.id
-            elif create_private_endpoint_work_request.data.status == 'FAILED':
-                return None
-            time.sleep(30) 
+        logger.info("Create Private Endpoint Details %s", self.create_vision_private_endpoint_details)
+        create_private_endpoint_response = self.client.create_vision_private_endpoint(self.create_vision_private_endpoint_details)
+        logger.info("checking work request id for Private Endpoint Creation %s",create_private_endpoint_response.headers['opc-work-request-id'])
+        timeout_seconds = 300  # 5 minutes
+        start_time = time.time()
+        while True:
+            create_private_endpoint_work_request = self.client.get_work_request(create_private_endpoint_response.headers['opc-work-request-id'])
+            status = create_private_endpoint_work_request.data.status
+            logger.info("get current status of work request id for Private Endpoint Creation %s",create_private_endpoint_work_request.data.status)
+            if status == 'SUCCEEDED':
+                return create_private_endpoint_response.data.id
+            elif status == 'FAILED':
+                logger.error("creation of private endpoint failed %s",create_private_endpoint_response)
+                sys.exit()
+            elif time.time() - start_time > timeout_seconds:
+                raise TimeoutError("Operation timed out after 5 minutes.")
+            time.sleep(30)
     
     def create_Stream_Source(self, vision_private_endpoint_ocid, display_name="Vision_Stream_Source"):
+
+
+        if self.camera_url is None and self.camera_url != "":
+            logger.error("camera url id not found")
+            sys.exit()
+            # return 0
+
+        if vision_private_endpoint_ocid is None and vision_private_endpoint_ocid != "":
+            logger.error("vision private endpoint id is not found")
+            sys.exit()
+            # return 0
+
+        logger.info("Starting Stream Source Creation....")
         
         self.private_stream_network_access_deatils.stream_access_type = "PRIVATE"
         self.private_stream_network_access_deatils.private_endpoint_id = vision_private_endpoint_ocid
@@ -115,91 +139,180 @@ class StreamVideo:
         self.create_stream_source_details.compartment_id = compartment_id
         self.create_stream_source_details.display_name = display_name
         self.create_stream_source_details.stream_source_details = self.rtsp_source_details
-        
-        create_stream_source_request = self.client.create_stream_source(self.create_stream_source_details)
+
+        logger.info("Create Stream Source Details %s", self.create_stream_source_details)
+        create_stream_source_response = self.client.create_stream_source(self.create_stream_source_details)
+        logger.info("checking work request id for Stream Source Creation %s",create_stream_source_response.headers['opc-work-request-id'])
+        timeout_seconds = 120  # 2 minutes
+        start_time = time.time()
+
         while True:
-            create_stream_source_work_request = self.client.get_work_request(create_stream_source_request.headers['opc-work-request-id'])
+            create_stream_source_work_request = self.client.get_work_request(create_stream_source_response.headers['opc-work-request-id'])
+            logger.info("get current status of work request id for Stream Source Creation %s",create_stream_source_work_request.data.status)
 
             if create_stream_source_work_request.data.status  == 'SUCCEEDED':
-                return create_stream_source_request.data.id
+                return create_stream_source_response.data.id
             elif create_stream_source_work_request.data.status == 'FAILED':
-                return None
-            time.sleep(30) 
+                logger.error("creation of stream source failed %s",create_stream_source_response)
+                sys.exit()
+            elif time.time() - start_time > timeout_seconds:
+                raise TimeoutError("Operation timed out after 2 minutes.")
+            time.sleep(30)
     
+
     def create_Stream_Job(self, stream_source_ocid, display_name="Vision_Stream_Job"):
-        self.create_stream_job_details.stream_source_id = stream_source_ocid
         # For Object Tracker (Only "face" supported as of now) - commend if not required
-        self.create_stream_job_details.features = self.feature
+        self.video_straming_feature.feature_type = "FACE_DETECTION"
+
+        if self.namespace is None and self.namespace != "":
+            logger.error("namespace not found")
+            sys.exit()
+            # return 0
+
+        if self.bucket is None and self.bucket != "":
+            logger.error("Bucket not found")
+            sys.exit()
+            # return 0
         
+        if self.bucket is None and self.bucket != "":
+            self.prefix = "Testing" 
+        
+        
+        logger.info("Starting Stream Job Creation....")
+
+        # Choose output location in object storage, make sure you have created the bucket
         self.output_location.namespace_name = self.namespace
         self.output_location.bucket_name = self.bucket
         self.output_location.prefix = self.prefix
         
-        # Choose output location in object storage, make sure you have created the bucket
-        self.create_stream_job_details.stream_output_location = self.output_location
-        
+        self.create_stream_job_details.stream_source_id = stream_source_ocid
         self.create_stream_job_details.compartment_id = self.compartment_id
         self.create_stream_job_details.display_name = display_name
+        self.create_stream_job_details.stream_output_location = self.output_location
+        self.create_stream_job_details.features = self.video_straming_feature
         
-        create_stream_job_request = self.client.create_stream_job(self.create_stream_job_details)
+        logger.info("Create Stream Source Details %s", self.create_stream_job_details)
+        create_stream_job_response = self.client.create_stream_job(self.create_stream_job_details)
+        logger.info("checking work request id for Stream Job Creation %s", create_stream_job_response.headers['opc-work-request-id'])
+        timeout_seconds = 120  # 2 minutes
+        start_time = time.time()
+
         while True:
-            create_stream_job_work_request = self.client.get_work_request(create_stream_job_request.headers['opc-work-request-id'])
+            create_stream_job_work_request = self.client.get_work_request(create_stream_job_response.headers['opc-work-request-id'])
+            logger.info("get current status of work request id for Stream job Creation %s", create_stream_job_work_request.data.status)
+
             if create_stream_job_work_request.data.status  == 'SUCCEEDED' :
-                return create_stream_job_request.data.id
-            if create_stream_job_work_request.data.status == 'FAILED':
-                return None
+                return create_stream_job_response.data.id
+            elif create_stream_job_work_request.data.status == 'FAILED':
+                logger.error("creation of stream job failed %s",create_stream_job_response)
+                sys.exit()
+            elif time.time() - start_time > timeout_seconds:
+                raise TimeoutError("Operation timed out after 2 minutes.")
             time.sleep(30)
+    
 
     def start_Stream_Job(self, stream_job_ocid):
-        start_stream_job = self.client.start_stream_job(stream_job_ocid)
+
+        logger.info("start stream job id %s",stream_job_ocid)
+        start_stream_job_response = self.client.start_stream_job(stream_job_ocid)
+        logger.info("checking work request id for starting stream job %s", start_stream_job_response.headers['opc-work-request-id'])
+        timeout_seconds = 120  # 2 minutes
+        start_time = time.time()
+
         while True:
-            start_stream_job_work_request = self.client.get_work_request(start_stream_job.headers['opc-work-request-id'])
-            print(start_stream_job_work_request.data.status)
+            start_stream_job_work_request = self.client.get_work_request(start_stream_job_response.headers['opc-work-request-id'])
+            logger.info("get current status of work request id for starting stream job %s", start_stream_job_work_request.data.status)
+            
             if start_stream_job_work_request.data.status  == 'SUCCEEDED' :
-                return True
-            if start_stream_job_work_request.data.status == 'FAILED' :
-                return False
+                return stream_job_ocid
+            elif start_stream_job_work_request.data.status == 'FAILED':
+                logger.error("starting of stream job failed %s",start_stream_job_response)
+                sys.exit()
+            elif time.time() - start_time > timeout_seconds:
+                raise TimeoutError("Operation timed out after 2 minutes.")
             time.sleep(30)
 
     def stop_Stream_Job(self, stream_job_ocid):
-        stop_stream_job = self.client.start_stream_job(stream_job_ocid)
+
+        logger.info("stop stream job id %s",stream_job_ocid)
+        stop_stream_job_response = self.client.start_stream_job(stream_job_ocid)
+        logger.info("checking work request id for stopping Stream Job %s", stop_stream_job_response.headers['opc-work-request-id'])
+        timeout_seconds = 120  # 2 minutes
+        start_time = time.time()
+
         while True:
-            stop_stream_job_work_request = self.client.get_work_request(stop_stream_job.headers['opc-work-request-id'])
+            stop_stream_job_work_request = self.client.get_work_request(stop_stream_job_response.headers['opc-work-request-id'])
+            logger.info("get current status of work request id for stopping Stream job %s", stop_stream_job_work_request.data.status)
+
             if stop_stream_job_work_request.data.status  == 'SUCCEEDED' :
-                return True
-            if stop_stream_job_work_request.data.status == 'FAILED' :
-                return False
+                return stream_job_ocid
+            elif stop_stream_job_work_request.data.status == 'FAILED':
+                logger.error("stopping of stream job failed %s",stop_stream_job_response)
+                sys.exit()
+            elif time.time() - start_time > timeout_seconds:
+                raise TimeoutError("Operation timed out after 2 minutes.")
             time.sleep(30)
+            
 
     def delete_Stream_Job(self, stream_job_ocid):
-        delete_stream_job = self.client.delete_stream_job(stream_job_ocid)
+        logger.info("Delete stream job id %s",stream_job_ocid)
+        delete_stream_job_response = self.client.delete_stream_job(stream_job_ocid)
+        logger.info("checking work request id for deleting stream job  %s", delete_stream_job_response.headers['opc-work-request-id'])
+        timeout_seconds = 120  # 2 minutes
+        start_time = time.time()
+
         while True:
-            delete_stream_job_work_request = self.client.get_work_request(delete_stream_job.headers['opc-work-request-id'])
+            delete_stream_job_work_request = self.client.get_work_request(delete_stream_job_response.headers['opc-work-request-id'])
+            logger.info("get current status of work request id for delete stream job %s", delete_stream_job_work_request.data.status)
+
             if delete_stream_job_work_request.data.status  == 'SUCCEEDED' :
-                return True
-            if delete_stream_job_work_request.data.status == 'FAILED' :
-                return False
+                return stream_job_ocid
+            elif delete_stream_job_work_request.data.status == 'FAILED':
+                logger.error("Deletion of stream job failed %s",delete_stream_job_response)
+                sys.exit()
+            elif time.time() - start_time > timeout_seconds:
+                raise TimeoutError("Operation timed out after 2 minutes.")
             time.sleep(30)
+            
     
 
     def delete_Stream_Source(self, stream_source_ocid):
-        delete_stream_source = self.client.delete_stream_job(stream_source_ocid)
+        logger.info("Delete stream source id %s",stream_source_ocid)
+        delete_stream_source_response = self.client.delete_stream_job(stream_source_ocid)
+        logger.info("checking work request id for deleting stream source %s", delete_stream_source_response.headers['opc-work-request-id'])
+        timeout_seconds = 120  # 2 minutes
+        start_time = time.time()
+
         while True:
-            delete_stream_source_work_request = self.client.get_work_request(delete_stream_source.headers['opc-work-request-id'])
+            delete_stream_source_work_request = self.client.get_work_request(delete_stream_source_response.headers['opc-work-request-id'])
+            logger.info("get current status of work request id for delete stream source %s", delete_stream_source_work_request.data.status)
             if delete_stream_source_work_request.data.status  == 'SUCCEEDED' :
-                return True
-            if delete_stream_source_work_request.data.status == 'FAILED' :
-                return False
+                return stream_source_ocid
+            elif delete_stream_source_work_request.data.status == 'FAILED':
+                logger.error("Deletion of stream source failed %s",delete_stream_source_response)
+                sys.exit()
+            elif time.time() - start_time > timeout_seconds:
+                raise TimeoutError("Operation timed out after 2 minutes.")
             time.sleep(30)
     
     def delete_Vision_Private_Endpoint(self, vision_private_endpoint_ocid):
-        delete_Vision_Private_Endpoint_request = self.client.delete_vision_private_endpoint(vision_private_endpoint_ocid)
+        logger.info("Delete Vision Private Endpoint %s",vision_private_endpoint_ocid)
+        delete_Vision_Private_Endpoint_response = self.client.delete_vision_private_endpoint(vision_private_endpoint_ocid)
+        logger.info("checking work request id for deleting Vision Private Endpoint %s", delete_Vision_Private_Endpoint_response.headers['opc-work-request-id'])
+        timeout_seconds = 300  # 5 minutes
+        start_time = time.time()
+
         while True:
-            delete_vision_private_endpoint_work_request = self.client.get_work_request(delete_Vision_Private_Endpoint_request.headers['opc-work-request-id'])
-            if delete_vision_private_endpoint_work_request.data.status  == 'SUCCEEDED' :
-                return True
-            if delete_vision_private_endpoint_work_request.data.status == 'FAILED' :
-                return False
+            delete_vision_private_endpoint_work_request = self.client.get_work_request(delete_Vision_Private_Endpoint_response.headers['opc-work-request-id'])
+            logger.info("get current status of work request id for delete private endpoint %s", delete_vision_private_endpoint_work_request.data.status)
+
+            if delete_vision_private_endpoint_work_request.data.status == 'SUCCEEDED' :
+                return vision_private_endpoint_ocid
+            elif delete_vision_private_endpoint_work_request.data.status == 'FAILED':
+                logger.error("Deletion of stream job failed %s",delete_vision_private_endpoint_work_request)
+                sys.exit()
+            elif time.time() - start_time > timeout_seconds:
+                raise TimeoutError("Operation timed out after 2 minutes.")
             time.sleep(30)
     
 if __name__ == '__main__':
@@ -207,20 +320,17 @@ if __name__ == '__main__':
     # pylint: disable=R1732
     parser = argparse.ArgumentParser()
     parser.add_argument('--compartment-id', type=str, required=True, help='Compartment')
+    parser.add_argument("--subnet-id", type=str, help="Subnet")
     parser.add_argument("--camera-url", type=str, help='Camera Url for the Stream Source')
     parser.add_argument("--namespace", type=str, help="Namespace of the Bucket")
     parser.add_argument("--bucket", type=str, help="Bucket name")
     parser.add_argument("--prefix", type=str, help="Prefix")
-    parser.add_argument("--feature", type=json, help="Json")
     parser.add_argument("-v", "--verbose", help="Print logs", action='store_true')
     args = parser.parse_args()
-
     formatter = logging.Formatter(
         '%(asctime)s : {%(pathname)s:%(lineno)d} : %(name)s : %(levelname)s : %(message)s')
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
-
-    start_timeit = time.time()
 
     if args.verbose:
         handler = logging.StreamHandler(sys.stdout)
@@ -233,13 +343,12 @@ if __name__ == '__main__':
         logger.addHandler(file_handler)
 
     compartment_id = args.compartment_id
+    subnet_id = args.subnet_id
     camera_url = args.camera_url
     namespace = args.namespace
     bucket = args.bucket
     prefix = args.prefix
-    feature = args.feature
-    subnet_id = args.subnet_id
-
+    
 
     try:
         config = oci.config.from_file(
@@ -247,43 +356,36 @@ if __name__ == '__main__':
     except oci.exceptions.ConfigFileNotFound as err:
         logger.error(err)
         sys.exit()
-
+    
     service_endpoint = \
-        f"https://vision.aiservice.{config.get('region')}.oci.oraclecloud.com"
+        f"https://vision-beta.aiservice.{config.get('region')}.oci.oraclecloud.com"
     
-    stream_videos = StreamVideo(compartment_id=compartment_id, camera_url=camera_url, 
-                                namespace=namespace, bucket=bucket, prefix=prefix, feature=feature, 
-                                subnet_id=subnet_id, oci_config=config, service_endpoint=service_endpoint)
+    stream_videos = StreamVideo(compartment_id=compartment_id, subnet_id=subnet_id, camera_url=camera_url, 
+                                namespace=namespace, bucket=bucket, prefix=prefix,  oci_config=config, service_endpoint=service_endpoint)
     
     
-    vision_private_endpoint_ocid = StreamVideo.create_private_endpoint()
-    if vision_private_endpoint_ocid == None:
-        sys.exit("Error: Creation of Vision Private Endpoint Failed.....")
+    vision_private_endpoint_ocid = stream_videos.create_private_endpoint()
+    logger.info("Private Endpoint created successfully %s", vision_private_endpoint_ocid)
     
-    stream_source_ocid = StreamVideo.create_Stream_Source(vision_private_endpoint_ocid)
-    if StreamVideo.create_Stream_Source(vision_private_endpoint_ocid) == None:
-        sys.exit("Error: Creation of Stream Source Failed.....")
+    stream_source_ocid = stream_videos.create_Stream_Source(vision_private_endpoint_ocid)
+    logger.info("Stream Source created successfully %s", stream_source_ocid)
 
-    stream_job_ocid = StreamVideo.create_Stream_Job(stream_source_ocid)
-    if stream_job_ocid == None:
-        sys.exit("Error: Creation of Stream Job Failed.....")
+
+    stream_job_ocid = stream_videos.create_Stream_Job(stream_source_ocid)
+    logger.info("Stream Job created successfully %s", stream_job_ocid)
+
         
-    start_stream_job = StreamVideo.start_Stream_Job(stream_job_ocid)
-    if stream_job_ocid == False:
-        sys.exit("Error: Start of Stream Job Failed.....")
-    
-    stop_stream_job = StreamVideo.stop_Stream_Job(stream_job_ocid)
-    if stop_stream_job == False:
-        sys.exit("Error: Stop of Stream Job Failed.....")
-    
-    delete_stream_job = StreamVideo.delete_Stream_Job(stream_job_ocid)
-    if delete_stream_job == False:
-        sys.exit("Error: Deletion of Stream Job Failed.....")
+    start_stream_job = stream_videos.start_Stream_Job(stream_job_ocid)
+    logger.info("Started Stream Job successfully %s", stream_job_ocid)
 
-    delete_stream_source = StreamVideo.delete_Stream_Source(stream_source_ocid)
-    if delete_stream_source == False:
-        sys.exit("Error: Deletion of Stream Source Failed.....")
+    stop_stream_job = stream_videos.stop_Stream_Job(stream_job_ocid)
+    logger.info("Stopped Stream Job successfully %s", stream_job_ocid)
 
-    delete_Vision_Private_Endpoint = StreamVideo.delete_Vision_Private_Endpoint(vision_private_endpoint_ocid)
-    if delete_Vision_Private_Endpoint == False:
-        sys.exit("Error: Deletion of Vision Private Endpoint Failed.....")
+    delete_stream_job = stream_videos.delete_Stream_Job(stream_job_ocid)
+    logger.info("Stream Job deleted successfully %s", stream_job_ocid)
+
+    delete_stream_source = stream_videos.delete_Stream_Source(stream_source_ocid)
+    logger.info("Stream Source deleted successfully %s", stream_source_ocid)
+
+    delete_Vision_Private_Endpoint = stream_videos.delete_Vision_Private_Endpoint(vision_private_endpoint_ocid)
+    logger.info("Vision Private Endpoint deleted successfully %s", vision_private_endpoint_ocid)
