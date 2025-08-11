@@ -1,0 +1,6 @@
+oci==2.156.1+preview.1.257
+--index-url="https://artifactory.oci.oraclecorp.com/api/pypi/global-release-pypi/simple"
+--extra-index-url="https://artifactory.oci.oraclecorp.com/api/pypi/ocas-service-platform-dev-pypi-local/simple/"
+--extra-index-url="https://artifactory-builds.oci.oraclecorp.com/api/pypi/ocas-service-platform-dev-pypi-local/simple"
+--trusted-host="artifactory.oci.oraclecorp.com"
+vision-service-python-client-internal==0.3.155
