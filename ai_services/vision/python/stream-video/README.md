@@ -52,22 +52,27 @@ pip install -r requirements.txt
 ## 5. Stream video python sample scripts usage
 
 ```
-usage: stream_video_demo.py [-h] --compartment-id [COMPARTMENT_ID] --camera-url [CAMERA_URL] --namespace [NAMESPACE] 
-    --bucket [BUCKET] --prefix [PREFIX] --feature [FEATURE] [-v]
+usage: stream_video_demo.py [-h] --compartment-id [COMPARTMENT_ID] --subnet-id [SUBNET_ID] --camera-url [CAMERA_URL]       --namespace [NAMESPACE] --bucket [BUCKET] --prefix [PREFIX] [-v]
 
-optional arguments:
+arguments:
   -h, --help  show this help message and exit
   -v, --verbose Print logs
-  --compartment-id COMPARTMENT_OCID compartment for the resources
-  --camera-url CAMERA_URL camera url for the stream
-  --namespace NAMESPACE namespace of the Bucket
-  --bucket BUCKET_NAME bucket name
-  --prefix PREFIX prefix
+  --compartment-id, COMPARTMENT_OCID compartment for the resources
+  --subnet-id, SUBNET_ID subnet for the private endpoint
+  --camera-url, CAMERA_URL camera url for the stream
+  --namespace, NAMESPACE namespace of the Bucket
+  --bucket, BUCKET_NAME bucket name
+
+optional arguments:
+  --prefix, PREFIX prefix
+
+
 ```
 
 ## 6. Some examples commands:
 ```
-python3.9 stream_video_demo.py --compartment-id "COMPARTMENT_ID"  --camera-url "RTSP_URL" --namespace "NAMESPACE"  --bucket  "BUCKET_NAME" --prefix "PREFIX"
+python3 stream_video_demo.py --compartment-id "ocid1.compartment.oc1..xxxx" --subnet-id "ocid1.subnet.oc1.iad.xxxxxx" --camera-url "stream_url" --namespace "namespace"  --bucket "bucket-name" --prefix "testing"
+
 Above command will create stream source, stream job and stream group, then start and stop stream job and finally delete everything
 
 
