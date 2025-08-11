@@ -343,7 +343,7 @@ class StreamVideo:
         """
 
         logger.info("Delete stream group id %s",stream_group_ocid)
-        delete_stream_group_response = self.client.delete_stream_group(stream_source_ocid)
+        delete_stream_group_response = self.client.delete_stream_group(stream_group_ocid)
         logger.info("checking deleting stream group work request id %s", delete_stream_group_response.headers['opc-work-request-id'])
         timeout_seconds = 120  # 2 minutes
         start_time = time.time()
@@ -368,7 +368,7 @@ class StreamVideo:
         """
 
         logger.info("Delete stream source id %s",stream_source_ocid)
-        delete_stream_source_response = self.client.delete_stream_job(stream_source_ocid)
+        delete_stream_source_response = self.client.delete_stream_source(stream_source_ocid)
         logger.info("checking deleting stream source work request id %s", delete_stream_source_response.headers['opc-work-request-id'])
         timeout_seconds = 120  # 2 minutes
         start_time = time.time()
