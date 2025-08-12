@@ -13,19 +13,18 @@
 # Supports Python 3
 ##########################################################################
 # Info:
-usage: python3.9 stream_video_demo.py --compartment-id "COMPARTMENT_ID"  --camera-url "RTSP_URL" --namespace "NAMESPACE"  --bucket  "BUCKET_NAME" --prefix "PREFIX"
- [-v]
+usage: stream_video_demo.py [-h] --compartment-id [COMPARTMENT_ID] --subnet-id [SUBNET_ID] --camera-url [CAMERA_URL] --namespace [NAMESPACE] --bucket [BUCKET] [--prefix PREFIX] [-v]
 
+arguments:
+-h, --help Show this help message and exit
+-v, --verbose Print logs
+--compartment-id COMPARTMENT_OCID Compartment OCID for the resources
+--subnet-id SUBNET_ID Subnet for the private endpoint
+--camera-url CAMERA_URL Camera URL for the stream
+--namespace NAMESPACE Namespace of the bucket
+--bucket BUCKET_NAME Bucket name
 optional arguments:
-  -h, --help  show this help message and exit
-  -v, --verbose Print logs
-  --compartment-id COMPARTMENT_OCID compartment for the resources
-  --camera-url CAMERA_URL camera url for the stream
-  --namespace NAMESPACE namespace of the Bucket
-  --bucket BUCKET_NAME bucket name
-  --prefix PREFIX prefix
-  --feature FEATURE feature
-
+--prefix PREFIX Prefix
 ##################################################################################
 """
 
@@ -42,7 +41,7 @@ import oci
 
 class StreamVideo:
     """
-        A class to
+    Class to use all functionalities of Streaming Service
     """
 
     def __init__(self,compartment_id: str,subnet_id: str,camera_url: str, namespace: str,bucket: str,prefix: str, oci_config: dict, service_endpoint: str):
@@ -109,7 +108,7 @@ class StreamVideo:
             if status == 'SUCCEEDED':
                 return create_private_endpoint_response.data.id
             elif status == 'FAILED':
-                logger.error("creation of private endpoint failed %s",create_private_endpoint_response)
+                logger.error("creation of private endpoint failed %s",create_private_endpoint_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 5 minutes.")
@@ -156,7 +155,7 @@ class StreamVideo:
             if create_stream_source_work_request.data.status  == 'SUCCEEDED':
                 return create_stream_source_response.data.id
             elif create_stream_source_work_request.data.status == 'FAILED':
-                logger.error("creation of stream source failed %s",create_stream_source_response)
+                logger.error("creation of stream source failed %s",create_stream_source_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 2 minutes.")
@@ -224,7 +223,7 @@ class StreamVideo:
             if create_stream_job_work_request.data.status  == 'SUCCEEDED' :
                 return create_stream_job_response.data.id
             elif create_stream_job_work_request.data.status == 'FAILED':
-                logger.error("creation of stream job failed %s",create_stream_job_response)
+                logger.error("creation of stream job failed %s",create_stream_job_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 2 minutes.")
@@ -251,7 +250,7 @@ class StreamVideo:
             if create_stream_group_work_request.data.status  == 'SUCCEEDED' :
                 return create_stream_group_response.data.id
             elif create_stream_group_work_request.data.status == 'FAILED':
-                logger.error("creation of stream job failed %s",create_stream_group_response)
+                logger.error("creation of stream job failed %s",create_stream_group_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 2 minutes.")
@@ -277,7 +276,7 @@ class StreamVideo:
             if start_stream_job_work_request.data.status  == 'SUCCEEDED' :
                 return stream_job_ocid
             elif start_stream_job_work_request.data.status == 'FAILED':
-                logger.error("starting of stream job failed %s",start_stream_job_response)
+                logger.error("starting of stream job failed %s",start_stream_job_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 5 minutes.")
@@ -303,7 +302,7 @@ class StreamVideo:
             if stop_stream_job_work_request.data.status  == 'SUCCEEDED' :
                 return stream_job_ocid
             elif stop_stream_job_work_request.data.status == 'FAILED':
-                logger.error("stopping of stream job failed %s",stop_stream_job_response)
+                logger.error("stopping of stream job failed %s",stop_stream_job_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 2 minutes.")
@@ -329,7 +328,7 @@ class StreamVideo:
             if delete_stream_job_work_request.data.status  == 'SUCCEEDED' :
                 return stream_job_ocid
             elif delete_stream_job_work_request.data.status == 'FAILED':
-                logger.error("Deletion of stream job failed %s",delete_stream_job_response)
+                logger.error("Deletion of stream job failed %s",delete_stream_job_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 2 minutes.")
@@ -354,7 +353,7 @@ class StreamVideo:
             if delete_stream_group_work_request.data.status  == 'SUCCEEDED' :
                 return stream_group_ocid
             elif delete_stream_group_work_request.data.status == 'FAILED':
-                logger.error("Deletion of stream source failed %s",delete_stream_group_response)
+                logger.error("Deletion of stream source failed %s",delete_stream_group_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 2 minutes.")
@@ -379,7 +378,7 @@ class StreamVideo:
             if delete_stream_source_work_request.data.status  == 'SUCCEEDED' :
                 return stream_source_ocid
             elif delete_stream_source_work_request.data.status == 'FAILED':
-                logger.error("Deletion of stream source failed %s",delete_stream_source_response)
+                logger.error("Deletion of stream source failed %s",delete_stream_source_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 2 minutes.")
@@ -405,7 +404,7 @@ class StreamVideo:
             if delete_vision_private_endpoint_work_request.data.status == 'SUCCEEDED' :
                 return vision_private_endpoint_ocid
             elif delete_vision_private_endpoint_work_request.data.status == 'FAILED':
-                logger.error("Deletion of stream job failed %s",delete_vision_private_endpoint_work_request)
+                logger.error("Deletion of stream job failed %s",delete_vision_private_endpoint_work_request.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 5 minutes.")
@@ -471,12 +470,16 @@ if __name__ == '__main__':
 
     stream_group_ocid = stream_videos.create_Stream_Group(stream_source_ocid)
     logger.info("Stream Group created successfully %s", stream_group_ocid)
-        
+
     start_stream_job = stream_videos.start_Stream_Job(stream_job_ocid)
     logger.info("Started Stream Job successfully %s", stream_job_ocid)
 
+    time.sleep(60)
+
     stop_stream_job = stream_videos.stop_Stream_Job(stream_job_ocid)
     logger.info("Stopped Stream Job successfully %s", stream_job_ocid)
+
+    time.sleep(60)
 
     delete_stream_job = stream_videos.delete_Stream_Job(stream_job_ocid)
     logger.info("Stream Job deleted successfully %s", stream_job_ocid)
