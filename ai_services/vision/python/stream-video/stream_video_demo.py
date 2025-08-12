@@ -454,7 +454,7 @@ if __name__ == '__main__':
         sys.exit()
     
     service_endpoint = \
-        f"https://vision-beta.aiservice.{config.get('region')}.oci.oraclecloud.com"
+        f"https://vision.aiservice.{config.get('region')}.oci.oraclecloud.com"
     
     stream_videos = StreamVideo(compartment_id=compartment_id, subnet_id=subnet_id, camera_url=camera_url, 
                                 namespace=namespace, bucket=bucket, prefix=prefix,  oci_config=config, service_endpoint=service_endpoint)
