@@ -2,8 +2,8 @@
 
 | Server                                                                                                          | Version     |Supported Formats|Supported Shapes| Supported Models/Architectures                                                                                                  |
 |-----------------------------------------------------------------------------------------------------------------|-------------|-----------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
-| [vLLM](https://github.com/vllm-project/vllm/releases/tag/v0.8.5.post1)                                                | 0.8.5.post1       |safe-tensors|A10, A100, H100| [v0.8.5.post1 supported models](https://docs.vllm.ai/en/v0.8.5.post1/models/supported_models.html)                                          |
-| [Text Generation Inference (TGI)](https://github.com/huggingface/text-generation-inference/releases/tag/v2.0.1) | 2.0.1.4     |safe-tensors|A10, A100, H100| [v2.0.1 supported models](https://github.com/huggingface/text-generation-inference/blob/v2.0.1/docs/source/supported_models.md) |
+| [vLLM](https://github.com/vllm-project/vllm/releases/tag/v0.9.1)                                                | 0.9.1       |safe-tensors|A10, A100, H100| [v0.9.1 supported models](https://docs.vllm.ai/en/v0.9.1/models/supported_models.html)                                          |
+| [Text Generation Inference (TGI)](https://github.com/huggingface/text-generation-inference/releases/tag/v3.2.1) | 3.2.1     |safe-tensors|A10, A100, H100| [v3.2.1 supported models](https://github.com/huggingface/text-generation-inference/blob/v3.2.1/docs/source/supported_models.md) |
 | [Llama-cpp](https://github.com/abetlen/llama-cpp-python/releases/tag/v0.3.7)                                    | 0.3.7       |gguf|Amphere ARM| [v0.3.7 supported models](https://github.com/abetlen/llama-cpp-python/tree/v0.3.7)                                              |
 
 
