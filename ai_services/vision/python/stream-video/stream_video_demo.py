@@ -266,7 +266,7 @@ class StreamVideo:
         logger.info("start stream job id %s",stream_job_ocid)
         start_stream_job_response = self.client.start_stream_job(stream_job_ocid)
         logger.info("checking starting stream job work request id %s", start_stream_job_response.headers['opc-work-request-id'])
-        timeout_seconds = 300  # 5 minutes
+        timeout_seconds = 600  # 10 minutes
         start_time = time.time()
 
         while True:
@@ -279,7 +279,7 @@ class StreamVideo:
                 logger.error("starting of stream job failed %s",start_stream_job_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
-                raise TimeoutError("Operation timed out after 5 minutes.")
+                raise TimeoutError("Operation timed out after 10 minutes.")
             time.sleep(60)
 
     def stop_Stream_Job(self, stream_job_ocid):
