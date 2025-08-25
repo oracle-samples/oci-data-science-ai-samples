@@ -266,7 +266,7 @@ class StreamVideo:
         logger.info("start stream job id %s",stream_job_ocid)
         start_stream_job_response = self.client.start_stream_job(stream_job_ocid)
         logger.info("checking starting stream job work request id %s", start_stream_job_response.headers['opc-work-request-id'])
-        timeout_seconds = 300  # 5 minutes
+        timeout_seconds = 600  # 10 minutes
         start_time = time.time()
 
         while True:
@@ -279,7 +279,7 @@ class StreamVideo:
                 logger.error("starting of stream job failed %s",start_stream_job_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
-                raise TimeoutError("Operation timed out after 5 minutes.")
+                raise TimeoutError("Operation timed out after 10 minutes.")
             time.sleep(60)
 
     def stop_Stream_Job(self, stream_job_ocid):
@@ -290,7 +290,7 @@ class StreamVideo:
         """
 
         logger.info("stop stream job id %s",stream_job_ocid)
-        stop_stream_job_response = self.client.start_stream_job(stream_job_ocid)
+        stop_stream_job_response = self.client.stop_stream_job(stream_job_ocid)
         logger.info("checking stopping stream job work request id %s", stop_stream_job_response.headers['opc-work-request-id'])
         timeout_seconds = 120  # 2 minutes
         start_time = time.time()
@@ -349,11 +349,11 @@ class StreamVideo:
 
         while True:
             delete_stream_group_work_request = self.client.get_work_request(delete_stream_group_response.headers['opc-work-request-id'])
-            logger.info("get current status of work request id %s for delete stream source %s", delete_stream_group_response.headers['opc-work-request-id'], delete_stream_group_work_request.data.status)
+            logger.info("get current status of work request id %s for delete stream group %s", delete_stream_group_response.headers['opc-work-request-id'], delete_stream_group_work_request.data.status)
             if delete_stream_group_work_request.data.status  == 'SUCCEEDED' :
                 return stream_group_ocid
             elif delete_stream_group_work_request.data.status == 'FAILED':
-                logger.error("Deletion of stream source failed %s",delete_stream_group_response.headers)
+                logger.error("Deletion of stream group failed %s",delete_stream_group_response.headers)
                 sys.exit()
             elif time.time() - start_time > timeout_seconds:
                 raise TimeoutError("Operation timed out after 2 minutes.")
