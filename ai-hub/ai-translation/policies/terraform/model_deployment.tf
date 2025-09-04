@@ -1,0 +1,68 @@
+# Model deployment with custom network and scaling policy type = FIXED SIZE
+resource "oci_datascience_model_deployment" "ai_deployment" {
+  # Required
+  display_name   = var.deployment_display_name
+  description    = local.md_desc
+  compartment_id = var.compartment_id
+  project_id     = var.project_ocid
+
+  model_deployment_configuration_details {
+    deployment_type = var.deployment_type
+    model_configuration_details {
+      # Required
+      instance_configuration {
+        instance_shape_name = var.shape
+        model_deployment_instance_shape_config_details {
+          memory_in_gbs = var.memory_in_gbs
+          ocpus         = var.ocpus
+        }
+        # Required for custom networking
+        # subnet_id = var.subnet_ocid
+        subnet_id = local.app_subnet_id
+      }
+      model_id       = local.model_id
+      bandwidth_mbps = var.deployment_bandwidth_mbps
+      scaling_policy {
+        instance_count = var.deployment_instance_count
+        policy_type    = "FIXED_SIZE"
+      }
+    }
+
+    environment_configuration_details {
+      image                          = local.image
+      image_digest                   = local.digest
+      environment_configuration_type = "OCIR_CONTAINER"
+      # Environment variables are customized based on the AI app.
+      environment_variables = {
+        # OCI GenAI Service
+        MODEL_BACKEND                 = var.model_backend,
+        MODEL_NAME                    = var.model_name,
+        MODEL_URL                     = var.model_url
+        OPENAI_API_KEY                = var.openai_api_key,
+        NUM_WORKERS                   = var.num_workers,
+        TASK_STORE                    = "TMPDIR",
+        LOG_DIR                       = var.translation_log_dir,
+        PROJECT_COMPARTMENT_OCID      = var.compartment_id,
+        PROCESSING_JOB_OCID           = oci_datascience_job.ai_job.id,
+        OCI_CACHE_ENDPOINT            = var.oci_cache_endpoint,
+        MODEL_DEPLOY_CUSTOM_ENDPOINTS = "[{\"endpointURI\": \"/api/languages\", \"httpMethods\": [\"GET\"]}, {\"endpointURI\": \"/api/batch\", \"httpMethods\": [\"POST\"]}, {\"endpointURI\": \"/api/task\", \"httpMethods\": [\"GET\"]}, {\"endpointURI\": \"/api/translate\", \"httpMethods\": [\"GET\", \"POST\"]}, {\"endpointURI\": \"/api/translate\", \"httpMethods\": [\"POST\"], \"streaming\": true}]",
+        http_proxy                    = "http://10.68.69.53:80",
+        https_proxy                   = "http://10.68.69.53:80",
+        no_proxy                      = "oraclecloud.com,artifactory.oci.oraclecorp.com,artifacthub-tip.oraclecorp.com,oraclecorp.com,oc-test.com,127.0.0.1,localhost,100.100.84.201,100.126.5.5,10.89.228.16,10.242.12.81,10.89.228.14,169.254.169.254"
+      }
+    }
+  }
+
+  # Logging, use the same log group and log ocid to reduce the variables.
+  category_log_details {
+    access {
+      log_group_id = var.log_group_ocid
+      log_id       = var.log_ocid
+    }
+    predict {
+      log_group_id = var.log_group_ocid
+      log_id       = var.log_ocid
+    }
+  }
+
+}
