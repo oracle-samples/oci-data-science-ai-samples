@@ -3,7 +3,7 @@ resource "oci_datascience_job" "ai_job" {
   # Required
   display_name   = var.job_display_name
   description    = local.job_desc
-  compartment_id = var.data_science_project_compartment_id
+  compartment_id = var.compartment_ocid
   project_id     = var.project_ocid
 
   job_configuration_details {

@@ -16,7 +16,7 @@ resource "oci_container_instances_container_instance" "ai_container_instance" {
       NUM_WORKERS              = var.num_workers
       TASK_STORE               = "TMPDIR"
       LOG_DIR                  = var.translation_log_dir
-      PROJECT_COMPARTMENT_OCID = var.data_science_project_compartment_id
+      PROJECT_COMPARTMENT_OCID = var.compartment_ocid
       PROCESSING_JOB_OCID      = oci_datascience_job.ai_job.id
       OCI_CACHE_ENDPOINT       = var.oci_cache_endpoint
       BACKEND_MD_URL           = oci_datascience_model_deployment.ai_deployment.model_deployment_url

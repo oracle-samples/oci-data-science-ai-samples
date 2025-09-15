@@ -77,14 +77,6 @@ variable "key_id" {
   default     = "none"
 }
 
-# ------------------------- Environment variables required for Document Extraction Application ----------------------------- #
-
-# The following variables will be used by deployment.
-variable "data_science_project_compartment_id" {
-  description = "Compartment in which Data Science Project is present"
-  type        = string
-}
-
 variable "project_ocid" {
   type = string
   description = "Data Science project in which resources needs to be created"
@@ -113,7 +105,7 @@ variable "ocpus" {
 
 # The following variables are for job
 variable "model_display_name" {
-  default = "AI Document Converter Model"
+  default = "AI Hub Empty Model"
 }
 
 variable "job_display_name" {

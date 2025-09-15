@@ -15,6 +15,7 @@ variableGroups:
       - region
       - vcn_display_name
       - deployment_type
+      - model_display_name
 
   - title: "General Configuration"
     variables:
@@ -68,12 +69,6 @@ variableGroups:
       - container_shape
       - memory_in_gbs
       - ocpus
-  - title: "Application Configuration"
-    variables:
-      - genai_compartment_ocid
-      - data_science_project_compartment_id
-      - project_ocid
-      - deployment_display_name
 
 variables:
   # General
@@ -228,13 +223,13 @@ variables:
     description: Compartment in which Identity Domain is present.
     default: compartment_ocid
   identity_domain_id:
-   type: oci:identity:domains:id
-   required: true
-   title: Identity domain
-   description: Identity Domain in which confidential integrated application needs to be created
-   visible: true
-   dependsOn:
-    compartmentId: ${identity_domain_compartment_id}
+    type: oci:identity:domains:id
+    required: true
+    title: Identity domain
+    description: Identity Domain in which confidential integrated application needs to be created
+    visible: true
+    dependsOn:
+      compartmentId: ${identity_domain_compartment_id}
   # Vault Configuration
   vault_compartment_id:
     type: oci:identity:compartment:id
@@ -339,29 +334,6 @@ variables:
     default: 1
     minimum: 1
     maximum: 64
-  #Application Configuration
-  data_science_project_compartment_id:
-    type: oci:identity:compartment:id
-    required: true
-    title: Data Science Project Compartment Id
-    description: Compartment in which Data Science Project is present.
-    default: compartment_ocid
-  project_ocid:
-    type: oci:ods:project:id
-    required: true
-    title: Select Data Science Project
-    dependsOn:
-      compartmentId: ${data_science_project_compartment_id}
-  log_group_ocid:
-    type: string
-    title: Log Group ocid
-    description: Log Group Ocid where logs will be stored
-    required: false
-  log_ocid:
-    type: string
-    title: Log ocid
-    description: Log ocid where where logs needs to be stored
-    required: false
 
 outputGroups:
   - title: "Application URLs"
