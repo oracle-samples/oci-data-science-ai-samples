@@ -10,12 +10,12 @@ output "mcp_endpoint" {
 
 output "playground_ui" {
   description = "Playground UI"
-  value       = "${oci_apigateway_deployment.ai_application_apigateway_deployment.endpoint}playground/"
+  value       = "${oci_apigateway_deployment.ai_application_apigateway_deployment.endpoint}ui/playground"
 }
 
 output "api_reference" {
   description = "API Reference"
-  value       = "${oci_apigateway_deployment.ai_application_apigateway_deployment.endpoint}api/docs"
+  value       = "${oci_apigateway_deployment.ai_application_apigateway_deployment.endpoint}ui/docs"
 }
 
 output "api_schema" {
