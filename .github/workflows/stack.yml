@@ -24,6 +24,8 @@ jobs:
       run: |
         set -euo pipefail
         RELEASE=$(cat VERSION)
+        # temporarily hardcode solution versions
+        AI_HUB_SOLUTION_VERSION=1.0
         
         # oci-ods-aqua
         STACKNAME=oci-ods-aqua
@@ -57,6 +59,7 @@ jobs:
           echo "aqua=${STACKNAME}"
           echo "ai_document_converter=${DOC_CONVERTER_STACKNAME}"
           echo "ai_translation=${TRANSLATION_STACKNAME}"
+          echo "ai_hub_solution_version=${AI_HUB_SOLUTION_VERSION}"
         } >> $GITHUB_OUTPUT
 
     - name: Prepare Release Notes
@@ -66,6 +69,7 @@ jobs:
         aqua="${{ steps.create_stacks.outputs.aqua }}"
         ai_document_converter="${{ steps.create_stacks.outputs.ai_document_converter }}"
         ai_translation="${{ steps.create_stacks.outputs.ai_translation }}"
+        ai_hub_solution_version="${{ steps.create_stacks.outputs.ai_hub_solution_version }}"
         
         {
           printf '# Stacks - v%s\n\n' "$rel"
@@ -80,8 +84,8 @@ jobs:
 
           printf '[magic_button]: https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg\n'
           printf '[magic_stack_aqua]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/${{ github.repository }}/releases/download/%s/%s.zip\n' "$rel" "$aqua"
-          printf '[magic_stack_ai_document_converter]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/${{ github.repository }}/releases/download/%s/%s.zip\n' "$rel" "$ai_document_converter"
-          printf '[magic_stack_ai_translation]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/${{ github.repository }}/releases/download/%s/%s.zip\n' "$rel" "$ai_translation"
+          printf '[magic_stack_ai_document_converter]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/${{ github.repository }}/releases/download/%s/%s.zip\n' "$ai_hub_solution_version" "$ai_document_converter"
+          printf '[magic_stack_ai_translation]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/${{ github.repository }}/releases/download/%s/%s.zip\n' "$ai_hub_solution_version" "$ai_translation"
         } > release.md
 
     - name: Create Release
