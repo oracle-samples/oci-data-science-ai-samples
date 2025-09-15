@@ -277,14 +277,49 @@ variables:
   
 
 outputGroups:
-  - title: "Application URL"
+  - title: "Application URLs"
     outputs:
-      - app_url
+      - playground_ui
+      - base_url
+      - mcp_endpoint
+      - api_reference
+      - api_schema
+      - api_endpoint_convert
+      - api_endpoint_convert_file
+      - api_endpoint_list_apis
 
 outputs:
-  app_url:
+  playground_ui:
     type: link
     title: "Playground UI URL"
+    visible: true
+  base_url:
+    type: link
+    title: "Application Base URL"
+    visible: true
+  mcp_endpoint:
+    type: link
+    title: "MCP Endpoint"
+    visible: true
+  api_reference:
+    type: link
+    title: "API Reference"
+    visible: true
+  api_schema:
+    type: link
+    title: "API Schema"
+    visible: true
+  api_endpoint_convert:
+    type: link
+    title: "API Endpoint - Convert from OSS"
+    visible: true
+  api_endpoint_convert_file:
+    type: link
+    title: "API Endpoint - Convert from File"
+    visible: true
+  api_endpoint_list_apis:
+    type: link
+    title: "API Endpoint - Supported APIs"
     visible: true
 
   
