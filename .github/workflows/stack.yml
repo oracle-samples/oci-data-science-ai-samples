@@ -17,32 +17,72 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Create stacks
       id: create_stacks
       run: |
+        set -euo pipefail
+        RELEASE=$(cat VERSION)
         
+        # oci-ods-aqua
         STACKNAME=oci-ods-aqua
         STACK_FILES="ai-quick-actions/policies/terraform/*"
-        RELEASE=$(cat VERSION)
-        ASSETS+="${STACKNAME}.zip"
         echo "::group::Processing $STACKNAME"
-        zip -r ${STACKNAME}-stack.zip $STACK_FILES || { printf '\n⛔ Unable to create %s stack.\n'; exit 1;  }
-        cp ${STACKNAME}-stack.zip ${STACKNAME}.zip || { printf '\n⛔ Unable to create %s stack.\n'; exit 1;  }
+        zip -r ${STACKNAME}-stack.zip $STACK_FILES
+        cp ${STACKNAME}-stack.zip ${STACKNAME}.zip
         echo "::endgroup::"
-        echo "::set-output name=assets::$ASSETS"
-        echo "::set-output name=release::$RELEASE"
-        echo "::set-output name=prefix::$STACKNAME"
+        
+        # ai-document-converter-app
+        DOC_CONVERTER_STACKNAME=ai-document-converter
+        DOC_CONVERTER_FILES="ai-hub/ai-document-converter/policies/terraform/*"
+        echo "::group::Packaging $DOC_CONVERTER_STACKNAME"
+        zip -r ${DOC_CONVERTER_STACKNAME}-stack.zip $DOC_CONVERTER_FILES
+        cp ${DOC_CONVERTER_STACKNAME}-stack.zip ${DOC_CONVERTER_STACKNAME}.zip
+        echo "::endgroup::"
+        
+        # ai-translation-app
+        TRANSLATION_STACKNAME=ai-translation
+        TRANSLATION_FILES="ai-hub/ai-translation/policies/terraform/*"
+        echo "::group::Packaging $TRANSLATION_STACKNAME"
+        zip -r ${TRANSLATION_STACKNAME}-stack.zip $TRANSLATION_FILES
+        cp ${TRANSLATION_STACKNAME}-stack.zip ${TRANSLATION_STACKNAME}.zip
+        echo "::endgroup::"
+        
+        ASSETS="${STACKNAME}.zip ${DOC_CONVERTER_STACKNAME}.zip ${TRANSLATION_STACKNAME}.zip"
+        
+        {
+          echo "assets=${ASSETS}"
+          echo "release=${RELEASE}"
+          echo "aqua=${STACKNAME}"
+          echo "ai_document_converter=${DOC_CONVERTER_STACKNAME}"
+          echo "ai_translation=${TRANSLATION_STACKNAME}"
+        } >> $GITHUB_OUTPUT
 
     - name: Prepare Release Notes
+      shell: bash
       run: |
-        #
-        printf '%s\n' '${{ steps.create_stacks.outputs.prefix }} Stack - v${{ steps.create_stacks.outputs.release }}' >release.md
-        printf '%s\n' '' '## [![Deploy to Oracle Cloud][magic_button]][magic_stack]' >>release.md
-        printf '%s\n' '' '' >>release.md
-        printf '%s\n' '' '[magic_button]: https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg' >>release.md
-        printf '%s\n' '' '[magic_stack]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/${{ github.repository }}/releases/download/${{ steps.create_stacks.outputs.release }}/${{ steps.create_stacks.outputs.prefix }}.zip' >>release.md
+        rel="${{ steps.create_stacks.outputs.release }}"
+        aqua="${{ steps.create_stacks.outputs.aqua }}"
+        ai_document_converter="${{ steps.create_stacks.outputs.ai_document_converter }}"
+        ai_translation="${{ steps.create_stacks.outputs.ai_translation }}"
+        
+        {
+          printf '# Stacks - v%s\n\n' "$rel"
+          printf '### %s\n' "$aqua"
+          printf '## [![Deploy to Oracle Cloud][magic_button]][magic_stack_aqua]\n\n'
+        
+          printf '### %s\n' "$ai_document_converter"
+          printf '## [![Deploy to Oracle Cloud][magic_button]][magic_stack_ai_document_converter]\n\n'
+
+          printf '### %s\n' "$ai_translation"
+          printf '## [![Deploy to Oracle Cloud][magic_button]][magic_stack_ai_translation]\n\n'
+
+          printf '[magic_button]: https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg\n'
+          printf '[magic_stack_aqua]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/${{ github.repository }}/releases/download/%s/%s.zip\n' "$rel" "$aqua"
+          printf '[magic_stack_ai_document_converter]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/${{ github.repository }}/releases/download/%s/%s.zip\n' "$rel" "$ai_document_converter"
+          printf '[magic_stack_ai_translation]: https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/${{ github.repository }}/releases/download/%s/%s.zip\n' "$rel" "$ai_translation"
+        } > release.md
 
     - name: Create Release
       run: gh release create ${{ steps.create_stacks.outputs.release }} --generate-notes -F release.md ${{ steps.create_stacks.outputs.assets }}
