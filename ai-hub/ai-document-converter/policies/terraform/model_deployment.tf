@@ -20,7 +20,7 @@ resource "oci_datascience_model_deployment" "ai_deployment" {
         # subnet_id = var.subnet_ocid
         subnet_id = local.app_subnet_id
       }
-      model_id       = local.model_id
+      model_id = oci_datascience_model.ai_model.id
       bandwidth_mbps = var.deployment_bandwidth_mbps
       scaling_policy {
         instance_count = var.deployment_instance_count
@@ -41,7 +41,7 @@ resource "oci_datascience_model_deployment" "ai_deployment" {
         MAX_OUTPUT_TOKEN              = var.multimodal_max_output_token
         GENAI_COMPARTMENT_OCID        = var.genai_compartment_ocid
         PROMPT_VERSION                = var.prompt_version,
-        MODEL_DEPLOY_CUSTOM_ENDPOINTS = "[{\"endpointURI\": \"/apis\", \"httpMethods\": [\"GET\"]}, {\"endpointURI\": \"/convert\", \"httpMethods\": [\"POST\"]}, {\"endpointURI\": \"/convert/file\", \"httpMethods\": [\"POST\"]}]"
+        MODEL_DEPLOY_CUSTOM_ENDPOINTS = "[{\"endpointURI\": \"/api/list\", \"httpMethods\": [\"GET\"]}, {\"endpointURI\": \"/api/convert\", \"httpMethods\": [\"POST\"]}, {\"endpointURI\": \"/api/convert/file\", \"httpMethods\": [\"POST\"]}]"
       }
     }
   }

@@ -94,14 +94,17 @@ variable "data_science_project_compartment_id" {
   type        = string
 }
 variable "project_ocid" {
-  default = "ocid1.datascienceproject.oc1.iad.amaaaaaav66vvniadk4ecmjg7lhz65s54ulqdi4bcbk3u6e26bsjg4mekyjq"
+  type = string
+  description = "Data Science project in which resources needs to be created"
 }
 
 variable "log_group_ocid" {
-  default = "ocid1.loggroup.oc1.iad.amaaaaaav66vvnia76nyddgo3e6jfchcn6jhi7zvn7do3tlxh6ug4ye2hhgq"
+  type = string
+  description = "Log Group Ocid where logs will be stored"
 }
 variable "log_ocid" {
-  default = "ocid1.log.oc1.iad.amaaaaaav66vvnias7eplqdggtirvefa7nc3vhg2gjlekblrwmylo35hpvta"
+  type = string
+  description = "Log ocid where where logs needs to be stored"
 }
 
 variable "shape" {
@@ -116,6 +119,10 @@ variable "memory_in_gbs" {
 }
 variable "ocpus" {
   default = 1
+}
+
+variable "model_display_name" {
+  default = "AI Document Converter Model"
 }
 
 variable "container_display_name" {
@@ -142,7 +149,8 @@ variable "multimodal_llm_provider" {
   default = "genai"
 }
 variable "genai_compartment_ocid" {
-  default = "ocid1.tenancy.oc1..aaaaaaaahzy3x4boh7ipxyft2rowu2xeglvanlfewudbnueugsieyuojkldq"
+  type = string
+  description = "Gen AI Compartment OCID"
 }
 variable "multimodal_model_name" {
   default = "openai.gpt-4.1-mini"
@@ -164,10 +172,8 @@ locals {
   app_subnet_id    = (var.create_new_vcn ? oci_core_subnet.app_oci_core_subnet[0].id : var.existing_app_subnet_id)
   api_gw_subnet_id = (var.create_new_vcn ? oci_core_subnet.api_gw_oci_core_subnet[0].id : var.existing_api_gw_subnet_id)
 
-  image    = "iad.ocir.io/ociodscdev/document-converter:1.0.1"
-  digest   = "sha256:2b07ac9bb1aeea99828a6ca8e1615edf083ff931f67e74295e51bb571bb49124"
-  model_id = "ocid1.datasciencemodel.oc1.iad.amaaaaaav66vvnia44764hnygt3td7wme7ly3jrjupaal42m4uqcfebnkg2q"
+  image    = "dsmc://ai-document-converter:0.1.0-dev.15"
+  digest   = "sha256:01bf5e53ea01377c63c42c1c30c12f4885de94b39e3a1b4edf5d195bfdfa0c9d"
+  model_desc = "Data Science Model for PDF to Markdown Converter Deployment"
   md_desc  = "Deployment for PDF to Markdown Converter"
 }
-
-

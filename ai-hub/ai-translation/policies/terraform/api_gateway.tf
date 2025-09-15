@@ -1,6 +1,6 @@
 # API Gateway
 resource "oci_apigateway_gateway" "ai_application_oci_apigateway_gateway" {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   display_name   = "ai_application_api_gw_${random_string.randomstring.result}"
   endpoint_type  = "PUBLIC"
   response_cache_details {
@@ -11,7 +11,7 @@ resource "oci_apigateway_gateway" "ai_application_oci_apigateway_gateway" {
 
 # API Gateway Deployments
 resource "oci_apigateway_deployment" "ai_application_apigateway_deployment" {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   display_name   = "api-deployment${random_string.randomstring.result}"
   gateway_id     = oci_apigateway_gateway.ai_application_oci_apigateway_gateway.id
   path_prefix    = "/"
@@ -31,6 +31,7 @@ resource "oci_apigateway_deployment" "ai_application_apigateway_deployment" {
           client_details {
             type = "VALIDATION_BLOCK"
           }
+          logout_path   = "/logout"
           response_type = "CODE"
           scopes        = ["openid"]
           source_uri_details {
@@ -101,8 +102,8 @@ resource "oci_apigateway_deployment" "ai_application_apigateway_deployment" {
       backend {
         connect_timeout_in_seconds = "60"
         is_ssl_verify_disabled     = "false"
-        read_timeout_in_seconds    = "10"
-        send_timeout_in_seconds    = "10"
+        read_timeout_in_seconds    = "120"
+        send_timeout_in_seconds    = "120"
         type                       = "HTTP_BACKEND"
         url                        = "http://${data.oci_core_vnic.ai_application_container_instance_vnic.private_ip_address}:8080/$${request.path[req]}"
       }
@@ -110,13 +111,18 @@ resource "oci_apigateway_deployment" "ai_application_apigateway_deployment" {
       }
       methods = ["ANY"]
       path    = "/{req*}"
-      response_policies {
+      request_policies {
         header_transformations {
           set_headers {
             items {
-              name      = "X-CSRF-TOKEN"
-              values    = ["$${request.auth[apigw_csrf_token]}"]
               if_exists = "OVERWRITE"
+              name      = "id_token"
+              values    = ["$${request.auth[id_token]}"]
+            }
+            items {
+              if_exists = "OVERWRITE"
+              name      = "Host"
+              values    = ["$${request.host}"]
             }
           }
         }

@@ -1,12 +1,12 @@
 resource "oci_kms_vault" "app_vault" {
-  compartment_id = var.compartment_id
+  compartment_id = var.vault_compartment_id
   display_name   = var.new_vault_display_name
   vault_type     = "DEFAULT"
   count          = var.use_existing_vault ? 0 : 1
 }
 
 resource "oci_kms_key" "app_key" {
-  compartment_id = var.compartment_id
+  compartment_id = var.vault_compartment_id
   display_name   = "${var.new_vault_display_name}-key"
   key_shape {
     algorithm = "AES"
@@ -22,7 +22,7 @@ resource "oci_vault_secret" "idcs_app_client_secret" {
     oci_kms_key.app_key
   ]
   #Required
-  compartment_id = var.compartment_id
+  compartment_id = var.vault_compartment_id
   secret_content {
     #Required
     content_type = "BASE64"

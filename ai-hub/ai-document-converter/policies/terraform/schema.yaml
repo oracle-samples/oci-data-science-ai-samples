@@ -1,6 +1,6 @@
-title: "AI Solutions - PDF to Markdown Application"
-stackDescription: Deploy PDF to Markdown Application with Authentication with OCI IAM via Resource Manager Stack
-description: "Deploy PDF to Markdown Application with Authentication with OCI IAM via Resource Manager Stack"
+title: "AI Solution - PDF to markdown conversion Solution"
+stackDescription: Stack to deploy an AI-powered solution that converts PDFs into clean, structured Markdown, enabling seamless integration with Retrieval-Augmented Generation (RAG) workflows and enterprise AI applications.
+description: "AI-powered solution that converts PDFs into clean, structured Markdown, enabling seamless integration with Retrieval-Augmented Generation (RAG) workflows and enterprise AI applications."
 schemaVersion: 1.1.0
 version: "20190404"
 locale: "en"
@@ -15,40 +15,28 @@ variableGroups:
       - region
       - shape
       - model_backend
-      - model_name
+      - model_display_name
       - model_url
-      - openai_api_key
-      - translation_log_dir
-      - num_workers
-      - vcn_display_name
       - multimodal_model_name
       - deployment_type
       - deployment_bandwidth_mbps
       - deployment_instance_count
       - model_backend
-      - model_name
-      - model_url
-      - oci_cache_endpoint
-      - openai_api_key
-      - translation_log_dir
-      - num_workers
       - multimodal_llm_provider
       - multimodal_max_output_token
       - multimodal_model_endpoint
       - prompt_version
-      - log_group_ocid
-      - log_ocid
 
   - title: "General Configuration"
     variables:
       - compartment_id
       - availability_domain
-      - data_science_project_ocid
   - title: "Network"
     variables:
       - vcn_compartment_id
       - create_new_vcn
       - existing_vcn_id
+      - vcn_display_name
       - vcn_cidr
       - existing_app_subnet_id
       - app_subnet_cidr
@@ -113,6 +101,12 @@ variables:
         - create_new_vcn
     dependsOn:
       compartmentId: ${vcn_compartment_id}
+  vcn_display_name:
+    type: string
+    required: true
+    title: VCN Display Name
+    description: This VCN will be used for all resources created by the stack.
+    visible: create_new_vcn
   vcn_cidr:
     type: string
     required: true
@@ -264,11 +258,22 @@ variables:
     type: oci:identity:compartment:id
     required: true
     title: Gen AI Compartment OCID
+    default: tenancy_ocid
   deployment_display_name:
     type: string
     title: Model Deployment display name
     description: A user-friendly name to help you easily identify the Model Deployment resource in Data Science Project.
     required: true
+  log_group_ocid:
+    type: string
+    title: Log Group ocid
+    description: Log Group Ocid where logs will be stored
+    required: false
+  log_ocid:
+    type: string
+    title: Log ocid
+    description: Log ocid where where logs needs to be stored
+    required: false
   
 
 outputGroups:

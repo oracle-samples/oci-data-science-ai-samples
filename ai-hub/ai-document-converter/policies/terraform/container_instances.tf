@@ -1,7 +1,7 @@
 resource "oci_container_instances_container_instance" "ai_container_instance" {
   #Required
   availability_domain = var.availability_domain
-  compartment_id      = var.compartment_id
+  compartment_id      = var.vcn_compartment_id
   containers {
     #Required
     image_url = local.image

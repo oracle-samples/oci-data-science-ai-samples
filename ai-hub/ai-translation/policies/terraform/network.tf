@@ -2,14 +2,14 @@
 resource "oci_core_vcn" "aih_vcn" {
   count          = var.create_new_vcn ? 1 : 0
   cidr_block     = var.vcn_cidr
-  compartment_id = var.compartment_id
+  compartment_id = var.vcn_compartment_id
   display_name   = var.vcn_display_name
 }
 
 # Gateways/ Route Table Enties for Public Subnet which will contain Load Balancer
 resource "oci_core_internet_gateway" "igw" {
   count          = var.create_new_vcn ? 1 : 0
-  compartment_id = var.compartment_id
+  compartment_id = var.vcn_compartment_id
   vcn_id         = oci_core_vcn.aih_vcn[0].id
   display_name   = "public-subnet-igw"
   enabled        = true
@@ -17,7 +17,7 @@ resource "oci_core_internet_gateway" "igw" {
 
 resource "oci_core_route_table" "public_subnet_route_table" {
   count          = var.create_new_vcn ? 1 : 0
-  compartment_id = var.compartment_id
+  compartment_id = var.vcn_compartment_id
   vcn_id         = oci_core_vcn.aih_vcn[0].id
   display_name   = "Public Subnet Route Table"
   route_rules {
@@ -31,14 +31,14 @@ resource "oci_core_route_table" "public_subnet_route_table" {
 
 resource "oci_core_nat_gateway" "nat_gatway" {
   count          = var.create_new_vcn ? 1 : 0
-  compartment_id = var.compartment_id
+  compartment_id = var.vcn_compartment_id
   vcn_id         = oci_core_vcn.aih_vcn[0].id
   display_name   = "private-subnet-nat-gtw"
 }
 
 resource "oci_core_service_gateway" "service_gateway" {
   count          = var.create_new_vcn ? 1 : 0
-  compartment_id = var.compartment_id
+  compartment_id = var.vcn_compartment_id
   vcn_id         = oci_core_vcn.aih_vcn[0].id
   display_name   = "private-subnet-service-gtw"
   services {
@@ -48,7 +48,7 @@ resource "oci_core_service_gateway" "service_gateway" {
 
 resource "oci_core_route_table" "private_subnet_route_table" {
   count          = var.create_new_vcn ? 1 : 0
-  compartment_id = var.compartment_id
+  compartment_id = var.vcn_compartment_id
   vcn_id         = oci_core_vcn.aih_vcn[0].id
   display_name   = "Private Subnet Route Table"
   route_rules {
@@ -68,7 +68,7 @@ resource "oci_core_route_table" "private_subnet_route_table" {
 
 resource "oci_core_security_list" "public_subnet_security_list" {
   count          = var.create_new_vcn ? 1 : 0
-  compartment_id = var.compartment_id
+  compartment_id = var.vcn_compartment_id
   vcn_id         = oci_core_vcn.aih_vcn[0].id
   display_name   = "PublicSubnetSL"
 
@@ -107,17 +107,6 @@ resource "oci_core_security_list" "public_subnet_security_list" {
     description = "Allow HTTPS traffic"
   }
 
-  # ingress_security_rules {
-  #   protocol = 6
-  #   source   = "0.0.0.0/0"
-
-  #   source_type = "CIDR_BLOCK"
-  #   tcp_options {
-  #     max = 8080
-  #     min = 8080
-  #   }
-  # }
-
   # Outbound Rules
   egress_security_rules {
     protocol    = "all"
@@ -128,7 +117,7 @@ resource "oci_core_security_list" "public_subnet_security_list" {
 
 resource "oci_core_security_list" "private_subnet_security_list" {
   count          = var.create_new_vcn ? 1 : 0
-  compartment_id = var.compartment_id
+  compartment_id = var.vcn_compartment_id
   vcn_id         = oci_core_vcn.aih_vcn[0].id
   display_name   = "PrivateSubnetSL"
   egress_security_rules {
@@ -187,7 +176,7 @@ resource "oci_core_subnet" "app_oci_core_subnet" {
   count                      = var.create_new_vcn ? 1 : 0
   display_name               = "app-subnet-${formatdate("MMDDhhmm", timestamp())}"
   cidr_block                 = var.app_subnet_cidr
-  compartment_id             = var.compartment_id
+  compartment_id             = var.vcn_compartment_id
   vcn_id                     = oci_core_vcn.aih_vcn[0].id
   prohibit_internet_ingress  = true
   prohibit_public_ip_on_vnic = true
@@ -198,7 +187,7 @@ resource "oci_core_subnet" "app_oci_core_subnet" {
 resource "oci_core_subnet" "api_gw_oci_core_subnet" {
   count                      = var.create_new_vcn ? 1 : 0
   cidr_block                 = var.api_gw_subnet_cidr
-  compartment_id             = var.compartment_id
+  compartment_id             = var.vcn_compartment_id
   display_name               = "api-gw-subnet-${formatdate("MMDDhhmm", timestamp())}"
   vcn_id                     = oci_core_vcn.aih_vcn[0].id
   prohibit_internet_ingress  = false

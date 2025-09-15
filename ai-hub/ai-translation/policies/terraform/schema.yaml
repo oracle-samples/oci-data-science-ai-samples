@@ -1,6 +1,6 @@
 title: "AI Solutions - Translation Application"
-stackDescription: Deploy AI Translation Application with Authentication with OCI IAM via Resource Manager Stack
-description: "Deploy AI Translation Application with Authentication with OCI IAM via Resource Manager Stack"
+stackDescription: Stack to deploy an AI-powered solution that translate text from one language into another language
+description: "AI-powered solution that translate text from one language into another language"
 schemaVersion: 1.1.0
 version: "20190404"
 locale: "en"
@@ -13,34 +13,31 @@ variableGroups:
       - compartment_ocid
       - current_user_ocid
       - region
-      - shape
-      - model_backend
-      - model_name
-      - model_url
-      - openai_api_key
-      - translation_log_dir
-      - num_workers
       - vcn_display_name
-      - multimodal_model_name
       - deployment_type
-      - deployment_bandwidth_mbps
-      - deployment_instance_count
-      - model_backend
-      - model_name
-      - model_url
-      - oci_cache_endpoint
-      - openai_api_key
-      - translation_log_dir
-      - num_workers
 
   - title: "General Configuration"
     variables:
-      - compartment_id
+      - compartment_ocid
       - availability_domain
-  - title: "Network"
+      - shape
+      - project_ocid
+      - log_group_ocid
+      - log_ocid
+  - title: "Application Configurations"
     variables:
+      - model_backend
+      - model_name
+      - model_url
+      - openai_api_key
+      - oci_cache_endpoint
+      - translation_log_dir
+  - title: "Network Configurations"
+    variables:
+      - vcn_compartment_id
       - create_new_vcn
       - existing_vcn_id
+      - vcn_display_name
       - vcn_cidr
       - existing_app_subnet_id
       - app_subnet_cidr
@@ -48,33 +45,115 @@ variableGroups:
       - api_gw_subnet_cidr
   - title: "Authentication Configuration"
     variables:
+      - identity_domain_compartment_id
       - identity_domain_id
+      - vault_compartment_id
       - use_existing_vault
       - new_vault_display_name
       - vault_id
       - key_id
-  - title: "Application Container Instance Configurations"
+  - title: "Model Deployment Configurations"
     variables:
+      - deployment_display_name
+      - deployment_type
+      - deployment_bandwidth_mbps
+      - deployment_instance_count
+      - num_workers
+  - title: "Job Configurations"
+    variables:
+      - job_display_name
+  - title: "Container Instance Configurations"
+    variables:
+      - container_display_name
       - container_shape
       - memory_in_gbs
       - ocpus
+  - title: "Application Configuration"
+    variables:
+      - genai_compartment_ocid
+      - data_science_project_compartment_id
+      - project_ocid
+      - deployment_display_name
 
 variables:
-  # General Configuration
-  compartment_id:
+  # General
+  compartment_ocid:
     type: oci:identity:compartment:id
     required: true
-    title: Compartment Id
+    title: Compartment ID
     description: The compartment in which to create all the resources.
-    default: compartment_ocid
   availability_domain:
     type: oci:identity:availabilitydomain:name
     required: true
-    title: Availability domain
+    title: Availability Domain
     description: The availability domain in which to create all Compute Instance resources.
     dependsOn:
-      compartmentId: ${compartment_id}
-  #Network Configuration
+      compartmentId: ${compartment_ocid}
+  shape:
+    type: oci:core:instanceshape:name
+    required: true
+    title: Shape Name
+    description: The instance shape for jobs and model deployments.
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+  project_ocid:
+    type: oci:ods:project:id
+    required: true
+    title: Data Science Project
+    description: The Data Science Project for creating model deployments and jobs.
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+  log_group_ocid:
+    type: string
+    required: true
+    title: Log Group OCID
+    description: Log Group OCID.
+  log_ocid:
+    type: string
+    required: true
+    title: Log OCID
+    description: Log OCID.
+  # Application
+  model_backend:
+    type: enum
+    required: true
+    title: Model API Backend
+    description: The API spec/backend for the LLM.
+    enum:
+      - GenAI
+      - OpenAI
+  model_name:
+    type: string
+    required: true
+    title: Model Name
+    description: The LLM model name or model ID.
+  model_url:
+    type: string
+    required: false
+    title: Service Endpoint or Model Endpoint
+    description: The service endpoint for OCI generative AI or base URL endpoint of the LLM.
+  openai_api_key:
+    type: string
+    required: false
+    title: API KEY for OpenAI Backend
+    description: API Key for authenticating with the OpenAI backend (if applicable).
+  oci_cache_endpoint:
+    type: string
+    required: false
+    title: OCI Cache Endpoint
+    description: The endpoint for the OCI cache cluster.
+  translation_log_dir:
+    type: string
+    required: false
+    title: Translation Log Location
+    description: Object storage location to store translation logs.
+  # Network
+  vcn_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: VCN Compartment Id
+    description: Compartment in which VCN, Subnets needs to be created or present.
+    default: compartment_ocid
   create_new_vcn:
     type: boolean
     required: true
@@ -83,12 +162,18 @@ variables:
   existing_vcn_id:
     type: oci:core:vcn:id
     required: true
-    title: Select to VCN
+    title: Select a VCN
     visible:
       not:
         - create_new_vcn
     dependsOn:
-      compartmentId: ${compartment_id}
+      compartmentId: ${vcn_compartment_id}
+  vcn_display_name:
+    type: string
+    required: true
+    title: VCN Display Name
+    description: This VCN will be used for all resources created by the stack.
+    visible: create_new_vcn
   vcn_cidr:
     type: string
     required: true
@@ -102,7 +187,7 @@ variables:
     required: true
     title: Select the application subnet
     dependsOn:
-      compartmentId: ${compartment_id}
+      compartmentId: ${vcn_compartment_id}
       vcnId: ${existing_vcn_id}
       hidePublicSubnet: true
     visible:
@@ -121,7 +206,7 @@ variables:
     required: true
     title: Select the API Gateway subnet
     dependsOn:
-      compartmentId: ${compartment_id}
+      compartmentId: ${vcn_compartment_id}
       vcnId: ${existing_vcn_id}
       hidePublicSubnet: false
     visible:
@@ -136,6 +221,12 @@ variables:
     default: "10.1.2.0/24"
     visible: create_new_vcn
   #Application Configuration
+  identity_domain_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: Identity Domain Compartment Id
+    description: Compartment in which Identity Domain is present.
+    default: compartment_ocid
   identity_domain_id:
    type: oci:identity:domains:id
    required: true
@@ -143,8 +234,14 @@ variables:
    description: Identity Domain in which confidential integrated application needs to be created
    visible: true
    dependsOn:
-    compartmentId: ${compartment_id}
+    compartmentId: ${identity_domain_compartment_id}
   # Vault Configuration
+  vault_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: Vault Compartment Id
+    description: Compartment in which Vault is present.
+    default: compartment_ocid
   use_existing_vault:
     type: boolean
     title: Use an existing key vault
@@ -165,7 +262,7 @@ variables:
     title: Vault
     description: Choose an existing vault used to store the client secret.
     dependsOn:
-      compartmentId: ${compartment_id}
+      compartmentId: ${vault_compartment_id}
     visible:
       and:
         - use_existing_vault
@@ -175,12 +272,48 @@ variables:
     title: Encryption key
     description: This key will be used to encrypt the sensitive information stored as vault secrets.
     dependsOn:
-      compartmentId: ${compartment_id}
+      compartmentId: ${vault_compartment_id}
       vaultId: ${vault_id}
     visible:
       and:
         - use_existing_vault
-    # Container instances configuration
+  # Model Deployment
+  deployment_display_name:
+    type: string
+    required: true
+    title: Model Deployment Display Name
+    description: Display name for the model deployment resource.
+  deployment_bandwidth_mbps:
+    type: number
+    required: true
+    default: 10
+    minimum: 10
+    title: Deployment Bandwidth (Mbps)
+    description: Bandwidth in Mbps for the deployment.
+  deployment_instance_count:
+    type: number
+    required: true
+    default: 1
+    minimum: 1
+    title: Deployment Instance Count
+    description: Number of instances for the deployment.
+  num_workers:
+    type: number
+    required: false
+    title: Number of Workers
+    description: Number of worker processes for the job/service.
+  # Job
+  job_display_name:
+    type: string
+    required: false
+    title: Job Display Name
+    description: Display name for the translation job.
+  # Container Instances
+  container_display_name:
+    type: string
+    required: true
+    title: Container Display Name
+    description: A user-friendly name to help you easily identify the container instance resource.
   container_shape:
     type: enum
     required: true
@@ -206,16 +339,72 @@ variables:
     default: 1
     minimum: 1
     maximum: 64
+  #Application Configuration
+  data_science_project_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: Data Science Project Compartment Id
+    description: Compartment in which Data Science Project is present.
+    default: compartment_ocid
+  project_ocid:
+    type: oci:ods:project:id
+    required: true
+    title: Select Data Science Project
+    dependsOn:
+      compartmentId: ${data_science_project_compartment_id}
+  log_group_ocid:
+    type: string
+    title: Log Group ocid
+    description: Log Group Ocid where logs will be stored
+    required: false
+  log_ocid:
+    type: string
+    title: Log ocid
+    description: Log ocid where where logs needs to be stored
+    required: false
 
 outputGroups:
-  - title: "Application URL"
+  - title: "Application URLs"
     outputs:
-      - app_url
+      - playground_ui
+      - base_url
+      - mcp_endpoint
+      - api_reference
+      - api_schema
+      - api_endpoint_default
+      - api_endpoint_batch
+      - api_endpoint_list_languages
 
 outputs:
-  app_url:
+  playground_ui:
     type: link
     title: "Playground UI URL"
     visible: true
-
-  
+  base_url:
+    type: link
+    title: "Application Base URL"
+    visible: true
+  mcp_endpoint:
+    type: link
+    title: "MCP Endpoint"
+    visible: true
+  api_reference:
+    type: link
+    title: "API Reference"
+    visible: true
+  api_schema:
+    type: link
+    title: "API Schema"
+    visible: true
+  api_endpoint_default:
+    type: link
+    title: "API Endpoint - Translate"
+    visible: true
+  api_endpoint_batch:
+    type: link
+    title: "API Endpoint - Batch Translation Job"
+    visible: true
+  api_endpoint_list_languages:
+    type: link
+    title: "API Endpoint - Supported Languages"
+    visible: true

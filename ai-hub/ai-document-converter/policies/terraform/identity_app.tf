@@ -14,7 +14,7 @@ resource "oci_identity_domains_app" "ai_application_confidential_app" {
   bypass_consent            = true
   allowed_grants            = ["authorization_code", "client_credentials", "urn:ietf:params:oauth:grant-type:jwt-bearer", "implicit"]
   all_url_schemes_allowed   = true
-  redirect_uris             = ["https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/", "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/ui/", "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/html/convert", "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/api/docs", "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/callback"]
+  redirect_uris             = ["https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/", "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/ui","https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/ui/", "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/ui/gradio", "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/ui/playground","https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/ui/docs", "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/callback"]
   post_logout_redirect_uris = ["https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/"]
   audience                  = oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname
 }

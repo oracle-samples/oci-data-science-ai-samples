@@ -2,11 +2,6 @@ variable "tenancy_ocid" {}
 variable "compartment_ocid" {}
 variable "region" {}
 
-variable "compartment_id" {
-  description = "The selected compartment, by default the compartment in which stack is created"
-  type        = string
-}
-
 variable "availability_domain" {
   description = "Availabiliy domain"
   type        = string
@@ -16,6 +11,10 @@ variable "availability_domain" {
 variable "create_new_vcn" {
   type    = bool
   default = true
+}
+variable "vcn_compartment_id" {
+  description = "Compartment in which VCN, Subnets needs to be created or present"
+  type        = string
 }
 variable "existing_vcn_id" {
   type    = string
@@ -52,6 +51,10 @@ variable "identity_domain_id" {
 }
 
 #Vault Configuration to Store Identity App Client Secret
+variable "vault_compartment_id" {
+  description = "Compartment in which Vault is present"
+  type        = string
+}
 variable "use_existing_vault" {
   type        = bool
   description = "Use existing vault"
@@ -77,8 +80,14 @@ variable "key_id" {
 # ------------------------- Environment variables required for Document Extraction Application ----------------------------- #
 
 # The following variables will be used by deployment.
+variable "data_science_project_compartment_id" {
+  description = "Compartment in which Data Science Project is present"
+  type        = string
+}
+
 variable "project_ocid" {
-  default = "ocid1.datascienceproject.oc1.iad.amaaaaaav66vvniaklsknycfb6fso64knuk36egpsg3j5vasn3sveiuvdmna"
+  type = string
+  description = "Data Science project in which resources needs to be created"
 }
 
 variable "log_group_ocid" {
@@ -103,6 +112,10 @@ variable "ocpus" {
 }
 
 # The following variables are for job
+variable "model_display_name" {
+  default = "AI Document Converter Model"
+}
+
 variable "job_display_name" {
   default = "AI Translation Job"
 }
@@ -140,16 +153,15 @@ variable "model_url" {
 }
 
 variable "oci_cache_endpoint" {
-  # default = ""
-  default = "aaav66vvniax2viamc6jbwfeujiowpxnuu7kioiyfyqwgdptkwthq2q-p.redis.us-ashburn-1.oci.oraclecloud.com"
+  default = ""
 }
 
 variable "openai_api_key" {
-  default = "sk-123456789"
+  default = "API_KEY"
 }
 
 variable "translation_log_dir" {
-  default = "oci://a_bucket_for_qq@ociodscdev/data/translation/logs"
+  default = ""
 }
 
 variable "num_workers" {
@@ -163,13 +175,13 @@ locals {
   app_subnet_id    = (var.create_new_vcn ? oci_core_subnet.app_oci_core_subnet[0].id : var.existing_app_subnet_id)
   api_gw_subnet_id = (var.create_new_vcn ? oci_core_subnet.api_gw_oci_core_subnet[0].id : var.existing_api_gw_subnet_id)
 
-  image          = "iad.ocir.io/ociodscdev/ai_translation:1.35"
-  digest         = "sha256:9de28d33b7419b7f9ff42a6c2ad6792e904c3c815949f090e35e688cb23553fc"
+  image          = "dsmc://ai-translation:0.1.0-dev.16"
+  digest         = "sha256:124f2834142305c3f53f63d0c3f8aa071b9180d50f1c8c17fbf66937f183804c"
   job_desc       = "Job for batch translation"
   job_entrypoint = ["python"]
   job_cmd        = ["/opt/app/batch.py"]
-  model_id       = "ocid1.datasciencemodel.oc1.iad.amaaaaaav66vvniazwx42xndxz3kfemfpwht3unc3ib33tscln462gmuwiyq"
   md_desc        = "Deployment for AI translation Application"
+  model_desc = "Data Science Model for AI Translation Deployment"
 }
 
 

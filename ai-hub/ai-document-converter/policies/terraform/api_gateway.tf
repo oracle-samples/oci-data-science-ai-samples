@@ -40,6 +40,7 @@ resource "oci_apigateway_deployment" "ai_application_apigateway_deployment" {
           type                               = "OAUTH2"
           use_cookies_for_intermediate_steps = "true"
           use_cookies_for_session            = "true"
+          max_expiry_duration_in_hours = 1
         }
         validation_policy {
           additional_validation_policy {
@@ -111,13 +112,18 @@ resource "oci_apigateway_deployment" "ai_application_apigateway_deployment" {
       }
       methods = ["ANY"]
       path    = "/{req*}"
-      response_policies {
+       request_policies {
         header_transformations {
           set_headers {
             items {
-              name      = "X-CSRF-TOKEN"
-              values    = ["$${request.auth[apigw_csrf_token]}"]
               if_exists = "OVERWRITE"
+              name      = "id_token"
+              values    = ["$${request.auth[id_token]}"]
+            }
+            items {
+              if_exists = "OVERWRITE"
+              name      = "Host"
+              values    = ["$${request.host}"]
             }
           }
         }
