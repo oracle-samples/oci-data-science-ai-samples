@@ -1,19 +1,19 @@
 import sys
 
 from common.connection import RedisConnectionManager
-from common.server import mcp
 import tools.server_management
 import tools.misc 
 import tools.redis_query_engine
 import tools.hash
-import tools.list
-import tools.string
-import tools.json
-import tools.sorted_set
-import tools.set
-import tools.stream
-import tools.pub_sub
-from common.config import MCP_TRANSPORT
+#import tools.list
+#import tools.string
+#import tools.json
+#import tools.sorted_set
+#import tools.set
+#import tools.stream
+#import tools.pub_sub
+from common.server import mcp
+from common.config import MCP_TRANSPORT, MCP_HOST, MCP_PORT
 
 
 class RedisMCPServer:

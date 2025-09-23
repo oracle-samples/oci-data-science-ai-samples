@@ -9,4 +9,6 @@ dependencies = [
     "redis>=6.0.0",
     "dotenv>=0.9.9",
     "numpy>=2.2.4",
+    "fastmcp>=2.12.3",
+    "uvicorn>=0.34.0",
 ]
