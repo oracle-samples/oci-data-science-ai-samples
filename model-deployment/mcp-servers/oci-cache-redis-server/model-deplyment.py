@@ -78,7 +78,7 @@ data_science_client.create_model_deployment(create_model_deployment_details = {
             "healthCheckPort": 8000,
             "environmentVariables": {
                 "WEB_CONCURRENCY": "1",
-                "MODEL_DEPLOY_PREDICT_ENDPOINT": "/mcp/"
+                "MODEL_DEPLOY_PREDICT_ENDPOINT": "/mcp"
             }
         }
     },
