@@ -74,11 +74,11 @@ data_science_client.create_model_deployment(create_model_deployment_details = {
             "imageDigest": <DIGEST>, # example "sha256:9cb77e0e2f53ec4198dadfc065c7b8358e24f41d3............",
             "cmd": null,
             "entrypoint": null,
-            "serverPort": 8000,
-            "healthCheckPort": 8000,
+            "serverPort": 8080,
+            "healthCheckPort": 8080,
             "environmentVariables": {
                 "WEB_CONCURRENCY": "1",
-                "MODEL_DEPLOY_PREDICT_ENDPOINT": "/mcp/"
+                "MODEL_DEPLOY_PREDICT_ENDPOINT": "/mcp"
             }
         }
     },

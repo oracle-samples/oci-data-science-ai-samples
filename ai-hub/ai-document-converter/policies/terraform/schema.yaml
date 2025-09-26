@@ -1,0 +1,325 @@
+title: "AI Solution - PDF to markdown conversion Solution"
+stackDescription: Stack to deploy an AI-powered solution that converts PDFs into clean, structured Markdown, enabling seamless integration with Retrieval-Augmented Generation (RAG) workflows and enterprise AI applications.
+description: "AI-powered solution that converts PDFs into clean, structured Markdown, enabling seamless integration with Retrieval-Augmented Generation (RAG) workflows and enterprise AI applications."
+schemaVersion: 1.1.0
+version: "20190404"
+locale: "en"
+
+variableGroups:
+  - title: Hide constants and internal variables
+    visible: false
+    variables:
+      - tenancy_ocid
+      - compartment_ocid
+      - current_user_ocid
+      - region
+      - shape
+      - model_backend
+      - model_display_name
+      - model_url
+      - multimodal_model_name
+      - deployment_type
+      - deployment_bandwidth_mbps
+      - deployment_instance_count
+      - model_backend
+      - multimodal_llm_provider
+      - multimodal_max_output_token
+      - multimodal_model_endpoint
+      - prompt_version
+
+  - title: "General Configuration"
+    variables:
+      - compartment_id
+      - availability_domain
+  - title: "Network"
+    variables:
+      - vcn_compartment_id
+      - create_new_vcn
+      - existing_vcn_id
+      - vcn_display_name
+      - vcn_cidr
+      - existing_app_subnet_id
+      - app_subnet_cidr
+      - existing_api_gw_subnet_id
+      - api_gw_subnet_cidr
+  - title: "Authentication Configuration"
+    variables:
+      - identity_domain_compartment_id
+      - identity_domain_id
+      - vault_compartment_id
+      - use_existing_vault
+      - new_vault_display_name
+      - vault_id
+      - key_id
+  - title: "Application Container Instance Configurations"
+    variables:
+      - container_display_name
+      - container_shape
+      - memory_in_gbs
+      - ocpus
+  - title: "Application Configuration"
+    variables:
+      - genai_compartment_ocid
+      - data_science_project_compartment_id
+      - project_ocid
+      - deployment_display_name
+      
+
+variables:
+  # General Configuration
+  compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: Compartment Id
+    description: Default Compartment Id
+    default: compartment_ocid
+  availability_domain:
+    type: oci:identity:availabilitydomain:name
+    required: true
+    title: Availability domain
+    description: The availability domain in which to create Compute resources.
+    dependsOn:
+      compartmentId: ${compartment_id}
+  #Network Configuration
+  vcn_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: VCN Compartment Id
+    description: Compartment in which VCN, Subnets needs to be created or present.
+    default: compartment_ocid  
+  create_new_vcn:
+    type: boolean
+    required: true
+    title: Create New VCN, Subnet, NAT Gateway, Internet Gateway, etc. for the application
+    default: true
+  existing_vcn_id:
+    type: oci:core:vcn:id
+    required: true
+    title: Select to VCN
+    visible:
+      not:
+        - create_new_vcn
+    dependsOn:
+      compartmentId: ${vcn_compartment_id}
+  vcn_display_name:
+    type: string
+    required: true
+    title: VCN Display Name
+    description: This VCN will be used for all resources created by the stack.
+    visible: create_new_vcn
+  vcn_cidr:
+    type: string
+    required: true
+    title: VCN IPv4 CIDR Blocks
+    description: This VCN will be used for all resources created by the stack.
+    default: "10.1.0.0/16"
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    visible: create_new_vcn
+  existing_app_subnet_id:
+    type: oci:core:subnet:id
+    required: true
+    title: Select the application subnet
+    dependsOn:
+      compartmentId: ${vcn_compartment_id}
+      vcnId: ${existing_vcn_id}
+      hidePublicSubnet: true
+    visible:
+      not:
+        - create_new_vcn
+  app_subnet_cidr:
+    type: string
+    required: true
+    title: Application Subnet IPv4 CIDR Blocks
+    description: The container instances running the application will be created in this subnet.
+    default: "10.1.1.0/24"
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    visible: create_new_vcn
+  existing_api_gw_subnet_id:
+    type: oci:core:subnet:id
+    required: true
+    title: Select the API Gateway subnet
+    dependsOn:
+      compartmentId: ${vcn_compartment_id}
+      vcnId: ${existing_vcn_id}
+      hidePublicSubnet: false
+    visible:
+      not:
+        - create_new_vcn
+  api_gw_subnet_cidr:
+    type: string
+    required: true
+    title: API Gateway Subnet IPv4 CIDR Blocks
+    description: API Gateway will be created in this subnet.
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    default: "10.1.2.0/24"
+    visible: create_new_vcn
+  #Application Configuration
+  identity_domain_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: Identity Domain Compartment Id
+    description: Compartment in which Identity Domain is present.
+    default: compartment_ocid 
+  identity_domain_id:
+   type: oci:identity:domains:id
+   required: true
+   title: Identity domain
+   description: Identity Domain in which confidential integrated application needs to be created
+   visible: true
+   dependsOn:
+    compartmentId: ${identity_domain_compartment_id}
+  # Vault Configuration
+  vault_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: Vault Compartment Id
+    description: Compartment in which Vault is present.
+    default: compartment_ocid 
+  use_existing_vault:
+    type: boolean
+    title: Use an existing key vault
+    required: true
+    default: true
+    description: This vault will be used to store client secret of identity application used by API Gateway for Authentication.
+  new_vault_display_name:
+    type: string
+    title: Key vault display name
+    description: A user-friendly name to help you easily identify the resource.
+    required: true
+    visible:
+      not:
+        - use_existing_vault
+  vault_id:
+    type: oci:kms:vault:id
+    required: true
+    title: Vault
+    description: Choose an existing vault used to store the client secret.
+    dependsOn:
+      compartmentId: ${vault_compartment_id}
+    visible:
+      and:
+        - use_existing_vault
+  key_id:
+    type: oci:kms:key:id
+    required: true
+    title: Encryption key
+    description: This key will be used to encrypt the sensitive information stored as vault secrets.
+    dependsOn:
+      compartmentId: ${vault_compartment_id}
+      vaultId: ${vault_id}
+    visible:
+      and:
+        - use_existing_vault
+    # Container instances configuration
+  container_display_name:
+    type: string
+    title: Container Instance display name
+    description: A user-friendly name to help you easily identify the container instance resource.
+    required: true
+  container_shape:
+    type: enum
+    required: true
+    title: Container instance shape
+    description: A shape is a template that determines the number of OCPUs, amount of memory, and other resources that are allocated to a container instance.
+    default: "CI.Standard.E4.Flex"
+    enum:
+      - CI.Standard.E3.Flex
+      - CI.Standard.E4.Flex
+  memory_in_gbs:
+    type: number
+    required: true
+    title: Memory (GB)
+    default: 16
+    minimum: 1
+    maximum: 1024
+    description: Min - 1 GB or a value matching the number of OCPUs, whichever is greater. Max - 64 GB per OCPU, up to 1024 GB total
+  ocpus:
+    type: number
+    required: true
+    title: OCPU
+    description: Min - 1 OCPU. Max - 64 OCPU
+    default: 1
+    minimum: 1
+    maximum: 64
+  # Application Configuration"
+  data_science_project_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: Data Science Project Compartment Id
+    description: Compartment in which Data Science Project is present.
+    default: compartment_ocid
+  project_ocid:
+    type: oci:ods:project:id
+    required: true
+    title: Select Data Science Project
+    dependsOn:
+      compartmentId: ${data_science_project_compartment_id}
+  genai_compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    title: Gen AI Compartment OCID
+    default: tenancy_ocid
+  deployment_display_name:
+    type: string
+    title: Model Deployment display name
+    description: A user-friendly name to help you easily identify the Model Deployment resource in Data Science Project.
+    required: true
+  log_group_ocid:
+    type: string
+    title: Log Group ocid
+    description: Log Group Ocid where logs will be stored
+    required: false
+  log_ocid:
+    type: string
+    title: Log ocid
+    description: Log ocid where where logs needs to be stored
+    required: false
+  
+
+outputGroups:
+  - title: "Application URLs"
+    outputs:
+      - playground_ui
+      - base_url
+      - mcp_endpoint
+      - api_reference
+      - api_schema
+      - api_endpoint_convert
+      - api_endpoint_convert_file
+      - api_endpoint_list_apis
+
+outputs:
+  playground_ui:
+    type: link
+    title: "Playground UI URL"
+    visible: true
+  base_url:
+    type: link
+    title: "Application Base URL"
+    visible: true
+  mcp_endpoint:
+    type: link
+    title: "MCP Endpoint"
+    visible: true
+  api_reference:
+    type: link
+    title: "API Reference"
+    visible: true
+  api_schema:
+    type: link
+    title: "API Schema"
+    visible: true
+  api_endpoint_convert:
+    type: link
+    title: "API Endpoint - Convert from OSS"
+    visible: true
+  api_endpoint_convert_file:
+    type: link
+    title: "API Endpoint - Convert from File"
+    visible: true
+  api_endpoint_list_apis:
+    type: link
+    title: "API Endpoint - Supported APIs"
+    visible: true
+
+  
