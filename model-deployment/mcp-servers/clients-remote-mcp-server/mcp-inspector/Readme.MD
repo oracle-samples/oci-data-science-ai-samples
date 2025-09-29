@@ -22,7 +22,7 @@ npx @modelcontextprotocol/inspector
 
 - Configure MCP inspector with configuration as:
    - Transport type: Stramble HTTP
-   - URL: http://localhost:8000/proxy/<endpoint-URI-Path>/predict?target_host=<endpoint-region-host>
+   - URL: http://localhost:8000/proxy/{endpoint-URI-Path}/predict?target_host={endpoint-region-host}
 
    (Use model deployment invoke endpoint details from console to fill these values. For example : endpoint-URI-Path = ocid1.datasciencemodeldeployment.oc1....... and endpoint-region-host = modeldeployment.us-ashburn-1.oci.customer-oci.com)
 
