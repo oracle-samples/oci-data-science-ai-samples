@@ -3,7 +3,7 @@ This readme explains how to use [mcp inspector](https://modelcontextprotocol.io/
 
 # Prerequisites
 
-To enable genrating OCI Auth credentials before making API calls to Model deployment endpoints, we will create a local proxy server, which will intercept calls from inspector, created OCI auth and adds required header for outgoing calls.
+To enable generating OCI Auth credentials before making API calls to Model deployment endpoints, we will create a local proxy server, which will intercept calls from inspector, created OCI auth and adds required header for outgoing calls.
 
 - Install pip dependencies mentioned in [requirements.txt](./requirements.txt)
 ```
@@ -13,6 +13,11 @@ pip install -r requirements.txt
 - Start [oci_proxy.py](./oci_proxy.py)
 ```
 python3 oci_proxy.py
+```
+
+- Create OCI session and populate your local OCI config files with valid [session details](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/clitoken.htm)
+```
+oci session authenticate
 ```
 
 - Start mcp inspector on your local

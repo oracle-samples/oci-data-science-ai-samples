@@ -1,0 +1,58 @@
+# Oracle Agent Development Kit - Core package
+oci[adk]
+
+# OCI SDK for authentication and cloud services
+oci>=2.100.0
+
+# WebSocket support for MCP connections
+websockets>=11.0
+
+# Async HTTP client for additional API calls
+aiohttp>=3.8.0
+
+# JSON schema validation for MCP messages
+jsonschema>=4.17.0
+
+# Certificate handling and SSL support
+cryptography>=40.0.0
+
+# Configuration file handling
+pyyaml>=6.0
+
+# Logging and debugging
+structlog>=22.3.0
+
+# HTTP/HTTPS client with connection pooling
+httpx>=0.24.0
+
+# URL parsing and validation
+yarl>=1.8.0
+
+# Retry logic and backoff strategies
+tenacity>=8.2.0
+
+# Type hints support for Python < 3.9
+typing-extensions>=4.5.0
+
+# Date/time handling
+python-dateutil>=2.8.2
+
+# Environment variable management
+python-dotenv>=1.0.0
+
+# Development and testing dependencies (optional)
+pytest>=7.2.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.10.0
+black>=23.1.0
+isort>=5.12.0
+mypy>=1.0.0
+
+# Security and certificate validation
+certifi>=2022.12.7
+
+# Protocol buffer support (if needed for some ADK features)
+protobuf>=4.21.0
+
+# JWT token handling (for some auth scenarios)
+PyJWT>=2.6.0
