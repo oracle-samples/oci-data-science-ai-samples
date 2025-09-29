@@ -6,19 +6,19 @@ This readme explains how to use [mcp inspector](https://modelcontextprotocol.io/
 To enable genrating OCI Auth credentials before making API calls to Model deployment endpoints, we will create a local proxy server, which will intercept calls from inspector, created OCI auth and adds required header for outgoing calls.
 
 - Install pip dependencies mentioned in [requirements.txt](./requirements.txt)
-`
+```
 pip install -r requirements.txt
-`
+```
 
 - Start [oci_proxy.py](./oci_proxy.py)
-`
+```
 python3 oci_proxy.py
-`
+```
 
 - Start mcp inspector on your local
-`
+```
 npx @modelcontextprotocol/inspector
-`
+```
 
 - Configure MCP inspector with configuration as:
    - Transport type: Stramble HTTP
