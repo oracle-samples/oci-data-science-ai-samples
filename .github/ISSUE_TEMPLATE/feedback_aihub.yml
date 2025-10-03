@@ -1,0 +1,71 @@
+name: "AI Hub Feedback"
+description: "Share feedback, bugs, or improvement suggestions for AI Hub - Models and Solutions Explorer"
+title: "[AI Hub] "
+labels: ["feedback", "AI Hub", "Models Explorer", "Solutions Explorer"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        👋 Thank you for using **AI Hub**!
+        Please help us improve by sharing your feedback below.
+        
+  - type: dropdown
+    id: ai_hub_product
+    attributes:
+      label: AI Hub Product
+      options:
+        - Models
+        - Solutions
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feedback_type
+    attributes:
+      label: Type of Feedback
+      options:
+        - Bug Report
+        - Feature Request
+        - Usability Issue
+        - Performance Concern
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: feedback_summary
+    attributes:
+      label: Summary
+      placeholder: "Brief summary of your feedback (1-2 sentences)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce (if applicable)
+      placeholder: |
+        If you're reporting a bug, please provide the steps:
+        1. Go to...
+        2. Click on...
+        3. See error...
+      value: "N/A if not applicable"
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior (if applicable)
+      placeholder: "What did you expect to happen?"
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual Behavior (if applicable)
+      placeholder: "What actually happened?"
+
+  - type: textarea
+    id: additional_notes
+    attributes:
+      label: Additional Notes
+      placeholder: "Any additional context, logs, or screenshots?"
