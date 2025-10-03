@@ -21,15 +21,5 @@ form to quickly deploy the model:
 
 ![Deploy Model](web_assets/model-deploy-gptoss-2.png)
 
-## Setting Environment Variable
-There are multiple shapes which support the deployment of the model. But if you are using shape other than H100 or H200 you are required to pass an extra environment variable while deploying the model. You can do so by:
-* go to show advanced section at the bottom of the form
-* go to Custom Environment Variables
-* Put 'VLLM_ATTENTION_BACKEND' as key 
-* Put 'TRITON_ATTN_VLLM_V1' as value
 
-![Set Environment Variable](web_assets/model-deploy-gptoss-env-var.png)
-
-Now you can deploy the model in shapes other than H100 or H200
-
-Also to know more on model deployments you can refer [Model Deployment Tips](model-deployment-tips.md) page.
+To know more on model deployments you can refer [Model Deployment Tips](model-deployment-tips.md) page.
