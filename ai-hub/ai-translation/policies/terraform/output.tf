@@ -5,7 +5,7 @@ output "base_url" {
 
 output "mcp_endpoint" {
   description = "MCP Endpoint"
-  value       = "${oci_apigateway_deployment.ai_application_apigateway_deployment.endpoint}mcp"
+  value       = "${oci_datascience_model_deployment.ai_deployment.model_deployment_url}/predictWithResponseStream/mcp/"
 }
 
 output "playground_ui" {
@@ -25,15 +25,15 @@ output "api_schema" {
 
 output "api_endpoint_default" {
   description = "API Endpoint - Translate"
-  value       = "${oci_apigateway_deployment.ai_application_apigateway_deployment.endpoint}api/translate"
+  value       = "${oci_datascience_model_deployment.ai_deployment.model_deployment_url}/predictWithResponseStream/api/translate"
 }
 
 output "api_endpoint_batch" {
   description = "API Endpoint - Batch Translation Job"
-  value       = "${oci_apigateway_deployment.ai_application_apigateway_deployment.endpoint}api/batch"
+  value       = "${oci_datascience_model_deployment.ai_deployment.model_deployment_url}/predict/api/batch"
 }
 
 output "api_endpoint_list_languages" {
   description = "API Endpoint - Supported Languages"
-  value       = "${oci_apigateway_deployment.ai_application_apigateway_deployment.endpoint}api/languages"
+  value       = "${oci_datascience_model_deployment.ai_deployment.model_deployment_url}/predict/api/languages"
 }

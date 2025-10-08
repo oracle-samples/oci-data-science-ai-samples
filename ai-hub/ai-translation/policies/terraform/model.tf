@@ -27,9 +27,9 @@ data "archive_file" "model_zip" {
 
 # dummy Model catalog entry with artifact
 resource "oci_datascience_model" "ai_model" {
-  compartment_id = var.compartment_ocid
+  compartment_id = var.data_science_project_compartment_id
   project_id     = var.project_ocid
-  display_name = var.model_display_name
+  display_name   = var.model_display_name
   description    = local.model_desc
 
   # Upload artifact inline (ZIP created above)

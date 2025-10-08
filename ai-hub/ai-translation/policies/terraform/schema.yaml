@@ -16,13 +16,15 @@ variableGroups:
       - vcn_display_name
       - deployment_type
       - model_display_name
+      - shape
 
   - title: "General Configuration"
     variables:
       - compartment_ocid
       - availability_domain
-      - shape
+      - data_science_project_compartment_id
       - project_ocid
+      - log_compartment_id
       - log_group_ocid
       - log_ocid
   - title: "Application Configurations"
@@ -97,18 +99,30 @@ variables:
     title: Data Science Project
     description: The Data Science Project for creating model deployments and jobs.
     dependsOn:
-      compartmentId: ${compartment_ocid}
+      compartmentId: ${data_science_project_compartment_id}
+  log_compartment_id:
+    type: oci:identity:compartment:id
+    required: false
+    title: Logs Compartment Id
+    description: Compartment in which Log Group and Logs are present.
+    default: compartment_ocid
   log_group_ocid:
     type: string
-    required: true
+    required: false
     title: Log Group OCID
     description: Log Group OCID.
   log_ocid:
     type: string
-    required: true
+    required: false
     title: Log OCID
     description: Log OCID.
   # Application
+  data_science_project_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    title: Data Science Project Compartment Id
+    description: Compartment in which Data Science Project is present.
+    default: compartment_ocid
   model_backend:
     type: enum
     required: true
