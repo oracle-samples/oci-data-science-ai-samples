@@ -40,7 +40,7 @@ resource "oci_apigateway_deployment" "ai_application_apigateway_deployment" {
           type                               = "OAUTH2"
           use_cookies_for_intermediate_steps = "true"
           use_cookies_for_session            = "true"
-          max_expiry_duration_in_hours = 1
+          max_expiry_duration_in_hours       = 1
         }
         validation_policy {
           additional_validation_policy {
@@ -112,7 +112,7 @@ resource "oci_apigateway_deployment" "ai_application_apigateway_deployment" {
       }
       methods = ["ANY"]
       path    = "/{req*}"
-       request_policies {
+      request_policies {
         header_transformations {
           set_headers {
             items {

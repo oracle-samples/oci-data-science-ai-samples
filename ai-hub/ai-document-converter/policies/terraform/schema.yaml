@@ -63,6 +63,9 @@ variableGroups:
       - data_science_project_compartment_id
       - project_ocid
       - deployment_display_name
+      - log_compartment_id
+      - log_group_ocid
+      - log_ocid
       
 
 variables:
@@ -264,6 +267,12 @@ variables:
     title: Model Deployment display name
     description: A user-friendly name to help you easily identify the Model Deployment resource in Data Science Project.
     required: true
+  log_compartment_id:
+    type: oci:identity:compartment:id
+    required: false
+    title: Logs Compartment Id
+    description: Compartment in which Log Group and Logs are present.
+    default: compartment_ocid
   log_group_ocid:
     type: string
     title: Log Group ocid

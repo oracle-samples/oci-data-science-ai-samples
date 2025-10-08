@@ -3,7 +3,7 @@ resource "oci_datascience_job" "ai_job" {
   # Required
   display_name   = var.job_display_name
   description    = local.job_desc
-  compartment_id = var.compartment_ocid
+  compartment_id = var.data_science_project_compartment_id
   project_id     = var.project_ocid
 
   job_configuration_details {
@@ -31,8 +31,8 @@ resource "oci_datascience_job" "ai_job" {
     job_environment_type = "OCIR_CONTAINER"
     image                = local.image
     # image_digest         = local.digest
-    entrypoint           = local.job_entrypoint
-    cmd                  = local.job_cmd
+    entrypoint = local.job_entrypoint
+    cmd        = local.job_cmd
   }
 
   # Logging

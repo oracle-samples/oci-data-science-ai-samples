@@ -77,16 +77,30 @@ variable "key_id" {
   default     = "none"
 }
 
+variable "data_science_project_compartment_id" {
+  description = "Compartment in which Data Science Project is present"
+  type        = string
+}
+
 variable "project_ocid" {
-  type = string
+  type        = string
   description = "Data Science project in which resources needs to be created"
 }
 
+variable "log_compartment_id" {
+  description = "Compartment in which Logs are present"
+  type        = string
+}
+
 variable "log_group_ocid" {
-  default = "ocid1.loggroup.oc1.iad.amaaaaaav66vvniaidjweu7sgg5qgx7yzri5yb4xw3qnqsg6szl2xdh7scka"
+  type        = string
+  description = "Log Group Ocid where logs will be stored"
+  default = ""
 }
 variable "log_ocid" {
-  default = "ocid1.log.oc1.iad.amaaaaaav66vvnia3h4o6otedz4lz23zex6z2pei6yjqszb7zdfswaa5srca"
+  type        = string
+  description = "Log ocid where where logs needs to be stored"
+  default = ""
 }
 
 variable "shape" {
@@ -167,13 +181,14 @@ locals {
   app_subnet_id    = (var.create_new_vcn ? oci_core_subnet.app_oci_core_subnet[0].id : var.existing_app_subnet_id)
   api_gw_subnet_id = (var.create_new_vcn ? oci_core_subnet.api_gw_oci_core_subnet[0].id : var.existing_api_gw_subnet_id)
 
-  image          = "dsmc://ai-translation:0.1.0-dev.16"
-  digest         = "sha256:124f2834142305c3f53f63d0c3f8aa071b9180d50f1c8c17fbf66937f183804c"
+  container_image = "iad.ocir.io/id1ytzpctjnn/dsmc/aisolution/ai_translation:0.1.0"
+  image          = "dsmc://ai_translation:0.1.0"
+  digest         = "sha256:381d884387b7015eb02c7eb7c4d4e9d125249befd2a425f0811cf282d47065ae"
   job_desc       = "Job for batch translation"
   job_entrypoint = ["python"]
   job_cmd        = ["/opt/app/batch.py"]
   md_desc        = "Deployment for AI translation Application"
-  model_desc = "Data Science Model for AI Translation Deployment"
+  model_desc     = "Data Science Model for AI Translation Deployment"
 }
 
 

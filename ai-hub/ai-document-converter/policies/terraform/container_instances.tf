@@ -4,7 +4,7 @@ resource "oci_container_instances_container_instance" "ai_container_instance" {
   compartment_id      = var.vcn_compartment_id
   containers {
     #Required
-    image_url = local.image
+    image_url = local.container_image
 
     #Optional
     environment_variables = {
