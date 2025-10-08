@@ -94,17 +94,23 @@ variable "data_science_project_compartment_id" {
   type        = string
 }
 variable "project_ocid" {
-  type = string
+  type        = string
   description = "Data Science project in which resources needs to be created"
 }
 
+variable "log_compartment_id" {
+  description = "Compartment in which Logs are present"
+  type        = string
+}
 variable "log_group_ocid" {
-  type = string
+  type        = string
   description = "Log Group Ocid where logs will be stored"
+  default = ""
 }
 variable "log_ocid" {
-  type = string
+  type        = string
   description = "Log ocid where where logs needs to be stored"
+  default = ""
 }
 
 variable "shape" {
@@ -149,14 +155,14 @@ variable "multimodal_llm_provider" {
   default = "genai"
 }
 variable "genai_compartment_ocid" {
-  type = string
+  type        = string
   description = "Gen AI Compartment OCID"
 }
 variable "multimodal_model_name" {
   default = "openai.gpt-4.1-mini"
 }
 variable "multimodal_model_endpoint" {
-  default = "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com"
+  default = "https://inference.generativeai.us-ashburn-1.oci.oraclecloud.com"
 }
 variable "multimodal_max_output_token" {
   default = 8192
@@ -172,8 +178,9 @@ locals {
   app_subnet_id    = (var.create_new_vcn ? oci_core_subnet.app_oci_core_subnet[0].id : var.existing_app_subnet_id)
   api_gw_subnet_id = (var.create_new_vcn ? oci_core_subnet.api_gw_oci_core_subnet[0].id : var.existing_api_gw_subnet_id)
 
-  image    = "dsmc://ai-document-converter:0.1.0-dev.15"
-  digest   = "sha256:01bf5e53ea01377c63c42c1c30c12f4885de94b39e3a1b4edf5d195bfdfa0c9d"
+  container_image = "iad.ocir.io/id1ytzpctjnn/dsmc/aisolution/ai_document_converter:0.1.0"
+  image      = "dsmc://ai_document_converter:0.1.0"
+  digest     = "sha256:73555609549a33bd5e06a1bc7b17c596067e72f0fb17babe054cf11152dbc060"
   model_desc = "Data Science Model for PDF to Markdown Converter Deployment"
-  md_desc  = "Deployment for PDF to Markdown Converter"
+  md_desc    = "Deployment for PDF to Markdown Converter"
 }
