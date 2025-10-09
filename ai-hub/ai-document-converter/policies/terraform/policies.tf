@@ -1,5 +1,5 @@
 resource "oci_identity_dynamic_group" "ai_solution_group" {
-  count = use_existing_dynamic_group_and_policies ? 0 : 1
+  count = var.use_existing_dynamic_group_and_policies ? 0 : 1
   compartment_id = var.tenancy_ocid
   description    = "Dynamic Group for AI Solution"
   name           = "ai_solution_group-${random_string.randomstring.result}"
@@ -7,7 +7,7 @@ resource "oci_identity_dynamic_group" "ai_solution_group" {
 }
 
 resource "oci_identity_policy" "ai_solution_policies" {
-    count = use_existing_dynamic_group_and_policies ? 0 : 1
+    count = var.use_existing_dynamic_group_and_policies ? 0 : 1
     compartment_id = "${var.tenancy_ocid}"
     description    = "Dynamic group policies for AI Solution"
     name           = "ai_solution_policies-${random_string.randomstring.result}"
