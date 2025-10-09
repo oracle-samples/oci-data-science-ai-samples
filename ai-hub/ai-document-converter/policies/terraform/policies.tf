@@ -13,7 +13,8 @@ locals {
     "allow dynamic-group ${oci_identity_dynamic_group.ai_solution_group.name} to use logging-family in compartment id ${var.log_compartment_id}",
     "allow dynamic-group ${oci_identity_dynamic_group.ai_solution_group.name} to manage data-science-family in compartment id ${var.data_science_project_compartment_id}",
     "allow dynamic-group ${oci_identity_dynamic_group.ai_solution_group.name} to manage generative-ai-family in tenancy",
-    "allow dynamic-group ${oci_identity_dynamic_group.ai_solution_group.name} to read repos in tenancy"
+    "allow dynamic-group ${oci_identity_dynamic_group.ai_solution_group.name} to read repos in tenancy",
+    "allow dynamic-group ${oci_identity_dynamic_group.ai_solution_group.name} to use objects in compartment id ${var.compartment_id}"
   ]
 }
 

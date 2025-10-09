@@ -68,8 +68,9 @@ resource "oci_datascience_model_deployment" "ai_deployment" {
   freeform_tags = {
     "ai-hub-solution-name"       = "PDF to markdown conversion"
     "ai_solution_playground_url" = "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/"
-    "ai_solution_mcp_endpoint" = "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/mcp"
-    "ai_solution_api_endpoint_list_apis" = "https://${oci_apigateway_gateway.ai_application_oci_apigateway_gateway.hostname}/api/convert"
+    "ai_solution_mcp_endpoint" = "/predictWithResponseStream/mcp/"
+    "ai_solution_api_endpoint" = "/predict/api/convert"
+    "ai_solution_readme" = "https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-hub/ai-document-converter/README.md"
   }
 
   depends_on = [oci_identity_policy.ai_solution_policies]
