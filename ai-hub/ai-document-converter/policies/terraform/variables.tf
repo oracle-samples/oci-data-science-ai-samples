@@ -86,6 +86,12 @@ variable "key_id" {
   default     = "none"
 }
 
+variable "use_existing_dynamic_group_and_policies" {
+  type        = bool
+  description = "Use existing Dynamic Group and Policies"
+  default     = true
+}
+
 # ------------------------- Environment variables required for Document Extraction Application ----------------------------- #
 
 # The following variables will be used by deployment.

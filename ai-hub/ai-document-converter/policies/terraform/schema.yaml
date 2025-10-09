@@ -31,6 +31,7 @@ variableGroups:
     variables:
       - compartment_id
       - availability_domain
+      - use_existing_dynamic_group_and_policies
   - title: "Network"
     variables:
       - vcn_compartment_id
@@ -83,6 +84,12 @@ variables:
     description: The availability domain in which to create Compute resources.
     dependsOn:
       compartmentId: ${compartment_id}
+  use_existing_dynamic_group_and_policies:
+    type: boolean
+    title: Use existing Dynamic Group and Policies
+    required: true
+    default: false
+    description: If checked, the stack will not create additional Dynamic Group and Policies and expect required Dynamic Group and Policies to be present
   #Network Configuration
   vcn_compartment_id:
     type: oci:identity:compartment:id
