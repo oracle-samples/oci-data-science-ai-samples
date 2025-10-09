@@ -22,6 +22,7 @@ variableGroups:
     variables:
       - compartment_ocid
       - availability_domain
+      - use_existing_dynamic_group_and_policies
       - data_science_project_compartment_id
       - project_ocid
       - log_compartment_id
@@ -116,6 +117,12 @@ variables:
     required: false
     title: Log OCID
     description: Log OCID.
+  use_existing_dynamic_group_and_policies:
+    type: boolean
+    title: Use existing Dynamic Group and Policies
+    required: true
+    default: false
+    description: If checked, the stack will not create additional Dynamic Group and Policies and expect required Dynamic Group and Policies to be present
   # Application
   data_science_project_compartment_id:
     type: oci:identity:compartment:id
