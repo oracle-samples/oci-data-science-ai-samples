@@ -364,7 +364,7 @@ ads aqua deployment update \
 }
 ```
 
-# Stacked Inferencing
+# Stacked Model Inferencing
 
 The only change required to infer a specific model from a Stacked deployment is to update the value of `"model"` parameter in the request payload. The values for this parameter can be found in the Model Deployment details, under the field name `"model_name"`. This parameter segregates the request flow, ensuring that the inference request is directed to the correct model within the Stacked deployment.
 
