@@ -10,7 +10,7 @@
     - [Edit Stacked Deployments](#edit-stacked-deployments)
 - [Stacked Model Inferencing](#stacked-model-inferencing)
 - [Stacked Model Evaluation](#stacked-model-evaluation)
-  - [Create Model Evaluation](#create-model-evaluations)
+  - [Create Model Evaluations](#create-model-evaluations)
 
 # Introduction to Stacked Deployment and Serving
 
@@ -634,7 +634,7 @@ public class RestExample {
 
 ```
 
-# Stacked Evaluations
+# Stacked Model Evaluation
 
 ## Create Model Evaluations
 
