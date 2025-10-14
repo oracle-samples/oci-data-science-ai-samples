@@ -687,6 +687,8 @@ ads aqua deployment update \
     "environment_variables": {
         "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions",
         "MODEL_DEPLOY_ENABLE_STREAMING": "true",
+    },
+}
 ```
 
 # MultiModel Inferencing
