@@ -9,6 +9,8 @@
   - [Get MultiModel Configuration](#get-multimodel-configuration)
   - [Create MultiModel Deployment](#create-multimodel-deployment)
   - [Manage MultiModel Deployments](#manage-multimodel-deployments)
+    - [List MultiModel Deployments](#list-multimodel-deployments)
+    - [Edit MultiModel Deployments](#edit-multimodel-deployments)
 - [MultiModel Inferencing](#multimodel-inferencing)
 - [MultiModel Evaluation](#multimodel-evaluation)
   - [Create Model Evaluation](#create-model-evaluations)
@@ -439,7 +441,7 @@ The private endpoint id of model deployment.
 ```bash
 ads aqua deployment create \
   --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
-  --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' \
+  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}]' \
   --instance_shape "VM.GPU.A10.2" \
   --display_name "modelDeployment_multmodel_model1_model2"
 
@@ -450,9 +452,9 @@ ads aqua deployment create \
 ```json
 {
     "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "display_name": "Multi model deployment of Mistral-7B-v0.1 and falcon-7b on A10.2",
+    "display_name": "modelDeployment_multmodel_model1_model2",
     "aqua_service_model": false,
-    "model_id": "ocid1.datasciencemodel.oc1.<ocid>",
+    "model_id": "ocid1.datasciencemodelgroup.oc1.<ocid>",
     "models": [
         {
             "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
@@ -483,13 +485,12 @@ ads aqua deployment create \
         "memory_in_gbs": null
     },
     "tags": {
-        "aqua_model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
+        "aqua_model_id": "ocid1.datasciencemodelgroup.oc1.iad.<ocid>",
         "aqua_multimodel": "true",
         "OCI_AQUA": "active"
     },
     "environment_variables": {
         "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions",
-        "MULTI_MODEL_CONFIG": "{\"models\": [{\"params\": \"--served-model-name mistralai/Mistral-7B-v0.1 --seed 42 --tensor-parallel-size 1 --max-model-len 4096\", \"model_path\": \"service_models/Mistral-7B-v0.1/78814a9/artifact\"}, {\"params\": \"--served-model-name tiiuae/falcon-7b --seed 42 --tensor-parallel-size 1 --trust-remote-code\", \"model_path\": \"service_models/falcon-7b/f779652/artifact\"}]}",
         "MODEL_DEPLOY_ENABLE_STREAMING": "true",
 ```
 
@@ -498,7 +499,7 @@ ads aqua deployment create \
 ```bash
 ads aqua deployment create \
   --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
-  --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' \
+  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}]' \
   --env-var '{"MODEL_DEPLOY_PREDICT_ENDPOINT":"/v1/chat/completions"}' \
   --instance_shape "VM.GPU.A10.2" \
   --display_name "modelDeployment_multmodel_model1_model2"
@@ -510,9 +511,9 @@ ads aqua deployment create \
 ```json
 {
     "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "display_name": "Multi model deployment of Mistral-7B-v0.1 and falcon-7b on A10.2",
+    "display_name": "modelDeployment_multmodel_model1_model2",
     "aqua_service_model": false,
-    "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
+    "model_id": "ocid1.datasciencemodelgroup.oc1.iad.<ocid>",
     "models": [
         {
             "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
@@ -543,24 +544,150 @@ ads aqua deployment create \
         "memory_in_gbs": null
     },
     "tags": {
-        "aqua_model_id": "ocid1.datasciencemodel.oc1.<ocid>",
+        "aqua_model_id": "ocid1.datasciencemodelgroup.oc1.<ocid>",
         "aqua_multimodel": "true",
         "OCI_AQUA": "active"
     },
     "environment_variables": {
         "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions",
-        "MULTI_MODEL_CONFIG": "{\"models\": [{\"params\": \"--served-model-name mistralai/Mistral-7B-v0.1 --seed 42 --tensor-parallel-size 1 --max-model-len 4096\", \"model_path\": \"service_models/Mistral-7B-v0.1/78814a9/artifact\"}, {\"params\": \"--served-model-name tiiuae/falcon-7b --seed 42 --tensor-parallel-size 1 --trust-remote-code\", \"model_path\": \"service_models/falcon-7b/f779652/artifact\"}]}",
         "MODEL_DEPLOY_ENABLE_STREAMING": "true",
 ```
 
 
 ## Manage MultiModel Deployments
 
-### Description
+### List MultiModel Deployments
 
 To list all AQUA deployments (both MultiModel and single-model) within a specified compartment or project, or to get detailed information on a specific MultiModel deployment, kindly refer to the [AQUA CLI tips](cli-tips.md) documentation.
 
 Note: MultiModel deployments are identified by the tag `"aqua_multimodel": "true",` associated with them.
+
+### Edit MultiModel Deployments
+
+#### Usage
+
+```bash
+ads aqua deployment update [OPTIONS]
+```
+
+#### Required Parameters
+
+`--model_deployment_id [str]`
+
+The model deployment OCID to be updated.
+
+#### Optional Parameters
+
+`--models [str]`
+
+The String representation of a JSON array, where each object defines a model’s OCID and the number of GPUs assigned to it. The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**. <br>
+Example: `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape. <br>
+
+`--display_name [str]`
+
+The name of model deployment.
+
+`--description [str]`
+
+The description of the model deployment. Defaults to None.
+
+`--instance_count [int]`
+
+The number of instance used for model deployment. Defaults to 1.
+
+`--log_group_id [str]`
+
+The oci logging group id. The access log and predict log share the same log group.
+
+`--access_log_id [str]`
+
+The access log OCID for the access logs. Check [model deployment logging](https://docs.oracle.com/en-us/iaas/data-science/using/model_dep_using_logging.htm) for more details.
+
+`--predict_log_id [str]`
+
+The predict log OCID for the predict logs. Check [model deployment logging](https://docs.oracle.com/en-us/iaas/data-science/using/model_dep_using_logging.htm) for more details.
+
+`--web_concurrency [int]`
+
+The number of worker processes/threads to handle incoming requests.
+
+`--bandwidth_mbps [int]`
+
+The bandwidth limit on the load balancer in Mbps.
+
+`--memory_in_gbs [float]`
+
+Memory (in GB) for the selected shape.
+
+`--ocpus [float]`
+
+OCPU count for the selected shape.
+
+`--freeform_tags [dict]`
+
+Freeform tags for model deployment.
+
+`--defined_tags [dict]`
+Defined tags for model deployment.
+
+#### Example
+
+##### Edit MultiModel deployment with `/v1/completions`
+
+```bash
+ads aqua deployment update \
+  --model_deployment_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" \
+  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name":"test_updated_model_name", "gpu_count":2}]' \
+  --display_name "updated_modelDeployment_multmodel_model1_model2"
+
+```
+
+##### CLI Output
+
+```json
+{
+    "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "display_name": "updated_modelDeployment_multmodel_model1_model2",
+    "aqua_service_model": false,
+    "model_id": "ocid1.datasciencemodelgroup.oc1.iad.<ocid>",
+    "models": [
+        {
+            "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
+            "model_name": "mistralai/Mistral-7B-v0.1",
+            "gpu_count": 1,
+            "env_var": {}
+        },
+        {
+            "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
+            "model_name": "tiiuae/falcon-7b",
+            "gpu_count": 1,
+            "env_var": {}
+        }
+    ],
+    "aqua_model_name": "",
+    "state": "UPDATING",
+    "description": null,
+    "created_on": "2025-03-10 19:09:40.793000+00:00",
+    "created_by": "ocid1.user.oc1..<ocid>",
+    "endpoint": "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "private_endpoint_id": null,
+    "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "lifecycle_details": null,
+    "shape_info": {
+        "instance_shape": "VM.GPU.A10.2",
+        "instance_count": 1,
+        "ocpus": null,
+        "memory_in_gbs": null
+    },
+    "tags": {
+        "aqua_model_id": "ocid1.datasciencemodelgroup.oc1.<ocid>",
+        "aqua_multimodel": "true",
+        "OCI_AQUA": "active"
+    },
+    "environment_variables": {
+        "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions",
+        "MODEL_DEPLOY_ENABLE_STREAMING": "true",
+```
 
 # MultiModel Inferencing
 
