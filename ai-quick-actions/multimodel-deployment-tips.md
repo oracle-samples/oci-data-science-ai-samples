@@ -492,6 +492,8 @@ ads aqua deployment create \
     "environment_variables": {
         "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions",
         "MODEL_DEPLOY_ENABLE_STREAMING": "true",
+    },
+}
 ```
 
 #### Create MultiModel deployment with `/v1/chat/completions`
@@ -551,6 +553,8 @@ ads aqua deployment create \
     "environment_variables": {
         "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions",
         "MODEL_DEPLOY_ENABLE_STREAMING": "true",
+    },
+}
 ```
 
 
