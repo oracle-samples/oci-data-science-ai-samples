@@ -126,6 +126,7 @@ ads aqua deployment create \
   --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name":"test_model_name"}]' \
   --instance_shape "VM.GPU.A10.1" \
   --display_name "modelDeployment_stacked_model"
+  --deployment_type "STACKED"
 
 ```
 
@@ -183,6 +184,7 @@ ads aqua deployment create \
   --env-var '{"MODEL_DEPLOY_PREDICT_ENDPOINT":"/v1/chat/completions"}' \
   --instance_shape "VM.GPU.A10.1" \
   --display_name "modelDeployment_stacked_model"
+  --deployment_type "STACKED"
 
 ```
 
