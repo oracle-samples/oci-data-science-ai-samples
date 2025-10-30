@@ -44,7 +44,7 @@ ads aqua deployment create [OPTIONS]
 
 `--models [str]`
 
-The String representation of a JSON array, where each object defines a model OCID, model name and its associating fine tuned weights. The model names are used to reference specific models during inference requests and support a [maximum length of 32 characters](https://docs.oracle.com/en-us/iaas/Content/data-science/using/models-mms-top.htm#models-mms-key-concepts). Only **one** base model is allowed for creating stacked deployment <br>
+The String representation of a JSON array, where each object defines a model OCID, model name and its associating fine tuned weights. The model names are used to reference specific models during inference requests and support a [maximum length of 32 characters](https://docs.oracle.com/en-us/iaas/Content/data-science/using/models-mms-top.htm#models-mms-key-concepts). Model OCID will be used for inferencing if no model name is provided. Only **one** base model is allowed for creating stacked deployment <br>
 Example: `'[{"model_id":"<model_ocid>", "model_name":"<model_name>", "fine_tune_weights": [{"model_id": "<ft_ocid>", "model_name":"<ft_name>"},{"model_id":"<ft_ocid>", "model_name": "<ft_name>"}]}]'` for  `VM.GPU.A10.2` shape. <br>
 
 
