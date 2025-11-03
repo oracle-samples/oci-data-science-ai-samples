@@ -1,10 +1,11 @@
-# **AI Quick Actions Stacked Deployment (Available through CLI only)**
+# **AI Quick Actions Stacked Deployment**
 
 # Table of Contents
 - # Introduction to Stacked Deployment and Serving
 - [Models](#models)
 - [Stacked Deployment](#stacked-deployment)
-  - [Create Stacked Deployment](#create-stacked-deployment)
+  - [Create Stacked Deployment via AQUA UI](#create-stacked-deployment-via-aqua-ui)
+  - [Create Stacked Deployment via ADS CLI](#create-stacked-deployment-via-ads-cli)
   - [Manage Stacked Deployments](#manage-stacked-deployments)
     - [List Stacked Deployments](#list-stacked-deployments)
     - [Edit Stacked Deployments](#edit-stacked-deployments)
@@ -16,9 +17,7 @@
 
 Stacked Model Deployment enables deploying a base model alongside multiple fine-tuned weights within the same deployment. During inference, responses can be generated using either the base model or the associated fine-tuned weights, depending on the request. The Data Science server has prebuilt **vLLM service container** that make deploying and serving stacked large language model very easy, simplifying the deployment process and reducing operational complexity. This container comes with **VLLM's native routing** which routes requests to the appropriate model, ensuring seamless prediction.
 
-**Stacked Deployment is currently in beta and is only available through the CLI.**
-
-This document provides documentation on how to use ADS CLI to create stacked deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models. you'll need the latest version of ADS to run these, installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
+This document provides documentation on how to create stacked deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models.
 
 # Models
 
@@ -28,11 +27,54 @@ You can also obtain the OCID from the AQUA user interface by clicking on the mod
 
 # Stacked Deployment
 
-## Create Stacked Deployment
+## Create Stacked Deployment via AQUA UI
+
+### Create Stack Deployment
+
+Open AQUA UI and navigate to the `Deployments` tab. Click `Create Deployment` on the upper right and you should see the following page. Select `Deploy Model Stack` and select the service model and its corresponding fine tuned weights. You can customize the inference keys for each service and fine tuned model.
+
+![Deploy Model](web_assets/deploy-stack.png)
+
+### Compute Shape
+
+The compute shape selection is critical, the list available is selected to be suitable for the
+chosen model.
+
+- VM.GPU.A10.1 has 24GB of GPU memory and 240GB of CPU memory. The limiting factor is usually the
+GPU memory which needs to be big enough to hold the model.
+- VM.GPU.A10.2 has 48GB GPU memory
+- BM.GPU.A10.4 has 96GB GPU memory and runs on a bare metal machine, rather than a VM.
+
+For a full list of shapes and their definitions see the [compute shape docs](https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm)
+
+The relationship between model parameter size and GPU memory is roughly 2x parameter count in GB, so for example a model that has 7B parameters will need a minimum of 14 GB for inference. At runtime the
+memory is used for both holding the weights, along with the concurrent contexts for the user's requests.
+
+### Advanced Options
+
+You may click on the "Show Advanced Options" to configure options for "inference container".
+
+![Advanced Options](web_assets/deploy-stack-model-advanced-options.png)
+
+### Inference Container Configuration
+
+The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on
+the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format
+`(--param-name, param-value)`.
+
+For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) documentation to know more about the parameters accepted by the respective containers.
+
+## Create Stacked Deployment via ADS CLI
 
 ### Description
 
-Creates a new Aqua Stacked deployment.
+You'll need the latest version of ADS to create a new Aqua Stacked deployment. Installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
+
+Only fine tuned model with version `V2` is allowed to be deployed as weights in Stack Deployment. For deploying old fine tuned model weight, run the following command to convert it to version `V2` and apply the new fine tuned model OCID to the deployment creation. This command deletes the old fine tuned model by default after conversion but you can add ``--delete_model False`` to keep it instead.
+
+```bash
+ads aqua model convert_fine_tune --model_id [FT_OCID]
+```
 
 ### Usage
 
@@ -123,7 +165,7 @@ The private endpoint id of model deployment.
 ```bash
 ads aqua deployment create \
   --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
-  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name":"test_model_name"}]' \
+  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name":"test_model_name", "fine_tune_weights": [{"model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name":"test_ft_name_one"},{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name": "test_ft_name_two"}]}]' \
   --instance_shape "VM.GPU.A10.1" \
   --display_name "modelDeployment_stacked_model"
   --deployment_type "STACKED"
@@ -180,7 +222,7 @@ ads aqua deployment create \
 ```bash
 ads aqua deployment create \
   --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
-  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name":"test_model_name"}]' \
+  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name":"test_model_name", "fine_tune_weights": [{"model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name":"test_ft_name_one"},{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name": "test_ft_name_two"}]}]' \
   --env-var '{"MODEL_DEPLOY_PREDICT_ENDPOINT":"/v1/chat/completions"}' \
   --instance_shape "VM.GPU.A10.1" \
   --display_name "modelDeployment_stacked_model"
@@ -369,6 +411,10 @@ ads aqua deployment update \
 # Stacked Model Inferencing
 
 The only change required to infer a specific model from a Stacked deployment is to update the value of `"model"` parameter in the request payload. The values for this parameter can be found in the Model Deployment details, under the field name `"model_name"`. This parameter segregates the request flow, ensuring that the inference request is directed to the correct model within the Stacked deployment.
+
+## Using AQUA UI
+
+![Inferencing](web_assets/try-stack-model.png)
 
 ## Using oci-cli
 

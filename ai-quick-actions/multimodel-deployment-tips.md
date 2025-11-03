@@ -1,4 +1,4 @@
-# **AI Quick Actions MultiModel Deployment (Available through CLI only)**
+# **AI Quick Actions MultiModel Deployment**
 
 # Table of Contents
 - # Introduction to MultiModel Deployment and Serving
@@ -23,9 +23,7 @@
 
 MultiModel inference and serving refers to efficiently hosting and managing multiple large language models simultaneously to serve inference requests using shared resources. The Data Science server has prebuilt **vLLM service container** that make deploying and serving multiple large language model on **single GPU Compute shape** very easy, simplifying the deployment process and reducing operational complexity. This container comes with preinstalled [**LiteLLM proxy server**](https://docs.litellm.ai/docs/simple_proxy) which routes requests to the appropriate model, ensuring seamless prediction.
 
-**MultiModel Deployment is currently in beta and is only available through the CLI. At this time, only base service LLM models are supported, and fine-tuned/registered models cannot be deployed.**
-
-This document provides documentation on how to use ADS CLI to create MultiModel deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models. you'll need the latest version of ADS to run these, installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
+This document provides documentation on how to create MultiModel deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models.
 
 
 # Models
@@ -349,18 +347,58 @@ ads aqua deployment get_multimodel_deployment_config --model_ids '["ocid1.datasc
 
 Only **base service LLM models** are supported for MultiModel Deployment. All selected models will run on the same **GPU shape**, sharing the available compute resources. Make sure to choose a shape that meets the needs of all models in your deployment using [MultiModel Configuration command](#get-multimodel-configuration)
 
+### AQUA UI
 
-### Description
+Open AQUA UI and navigate to the `Deployments` tab. Click `Create Deployment` on the upper right and you should see the following page. Select `Deploy Multi Model` and select the service models and their corresponding fine tuned weights. You can customize the inference keys for each service and fine tuned model.
 
-Creates a new Aqua MultiModel deployment.
+![Deploy Model](web_assets/deploy-multi.png)
 
-### Usage
+#### Compute Shape
+
+The compute shape selection is critical, the list available is selected to be suitable for the
+chosen models.
+
+- VM.GPU.A10.2 has 48GB GPU memory
+- BM.GPU.A10.4 has 96GB GPU memory and runs on a bare metal machine, rather than a VM.
+
+For a full list of shapes and their definitions see the [compute shape docs](https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm)
+
+The relationship between model parameter size and GPU memory is roughly 2x parameter count in GB, so for example a model that has 7B parameters will need a minimum of 14 GB for inference. At runtime the
+memory is used for both holding the weights, along with the concurrent contexts for the user's requests.
+
+#### Advanced Options
+
+You may click on the "Show Advanced Options" to configure options for "inference container".
+
+![Advanced Options](web_assets/deploy-multi-model-advanced-options.png)
+
+#### Inference Container Configuration
+
+The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on
+the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format
+`(--param-name, param-value)`.
+
+For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) documentation to know more about the parameters accepted by the respective containers.
+
+### ADS CLI
+
+#### Description
+
+You'll need the latest version of ADS to create a new Aqua MultiModel deployment. Installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
+
+Only fine tuned model with version `V2` is allowed to be deployed as weights in Multi Deployment. For deploying old fine tuned model weight, run the following command to convert it to version `V2` and apply the new fine tuned model OCID to the deployment creation. This command deletes the old fine tuned model by default after conversion but you can add ``--delete_model False`` to keep it instead.
+
+```bash
+ads aqua model convert_fine_tune --model_id [FT_OCID]
+```
+
+#### Usage
 
 ```bash
 ads aqua deployment create [OPTIONS]
 ```
 
-### Required Parameters
+#### Required Parameters
 
 `--models [str]`
 
@@ -383,7 +421,7 @@ The URI of the inference container associated with the model being registered. I
 Example: `dsmc://odsc-vllm-serving:0.6.4.post1.2` or `dsmc://odsc-vllm-serving:0.8.1.2`
 
 
-### Optional Parameters
+#### Optional Parameters
 
 `--compartment_id [str]`
 
@@ -434,9 +472,9 @@ Environment variable for the model deployment, defaults to None.
 The private endpoint id of model deployment.
 
 
-### Example
+#### Example
 
-#### Create MultiModel deployment with `/v1/completions`
+##### Create MultiModel deployment with `/v1/completions`
 
 ```bash
 ads aqua deployment create \
@@ -447,7 +485,7 @@ ads aqua deployment create \
 
 ```
 
-##### CLI Output
+###### CLI Output
 
 ```json
 {
@@ -496,7 +534,7 @@ ads aqua deployment create \
 }
 ```
 
-#### Create MultiModel deployment with `/v1/chat/completions`
+##### Create MultiModel deployment with `/v1/chat/completions`
 
 ```bash
 ads aqua deployment create \
@@ -698,6 +736,10 @@ ads aqua deployment update \
 # MultiModel Inferencing
 
 The only change required to infer a specific model from a MultiModel deployment is to update the value of `"model"` parameter in the request payload. The values for this parameter can be found in the Model Deployment details, under the field name `"model_name"`. This parameter segregates the request flow, ensuring that the inference request is directed to the correct model within the MultiModel deployment.
+
+## Using AQUA UI
+
+![Inferencing](web_assets/try-multi-model.png)
 
 ## Using oci-cli
 
