@@ -1,5 +1,5 @@
 # **Multi-Model Deployment with AI Quick Actions (AQUA)**
-Multi-Model inference and serving refers to efficiently hosting and managing multiple large language models (LLMs) on a single compute shape on Oracle Cloud Infrastructure. This allows for inference requests to multiple models while being hosted on one compute instance, with one model deployment endpoint. 
+Multi-Model inference and serving refers to efficiently hosting and managing multiple large language models (LLMs) on a single compute shape on Oracle Cloud Infrastructure. This allows for inference requests to multiple models while being hosted on one compute instance, with one model deployment endpoint.
 
 We use the 'name' parameter within model payloads to reach specific models. The Data Science service has a prebuilt **vLLM service container** that makes deploying and serving multiple large language model on **single GPU Compute shape** very easy, simplifying the deployment process and reducing operational complexity. This container comes with preinstalled [**LiteLLM proxy server**](https://docs.litellm.ai/docs/simple_proxy) which routes requests to the appropriate model, ensuring seamless prediction.
 
@@ -85,15 +85,15 @@ For fine-tuned models, requests specifying the base model name (ex. model: meta-
   - [Summary](#summary)
 
 
-## Setup 
+## Setup
 
 - Ensure requirements (AQUA policies & OCI Bucket Versioning) are met [here](register-tips.md#Prerequisites).
 
 #### For AQUA CLI
 -  latest version of Accelerated Data Science (ADS) to run Multi-Model Deployments, installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
-  
+
 # Using AQUA UI Interface for Multi-Model Deployment
-Only Multi-Model Deployments with **base service LLM models (text-generation)** can be deployed with AQUA UI. 
+Only Multi-Model Deployments with **base service LLM models (text-generation)** can be deployed with AQUA UI.
 - For fine-tuned,registered, or custom models in Multi-Model Deployment, use the AQUA CLI as detailed [here](#using-aqua-cli-for-multi-model-deployment)
 
 ### Select the 'Create deployment' Button
@@ -114,7 +114,7 @@ There are two ways to send inference requests to models within a Multi-Model Dep
 
 Once the Deployment is Active, view the model deployment details and inferencing form by clicking on the 'Deployments' Tab and selecting the model within the Model Deployment list.
 
-Use the dropdown labeled 'Model parameters' to select a specific model for inference. 
+Use the dropdown labeled 'Model parameters' to select a specific model for inference.
 
 ![mmd-details](web_assets/mmd-details.png)
 
@@ -124,7 +124,7 @@ This document provides documentation on how to use ADS CLI to create Multi-Model
 ## 1. Obtain Model OCIDs
 
 Again, only **base service managed LLM models (text-generation)** obtained on the AQUA User Interface on OCI Notebooks.
-- use the  **[AQUA CLI](cli-tips.md)** for **[fine-tuned models](#fine-tuned-models), [custom models](#custom-models), multi-modal models (image-text-to-text models)** 
+- use the  **[AQUA CLI](cli-tips.md)** for **[fine-tuned models](#fine-tuned-models), [custom models](#custom-models), multi-modal models (image-text-to-text models)**
 
 ### Service Managed Models
 
@@ -147,9 +147,9 @@ To use a fine-tuned model in a Multi-Model Deployment, we must create the fine-t
 
 - **Obtain Fine-Tuned Model OCID, Fine-Tuned Model Name**
   - On the model tab, select the Fine-Tuned tab, and obtain the OCID & Model Name from the AQUA user interface by clicking on the **Fine-Tuned** model card and selecting the `Copy OCID` button from the `More Options` dropdown in the top-right corner of the screen.
-  - To Obtain Fine-Tuned Model OCID via CLI: [docs](cli-tips.md#get-fine-tuned-model-ocid) 
-  - To Obtain Fine-Tuned Model Name via CLI: [docs](cli-tips.md#get-model-details) 
-    -  The "name" field in the CLI output will be the Fine-Tuned Model Name 
+  - To Obtain Fine-Tuned Model OCID via CLI: [docs](cli-tips.md#get-fine-tuned-model-ocid)
+  - To Obtain Fine-Tuned Model Name via CLI: [docs](cli-tips.md#get-model-details)
+    -  The "name" field in the CLI output will be the Fine-Tuned Model Name
     -  Use the Fine-Tuned Model OCID for CLI command
 
 - **Use Fine-Tuned model within a Multi-Model Deployment via AQUA CLI**
@@ -159,7 +159,7 @@ To use a fine-tuned model in a Multi-Model Deployment, we must create the fine-t
     - **Note** that the GPU requirement is determined by the base model that the Fine-Tuned model uses.
     - [Using AQUA CLI](#3-create-multi-model-deployment), create a Multi-Model Deployment w/ Fine-Tuned Model as shown [here](#example-w-fine-tuned-model)
 
-### Custom Models 
+### Custom Models
 
 Using the AQUA CLI (not supported in AQUA UI), it is also possible to enable support for *custom-registered* models by manually adding a deployment configuration to the model artifact folder in Object Storage.
 
@@ -258,7 +258,7 @@ Follow the steps below to enable MultiModel Deployment support for your custom m
 
   Use the [MultiModel Configuration command](#get-multimodel-configuration) to check whether the selected model is compatible with multi-model deployment now.
 
-## 2. Before Deployment, Check Resource Limits 
+## 2. Before Deployment, Check Resource Limits
 Before starting a Multi-Model Deployment, we must check the following resource limits:
 - Determine the compute shapes available for model deployment in our OCI Environment, seen [here](#list-available-shapes).
 - After selecting an available compute shape, we check if the models selected are compatible with the selected shape, seen [here](#Obtain-Model-Configurations-for-Multi-Model-Deployment).
@@ -492,12 +492,12 @@ ads aqua deployment create [OPTIONS]
 The String representation of a JSON array, where each object defines:
 - model’s OCID
 - number of GPUs assigned to it
-- Fine Tuned Weights (if Fine-Tuned Model only). 
+- Fine Tuned Weights (if Fine-Tuned Model only).
 
 
-The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**. 
+The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**.
 
-#### Example with Base Models: 
+#### Example with Base Models:
 
 `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape.
 
@@ -527,7 +527,7 @@ List your fine-tuned models in the **"fine_tune_weights" array**, where each ent
       "model_task": "text_generation",
       "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
       "gpu_count": 1
-    } 
+    }
   ]'
 ```
 #### Example with Multi-Modal & Embedding Models:
@@ -1215,6 +1215,12 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 # Supported Service Models
 | Model | Shape | GPU | Parameters |
 |-------|-------|-----|------------|
+| Almawave/Velvet-14B | BM.GPU.A10.4 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU.L40S-NC.4 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU4.8 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU.A100-v2.8 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU.H100.8 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU.H200.8 | 2 |  |
 | codellama/CodeLlama-13b-Instruct-hf | BM.GPU.A10.4 | 2 | --max-model-len 4096 |
 | codellama/CodeLlama-13b-Instruct-hf | BM.GPU.L40S-NC.4 | 2 | --max-model-len 4096 |
 | codellama/CodeLlama-7b-Instruct-hf | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
@@ -1246,6 +1252,34 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | google/gemma-2b-it | BM.GPU.A10.4 | 1 |  |
 | google/gemma-7b | BM.GPU.A10.4 | 2 |  |
 | google/gemma-7b | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-3.3-2b-instruct | VM.GPU.A10.2 | 1 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.A10.4 | 1 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.L40S-NC.4 | 1 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-3.3-8b-instruct | VM.GPU.A10.2 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-3.3-8b-instruct | VM.GPU.A10.2 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-4.0-tiny-base-preview | BM.GPU.A10.4 | 2 | --enforce-eager --tensor-parallel-size 2 --tool-call-parser granite --enable-auto-tool-choice |
+| ibm-granite/granite-4.0-tiny-preview | BM.GPU.A10.4 | 2 | --enforce-eager --tensor-parallel-size 2 --tool-call-parser granite --enable-auto-tool-choice |
+| ibm-granite/granite-embedding-278m-multilingual | VM.GPU.A10.2 | 1 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.A10.4 | 1 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.L40S-NC.4 | 1 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-speech-3.3-8b | BM.GPU.H100.8 | 1 |  |
+| ibm-granite/granite-vision-3.2-2b | VM.GPU.A10.2 | 1 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.A10.4 | 1 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.L40S-NC.4 | 1 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.L40S-NC.4 | 2 |  |
 | intfloat/e5-mistral-7b-instruct | VM.GPU.A10.2 | 1 |  |
 | intfloat/e5-mistral-7b-instruct | BM.GPU.A10.4 | 1 |  |
 | intfloat/e5-mistral-7b-instruct | BM.GPU.A10.4 | 2 |  |
@@ -1254,9 +1288,22 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | meta-llama/Llama-3.2-11B-Vision | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.H200.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H200.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-1B | VM.GPU.A10.2 | 1 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 1 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.L40S-NC.4 | 1 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.L40S-NC.4 | 2 |  |
 | meta-llama/Llama-3.2-1B | VM.GPU.A10.2 | 1 |  |
 | meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 1 |  |
 | meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 2 |  |
@@ -1267,6 +1314,16 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 | 2 |  |
 | meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 1 |  |
 | meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-1B-Instruct | VM.GPU.A10.2 | 1 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 | 1 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 1 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-3B | VM.GPU.A10.2 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-3B | BM.GPU.L40S-NC.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | BM.GPU.L40S-NC.4 | 2 |  |
 | meta-llama/Llama-3.2-3B | VM.GPU.A10.2 | 1 | --max-model-len 65536 |
 | meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 1 | --max-model-len 65536 |
 | meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 2 |  |
@@ -1277,6 +1334,17 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 | 2 |  |
 | meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 65536 |
 | meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-3B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3-70B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3-8B | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3-8B | BM.GPU.A10.4 | 2 |  |
 | meta-llama/Meta-Llama-3-8B | BM.GPU.L40S-NC.4 | 2 |  |
 | meta-llama/Meta-Llama-3-8B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
@@ -1287,14 +1355,21 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | meta-llama/Meta-Llama-3.1-70B | BM.GPU4.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B | BM.GPU.A100-v2.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B | BM.GPU.H100.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU.H200.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU4.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.A100-v2.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.H100.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.H200.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-8B | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B | BM.GPU.A10.4 | 2 |  |
 | meta-llama/Meta-Llama-3.1-8B | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
 | meta-llama/Meta-Llama-3.1-8B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 2 |  |
@@ -1311,6 +1386,8 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | microsoft/Phi-3-mini-128k-instruct | BM.GPU.A100-v2.8 | 4 | --trust-remote-code |
 | microsoft/Phi-3-mini-128k-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code --max-model-len 4096 |
 | microsoft/Phi-3-mini-128k-instruct | BM.GPU.H100.8 | 4 | --trust-remote-code |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code --max-model-len 4096 |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.H200.8 | 4 | --trust-remote-code |
 | microsoft/Phi-3-mini-4k-instruct | VM.GPU.A10.2 | 1 |  |
 | microsoft/Phi-3-mini-4k-instruct | BM.GPU.A10.4 | 1 |  |
 | microsoft/Phi-3-mini-4k-instruct | BM.GPU.A10.4 | 2 |  |
@@ -1322,30 +1399,40 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | microsoft/Phi-3-vision-128k-instruct | BM.GPU.A100-v2.8 | 4 | --trust-remote-code |
 | microsoft/Phi-3-vision-128k-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code --max-model-len 32000 |
 | microsoft/Phi-3-vision-128k-instruct | BM.GPU.H100.8 | 4 | --trust-remote-code |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.A10.4 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.L40S-NC.4 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 5 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 5 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 5 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A10.4 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.L40S-NC.4 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 5 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 5 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 5 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.A10.4 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.L40S-NC.4 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 5 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 5 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 5 |  |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code --max-model-len 32000 |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.H200.8 | 4 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | VM.GPU.A10.2 | 1 | --trust-remote-code --max_model_len 16000 |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A10.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H200.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A10.4 | 2 | --trust-remote-code --max_model_len 4096 --gpu_memory_utilization 0.95 |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H200.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | VM.GPU.A10.2 | 1 | --trust-remote-code --max_model_len 16000 |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A10.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H200.8 | 5 | --trust-remote-code |
 | microsoft/phi-4 | BM.GPU.A10.4 | 2 |  |
 | microsoft/phi-4 | BM.GPU.L40S-NC.4 | 2 |  |
 | microsoft/phi-4 | BM.GPU4.8 | 2 |  |
@@ -1354,6 +1441,24 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | microsoft/phi-4 | BM.GPU.A100-v2.8 | 5 |  |
 | microsoft/phi-4 | BM.GPU.H100.8 | 2 |  |
 | microsoft/phi-4 | BM.GPU.H100.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.A10.4 | 2 |  |
+| microsoft/phi-4 | BM.GPU.L40S-NC.4 | 2 |  |
+| microsoft/phi-4 | BM.GPU4.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU4.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.A100-v2.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.A100-v2.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.H100.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.H100.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 | 5 |  |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.A10.4 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.L40S-NC.4 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU4.8 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.A100-v2.8 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.H100.8 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.H200.8 | 1 | --trust-remote-code |
 | mistralai/Mistral-7B-Instruct-v0.1 | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
 | mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
 | mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.A10.4 | 2 |  |
@@ -1374,8 +1479,27 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | mistralai/Mistral-7B-v0.1 | BM.GPU.A10.4 | 2 |  |
 | mistralai/Mistral-7B-v0.1 | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
 | mistralai/Mistral-7B-v0.1 | BM.GPU.L40S-NC.4 | 2 |  |
+| openai/gpt-oss-120b | BM.GPU.H100.8 | 4 | --gpu-memory-utilization 0.90 --disable-custom-all-reduce --trust-remote-code --seed 42 --max-num-seqs 32 --max-model-len 8193 --quantization mxfp4 |
+| openai/gpt-oss-120b | BM.GPU.H200.8 | 4 | --gpu-memory-utilization 0.90 --disable-custom-all-reduce --trust-remote-code --seed 42 --max-num-seqs 32 --max-model-len 8193 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H100.8 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H100.8 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H100.8 | 4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H200.8 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H200.8 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H200.8 | 4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.A10.4 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max-model-len 2048 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.A10.4 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.L40S-NC.4 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max-model-len 2048 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | VM.GPU.A10.2 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max-model-len 2048 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.B4.8 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU.B4.8 | 4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU4.8 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU4.8 | 4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --dtype bfloat16 |
 | tiiuae/falcon-7b | VM.GPU.A10.2 | 1 | --trust-remote-code |
 | tiiuae/falcon-7b | BM.GPU.A10.4 | 1 | --trust-remote-code |
+| tiiuae/falcon-7b | VM.GPU.A10.2 | 1 |  |
+| tiiuae/falcon-7b | BM.GPU.A10.4 | 1 |  |
 
 ---
 
