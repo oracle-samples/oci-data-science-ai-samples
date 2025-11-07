@@ -36,14 +36,14 @@ For fine-tuned models, requests specifying the base model name (ex. model: meta-
     - [Service Managed Models](#service-managed-models)
     - [Fine-Tuned Models](#fine-tuned-models)
     - [Custom Models](#custom-models)
-- [MultiModel Deployment](#multimodel-deployment)
+- [Multi-Model Deployment](#multi-model-deployment)
   - [List Available Shapes](#list-available-shapes)
-  - [Get MultiModel Configuration](#get-multimodel-configuration)
-  - [Manage MultiModel Deployments](#manage-multimodel-deployments)
-    - [List MultiModel Deployments](#list-multimodel-deployments)
-    - [Edit MultiModel Deployments](#edit-multimodel-deployments)
-- [MultiModel Inferencing](#multimodel-inferencing)
-- [MultiModel Evaluation](#multimodel-evaluation)
+  - [Get Multi-Model Configuration](#get-multi-model-configuration)
+  - [Manage Multi-Model Deployments](#manage-multi-model-deployments)
+    - [List Multi-Model Deployments](#list-multi-model-deployments)
+    - [Edit Multi-Model Deployments](#edit-multi-model-deployments)
+- [Multi-Model Inferencing](#multi-model-inferencing)
+- [Multi-Model Evaluation](#multi-model-evaluation)
   - [Create Model Evaluation](#create-model-evaluations)
 - [Limitation](#limitations)
   - [2. Before Deployment, Check Resource Limits](#2-before-deployment-check-resource-limits)
@@ -764,7 +764,7 @@ To list all AQUA deployments (both Multi-Model and single-model) within a specif
 
 Note: Multi-Model deployments are identified by the tag `"aqua_multimodel": "true",` associated with them.
 
-### Edit MultiModel Deployments
+### Edit Multi-Model Deployments
 
 #### Usage
 
@@ -834,7 +834,7 @@ Defined tags for model deployment.
 
 #### Example
 
-##### Edit MultiModel deployment with `/v1/completions`
+##### Edit Multi-Model deployment with `/v1/completions`
 
 ```bash
 ads aqua deployment update \
