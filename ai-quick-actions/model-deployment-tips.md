@@ -584,6 +584,318 @@ using [Advanced Deployment Options](#advanced-deployment-options) from AI Quick 
   }
 ```
 
+## Recommended Configurations
+| Model | Shape  | Parameters |
+|-------|--------|------------|
+| Almawave/Velvet-14B | VM.GPU.A10.2 | --trust-remote-code --max-model-len 16000 |
+| Almawave/Velvet-14B | BM.GPU.A10.4 |  |
+| Almawave/Velvet-14B | BM.GPU.L40S-NC.4 |  |
+| Almawave/Velvet-14B | BM.GPU4.8 |  |
+| Almawave/Velvet-14B | BM.GPU.A100-v2.8 |  |
+| Almawave/Velvet-14B | BM.GPU.H100.8 |  |
+| Almawave/Velvet-14B | BM.GPU.H200.8 |  |
+| codellama/CodeLlama-13b-Instruct-hf | VM.GPU.A10.2 | --max-model-len 4096 |
+| codellama/CodeLlama-13b-Instruct-hf | BM.GPU.A10.4 |  |
+| codellama/CodeLlama-13b-Instruct-hf | BM.GPU.L40S-NC.4 |  |
+| codellama/CodeLlama-13b-Instruct-hf | VM.Standard.A1.Flex |  |
+| codellama/CodeLlama-34b-Instruct-hf | BM.GPU.A10.4 | --max-model-len 4096 |
+| codellama/CodeLlama-34b-Instruct-hf | VM.Standard.A1.Flex |  |
+| codellama/CodeLlama-7b-Instruct-hf | VM.GPU.A10.1 | --max-model-len 4096 |
+| codellama/CodeLlama-7b-Instruct-hf | VM.GPU.A10.2 |  |
+| codellama/CodeLlama-7b-Instruct-hf | BM.GPU.A10.4 |  |
+| codellama/CodeLlama-7b-Instruct-hf | BM.GPU.L40S-NC.4 |  |
+| codellama/CodeLlama-7b-Instruct-hf | VM.Standard.A1.Flex |  |
+| core42/jais-13b | BM.GPU4.8 | --tensor-parallel-size 1 |
+| core42/jais-13b | BM.GPU.A100-v2.8 | --tensor-parallel-size 1 |
+| core42/jais-13b-chat | BM.GPU4.8 | --tensor-parallel-size 1 |
+| core42/jais-13b-chat | BM.GPU.A100-v2.8 | --tensor-parallel-size 1 |
+| elyza/ELYZA-japanese-Llama-2-13b | VM.GPU.A10.2 | --max-model-len 4096 |
+| elyza/ELYZA-japanese-Llama-2-13b | BM.GPU.A10.4 |  |
+| elyza/ELYZA-japanese-Llama-2-13b | BM.GPU.L40S-NC.4 |  |
+| elyza/ELYZA-japanese-Llama-2-13b-instruct | VM.GPU.A10.2 | --max-model-len 4096 |
+| elyza/ELYZA-japanese-Llama-2-13b-instruct | BM.GPU.A10.4 |  |
+| elyza/ELYZA-japanese-Llama-2-13b-instruct | BM.GPU.L40S-NC.4 |  |
+| elyza/ELYZA-japanese-Llama-2-7b | BM.GPU.A10.4 |  |
+| elyza/ELYZA-japanese-Llama-2-7b | BM.GPU.L40S-NC.4 |  |
+| elyza/ELYZA-japanese-Llama-2-7b-instruct | BM.GPU.A10.4 |  |
+| elyza/ELYZA-japanese-Llama-2-7b-instruct | BM.GPU.L40S-NC.4 |  |
+| google/codegemma-1.1-2b | VM.GPU.A10.2 |  |
+| google/codegemma-1.1-2b | BM.GPU.A10.4 |  |
+| google/codegemma-1.1-7b-it | BM.GPU.A10.4 |  |
+| google/codegemma-1.1-7b-it | BM.GPU.L40S-NC.4 |  |
+| google/codegemma-2b | VM.GPU.A10.2 |  |
+| google/codegemma-2b | BM.GPU.A10.4 |  |
+| google/codegemma-7b | BM.GPU.A10.4 |  |
+| google/codegemma-7b | BM.GPU.L40S-NC.4 |  |
+| google/gemma-1.1-7b-it | BM.GPU.A10.4 |  |
+| google/gemma-1.1-7b-it | BM.GPU.L40S-NC.4 |  |
+| google/gemma-2b | VM.GPU.A10.2 |  |
+| google/gemma-2b | BM.GPU.A10.4 |  |
+| google/gemma-2b-it | VM.GPU.A10.2 |  |
+| google/gemma-2b-it | BM.GPU.A10.4 |  |
+| google/gemma-7b | BM.GPU.A10.4 |  |
+| google/gemma-7b | BM.GPU.L40S-NC.4 |  |
+| ibm-granite/granite-3.3-2b-instruct | VM.GPU.A10.2 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.A10.4 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.L40S-NC.4 |  |
+| ibm-granite/granite-3.3-8b-instruct | VM.GPU.A10.1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | VM.GPU.A10.2 |  |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 |  |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 |  |
+| ibm-granite/granite-3.3-8b-instruct | VM.GPU.A10.1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | VM.GPU.A10.2 |  |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 |  |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 |  |
+| ibm-granite/granite-3.3-8b-instruct-GGUF | VM.Standard.A1.Flex |  |
+| ibm-granite/granite-3.3-8b-instruct-GGUF | VM.Standard.A2.Flex |  |
+| ibm-granite/granite-4.0-tiny-base-preview | VM.GPU.A10.2 | --enforce-eager --tensor-parallel-size 2 --tool-call-parser granite --enable-auto-tool-choice |
+| ibm-granite/granite-4.0-tiny-base-preview | BM.GPU.A10.4 |  |
+| ibm-granite/granite-4.0-tiny-preview | VM.GPU.A10.2 | --enforce-eager --tensor-parallel-size 2 --tool-call-parser granite --enable-auto-tool-choice |
+| ibm-granite/granite-4.0-tiny-preview | BM.GPU.A10.4 |  |
+| ibm-granite/granite-embedding-278m-multilingual | VM.GPU.A10.2 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.A10.4 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.L40S-NC.4 |  |
+| ibm-granite/granite-speech-3.3-8b | VM.GPU.A10.2 | --trust-remote-code --max-model-len 2048 --tensor-parallel-size 2 |
+| ibm-granite/granite-speech-3.3-8b | BM.GPU.H100.8 | --trust-remote-code --tensor-parallel-size 1 |
+| ibm-granite/granite-timeseries-ttm-r1 | VM.Standard.E4.Flex |  |
+| ibm-granite/granite-timeseries-ttm-r1 | VM.Standard.E5.Flex |  |
+| ibm-granite/granite-vision-3.2-2b | VM.GPU.A10.2 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.A10.4 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.L40S-NC.4 |  |
+| intfloat/e5-mistral-7b-instruct | VM.GPU.A10.2 |  |
+| intfloat/e5-mistral-7b-instruct | BM.GPU.A10.4 |  |
+| intfloat/e5-mistral-7b-instruct | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.A10.4 | --enforce-eager --max-num-seqs 16 --max-model-len 65536 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU4.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.L40S-NC.4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.A100-v2.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.H100.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.H200.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.A10.4 | --enforce-eager --max-num-seqs 16 --max-model-len 65536 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU4.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.L40S-NC.4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.A100-v2.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.H100.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.A10.4 | --enforce-eager --max-num-seqs 16 --max-model-len 65536 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU4.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.L40S-NC.4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.A100-v2.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H100.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.A10.4 | --enforce-eager --max-num-seqs 16 --max-model-len 65536 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU4.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.L40S-NC.4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.A100-v2.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H100.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H200.8 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-1B | VM.GPU.A10.2 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.A10.4 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Llama-3.2-1B | VM.GPU.A10.2 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.A10.4 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Llama-3.2-1B | VM.Standard.A1.Flex |  |
+| meta-llama/Llama-3.2-1B-Instruct | VM.GPU.A10.2 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Llama-3.2-1B-Instruct | VM.GPU.A10.2 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Llama-3.2-1B-Instruct | VM.Standard.A1.Flex |  |
+| meta-llama/Llama-3.2-3B | VM.GPU.A10.1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | VM.GPU.A10.2 |  |
+| meta-llama/Llama-3.2-3B | BM.GPU.A10.4 |  |
+| meta-llama/Llama-3.2-3B | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Llama-3.2-3B | VM.GPU.A10.1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | VM.GPU.A10.2 |  |
+| meta-llama/Llama-3.2-3B | BM.GPU.A10.4 |  |
+| meta-llama/Llama-3.2-3B | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Llama-3.2-3B | VM.Standard.A1.Flex |  |
+| meta-llama/Llama-3.2-3B-Instruct | VM.GPU.A10.1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | VM.GPU.A10.2 |  |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 |  |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Llama-3.2-3B-Instruct | VM.GPU.A10.1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | VM.GPU.A10.2 |  |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 |  |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Llama-3.2-3B-Instruct | VM.Standard.A1.Flex | --tool-call-parser llama3_json --enable-auto-tool-choice |
+| meta-llama/Llama-3.2-90B-Vision | BM.GPU4.8 | --enforce-eager --max-num-seqs 32 --max-model-len 6096 |
+| meta-llama/Llama-3.2-90B-Vision | BM.GPU.A100-v2.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.2-90B-Vision | BM.GPU.H100.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.2-90B-Vision | BM.GPU4.8 | --enforce-eager --max-num-seqs 32 --max-model-len 6096 |
+| meta-llama/Llama-3.2-90B-Vision | BM.GPU.A100-v2.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.2-90B-Vision | BM.GPU.H100.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.2-90B-Vision | BM.GPU.H200.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.2-90B-Vision-Instruct | BM.GPU4.8 | --enforce-eager --max-num-seqs 32 --max-model-len 6096 |
+| meta-llama/Llama-3.2-90B-Vision-Instruct | BM.GPU.A100-v2.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.2-90B-Vision-Instruct | BM.GPU.H100.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.2-90B-Vision-Instruct | BM.GPU4.8 | --enforce-eager --max-num-seqs 32 --max-model-len 6096 |
+| meta-llama/Llama-3.2-90B-Vision-Instruct | BM.GPU.A100-v2.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.2-90B-Vision-Instruct | BM.GPU.H100.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.2-90B-Vision-Instruct | BM.GPU.H200.8 | --enforce-eager --max-num-seqs 32 --max-model-len 32768 |
+| meta-llama/Llama-3.3-70B-Instruct | BM.GPU.A10.4 | --quantization fp8 --gpu-memory-utilization 0.98 --cpu-offload-gb 20 --enforce-eager --max-num-seqs 2 --max_model_len 8192 --tool-call-parser llama3_json --enable-auto-tool-choice |
+| meta-llama/Llama-3.3-70B-Instruct | BM.GPU.L40S-NC.4 | --max-model-len 70000 --tool-call-parser llama3_json --enable-auto-tool-choice |
+| meta-llama/Llama-3.3-70B-Instruct | VM.Standard.A1.Flex | --tool-call-parser llama3_json --enable-auto-tool-choice |
+| meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | BM.GPU.H100.8 | --tensor-parallel-size 8 --max-model-len 430000 --gpu-memory-utilization 0.98  --tool-call-parser llama4_json --enable-auto-tool-choice |
+| meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | BM.GPU.H200.8 | --tensor-parallel-size 8 --max-model-len 430000 --gpu-memory-utilization 0.98  --tool-call-parser llama4_json --enable-auto-tool-choice |
+| meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | BM.GPU.A100-v2.8 | --tensor-parallel-size 8 --max-model-len 430000 --gpu-memory-utilization 0.98  --tool-call-parser llama4_json --enable-auto-tool-choice |
+| meta-llama/Llama-4-Scout-17B-16E | BM.GPU.H100.8 | --tensor-parallel-size 8 --tool-call-parser llama4_json --enable-auto-tool-choice |
+| meta-llama/Llama-4-Scout-17B-16E | BM.GPU.H200.8 | --tensor-parallel-size 8 --tool-call-parser llama4_json --enable-auto-tool-choice |
+| meta-llama/Llama-4-Scout-17B-16E | BM.GPU.A100-v2.8 | --tensor-parallel-size 8 --tool-call-parser llama4_json --enable-auto-tool-choice |
+| meta-llama/Llama-4-Scout-17B-16E-Instruct | BM.GPU.H100.8 | --tensor-parallel-size 8 --max-model-len 1000000 --tool-call-parser llama4_json --enable-auto-tool-choice |
+| meta-llama/Llama-4-Scout-17B-16E-Instruct | BM.GPU.H200.8 | --tensor-parallel-size 8 --max-model-len 1000000 --tool-call-parser llama4_json --enable-auto-tool-choice |
+| meta-llama/Llama-4-Scout-17B-16E-Instruct | BM.GPU.A100-v2.8 | --tensor-parallel-size 8 --max-model-len 1000000 --tool-call-parser llama4_json --enable-auto-tool-choice |
+| meta-llama/Meta-Llama-3-70B | VM.Standard.A1.Flex |  |
+| meta-llama/Meta-Llama-3-70B-Instruct | VM.GPU.A10.1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-70B-Instruct | VM.GPU.A10.2 |  |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.A10.4 |  |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Meta-Llama-3-70B-Instruct | VM.Standard.A1.Flex |  |
+| meta-llama/Meta-Llama-3-8B | VM.GPU.A10.2 |  |
+| meta-llama/Meta-Llama-3-8B | BM.GPU.A10.4 |  |
+| meta-llama/Meta-Llama-3-8B | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Meta-Llama-3-8B | VM.Standard.A1.Flex |  |
+| meta-llama/Meta-Llama-3-8B-Instruct | VM.GPU.A10.1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-8B-Instruct | VM.GPU.A10.2 |  |
+| meta-llama/Meta-Llama-3-8B-Instruct | BM.GPU.A10.4 |  |
+| meta-llama/Meta-Llama-3-8B-Instruct | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Meta-Llama-3-8B-Instruct | VM.Standard.A1.Flex |  |
+| meta-llama/Meta-Llama-3.1-405B-FP8 | BM.GPU.H100.8 | --max-model-len 65536 |
+| meta-llama/Meta-Llama-3.1-405B-FP8 | BM.GPU.H200.8 | --max-model-len 65536 |
+| meta-llama/Meta-Llama-3.1-405B-Instruct-FP8 | BM.GPU.H100.8 | --max-model-len 65536 |
+| meta-llama/Meta-Llama-3.1-405B-Instruct-FP8 | BM.GPU.H200.8 | --max-model-len 65536 |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU.A10.4 | --quantization fp8 --gpu-memory-utilization 0.98 --cpu-offload-gb 20 --enforce-eager --max-num-seqs 2 --max_model_len 8192 |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU.L40S-NC.4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU4.8 |  |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU.A100-v2.8 |  |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU.H100.8 |  |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU.H200.8 |  |
+| meta-llama/Meta-Llama-3.1-70B | VM.Standard.A1.Flex |  |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.A10.4 | --quantization fp8 --gpu-memory-utilization 0.98 --cpu-offload-gb 20 --enforce-eager --max-num-seqs 2 --max_model_len 8192 |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.L40S-NC.4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU4.8 |  |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.A100-v2.8 |  |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.H100.8 |  |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.H200.8 |  |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | VM.Standard.A1.Flex |  |
+| meta-llama/Meta-Llama-3.1-8B | VM.GPU.A10.1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B | VM.GPU.A10.2 |  |
+| meta-llama/Meta-Llama-3.1-8B | BM.GPU.A10.4 |  |
+| meta-llama/Meta-Llama-3.1-8B | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Meta-Llama-3.1-8B | VM.Standard.A1.Flex |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | VM.GPU.A10.1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | VM.GPU.A10.2 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | VM.GPU.A10.1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | VM.GPU.A10.2 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.L40S-NC.4 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | VM.Standard.A1.Flex |  |
+| microsoft/phi-2 | VM.GPU.A10.2 |  |
+| microsoft/phi-2 | BM.GPU.A10.4 |  |
+| microsoft/phi-2 | BM.GPU.L40S-NC.4 |  |
+| microsoft/Phi-3-mini-128k-instruct | VM.GPU.A10.2 | --trust-remote-code --max-model-len 4096 |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.A10.4 | --trust-remote-code --max-model-len 60000 |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.L40S-NC.4 | --trust-remote-code |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.A100-v2.8 | --trust-remote-code |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.H100.8 | --trust-remote-code |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.H200.8 | --trust-remote-code |
+| microsoft/Phi-3-mini-4k-instruct | VM.GPU.A10.2 |  |
+| microsoft/Phi-3-mini-4k-instruct | BM.GPU.A10.4 |  |
+| microsoft/Phi-3-mini-4k-instruct | BM.GPU.L40S-NC.4 |  |
+| microsoft/Phi-3-mini-4k-instruct-gguf-fp16 | VM.Standard.A1.Flex |  |
+| microsoft/Phi-3-mini-4k-instruct-gguf-fp16 | VM.Standard.A2.Flex |  |
+| microsoft/Phi-3-mini-4k-instruct-gguf-q4 | VM.Standard.A1.Flex |  |
+| microsoft/Phi-3-mini-4k-instruct-gguf-q4 | VM.Standard.A2.Flex |  |
+| microsoft/Phi-3-vision-128k-instruct | VM.GPU.A10.2 | --trust-remote-code --max-model-len 32000 |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.A10.4 | --trust-remote-code --max-model-len 60000 |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.L40S-NC.4 | --trust-remote-code |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.A100-v2.8 | --trust-remote-code |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.H100.8 | --trust-remote-code |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.H200.8 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | VM.GPU.A10.1 | --trust-remote-code --max-model-len 16000 |
+| microsoft/Phi-3.5-mini-instruct | VM.GPU.A10.2 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A10.4 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.L40S-NC.4 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 |  |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H200.8 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A10.4 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.L40S-NC.4 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 |  |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H200.8 |  |
+| microsoft/Phi-3.5-vision-instruct | VM.GPU.A10.1 | --trust-remote-code --max_model_len 16000 |
+| microsoft/Phi-3.5-vision-instruct | VM.GPU.A10.2 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A10.4 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.L40S-NC.4 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 |  |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H200.8 |  |
+| microsoft/phi-4 | VM.GPU.A10.1 | --quantization fp8 --enforce-eager --max-num-seqs 2 --max_model_len 8192  --cpu-offload-gb 20 |
+| microsoft/phi-4 | BM.GPU.A10.4 |  |
+| microsoft/phi-4 | BM.GPU.L40S-NC.4 |  |
+| microsoft/phi-4 | BM.GPU4.8 |  |
+| microsoft/phi-4 | BM.GPU.A100-v2.8 |  |
+| microsoft/phi-4 | BM.GPU.H100.8 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 |  |
+| microsoft/phi-4 | VM.GPU.A10.1 | --quantization fp8 --enforce-eager --max-num-seqs 2 --max_model_len 8192  --cpu-offload-gb 20 |
+| microsoft/phi-4 | BM.GPU.A10.4 |  |
+| microsoft/phi-4 | BM.GPU.L40S-NC.4 |  |
+| microsoft/phi-4 | BM.GPU4.8 |  |
+| microsoft/phi-4 | BM.GPU.A100-v2.8 |  |
+| microsoft/phi-4 | BM.GPU.H100.8 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 |  |
+| microsoft/phi-4-gguf-fp16 | VM.Standard.A1.Flex |  |
+| microsoft/phi-4-gguf-fp16 | VM.Standard.A2.Flex |  |
+| microsoft/phi-4-gguf-q4 | VM.Standard.A1.Flex |  |
+| microsoft/phi-4-gguf-q4 | VM.Standard.A2.Flex |  |
+| microsoft/Phi-4-multimodal-instruct | VM.GPU.A10.1 | --gpu-memory-utilization 0.98  --trust-remote-code  --enforce-eager --max-num-seqs 32 --max-model-len 6000  --dtype auto --enable-lora --max-lora-rank 320 --lora-extra-vocab-size 512 --limit-mm-per-prompt audio=1,image=1 --max-loras 2  --lora-modules speech=/opt/ds/model/deployed_model/service_models/Phi-4-multimodal-instruct/0af439b/artifact/speech-lora vision=/opt/ds/model/deployed_model/service_models/Phi-4-multimodal-instruct/0af439b/artifact/vision-lora |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.A10.4 |  |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.L40S-NC.4 |  |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU4.8 |  |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.A100-v2.8 |  |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.H100.8 |  |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.H200.8 |  |
+| mistralai/Mistral-7B-Instruct-v0.1 | VM.GPU.A10.1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.1 | VM.GPU.A10.2 |  |
+| mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.A10.4 |  |
+| mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.L40S-NC.4 |  |
+| mistralai/Mistral-7B-Instruct-v0.2 | VM.GPU.A10.1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.2 | VM.GPU.A10.2 |  |
+| mistralai/Mistral-7B-Instruct-v0.2 | BM.GPU.A10.4 |  |
+| mistralai/Mistral-7B-Instruct-v0.2 | BM.GPU.L40S-NC.4 |  |
+| mistralai/Mistral-7B-Instruct-v0.3 | VM.GPU.A10.1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-Instruct-v0.3 | VM.GPU.A10.2 | --max-model-len 8192 |
+| mistralai/Mistral-7B-Instruct-v0.3 | BM.GPU.A10.4 |  |
+| mistralai/Mistral-7B-Instruct-v0.3 | BM.GPU.L40S-NC.4 |  |
+| mistralai/Mistral-7B-Instruct-v0.3 | VM.Standard.A1.Flex |  |
+| mistralai/Mistral-7B-v0.1 | VM.GPU.A10.1 | --max-model-len 4096 |
+| mistralai/Mistral-7B-v0.1 | VM.GPU.A10.2 |  |
+| mistralai/Mistral-7B-v0.1 | BM.GPU.A10.4 |  |
+| mistralai/Mistral-7B-v0.1 | BM.GPU.L40S-NC.4 |  |
+| openai/gpt-oss-120b | BM.GPU.H100.8 | --trust-remote-code --gpu-memory-utilization 0.90  --max-num-seqs 32 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-120b | BM.GPU.H200.8 | --trust-remote-code --gpu-memory-utilization 0.90  --max-num-seqs 32 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-120b | BM.GPU.A100-v2.8 | --trust-remote-code --gpu-memory-utilization 0.90  --max-num-seqs 32 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-120b | BM.GPU.B4.8 | --trust-remote-code --gpu-memory-utilization 0.90  --max-num-seqs 32 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-120b | BM.GPU4.8 | --trust-remote-code --gpu-memory-utilization 0.90  --max-num-seqs 32 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU.H100.8 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H200.8 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.A10.4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max_model_len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU.L40S-NC.4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max_model_len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | VM.GPU.A10.2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 5 --max-model-len 8192 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU.A100-v2.8 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU.B4.8 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max_model_len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU4.8 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max-model-len 130000 --dtype bfloat16 |
+| tiiuae/falcon-7b | VM.GPU.A10.1 | --trust-remote-code |
+| tiiuae/falcon-7b | VM.GPU.A10.2 |  |
+| tiiuae/falcon-7b | BM.GPU.A10.4 |  |
+| tiiuae/falcon-7b | VM.GPU.A10.2 |  |
+| tiiuae/falcon-7b | BM.GPU.A10.4 |  |
 
 ## Troubleshooting
 

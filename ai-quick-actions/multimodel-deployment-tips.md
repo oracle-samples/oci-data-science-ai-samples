@@ -1,13 +1,42 @@
-# **AI Quick Actions MultiModel Deployment**
+# **Multi-Model Deployment with AI Quick Actions (AQUA)**
+Multi-Model inference and serving refers to efficiently hosting and managing multiple large language models (LLMs) on a single compute shape on Oracle Cloud Infrastructure. This allows for inference requests to multiple models while being hosted on one compute instance, with one model deployment endpoint.
 
-# Table of Contents
-- # Introduction to MultiModel Deployment and Serving
-- [Models](#models)
+We use the 'name' parameter within model payloads to reach specific models. The Data Science service has a prebuilt **vLLM service container** that makes deploying and serving multiple large language model on **single GPU Compute shape** very easy, simplifying the deployment process and reducing operational complexity. This container comes with preinstalled [**LiteLLM proxy server**](https://docs.litellm.ai/docs/simple_proxy) which routes requests to the appropriate model, ensuring seamless prediction.
+
+![mmd-example](web_assets/mmd-ex.png)
+
+**Note**
+
+This diagram shows one base model LLM and one fine-tuned model (only available through AQUA CLI).
+
+For fine-tuned models, requests specifying the base model name (ex. model: meta-llama/Llama-3.2-1B-Instruct) are routed to the base LLM, while requests specifying the fine-tuned model (ex. model: tunedModel_meta-llama/Llama-3.2-1B) are routed to the fine-tuned model (the base model w/ applied LoRA weights).
+
+
+# Models supported by Multi-Model Deployment
+
+**Multi-Model Deployment is currently in beta. At this time, the following is supported:**
+- **[AQUA User Interface on Notebooks](#using-aqua-ui-interface-for-multi-model-deployment)**
+  - only Multi-Model Deployments with **base service LLM models (text-generation)** can be deployed with AQUA UI.
+  - fine-tuned/registered/custom models in Multi-Model Deployment must be deployed through [AQUA CLI](cli-tips.md)
+- **[AQUA CLI](#using-aqua-cli-for-multi-model-deployment)**
+  - along w/ base service LLM models, **fine-tuned models, [custom models](#custom-models), multi-modal models** (image-text-to-text models) can be used in Multi-Model Deployments
+
+## Contents
+- [**Multi-Model Deployment with AI Quick Actions (AQUA)**](#multi-model-deployment-with-ai-quick-actions-aqua)
+- [Models supported by Multi-Model Deployment](#models-supported-by-multi-model-deployment)
+  - [Contents](#contents)
+  - [Setup](#setup)
+      - [For AQUA CLI](#for-aqua-cli)
+- [Using AQUA UI Interface for Multi-Model Deployment](#using-aqua-ui-interface-for-multi-model-deployment)
+  - [Create MultiModel Deployment](#create-multimodel-deployment)
+- [Using AQUA CLI for Multi-Model Deployment](#using-aqua-cli-for-multi-model-deployment)
+  - [1. Obtain Model OCIDs](#1-obtain-model-ocids)
+    - [Service Managed Models](#service-managed-models)
+    - [Fine-Tuned Models](#fine-tuned-models)
     - [Custom Models](#custom-models)
 - [MultiModel Deployment](#multimodel-deployment)
   - [List Available Shapes](#list-available-shapes)
   - [Get MultiModel Configuration](#get-multimodel-configuration)
-  - [Create MultiModel Deployment](#create-multimodel-deployment)
   - [Manage MultiModel Deployments](#manage-multimodel-deployments)
     - [List MultiModel Deployments](#list-multimodel-deployments)
     - [Edit MultiModel Deployments](#edit-multimodel-deployments)
@@ -15,26 +44,132 @@
 - [MultiModel Evaluation](#multimodel-evaluation)
   - [Create Model Evaluation](#create-model-evaluations)
 - [Limitation](#limitations)
+  - [2. Before Deployment, Check Resource Limits](#2-before-deployment-check-resource-limits)
+    - [List Available Shapes](#list-available-shapes)
+      - [Usage](#usage)
+      - [Optional Parameters](#optional-parameters)
+      - [Example](#example)
+        - [CLI Output](#cli-output)
+    - [Obtain Model Configurations for Multi-Model Deployment](#obtain-model-configurations-for-multi-model-deployment)
+      - [Usage](#usage-1)
+      - [Required Parameters](#required-parameters)
+      - [Optional Parameters](#optional-parameters-1)
+      - [Example](#example-1)
+        - [CLI Output](#cli-output-1)
+  - [3. Create Multi-Model Deployment](#3-create-multi-model-deployment)
+    - [Description](#description)
+    - [Usage](#usage-2)
+    - [Required Parameters](#required-parameters-1)
+      - [Example with Base Models:](#example-with-base-models)
+      - [Example with Fine-Tuned-Model:](#example-with-fine-tuned-model)
+      - [Example with Multi-Modal \& Embedding Models:](#example-with-multi-modal--embedding-models)
+    - [Optional Parameters](#optional-parameters-2)
+    - [Example](#example-2)
+      - [Create Multi-Model deployment with `/v1/completions`](#create-multi-model-deployment-with-v1completions)
+        - [CLI Output](#cli-output-2)
+      - [Create Multi-Model deployment with `/v1/chat/completions`](#create-multi-model-deployment-with-v1chatcompletions)
+        - [CLI Output](#cli-output-3)
+      - [Create Multi-Model (1 Embedding Model, 1 LLM) deployment with `/v1/completions`](#create-multi-model-1-embedding-model-1-llm-deployment-with-v1completions)
+  - [Manage Multi-Model Deployments](#manage-multi-model-deployments)
+- [Multi-Model Inferencing](#multi-model-inferencing)
+  - [Using oci-cli](#using-oci-cli)
+  - [Using Python SDK (without streaming)](#using-python-sdk-without-streaming)
+  - [Using Python SDK (with streaming)](#using-python-sdk-with-streaming)
+  - [Using Python SDK for /v1/chat/completions endpoint](#using-python-sdk-for-v1chatcompletions-endpoint)
+  - [Using Java (with streaming)](#using-java-with-streaming)
+  - [Multiple Inference endpoints](#multiple-inference-endpoints)
+- [Multi-Model Evaluations](#multi-model-evaluations)
+  - [Create Model Evaluations](#create-model-evaluations)
+    - [Description](#description-1)
+    - [Usage](#usage-3)
+    - [Required Parameters](#required-parameters-2)
+    - [Optional Parameters](#optional-parameters-3)
+    - [Example](#example-3)
+      - [CLI Output](#cli-output-4)
+- [Limitations](#limitations)
 - [Supported Service Models](#supported-service-models)
-- [Tensor Parallelism VS Multi-Instance GPU (MIG)](#tensor-parallelism-vs-multi-instance-gpu)
+- [Tensor Parallelism VS Multi-Instance GPU](#tensor-parallelism-vs-multi-instance-gpu)
+    - [Key Differences](#key-differences)
+  - [Summary](#summary)
 
 
-# Introduction to MultiModel Deployment and Serving
+## Setup
 
-MultiModel inference and serving refers to efficiently hosting and managing multiple large language models simultaneously to serve inference requests using shared resources. The Data Science server has prebuilt **vLLM service container** that make deploying and serving multiple large language model on **single GPU Compute shape** very easy, simplifying the deployment process and reducing operational complexity. This container comes with preinstalled [**LiteLLM proxy server**](https://docs.litellm.ai/docs/simple_proxy) which routes requests to the appropriate model, ensuring seamless prediction.
+- Ensure requirements (AQUA policies & OCI Bucket Versioning) are met [here](register-tips.md#Prerequisites).
 
-This document provides documentation on how to create MultiModel deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models.
+#### For AQUA CLI
+-  latest version of Accelerated Data Science (ADS) to run Multi-Model Deployments, installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
 
+# Using AQUA UI Interface for Multi-Model Deployment
+Only Multi-Model Deployments with **base service LLM models (text-generation)** can be deployed with AQUA UI.
+- For fine-tuned,registered, or custom models in Multi-Model Deployment, use the AQUA CLI as detailed [here](#using-aqua-cli-for-multi-model-deployment)
 
-# Models
+### Select the 'Create deployment' Button
+![create-deployment](web_assets/create-deployment.png)
 
-First step in process is to get the OCIDs of the desired base service LLM AQUA models, which are required to initiate the MultiModel deployment process. Refer to [AQUA CLI tips](cli-tips.md) for detailed instructions on how to obtain the OCIDs of base service LLM AQUA models.
+### Select 'Deploy Multi Model'
+- Based on the 'models' field, a Compute Shape will be recommended to accomidate both models.
+- Select logging and endpoints (/v1/completions | /v1/chat/completions).
+- Submit form via 'Deploy Button' at bottom.
+![mmd-form](web_assets/deploy-mmd.png)
 
-You can also obtain the OCID  from the AQUA user interface by clicking on the model card and selecting the `Copy OCID` button from the `More Options` dropdown in the top-right corner of the screen.
+### Inferencing with Multi-Model Deployment
 
-## Custom Models
+There are two ways to send inference requests to models within a Multi-Model Deployment
 
-Out of the box, MultiModel Deployment currently supports only AI Quick Actions service LLM models (see [requirements](#introduction-to-multimodel-deployment-and-serving) above). However, it is also possible to enable support for *custom-registered* models by manually adding a deployment configuration to the model artifact folder in Object Storage.
+1. Python SDK (recommended)- see [here](#Multi-Model-Inferencing)
+2. Using AQUA UI - see [here](#Create-Multi-Model-Deployment)
+
+Once the Deployment is Active, view the model deployment details and inferencing form by clicking on the 'Deployments' Tab and selecting the model within the Model Deployment list.
+
+Use the dropdown labeled 'Model parameters' to select a specific model for inference.
+
+![mmd-details](web_assets/mmd-details.png)
+
+# Using AQUA CLI for Multi-Model Deployment
+This document provides documentation on how to use ADS CLI to create Multi-Model deployment using AI Quick Actions (AQUA) model deployments, and evaluate the models. There are three steps:
+
+## 1. Obtain Model OCIDs
+
+Again, only **base service managed LLM models (text-generation)** obtained on the AQUA User Interface on OCI Notebooks.
+- use the  **[AQUA CLI](cli-tips.md)** for **[fine-tuned models](#fine-tuned-models), [custom models](#custom-models), multi-modal models (image-text-to-text models)**
+
+### Service Managed Models
+
+- obtain the OCID from the AQUA user interface by clicking on the model card and selecting the `Copy OCID` button from the `More Options` dropdown in the top-right corner of the screen.
+- Refer to [AQUA CLI tips](cli-tips.md#get-service-model-ocid) for detailed instructions on how to obtain the OCIDs of service-managed models via CLI.
+
+### Fine-Tuned Models
+To use a fine-tuned model in a Multi-Model Deployment, we must create the fine-tuned model first as specified below:
+- **Register the Base Model**
+
+  Register the **base model** using either the **AI Quick Actions UI** or **ADS CLI**. This will upload the model to the Object Storage and associate it with a Model Catalog record.
+
+- **Fine-Tune the Model**
+
+  Fine-tune your model using **[AI Quick Actions UI](fine-tuning-tips.md#Fine-Tune-a-Model)** or **[ADS CLI](cli-tips.md#Model-Fine-Tuning)** . This will create a Data Science Job using your dataset (.jsonl file) and create a LoRA module uploaded to the specified bucket.
+
+- **Obtain the Base Model OCID**
+  - On the model tab, obtain the OCID from the AQUA user interface by clicking on the **base** model card and selecting the `Copy OCID` button from the `More Options` dropdown in the top-right corner of the screen.
+  - To obtain the OCIDs of Service/ User-Registered Models **via CLI**: [docs](cli-tips.md#get-service-model-ocid)
+
+- **Obtain Fine-Tuned Model OCID, Fine-Tuned Model Name**
+  - On the model tab, select the Fine-Tuned tab, and obtain the OCID & Model Name from the AQUA user interface by clicking on the **Fine-Tuned** model card and selecting the `Copy OCID` button from the `More Options` dropdown in the top-right corner of the screen.
+  - To Obtain Fine-Tuned Model OCID via CLI: [docs](cli-tips.md#get-fine-tuned-model-ocid)
+  - To Obtain Fine-Tuned Model Name via CLI: [docs](cli-tips.md#get-model-details)
+    -  The "name" field in the CLI output will be the Fine-Tuned Model Name
+    -  Use the Fine-Tuned Model OCID for CLI command
+
+- **Use Fine-Tuned model within a Multi-Model Deployment via AQUA CLI**
+
+  - Complete the following two steps:
+    - [Ensure](#2-before-deployment-check-resource-limits) that models within Multi-Model Deployment is compatible with selected compute shape and compute shape is available in your tenancy.
+    - **Note** that the GPU requirement is determined by the base model that the Fine-Tuned model uses.
+    - [Using AQUA CLI](#3-create-multi-model-deployment), create a Multi-Model Deployment w/ Fine-Tuned Model as shown [here](#example-w-fine-tuned-model)
+
+### Custom Models
+
+Using the AQUA CLI (not supported in AQUA UI), it is also possible to enable support for *custom-registered* models by manually adding a deployment configuration to the model artifact folder in Object Storage.
 
 Follow the steps below to enable MultiModel Deployment support for your custom models:
 
@@ -131,27 +266,28 @@ Follow the steps below to enable MultiModel Deployment support for your custom m
 
   Use the [MultiModel Configuration command](#get-multimodel-configuration) to check whether the selected model is compatible with multi-model deployment now.
 
-# MultiModel Deployment
+## 2. Before Deployment, Check Resource Limits
+Before starting a Multi-Model Deployment, we must check the following resource limits:
+- Determine the compute shapes available for model deployment in our OCI Environment, seen [here](#list-available-shapes).
+- After selecting an available compute shape, we check if the models selected are compatible with the selected shape, seen [here](#Obtain-Model-Configurations-for-Multi-Model-Deployment).
 
-## List Available Shapes
-
-### Description
+### List Available Shapes
 
 Lists the available **Compute Shapes** with basic information such as name, configuration, CPU/GPU specifications, and memory capacity for the shapes supported by the Model Deployment service in your compartment.
 
-### Usage
+#### Usage
 
 ```bash
 ads aqua deployment list_shapes
 ```
 
-### Optional Parameters
+#### Optional Parameters
 
 `--compartment_id [str]`
 
 The compartment OCID where model deployment is to be created. If not provided, then it defaults to user's compartment.
 
-### Example
+#### Example
 ```bash
 ads aqua deployment list_shapes
 ```
@@ -184,25 +320,24 @@ ads aqua deployment list_shapes
 
 ```
 
-## Get MultiModel Configuration
+### Obtain Model Configurations for Multi-Model Deployment
 
-### Description
+Retrieves the deployment configuration for multiple models and calculates the GPU allocations for all compatible shapes.
+- **For Fine-Tuned Models**, use the OCID on the fine-tuned model card/ fine-tuned model catalog entry (not base model OCID)
 
-Retrieves the deployment configuration for multiple base Aqua service models and calculates the GPU allocations for all compatible shapes.
-
-### Usage
+#### Usage
 
 ```bash
 ads aqua deployment get_multimodel_deployment_config [OPTIONS]
 ```
 
-### Required Parameters
+#### Required Parameters
 
 `--model_ids  [list]`
 
 A list of OCIDs for the Aqua models <br>
 
-### Optional Parameters
+#### Optional Parameters
 
 `--primary_model_id [str]`
 
@@ -221,7 +356,7 @@ If B is the primary model, the gpu allocation is [2, 4, 2] as B always gets the 
 
 The compartment OCID to retrieve the models and available model deployment shapes.
 
-### Example
+#### Example
 
 ```bash
 ads aqua deployment get_multimodel_deployment_config --model_ids '["ocid1.datasciencemodel.oc1.iad.<ocid1>","ocid1.datasciencemodel.oc1.iad.<ocid2>"]'
@@ -343,7 +478,7 @@ ads aqua deployment get_multimodel_deployment_config --model_ids '["ocid1.datasc
 }
 ```
 
-## Create MultiModel Deployment
+## 3. Create Multi-Model Deployment
 
 Only **base service LLM models** are supported for MultiModel Deployment. All selected models will run on the same **GPU shape**, sharing the available compute resources. Make sure to choose a shape that meets the needs of all models in your deployment using [MultiModel Configuration command](#get-multimodel-configuration)
 
@@ -402,8 +537,53 @@ ads aqua deployment create [OPTIONS]
 
 `--models [str]`
 
-The String representation of a JSON array, where each object defines a model’s OCID and the number of GPUs assigned to it. The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**. <br>
-Example: `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape. <br>
+The String representation of a JSON array, where each object defines:
+- model’s OCID
+- number of GPUs assigned to it
+- Fine Tuned Weights (if Fine-Tuned Model only).
+
+
+The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**.
+
+#### Example with Base Models:
+
+`'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape.
+
+#### Example with Fine-Tuned-Model:
+
+For **fine-tuned models**, specify the OCID of the **base model** in the top-level "model_id" field.
+List your fine-tuned models in the **"fine_tune_weights" array**, where each entry includes the **OCID and name of a fine-tuned model** derived from the base model.
+```
+'[  # Fine-Tuned-Model
+    {
+      "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
+      "gpu_count": 1,
+      "model_name": "meta-llama/Meta-Llama-3.1-8B",
+      "model_task": "text_generation",
+      "fine_tune_weights": [
+        {
+          "model_id": "ocid1.datasciencemodel.oc1.iad.<>",
+          "model_name": "meta-llama/Meta-Llama-3.1-8B-FT1"
+        },
+        {
+          "model_id": "ocid1.datasciencemodel.oc1.iad.<>",
+          "model_name": "meta-llama/Meta-Llama-3.1-8B-FT2"
+        }
+      ]
+    }, # 2nd Model
+    {
+      "model_task": "text_generation",
+      "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
+      "gpu_count": 1
+    }
+  ]'
+```
+#### Example with Multi-Modal & Embedding Models:
+
+`'[{"model_id":"<model_ocid>", "gpu_count":1, "model_task": "text_generation"},{"model_id":"<model_ocid>", "gpu_count":1, "model_task": "image_text_to_text"}]'` for  `VM.GPU.A10.2` shape.
+
+For deploying multi-modal and embedding models, model_task must be specified. For best practice, model_task should be supplied. (Supported tasks: text_generation, image_text_to_text, code_synthesis, text_embedding)
+
 
 
 `--instance_shape [str]`
@@ -474,14 +654,15 @@ The private endpoint id of model deployment.
 
 #### Example
 
-##### Create MultiModel deployment with `/v1/completions`
+##### Create Multi-Model deployment with `/v1/completions`
 
 ```bash
 ads aqua deployment create \
   --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
   --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}]' \
   --instance_shape "VM.GPU.A10.2" \
-  --display_name "modelDeployment_multmodel_model1_model2"
+  --display_name "modelDeployment_multmodel_model1_model2" \
+  --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions"}'
 
 ```
 
@@ -534,7 +715,7 @@ ads aqua deployment create \
 }
 ```
 
-##### Create MultiModel deployment with `/v1/chat/completions`
+##### Create Multi-Model deployment with `/v1/chat/completions`
 
 ```bash
 ads aqua deployment create \
@@ -542,7 +723,8 @@ ads aqua deployment create \
   --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}]' \
   --env-var '{"MODEL_DEPLOY_PREDICT_ENDPOINT":"/v1/chat/completions"}' \
   --instance_shape "VM.GPU.A10.2" \
-  --display_name "modelDeployment_multmodel_model1_model2"
+  --display_name "modelDeployment_multmodel_model1_model2" \
+  --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions"}'
 
 ```
 
@@ -594,15 +776,28 @@ ads aqua deployment create \
     },
 }
 ```
+#### Create Multi-Model (1 Embedding Model, 1 LLM) deployment with `/v1/completions`
 
+Note: will need to pass {"route": "v1/embeddings"} as a header for all inference requests to embedding model
 
-## Manage MultiModel Deployments
+```
+headers={'route':'/v1/embeddings','Content-Type':'application/json'}
+```
+- for /v1/chat/completions, modify "MODEL_DEPLOY_PREDICT_ENDPOINT"
+```bash
+ads aqua deployment create \
+  --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
+  --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1, "model_task": "embedding"}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1, "model_task": "text_generation"}]' \
+  --instance_shape "VM.GPU.A10.2" \
+  --display_name "modelDeployment_multmodel_model1_model2" \
+  --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions"}'
+```
 
-### List MultiModel Deployments
+## Manage Multi-Model Deployments
 
-To list all AQUA deployments (both MultiModel and single-model) within a specified compartment or project, or to get detailed information on a specific MultiModel deployment, kindly refer to the [AQUA CLI tips](cli-tips.md) documentation.
+To list all AQUA deployments (both Multi-Model and single-model) within a specified compartment or project, or to get detailed information on a specific Multi-Model deployment, kindly refer to the [AQUA CLI tips](cli-tips.md) documentation.
 
-Note: MultiModel deployments are identified by the tag `"aqua_multimodel": "true",` associated with them.
+Note: Multi-Model deployments are identified by the tag `"aqua_multimodel": "true",` associated with them.
 
 ### Edit MultiModel Deployments
 
@@ -733,9 +928,9 @@ ads aqua deployment update \
 }
 ```
 
-# MultiModel Inferencing
+# Multi-Model Inferencing
 
-The only change required to infer a specific model from a MultiModel deployment is to update the value of `"model"` parameter in the request payload. The values for this parameter can be found in the Model Deployment details, under the field name `"model_name"`. This parameter segregates the request flow, ensuring that the inference request is directed to the correct model within the MultiModel deployment.
+The only change required to infer a specific model from a Multi-Model deployment is to update the value of `"model"` parameter in the request payload. The values for this parameter can be found in the Model Deployment details, under the field name `"model_name"`. This parameter segregates the request flow, ensuring that the inference request is directed to the correct model within the MultiModel deployment.
 
 ## Using AQUA UI
 
@@ -1047,7 +1242,7 @@ oci raw-request \
 ```
 
 
-# MultiModel Evaluations
+# Multi-Model Evaluations
 
 ## Create Model Evaluations
 
@@ -1202,6 +1397,12 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 # Supported Service Models
 | Model | Shape | GPU | Parameters |
 |-------|-------|-----|------------|
+| Almawave/Velvet-14B | BM.GPU.A10.4 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU.L40S-NC.4 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU4.8 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU.A100-v2.8 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU.H100.8 | 2 |  |
+| Almawave/Velvet-14B | BM.GPU.H200.8 | 2 |  |
 | codellama/CodeLlama-13b-Instruct-hf | BM.GPU.A10.4 | 2 | --max-model-len 4096 |
 | codellama/CodeLlama-13b-Instruct-hf | BM.GPU.L40S-NC.4 | 2 | --max-model-len 4096 |
 | codellama/CodeLlama-7b-Instruct-hf | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
@@ -1233,6 +1434,34 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | google/gemma-2b-it | BM.GPU.A10.4 | 1 |  |
 | google/gemma-7b | BM.GPU.A10.4 | 2 |  |
 | google/gemma-7b | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-3.3-2b-instruct | VM.GPU.A10.2 | 1 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.A10.4 | 1 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.L40S-NC.4 | 1 |  |
+| ibm-granite/granite-3.3-2b-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-3.3-8b-instruct | VM.GPU.A10.2 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-3.3-8b-instruct | VM.GPU.A10.2 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 8192 |
+| ibm-granite/granite-3.3-8b-instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-4.0-tiny-base-preview | BM.GPU.A10.4 | 2 | --enforce-eager --tensor-parallel-size 2 --tool-call-parser granite --enable-auto-tool-choice |
+| ibm-granite/granite-4.0-tiny-preview | BM.GPU.A10.4 | 2 | --enforce-eager --tensor-parallel-size 2 --tool-call-parser granite --enable-auto-tool-choice |
+| ibm-granite/granite-embedding-278m-multilingual | VM.GPU.A10.2 | 1 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.A10.4 | 1 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.L40S-NC.4 | 1 |  |
+| ibm-granite/granite-embedding-278m-multilingual | BM.GPU.L40S-NC.4 | 2 |  |
+| ibm-granite/granite-speech-3.3-8b | BM.GPU.H100.8 | 1 |  |
+| ibm-granite/granite-vision-3.2-2b | VM.GPU.A10.2 | 1 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.A10.4 | 1 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.A10.4 | 2 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.L40S-NC.4 | 1 |  |
+| ibm-granite/granite-vision-3.2-2b | BM.GPU.L40S-NC.4 | 2 |  |
 | intfloat/e5-mistral-7b-instruct | VM.GPU.A10.2 | 1 |  |
 | intfloat/e5-mistral-7b-instruct | BM.GPU.A10.4 | 1 |  |
 | intfloat/e5-mistral-7b-instruct | BM.GPU.A10.4 | 2 |  |
@@ -1241,9 +1470,22 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | meta-llama/Llama-3.2-11B-Vision | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.H200.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
 | meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU4.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.A100-v2.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H100.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-11B-Vision-Instruct | BM.GPU.H200.8 | 4 | --enforce-eager --max-num-seqs 16 |
+| meta-llama/Llama-3.2-1B | VM.GPU.A10.2 | 1 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 1 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.L40S-NC.4 | 1 |  |
+| meta-llama/Llama-3.2-1B | BM.GPU.L40S-NC.4 | 2 |  |
 | meta-llama/Llama-3.2-1B | VM.GPU.A10.2 | 1 |  |
 | meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 1 |  |
 | meta-llama/Llama-3.2-1B | BM.GPU.A10.4 | 2 |  |
@@ -1254,6 +1496,16 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 | 2 |  |
 | meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 1 |  |
 | meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-1B-Instruct | VM.GPU.A10.2 | 1 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 | 1 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 1 |  |
+| meta-llama/Llama-3.2-1B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-3B | VM.GPU.A10.2 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-3B | BM.GPU.L40S-NC.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B | BM.GPU.L40S-NC.4 | 2 |  |
 | meta-llama/Llama-3.2-3B | VM.GPU.A10.2 | 1 | --max-model-len 65536 |
 | meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 1 | --max-model-len 65536 |
 | meta-llama/Llama-3.2-3B | BM.GPU.A10.4 | 2 |  |
@@ -1264,6 +1516,17 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 | 2 |  |
 | meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 65536 |
 | meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Llama-3.2-3B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 65536 |
+| meta-llama/Llama-3.2-3B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3-70B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3-70B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3-8B | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3-8B | BM.GPU.A10.4 | 2 |  |
 | meta-llama/Meta-Llama-3-8B | BM.GPU.L40S-NC.4 | 2 |  |
 | meta-llama/Meta-Llama-3-8B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
@@ -1274,14 +1537,21 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | meta-llama/Meta-Llama-3.1-70B | BM.GPU4.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B | BM.GPU.A100-v2.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B | BM.GPU.H100.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B | BM.GPU.H200.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU4.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.A100-v2.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.H100.8 | 4 | --max-model-len 70000 |
+| meta-llama/Meta-Llama-3.1-70B-Instruct | BM.GPU.H200.8 | 4 | --max-model-len 70000 |
 | meta-llama/Meta-Llama-3.1-8B | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B | BM.GPU.A10.4 | 2 |  |
 | meta-llama/Meta-Llama-3.1-8B | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B | BM.GPU.L40S-NC.4 | 2 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 2 |  |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
+| meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.L40S-NC.4 | 2 |  |
 | meta-llama/Meta-Llama-3.1-8B-Instruct | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
 | meta-llama/Meta-Llama-3.1-8B-Instruct | BM.GPU.A10.4 | 2 |  |
@@ -1298,6 +1568,8 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | microsoft/Phi-3-mini-128k-instruct | BM.GPU.A100-v2.8 | 4 | --trust-remote-code |
 | microsoft/Phi-3-mini-128k-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code --max-model-len 4096 |
 | microsoft/Phi-3-mini-128k-instruct | BM.GPU.H100.8 | 4 | --trust-remote-code |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code --max-model-len 4096 |
+| microsoft/Phi-3-mini-128k-instruct | BM.GPU.H200.8 | 4 | --trust-remote-code |
 | microsoft/Phi-3-mini-4k-instruct | VM.GPU.A10.2 | 1 |  |
 | microsoft/Phi-3-mini-4k-instruct | BM.GPU.A10.4 | 1 |  |
 | microsoft/Phi-3-mini-4k-instruct | BM.GPU.A10.4 | 2 |  |
@@ -1309,30 +1581,40 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | microsoft/Phi-3-vision-128k-instruct | BM.GPU.A100-v2.8 | 4 | --trust-remote-code |
 | microsoft/Phi-3-vision-128k-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code --max-model-len 32000 |
 | microsoft/Phi-3-vision-128k-instruct | BM.GPU.H100.8 | 4 | --trust-remote-code |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.A10.4 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.L40S-NC.4 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 5 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 5 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 2 |  |
-| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 5 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A10.4 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.L40S-NC.4 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 5 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 5 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 2 |  |
-| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 5 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.A10.4 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.L40S-NC.4 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 5 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 5 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 2 |  |
-| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 5 |  |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code --max-model-len 32000 |
+| microsoft/Phi-3-vision-128k-instruct | BM.GPU.H200.8 | 4 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | VM.GPU.A10.2 | 1 | --trust-remote-code --max_model_len 16000 |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A10.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU4.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.A100-v2.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H100.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-mini-instruct | BM.GPU.H200.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A10.4 | 2 | --trust-remote-code --max_model_len 4096 --gpu_memory_utilization 0.95 |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU4.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.A100-v2.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H100.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-MoE-instruct | BM.GPU.H200.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | VM.GPU.A10.2 | 1 | --trust-remote-code --max_model_len 16000 |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A10.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU4.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.A100-v2.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H100.8 | 5 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H200.8 | 2 | --trust-remote-code |
+| microsoft/Phi-3.5-vision-instruct | BM.GPU.H200.8 | 5 | --trust-remote-code |
 | microsoft/phi-4 | BM.GPU.A10.4 | 2 |  |
 | microsoft/phi-4 | BM.GPU.L40S-NC.4 | 2 |  |
 | microsoft/phi-4 | BM.GPU4.8 | 2 |  |
@@ -1341,6 +1623,24 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | microsoft/phi-4 | BM.GPU.A100-v2.8 | 5 |  |
 | microsoft/phi-4 | BM.GPU.H100.8 | 2 |  |
 | microsoft/phi-4 | BM.GPU.H100.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.A10.4 | 2 |  |
+| microsoft/phi-4 | BM.GPU.L40S-NC.4 | 2 |  |
+| microsoft/phi-4 | BM.GPU4.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU4.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.A100-v2.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.A100-v2.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.H100.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.H100.8 | 5 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 | 2 |  |
+| microsoft/phi-4 | BM.GPU.H200.8 | 5 |  |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.A10.4 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.L40S-NC.4 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU4.8 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.A100-v2.8 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.H100.8 | 1 | --trust-remote-code |
+| microsoft/Phi-4-multimodal-instruct | BM.GPU.H200.8 | 1 | --trust-remote-code |
 | mistralai/Mistral-7B-Instruct-v0.1 | VM.GPU.A10.2 | 1 | --max-model-len 4096 |
 | mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.A10.4 | 1 | --max-model-len 4096 |
 | mistralai/Mistral-7B-Instruct-v0.1 | BM.GPU.A10.4 | 2 |  |
@@ -1361,8 +1661,27 @@ For other operations related to **Evaluation**, such as listing evaluations and 
 | mistralai/Mistral-7B-v0.1 | BM.GPU.A10.4 | 2 |  |
 | mistralai/Mistral-7B-v0.1 | BM.GPU.L40S-NC.4 | 1 | --max-model-len 4096 |
 | mistralai/Mistral-7B-v0.1 | BM.GPU.L40S-NC.4 | 2 |  |
+| openai/gpt-oss-120b | BM.GPU.H100.8 | 4 | --gpu-memory-utilization 0.90 --disable-custom-all-reduce --trust-remote-code --seed 42 --max-num-seqs 32 --max-model-len 8193 --quantization mxfp4 |
+| openai/gpt-oss-120b | BM.GPU.H200.8 | 4 | --gpu-memory-utilization 0.90 --disable-custom-all-reduce --trust-remote-code --seed 42 --max-num-seqs 32 --max-model-len 8193 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H100.8 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H100.8 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H100.8 | 4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H200.8 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H200.8 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.H200.8 | 4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.A10.4 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max-model-len 2048 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.A10.4 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.L40S-NC.4 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max-model-len 2048 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.L40S-NC.4 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --quantization mxfp4 |
+| openai/gpt-oss-20b | VM.GPU.A10.2 | 1 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max-model-len 2048 --quantization mxfp4 |
+| openai/gpt-oss-20b | BM.GPU.B4.8 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU.B4.8 | 4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU4.8 | 2 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 32 --max-model-len 130000 --dtype bfloat16 |
+| openai/gpt-oss-20b | BM.GPU4.8 | 4 | --trust-remote-code --gpu-memory-utilization 0.90 --max-num-seqs 64 --max-model-len 130000 --dtype bfloat16 |
 | tiiuae/falcon-7b | VM.GPU.A10.2 | 1 | --trust-remote-code |
 | tiiuae/falcon-7b | BM.GPU.A10.4 | 1 | --trust-remote-code |
+| tiiuae/falcon-7b | VM.GPU.A10.2 | 1 |  |
+| tiiuae/falcon-7b | BM.GPU.A10.4 | 1 |  |
 
 ---
 
