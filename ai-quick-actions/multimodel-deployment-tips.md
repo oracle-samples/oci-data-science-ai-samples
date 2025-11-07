@@ -28,7 +28,9 @@ For fine-tuned models, requests specifying the base model name (ex. model: meta-
   - [Setup](#setup)
       - [For AQUA CLI](#for-aqua-cli)
 - [Using AQUA UI Interface for Multi-Model Deployment](#using-aqua-ui-interface-for-multi-model-deployment)
-  - [Create MultiModel Deployment](#create-multimodel-deployment)
+  - [Select the 'Create deployment' Button](#select-the-create-deployment-button)
+  - [Select 'Deploy Multi Model'](#select-deploy-multi-model)
+  - [Inferencing with Multi-Model Deployment](#inferencing-with-multi-model-deployment)
 - [Using AQUA CLI for Multi-Model Deployment](#using-aqua-cli-for-multi-model-deployment)
   - [1. Obtain Model OCIDs](#1-obtain-model-ocids)
     - [Service Managed Models](#service-managed-models)
@@ -477,43 +479,6 @@ ads aqua deployment get_multimodel_deployment_config --model_ids '["ocid1.datasc
     "error_message": null
 }
 ```
-
-## 3. Create Multi-Model Deployment
-
-Only **base service LLM models** are supported for MultiModel Deployment. All selected models will run on the same **GPU shape**, sharing the available compute resources. Make sure to choose a shape that meets the needs of all models in your deployment using [MultiModel Configuration command](#get-multimodel-configuration)
-
-### AQUA UI
-
-Open AQUA UI and navigate to the `Deployments` tab. Click `Create Deployment` on the upper right and you should see the following page. Select `Deploy Multi Model` and select the service models and their corresponding fine tuned weights. You can customize the inference keys for each service and fine tuned model.
-
-![Deploy Model](web_assets/deploy-multi.png)
-
-#### Compute Shape
-
-The compute shape selection is critical, the list available is selected to be suitable for the
-chosen models.
-
-- VM.GPU.A10.2 has 48GB GPU memory
-- BM.GPU.A10.4 has 96GB GPU memory and runs on a bare metal machine, rather than a VM.
-
-For a full list of shapes and their definitions see the [compute shape docs](https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm)
-
-The relationship between model parameter size and GPU memory is roughly 2x parameter count in GB, so for example a model that has 7B parameters will need a minimum of 14 GB for inference. At runtime the
-memory is used for both holding the weights, along with the concurrent contexts for the user's requests.
-
-#### Advanced Options
-
-You may click on the "Show Advanced Options" to configure options for "inference container".
-
-![Advanced Options](web_assets/deploy-multi-model-advanced-options.png)
-
-#### Inference Container Configuration
-
-The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on
-the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format
-`(--param-name, param-value)`.
-
-For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) documentation to know more about the parameters accepted by the respective containers.
 
 ### ADS CLI
 
