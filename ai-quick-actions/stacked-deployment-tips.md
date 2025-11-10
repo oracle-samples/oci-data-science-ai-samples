@@ -3,6 +3,7 @@
 # Table of Contents
 - # Introduction to Stacked Deployment and Serving
 - [Models](#models)
+  - [Fine Tuned Models](#fine-tuned-models)
 - [Stacked Deployment](#stacked-deployment)
   - [Create Stacked Deployment via AQUA UI](#create-stacked-deployment-via-aqua-ui)
   - [Create Stacked Deployment via ADS CLI](#create-stacked-deployment-via-ads-cli)
@@ -24,6 +25,16 @@ This document provides documentation on how to create stacked deployment using A
 First step in process is to get the OCIDs of the desired base service LLM AQUA models, which are required to initiate the stacked deployment process. Refer to [AQUA CLI tips](cli-tips.md) for detailed instructions on how to obtain the OCIDs of base service LLM AQUA models.
 
 You can also obtain the OCID from the AQUA user interface by clicking on the model card and selecting the `Copy OCID` button from the `More Options` dropdown in the top-right corner of the screen.
+
+## Fine Tuned Models
+
+Only fine tuned model with version `V2` is allowed to be deployed as weights in Stacked Deployment. For deploying old fine tuned model weight, run the following command to convert it to version `V2` and apply the new fine tuned model OCID to the deployment creation. This command deletes the old fine tuned model by default after conversion but you can add ``--delete_model False`` to keep it instead.
+
+```bash
+ads aqua model convert_fine_tune --model_id [FT_OCID]
+```
+
+If fine tuned model `V2` is deployed as single deployment, AQUA will fetch its base model, attach it as weight and deploy them as stack deployment instead.
 
 # Stacked Deployment
 
@@ -69,12 +80,6 @@ For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/ope
 ### Description
 
 You'll need the latest version of ADS to create a new Aqua Stacked deployment. Installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
-
-Only fine tuned model with version `V2` is allowed to be deployed as weights in Stack Deployment. For deploying old fine tuned model weight, run the following command to convert it to version `V2` and apply the new fine tuned model OCID to the deployment creation. This command deletes the old fine tuned model by default after conversion but you can add ``--delete_model False`` to keep it instead.
-
-```bash
-ads aqua model convert_fine_tune --model_id [FT_OCID]
-```
 
 ### Usage
 
@@ -284,6 +289,15 @@ To list all AQUA deployments (all Stacked, MultiModel and single-model) within a
 Note: Stacked deployments are identified by the tag `"aqua_stacked_model": "true",` associated with them.
 
 ### Edit Stacked Deployments
+
+AQUA deployment must be in `ACTIVE` state to be updated and can only be updated one at a time for the following option groups. There are two ways to update model deployment: `ZDT` and `LIVE`. The default update type for AQUA deployment is `ZDT` but `LIVE` will be adopted if `models` are changed in stacked deployment.
+
+  - `Name or description`: Change the name or description.
+  - `Default configuration`: Change or add freeform and defined tags.
+  - `Models`: Change the model.
+  - `Compute`: Change the number of CPUs or amount of memory for each CPU in gigabytes.
+  - `Logging`: Change the logging configuration for access and predict logs.
+  - `Load Balancer`: Change the load balancing bandwidth.
 
 #### Usage
 

@@ -28,24 +28,14 @@ For fine-tuned models, requests specifying the base model name (ex. model: meta-
   - [Setup](#setup)
       - [For AQUA CLI](#for-aqua-cli)
 - [Using AQUA UI Interface for Multi-Model Deployment](#using-aqua-ui-interface-for-multi-model-deployment)
-  - [Select the 'Create deployment' Button](#select-the-create-deployment-button)
-  - [Select 'Deploy Multi Model'](#select-deploy-multi-model)
-  - [Inferencing with Multi-Model Deployment](#inferencing-with-multi-model-deployment)
+    - [Select the 'Create deployment' Button](#select-the-create-deployment-button)
+    - [Select 'Deploy Multi Model'](#select-deploy-multi-model)
+    - [Inferencing with Multi-Model Deployment](#inferencing-with-multi-model-deployment)
 - [Using AQUA CLI for Multi-Model Deployment](#using-aqua-cli-for-multi-model-deployment)
   - [1. Obtain Model OCIDs](#1-obtain-model-ocids)
     - [Service Managed Models](#service-managed-models)
     - [Fine-Tuned Models](#fine-tuned-models)
     - [Custom Models](#custom-models)
-- [Multi-Model Deployment](#multi-model-deployment)
-  - [List Available Shapes](#list-available-shapes)
-  - [Get Multi-Model Configuration](#get-multi-model-configuration)
-  - [Manage Multi-Model Deployments](#manage-multi-model-deployments)
-    - [List Multi-Model Deployments](#list-multi-model-deployments)
-    - [Edit Multi-Model Deployments](#edit-multi-model-deployments)
-- [Multi-Model Inferencing](#multi-model-inferencing)
-- [Multi-Model Evaluation](#multi-model-evaluation)
-  - [Create Model Evaluation](#create-model-evaluations)
-- [Limitation](#limitations)
   - [2. Before Deployment, Check Resource Limits](#2-before-deployment-check-resource-limits)
     - [List Available Shapes](#list-available-shapes)
       - [Usage](#usage)
@@ -73,6 +63,8 @@ For fine-tuned models, requests specifying the base model name (ex. model: meta-
         - [CLI Output](#cli-output-3)
       - [Create Multi-Model (1 Embedding Model, 1 LLM) deployment with `/v1/completions`](#create-multi-model-1-embedding-model-1-llm-deployment-with-v1completions)
   - [Manage Multi-Model Deployments](#manage-multi-model-deployments)
+    - [List Multi-Model Deployments](#list-multi-model-deployments)
+    - [Edit Multi-Model Deployments](#edit-multi-model-deployments)
 - [Multi-Model Inferencing](#multi-model-inferencing)
   - [Using oci-cli](#using-oci-cli)
   - [Using Python SDK (without streaming)](#using-python-sdk-without-streaming)
@@ -120,7 +112,7 @@ Only Multi-Model Deployments with **base service LLM models (text-generation)** 
 There are two ways to send inference requests to models within a Multi-Model Deployment
 
 1. Python SDK (recommended)- see [here](#Multi-Model-Inferencing)
-2. Using AQUA UI - see [here](#Create-Multi-Model-Deployment)
+2. Using AQUA UI - see [here](#using-aqua-ui-interface-for-multi-model-deployment)
 
 Once the Deployment is Active, view the model deployment details and inferencing form by clicking on the 'Deployments' Tab and selecting the model within the Model Deployment list.
 
@@ -480,25 +472,22 @@ ads aqua deployment get_multimodel_deployment_config --model_ids '["ocid1.datasc
 }
 ```
 
-### ADS CLI
+## 3. Create Multi-Model Deployment
 
-#### Description
+Only **base service LLM models** are supported for MultiModel Deployment. All selected models will run on the same **GPU shape**, sharing the available compute resources. Make sure to choose a shape that meets the needs of all models in your deployment using [MultiModel Configuration command](#get-multimodel-configuration)
 
-You'll need the latest version of ADS to create a new Aqua MultiModel deployment. Installation instructions are available [here](https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/quickstart.html).
 
-Only fine tuned model with version `V2` is allowed to be deployed as weights in Multi Deployment. For deploying old fine tuned model weight, run the following command to convert it to version `V2` and apply the new fine tuned model OCID to the deployment creation. This command deletes the old fine tuned model by default after conversion but you can add ``--delete_model False`` to keep it instead.
+### Description
 
-```bash
-ads aqua model convert_fine_tune --model_id [FT_OCID]
-```
+Creates a new Aqua MultiModel deployment.
 
-#### Usage
+### Usage
 
 ```bash
 ads aqua deployment create [OPTIONS]
 ```
 
-#### Required Parameters
+### Required Parameters
 
 `--models [str]`
 
@@ -566,7 +555,7 @@ The URI of the inference container associated with the model being registered. I
 Example: `dsmc://odsc-vllm-serving:0.6.4.post1.2` or `dsmc://odsc-vllm-serving:0.8.1.2`
 
 
-#### Optional Parameters
+### Optional Parameters
 
 `--compartment_id [str]`
 
@@ -617,28 +606,28 @@ Environment variable for the model deployment, defaults to None.
 The private endpoint id of model deployment.
 
 
-#### Example
+### Example
 
-##### Create Multi-Model deployment with `/v1/completions`
+#### Create Multi-Model deployment with `/v1/completions`
 
 ```bash
 ads aqua deployment create \
   --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
-  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}]' \
+  --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' \
   --instance_shape "VM.GPU.A10.2" \
   --display_name "modelDeployment_multmodel_model1_model2" \
   --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions"}'
 
 ```
 
-###### CLI Output
+##### CLI Output
 
 ```json
 {
     "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "display_name": "modelDeployment_multmodel_model1_model2",
+    "display_name": "Multi model deployment of Mistral-7B-v0.1 and falcon-7b on A10.2",
     "aqua_service_model": false,
-    "model_id": "ocid1.datasciencemodelgroup.oc1.<ocid>",
+    "model_id": "ocid1.datasciencemodel.oc1.<ocid>",
     "models": [
         {
             "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
@@ -669,23 +658,22 @@ ads aqua deployment create \
         "memory_in_gbs": null
     },
     "tags": {
-        "aqua_model_id": "ocid1.datasciencemodelgroup.oc1.iad.<ocid>",
+        "aqua_model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
         "aqua_multimodel": "true",
         "OCI_AQUA": "active"
     },
     "environment_variables": {
         "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions",
+        "MULTI_MODEL_CONFIG": "{\"models\": [{\"params\": \"--served-model-name mistralai/Mistral-7B-v0.1 --seed 42 --tensor-parallel-size 1 --max-model-len 4096\", \"model_path\": \"service_models/Mistral-7B-v0.1/78814a9/artifact\"}, {\"params\": \"--served-model-name tiiuae/falcon-7b --seed 42 --tensor-parallel-size 1 --trust-remote-code\", \"model_path\": \"service_models/falcon-7b/f779652/artifact\"}]}",
         "MODEL_DEPLOY_ENABLE_STREAMING": "true",
-    },
-}
 ```
 
-##### Create Multi-Model deployment with `/v1/chat/completions`
+#### Create Multi-Model deployment with `/v1/chat/completions`
 
 ```bash
 ads aqua deployment create \
   --container_image_uri "dsmc://odsc-vllm-serving:0.6.4.post1.2" \
-  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "gpu_count":1}]' \
+  --models '[{"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}, {"model_id":"ocid1.log.oc1.iad.<ocid>", "gpu_count":1}]' \
   --env-var '{"MODEL_DEPLOY_PREDICT_ENDPOINT":"/v1/chat/completions"}' \
   --instance_shape "VM.GPU.A10.2" \
   --display_name "modelDeployment_multmodel_model1_model2" \
@@ -698,9 +686,9 @@ ads aqua deployment create \
 ```json
 {
     "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
-    "display_name": "modelDeployment_multmodel_model1_model2",
+    "display_name": "Multi model deployment of Mistral-7B-v0.1 and falcon-7b on A10.2",
     "aqua_service_model": false,
-    "model_id": "ocid1.datasciencemodelgroup.oc1.iad.<ocid>",
+    "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
     "models": [
         {
             "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
@@ -731,15 +719,14 @@ ads aqua deployment create \
         "memory_in_gbs": null
     },
     "tags": {
-        "aqua_model_id": "ocid1.datasciencemodelgroup.oc1.<ocid>",
+        "aqua_model_id": "ocid1.datasciencemodel.oc1.<ocid>",
         "aqua_multimodel": "true",
         "OCI_AQUA": "active"
     },
     "environment_variables": {
         "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions",
+        "MULTI_MODEL_CONFIG": "{\"models\": [{\"params\": \"--served-model-name mistralai/Mistral-7B-v0.1 --seed 42 --tensor-parallel-size 1 --max-model-len 4096\", \"model_path\": \"service_models/Mistral-7B-v0.1/78814a9/artifact\"}, {\"params\": \"--served-model-name tiiuae/falcon-7b --seed 42 --tensor-parallel-size 1 --trust-remote-code\", \"model_path\": \"service_models/falcon-7b/f779652/artifact\"}]}",
         "MODEL_DEPLOY_ENABLE_STREAMING": "true",
-    },
-}
 ```
 #### Create Multi-Model (1 Embedding Model, 1 LLM) deployment with `/v1/completions`
 
@@ -756,6 +743,7 @@ ads aqua deployment create \
   --instance_shape "VM.GPU.A10.2" \
   --display_name "modelDeployment_multmodel_model1_model2" \
   --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions"}'
+
 ```
 
 ## Manage Multi-Model Deployments
@@ -765,6 +753,15 @@ To list all AQUA deployments (both Multi-Model and single-model) within a specif
 Note: Multi-Model deployments are identified by the tag `"aqua_multimodel": "true",` associated with them.
 
 ### Edit Multi-Model Deployments
+
+AQUA deployment must be in `ACTIVE` state to be updated and can only be updated one at a time for the following option groups. There are two ways to update model deployment: `ZDT` and `LIVE`. The default update type for AQUA deployment is `ZDT` but `LIVE` will be adopted if `models` are changed in multi deployment.
+
+  - `Name or description`: Change the name or description.
+  - `Default configuration`: Change or add freeform and defined tags.
+  - `Models`: Change the model.
+  - `Compute`: Change the number of CPUs or amount of memory for each CPU in gigabytes.
+  - `Logging`: Change the logging configuration for access and predict logs.
+  - `Load Balancer`: Change the load balancing bandwidth.
 
 #### Usage
 
@@ -896,10 +893,6 @@ ads aqua deployment update \
 # Multi-Model Inferencing
 
 The only change required to infer a specific model from a Multi-Model deployment is to update the value of `"model"` parameter in the request payload. The values for this parameter can be found in the Model Deployment details, under the field name `"model_name"`. This parameter segregates the request flow, ensuring that the inference request is directed to the correct model within the MultiModel deployment.
-
-## Using AQUA UI
-
-![Inferencing](web_assets/try-multi-model.png)
 
 ## Using oci-cli
 
