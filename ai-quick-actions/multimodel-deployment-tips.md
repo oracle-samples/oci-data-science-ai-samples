@@ -103,9 +103,15 @@ Only Multi-Model Deployments with **base service LLM models (text-generation)** 
 
 ### Select 'Deploy Multi Model'
 - Based on the 'models' field, a Compute Shape will be recommended to accomidate both models.
+- Select the 'Fine Tuned Weights'.
+  - Only fine tuned model with version `V2` is allowed to be deployed as weights in Multi Deployment. For deploying old fine tuned model weight, run the following command to convert it to version `V2` and apply the new fine tuned model to the deployment creation. This command deletes the old fine tuned model by default after conversion but you can add ``--delete_model False`` to keep it instead.
+
+  ```bash
+  ads aqua model convert_fine_tune --model_id [FT_OCID]
+  ```
 - Select logging and endpoints (/v1/completions | /v1/chat/completions).
 - Submit form via 'Deploy Button' at bottom.
-![mmd-form](web_assets/deploy-mmd.png)
+![mmd-form](web_assets/deploy-multi.png)
 
 ### Inferencing with Multi-Model Deployment
 
@@ -474,8 +480,13 @@ ads aqua deployment get_multimodel_deployment_config --model_ids '["ocid1.datasc
 
 ## 3. Create Multi-Model Deployment
 
-Only **base service LLM models** are supported for MultiModel Deployment. All selected models will run on the same **GPU shape**, sharing the available compute resources. Make sure to choose a shape that meets the needs of all models in your deployment using [MultiModel Configuration command](#get-multimodel-configuration)
+All selected models will run on the same **GPU shape**, sharing the available compute resources. Make sure to choose a shape that meets the needs of all models in your deployment using [MultiModel Configuration command](#get-multimodel-configuration)
 
+Only fine tuned model with version `V2` is allowed to be deployed as weights in Multi Deployment. For deploying old fine tuned model weight, run the following command to convert it to version `V2` and apply the new fine tuned model OCID to the deployment creation. This command deletes the old fine tuned model by default after conversion but you can add ``--delete_model False`` to keep it instead.
+
+```bash
+ads aqua model convert_fine_tune --model_id [FT_OCID]
+```
 
 ### Description
 
