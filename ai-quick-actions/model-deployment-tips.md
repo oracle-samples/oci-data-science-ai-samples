@@ -9,6 +9,8 @@ Table of Contents:
 - [Model Evaluation](evaluation-tips.md)
 - [Model Registration](register-tips.md)
 - [Multi Modal Inferencing](multimodal-models-tips.md)
+- [Multi Model Inferencing](multimodal-models-tips.md)
+- [Stacked Model Inferencing](stacked-deployment-tips.md)
 - [Private_Endpoints](model-deployment-private-endpoint-tips.md)
 - [Tool Calling](model-deployment-tool-calling-tips.md)
 

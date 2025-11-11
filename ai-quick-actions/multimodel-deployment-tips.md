@@ -63,6 +63,8 @@ For fine-tuned models, requests specifying the base model name (ex. model: meta-
         - [CLI Output](#cli-output-3)
       - [Create Multi-Model (1 Embedding Model, 1 LLM) deployment with `/v1/completions`](#create-multi-model-1-embedding-model-1-llm-deployment-with-v1completions)
   - [Manage Multi-Model Deployments](#manage-multi-model-deployments)
+    - [List Multi-Model Deployments](#list-multi-model-deployments)
+    - [Edit Multi-Model Deployments](#edit-multi-model-deployments)
 - [Multi-Model Inferencing](#multi-model-inferencing)
   - [Using oci-cli](#using-oci-cli)
   - [Using Python SDK (without streaming)](#using-python-sdk-without-streaming)
@@ -101,16 +103,22 @@ Only Multi-Model Deployments with **base service LLM models (text-generation)** 
 
 ### Select 'Deploy Multi Model'
 - Based on the 'models' field, a Compute Shape will be recommended to accomidate both models.
+- Select the 'Fine Tuned Weights'.
+  - Only fine tuned model with version `V2` is allowed to be deployed as weights in Multi Deployment. For deploying old fine tuned model weight, run the following command to convert it to version `V2` and apply the new fine tuned model to the deployment creation. This command deletes the old fine tuned model by default after conversion but you can add ``--delete_model False`` to keep it instead.
+
+  ```bash
+  ads aqua model convert_fine_tune --model_id [FT_OCID]
+  ```
 - Select logging and endpoints (/v1/completions | /v1/chat/completions).
 - Submit form via 'Deploy Button' at bottom.
-![mmd-form](web_assets/deploy-mmd.png)
+![mmd-form](web_assets/deploy-multi.png)
 
 ### Inferencing with Multi-Model Deployment
 
 There are two ways to send inference requests to models within a Multi-Model Deployment
 
 1. Python SDK (recommended)- see [here](#Multi-Model-Inferencing)
-2. Using AQUA UI (see below, ok for testing)
+2. Using AQUA UI - see [here](#using-aqua-ui-interface-for-multi-model-deployment)
 
 Once the Deployment is Active, view the model deployment details and inferencing form by clicking on the 'Deployments' Tab and selecting the model within the Model Deployment list.
 
@@ -472,8 +480,13 @@ ads aqua deployment get_multimodel_deployment_config --model_ids '["ocid1.datasc
 
 ## 3. Create Multi-Model Deployment
 
-Only **base service LLM models** are supported for MultiModel Deployment. All selected models will run on the same **GPU shape**, sharing the available compute resources. Make sure to choose a shape that meets the needs of all models in your deployment using [MultiModel Configuration command](#get-multimodel-configuration)
+All selected models will run on the same **GPU shape**, sharing the available compute resources. Make sure to choose a shape that meets the needs of all models in your deployment using [MultiModel Configuration command](#get-multimodel-configuration)
 
+Only fine tuned model with version `V2` is allowed to be deployed as weights in Multi Deployment. For deploying old fine tuned model weight, run the following command to convert it to version `V2` and apply the new fine tuned model OCID to the deployment creation. This command deletes the old fine tuned model by default after conversion but you can add ``--delete_model False`` to keep it instead.
+
+```bash
+ads aqua model convert_fine_tune --model_id [FT_OCID]
+```
 
 ### Description
 
@@ -749,6 +762,144 @@ ads aqua deployment create \
 To list all AQUA deployments (both Multi-Model and single-model) within a specified compartment or project, or to get detailed information on a specific Multi-Model deployment, kindly refer to the [AQUA CLI tips](cli-tips.md) documentation.
 
 Note: Multi-Model deployments are identified by the tag `"aqua_multimodel": "true",` associated with them.
+
+### Edit Multi-Model Deployments
+
+AQUA deployment must be in `ACTIVE` state to be updated and can only be updated one at a time for the following option groups. There are two ways to update model deployment: `ZDT` and `LIVE`. The default update type for AQUA deployment is `ZDT` but `LIVE` will be adopted if `models` are changed in multi deployment.
+
+  - `Name or description`: Change the name or description.
+  - `Default configuration`: Change or add freeform and defined tags.
+  - `Models`: Change the model.
+  - `Compute`: Change the number of CPUs or amount of memory for each CPU in gigabytes.
+  - `Logging`: Change the logging configuration for access and predict logs.
+  - `Load Balancer`: Change the load balancing bandwidth.
+
+#### Usage
+
+```bash
+ads aqua deployment update [OPTIONS]
+```
+
+#### Required Parameters
+
+`--model_deployment_id [str]`
+
+The model deployment OCID to be updated.
+
+#### Optional Parameters
+
+`--models [str]`
+
+The String representation of a JSON array, where each object defines a model’s OCID and the number of GPUs assigned to it. The gpu count should always be a **power of two (e.g., 1, 2, 4, 8)**. <br>
+Example: `'[{"model_id":"<model_ocid>", "gpu_count":1},{"model_id":"<model_ocid>", "gpu_count":1}]'` for  `VM.GPU.A10.2` shape. <br>
+
+`--display_name [str]`
+
+The name of model deployment.
+
+`--description [str]`
+
+The description of the model deployment. Defaults to None.
+
+`--instance_count [int]`
+
+The number of instance used for model deployment. Defaults to 1.
+
+`--log_group_id [str]`
+
+The oci logging group id. The access log and predict log share the same log group.
+
+`--access_log_id [str]`
+
+The access log OCID for the access logs. Check [model deployment logging](https://docs.oracle.com/en-us/iaas/data-science/using/model_dep_using_logging.htm) for more details.
+
+`--predict_log_id [str]`
+
+The predict log OCID for the predict logs. Check [model deployment logging](https://docs.oracle.com/en-us/iaas/data-science/using/model_dep_using_logging.htm) for more details.
+
+`--web_concurrency [int]`
+
+The number of worker processes/threads to handle incoming requests.
+
+`--bandwidth_mbps [int]`
+
+The bandwidth limit on the load balancer in Mbps.
+
+`--memory_in_gbs [float]`
+
+Memory (in GB) for the selected shape.
+
+`--ocpus [float]`
+
+OCPU count for the selected shape.
+
+`--freeform_tags [dict]`
+
+Freeform tags for model deployment.
+
+`--defined_tags [dict]`
+Defined tags for model deployment.
+
+#### Example
+
+##### Edit Multi-Model deployment with `/v1/completions`
+
+```bash
+ads aqua deployment update \
+  --model_deployment_id "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>" \
+  --models '[{"model_id":"ocid1.datasciencemodel.oc1.iad.<ocid>", "model_name":"test_updated_model_name", "gpu_count":2}]' \
+  --display_name "updated_modelDeployment_multmodel_model1_model2"
+
+```
+
+##### CLI Output
+
+```json
+{
+    "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "display_name": "updated_modelDeployment_multmodel_model1_model2",
+    "aqua_service_model": false,
+    "model_id": "ocid1.datasciencemodelgroup.oc1.iad.<ocid>",
+    "models": [
+        {
+            "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
+            "model_name": "mistralai/Mistral-7B-v0.1",
+            "gpu_count": 1,
+            "env_var": {}
+        },
+        {
+            "model_id": "ocid1.datasciencemodel.oc1.iad.<ocid>",
+            "model_name": "tiiuae/falcon-7b",
+            "gpu_count": 1,
+            "env_var": {}
+        }
+    ],
+    "aqua_model_name": "",
+    "state": "UPDATING",
+    "description": null,
+    "created_on": "2025-03-10 19:09:40.793000+00:00",
+    "created_by": "ocid1.user.oc1..<ocid>",
+    "endpoint": "https://modeldeployment.us-ashburn-1.oci.customer-oci.com/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "private_endpoint_id": null,
+    "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "lifecycle_details": null,
+    "shape_info": {
+        "instance_shape": "VM.GPU.A10.2",
+        "instance_count": 1,
+        "ocpus": null,
+        "memory_in_gbs": null
+    },
+    "tags": {
+        "aqua_model_id": "ocid1.datasciencemodelgroup.oc1.<ocid>",
+        "aqua_multimodel": "true",
+        "OCI_AQUA": "active"
+    },
+    "environment_variables": {
+        "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions",
+        "MODEL_DEPLOY_ENABLE_STREAMING": "true",
+    },
+}
+```
 
 # Multi-Model Inferencing
 
