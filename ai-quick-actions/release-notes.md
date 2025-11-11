@@ -1,5 +1,33 @@
 # AI Quick Actions Release Notes
 
+## v2.0 (Nov 2025)
+**Highlights:**
+**Highlights:**
+- **UI Enhancements:**
+  - AI Quick Actions support for OpenAI Endpoint Model Deployment
+    - Deploy models to multiple, configurable OpenAI endpoints—including support for streaming and advanced parameters.
+- **Stacked Model Deployment**
+  - AI Quick Actions introduce Stacked Model Deployment, enabling multiple fine-tuned variants to share the same base model deployment. This unified setup significantly improves GPU utilization compared to managing separate instances for each variant.
+  For more details, refer to the corresponding [AI Quick Actions Stacked Deployment](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/stacked-deployment-tips.md).
+- **Quantization Support for Models**
+  - Use quantization to lower memory requirements, enabling large language model deployments on smaller, cost-effective compute shapes. For more details, see. [Using Quantization in AQUA](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/quantization-tips.md).
+- **Llama 4 Fine-Tuning support**
+  - Fine-tune Llama 4 models for greater customization and control to address your unique AI needs.
+- **vLLM 0.11 and llama.cpp 0.3.16**  are now available, providing updated support for your AI model deployment needs.
+
+
+## v1.0.8 (Sep 2025)
+**Highlights:**
+- **UI Enhancements:**
+  - AI Quick Action Policy Verification CLI Tools
+    - Introducing AQUA CLI tools for policy verification, simplifying the process of validating security and access configurations for your deployments.
+- **Granite Models**
+  - Supports Granite Speech 3.3 Cached Model – Speech to Text
+  - Granite Timeseries TTM R1 Cached Model – Time Series Forecasting
+  - Granite 4.0 Preview Model – Text to Text
+- **Streaming Endpoint Model Deploy Integration**
+  - AI Quick Action now supports streaming endpoint integration for model deployment, providing seamless and efficient workflows for real-time inferencing.
+
 
 ## v1.0.7a (Released May 29, 2025)
 **Highlights:**
