@@ -14,19 +14,73 @@
   - Fine-tune Llama 4 models for greater customization and control to address your unique AI needs.
 - **vLLM 0.11 and llama.cpp 0.3.16**  are now available, providing updated support for your AI model deployment needs.
 
+To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
 
-## v1.0.8 (Sep 2025)
+---
+
+## v1.0.8e (Released August 20, 2025)
+**Highlights:**
+- **Cached Model Upgrade – OpenAI Open Weight Models:**
+  - Added cached support for OpenAI’s new open-weight models (gpt-oss-120b, gpt-oss-20b).
+  - Models are available for deployment and fine-tuning without importing artifacts, supported in service-managed containers with the latest vLLM.
+  - gpt-oss-120b: 117B parameters (5.1B active), optimized for production and high-reasoning.
+  - gpt-oss-20b: 21B parameters (3.6B active), optimized for low-latency and specialized workloads.
+  - Deliver strong performance on tool use, few-shot function calling, CoT reasoning, and HealthBench.
+
+To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
+
+---
+
+## v1.0.8d (Released August 4, 2025)
+**Highlights:**
+- **Model Deployment Enhancements:**
+  - Added streaming endpoint integration for model deployments, enabling real-time inferencing with lower latency.
+- **Cached Model Upgrades:**
+  - Granite Speech 3.3 (Speech-to-Text): Upload audio (≤4 MB) in the Inference Playground to run speech-to-text with one click.
+  - Granite Timeseries TTM R1: New model for advanced time series forecasting.
+- **CLI Enhancements:**
+  - Added policy verification tools to simplify validation of security and access policies.
+- **Preview Models:**
+  - Granite 4.0 (Text-to-Text): Preview model with improved NLP performance.
+
+To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
+
+---
+
+## v1.0.8c (Released July 24, 2025)
+**Highlights:**
+- **Platform Expansion:**
+  - AI Quick Actions is now available in Government (Gov) and Oracle National Security Regions (ONSR), supporting compliance, security, and localized deployments.
+- **Cached Model Upgrade:**
+  - Added cached model support for Llama 3.2 and Llama 4, available for immediate deployment and fine-tuning without registration.
+
+To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
+
+---
+
+## v1.0.8b (Released July 21, 2025)
 **Highlights:**
 - **UI Enhancements:**
-  - AI Quick Action Policy Verification CLI Tools
-    - Introducing AQUA CLI tools for policy verification, simplifying the process of validating security and access configurations for your deployments.
-- **Granite Models**
-  - Supports Granite Speech 3.3 Cached Model – Speech to Text
-  - Granite Timeseries TTM R1 Cached Model – Time Series Forecasting
-  - Granite 4.0 Preview Model – Text to Text
-- **Streaming Endpoint Model Deploy Integration**
-  - AI Quick Action now supports streaming endpoint integration for model deployment, providing seamless and efficient workflows for real-time inferencing.
+  - Bring Your Own Reservation (BYOR) Support:
+    - Customers can now view and use existing GPU reservations directly in AI Quick Actions.
+    - Workloads can be launched seamlessly without manual coordination or transfers.
 
+To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
+
+---
+
+## v1.0.8a (Released June 26, 2025)
+**Highlights:**
+- **Cached Model Upgrade – Granite 3 Models Support:**
+  - Added support for IBM’s Granite 3 models as service cached models, available directly in the Model Explorer for deployment and fine-tuning.
+  - Granite-3.3-2b-Instruct: 2B parameters, 128K context, tuned for reasoning and instruction following.
+  - Granite-3.3-8b-Instruct / GGUF: 8B parameters, 128K context; GGUF variant supports CPU.
+  - Granite-Vision-3.2-2b: Vision-language model for document understanding (tables, charts, diagrams, infographics).
+  - Granite-Embedding-278m-multilingual: Embedding model for high-quality multilingual text representations.
+
+To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
+
+---
 
 ## v1.0.7a (Released May 29, 2025)
 **Highlights:**
