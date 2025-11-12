@@ -54,6 +54,10 @@ For a full list of shapes and their definitions see the [compute shape docs](htt
 The relationship between model parameter size and GPU memory is roughly 2x parameter count in GB, so for example a model that has 7B parameters will need a minimum of 14 GB for inference. At runtime the
 memory is used for both holding the weights, along with the concurrent contexts for the user's requests.
 
+#### Quantization Support
+
+To deploy large language models efficiently on CPU-based compute shapes, AQUA provides quantization support. Quantization reduces the precision of model weights (e.g., from 16-bit to 4-bit), significantly lowering memory and compute requirements while maintaining good accuracy. This enables faster and more cost-effective model inference without requiring a GPU. Learn more about [how to configure and deploy models with quantization](quantization-tips.md).
+
 ### Advanced Options
 
 You may click on the "Show Advanced Options" to configure options for "inference container" and "inference mode".
