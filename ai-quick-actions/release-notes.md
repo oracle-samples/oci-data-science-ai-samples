@@ -1,7 +1,6 @@
 # AI Quick Actions Release Notes
 
-## v2.0 (Nov 2025)
-**Highlights:**
+## v2.0.0 (Nov 2025)
 **Highlights:**
 - **UI Enhancements:**
   - AI Quick Actions support for OpenAI Endpoint Model Deployment
