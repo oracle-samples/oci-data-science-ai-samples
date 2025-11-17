@@ -121,4 +121,4 @@ You will host your monitoring images above on an OCI Container Instance.
 
 By following these steps, you will have a self-contained, monitored system for your OCI Data Science model.
 
-![grafana-dashboard-example](web_assets/grafana-dashboard-example.png)
+![grafana-dashboard-example](../web_assets/grafana-dashboard-example.png)
