@@ -8,7 +8,7 @@ import asyncio
 ads.set_auth("resource_principal")
 
 TARGET = os.getenv("TARGET", None)
-TIMEOUT = "10"
+TIMEOUT = 10
 
 
 app = FastAPI()
