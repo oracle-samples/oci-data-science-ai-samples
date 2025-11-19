@@ -1,6 +1,6 @@
 # AQUA Deployment Metrics Mornitoring
 
-- [Deploy Metrics Monitoring on a Container Instance](/README.md)
+- [Deploy Metrics Monitoring on a Container Instance](/ai-quick-actions/aqua_metrics/README.md)
 - [Run Metrics Monitoring locally on your laptop](local/README.md)
 
 ## Introduction
