@@ -21,7 +21,7 @@ cd oci-data-science-ai-samples/ai-quick-actions/aqua_metrics/local
 Install the required libraries and start the authentication proxy. Replace the `<model-deployment-url>` with the target model deployment url that you want to scrape metrics from.
 
 ```bash
-pip install --no-cache-dir fastapi uvicorn[standard] requests httpx oracle-ads
+pip install --no-cache-dir fastapi uvicorn requests httpx oracle-ads
 export TARGET=<model-deployment-url>/predict/metrics
 uvicorn signing_proxy_local:app --host 0.0.0.0 --port 8080
 ```
