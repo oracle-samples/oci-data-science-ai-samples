@@ -1,4 +1,10 @@
 # AQUA Deployment Metrics Mornitoring
+
+- [Deploy Metrics Monitoring on a Container Instance](/README.mdD)
+- [Run Metrics Monitoring locally on your laptop](local/README.md)
+
+## Introduction
+
 This guide outlines how to set up an end-to-end monitoring solution for a model deployed on AQUA, using a custom stack (Authentication Proxy, Prometheus, Grafana) deployed on an OCI Container Instance.
 
 The process involves four main steps:
@@ -97,8 +103,8 @@ You will host your monitoring images above on an OCI Container Instance.
 
   - Click **Create container instance**.
   - Select a **compartment**, **availability domain**, and an appropriate flexible **shape**.
-  - Select your **VCN** and **subnet**. If you want a public IP, ensure the subnet is public and you check **Assign a public IPv4 address**.
-  - In the **Configure containers**, you will define the individual containers (Proxy, Prometheus, Grafana) from OCI Container Registry that are built in the previous steps within the same instance.
+  - Select your **VCN** and **subnet**. If you want a public IP, ensure the subnet is public and you check **Assign a public IPv4 address**. ![container-instance-ip](../web_assets/container-instance-ip.png)
+  - In the **Configure containers**, you will define the individual containers (Proxy, Prometheus, Grafana) from OCI Container Registry that are built in the previous steps within the same instance. ![container-instance-image](../web_assets/container-instance-image.png)
     - **Note**: 
       - Set `TARGET` as the AQUA deployment `/metrics` endpoint that's monitored in `Environmental variables` for `signing_proxy` image. The endpoint format should be `<model-deployment-url>/predict/metrics`.
       - Set `PORT` as `3000` in `Environmental variables` for `grafana` image.
