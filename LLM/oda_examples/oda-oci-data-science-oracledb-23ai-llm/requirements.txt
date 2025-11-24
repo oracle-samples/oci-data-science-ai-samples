@@ -77,7 +77,7 @@ protobuf==4.25.3
 pyarrow==17.0.0
 pydantic==2.8.2
 pydantic_core==2.20.1
-pypdf==4.2.0
+pypdf==6.4.0
 regex==2024.5.15
 safetensors==0.4.3
 sentence-transformers==3.0.1
