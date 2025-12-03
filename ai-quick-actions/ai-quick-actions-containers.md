@@ -2,7 +2,7 @@
 
 | Server                                                                                                          | Version     |Supported Formats|Supported Shapes| Supported Models/Architectures                                                                                                  |
 |-----------------------------------------------------------------------------------------------------------------|-------------|-----------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
-| [vLLM](https://github.com/vllm-project/vllm/releases/tag/v0.10.1)                                                | 0.10.1       |safe-tensors|A10, A100, H100| [v0.10.1 supported models](https://docs.vllm.ai/en/v0.10.1/models/supported_models.html)                                          |
+| [vLLM](https://github.com/vllm-project/vllm/releases/tag/v0.11.0)                                                | 0.11.0       |safe-tensors|A10, A100, H100, H200| [v0.11.0 supported models](https://docs.vllm.ai/en/v0.11.0/models/supported_models.html)                                          |
 | [Text Generation Inference (TGI)](https://github.com/huggingface/text-generation-inference/releases/tag/v3.2.1) | 3.2.1     |safe-tensors|A10, A100, H100| [v3.2.1 supported models](https://github.com/huggingface/text-generation-inference/blob/v3.2.1/docs/source/supported_models.md) |
 | [Llama-cpp](https://github.com/abetlen/llama-cpp-python/releases/tag/v0.3.7)                                    | 0.3.7       |gguf|Amphere ARM| [v0.3.7 supported models](https://github.com/abetlen/llama-cpp-python/tree/v0.3.7)                                              |
 
