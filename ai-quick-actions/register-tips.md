@@ -27,7 +27,7 @@ The AI Quick Action model explorer allows you to register a model from Hugging F
 
 To register a model from Hugging Face, select "Download from Hugging Face" in the dropdown under model artifact. Then you may select a verified model from the "Select Model" dropdown, or you may "register any model" by entering the model name.
 
-Note that for gated models, please authenticate to Hugging Face by running `huggingface-cli login` command in terminal. See details in [Hugging Face CLI documentation](https://huggingface.co/docs/huggingface_hub/en/guides/cli).
+Note that for gated models, please authenticate to Hugging Face by running `hf auth login` command in terminal. See details in [Hugging Face CLI documentation](https://huggingface.co/docs/huggingface_hub/en/guides/cli).
 
 ![Register model from Hugging Face](web_assets/register-model.png)
 
@@ -159,4 +159,3 @@ Table of Contents:
 - [Model Deployment](model-deployment-tips.md)
 - [Model Evaluation](evaluation-tips.md)
 - [Model Fine Tuning](fine-tuning-tips.md)
-

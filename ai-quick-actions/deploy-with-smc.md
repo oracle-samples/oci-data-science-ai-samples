@@ -74,7 +74,7 @@ To prepare Model artifacts for LLM model deployment:
 ```python
 # Login to huggingface using env variable
 HUGGINGFACE_TOKEN =  "<HUGGINGFACE_TOKEN>" # Your huggingface token
-!huggingface-cli login --token $HUGGINGFACE_TOKEN 
+!hf auth login --token $HUGGINGFACE_TOKEN 
 ```
 
 [This](https://huggingface.co/docs/huggingface_hub/guides/download#download-an-entire-repository) provides more information on using `snapshot_download()` to download an entire repository at a given revision. Models in the HuggingFace hub are stored in their own repository.
