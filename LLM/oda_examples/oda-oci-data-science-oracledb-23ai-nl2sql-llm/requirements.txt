@@ -73,7 +73,7 @@ opentelemetry-proto==1.25.0
 opentelemetry-sdk==1.25.0
 opentelemetry-semantic-conventions==0.46b0
 orjson==3.10.5
-protobuf==4.25.3
+protobuf==7.34.0rc1
 pyarrow==17.0.0
 pydantic==2.8.2
 pydantic_core==2.20.1
