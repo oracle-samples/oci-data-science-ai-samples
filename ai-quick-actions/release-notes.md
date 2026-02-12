@@ -1,5 +1,21 @@
 # AI Quick Actions Release Notes
 
+## v2.0.1 (Feb 2026)
+
+**Highlights:**
+- **Expanded Cached Model Support**
+  - Added support for cached models with Granite 4.0-h, enabling faster and more reliable inference.
+- **UI Policy Verification**
+  - One-click verification of required policies for Model Registration, Deployment, Evaluation, and Fine-Tuning using AI Quick Actions utilities.
+- **Shape Calculator**
+  - New Shape Calculator utility provides instant compute shape recommendations for supported LLMs.
+- **Upgraded Inference Container**
+  - Inference container upgraded to vLLM 0.13 for improved compatibility and efficiency.
+
+To get this version of AI Quick Actions, deactivate and reactivate your notebook sessions.
+
+---
+
 ## v2.0.0 (Nov 2025)
 **Highlights:**
 - **UI Enhancements:**
