@@ -245,3 +245,4 @@ server.listen(PORT, () => {
   console.log(`Proxy (oci-common signer + https client) listening on http://127.0.0.1:${PORT}`);
   console.log(`Using OCI profile [${OCI_PROFILE}] from ${OCI_CONFIG_FILE}`);
 });
+
