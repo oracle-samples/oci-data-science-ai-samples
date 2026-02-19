@@ -17,6 +17,8 @@ This example contains a single-file Node.js proxy (`proxy-sdk.js`) intended to b
 - OCI CLI installed and configured with a profile that uses session authentication (security token + key file).
 - Access to the target OCI Model Deployment invoke endpoint (for example `https://modeldeployment.<region>.oci.oc-test.com/<mdOcid>`).
 - A Claude desktop/CLI installation for end-to-end validation.
+  - **IMPORTANT FIRST TIME USAGE INSTRUCTIONS:**
+    -   After installation and prior to starting Claude Code, update `~/.claude.json` with `{"hasCompletedOnboarding": true}` in order to bypass Anthropic's required account creation and login and to skip in this integration.
 - A vLLM-backed model deployment configured with `--tool-call-parser <parser - openai, etc.>`, `--enable-auto-tool-choice`, and `--max-model-len` ≥ 32000.
 
 ## 4. One-Time OCI Authentication
@@ -61,10 +63,167 @@ Example combined flow:
 
 ```bash
 cp .env.example .env && $EDITOR .env
+# Refer to First Time Setup prior to next step if nor previously onboarded
 make proxy-and-claude
 ```
 
-## 7. Install & Run Manually
+## 7. First Time Setup
+
+- **Anthropic requires an account login on first time usage, to bypass this, add `{"hasCompletedOnboarding": true}` to `~/.claude.json`.**
+  - If you **did not do this** and you see the following you can exit and enter `{"hasCompletedOnboarding": true}` in `~/.claude.json`, otherwise proceed with creating an Anthropic account (Selection 1).:
+    ```
+      Welcome to Claude Code v2.1.25
+      …………………………………………………………………………………………………………………………………………………………
+
+          *                                       █████▓▓░
+                                      *         ███▓░     ░░
+                  ░░░░░░                        ███▓░
+          ░░░   ░░░░░░░░░░                      ███▓░
+        ░░░░░░░░░░░░░░░░░░░    *                ██▓░░      ▓
+                                                  ░▓▓███▓▓░
+      *                                 ░░░░
+                                      ░░░░░░░░
+                                    ░░░░░░░░░░░░░░░░
+            █████████                                        *
+            ██▄█████▄██                        *
+            █████████      *
+      …………………█ █   █ █………………………………………………………………………………………………………………
+
+
+      Claude Code can be used with your Claude subscription or billed based on API usage through your Console account.
+
+      Select login method:
+
+        1. Claude account with subscription · Pro, Max, Team, or Enterprise
+
+        2. Anthropic Console account · API usage billing
+
+        3. 3rd-party platform · Amazon Bedrock, Microsoft Foundry, or Vertex AI
+    ```
+  - Claude Code will walk through multiple selections during first time usage.
+    - Select desired theme:
+      ```
+      Welcome to Claude Code v2.1.25
+      …………………………………………………………………………………………………………………………………………………………
+
+          *                                       █████▓▓░
+                                      *         ███▓░     ░░
+                  ░░░░░░                        ███▓░
+          ░░░   ░░░░░░░░░░                      ███▓░
+        ░░░░░░░░░░░░░░░░░░░    *                ██▓░░      ▓
+                                                  ░▓▓███▓▓░
+      *                                 ░░░░
+                                      ░░░░░░░░
+                                    ░░░░░░░░░░░░░░░░
+            █████████                                        *
+            ██▄█████▄██                        *
+            █████████      *
+      …………………█ █   █ █………………………………………………………………………………………………………………
+      Let's get started.
+
+      Choose the text style that looks best with your terminal
+      To change this later, run /theme
+
+        1. Dark mode ✔
+        2. Light mode
+        3. Dark mode (colorblind-friendly)
+        4. Light mode (colorblind-friendly)
+        5. Dark mode (ANSI colors only)
+        6. Light mode (ANSI colors only)
+
+      1  function greet() {
+      2 -  console.log("Hello, World!");
+      2 +  console.log("Hello, Claude!");
+      3  }
+      ```
+    - Confirm or Deny trust in the current working directory (Select 1):
+      ```
+      Quick safety check: Is this a project you created or one you trust? (Like your own code, a well-known open source project, or work from your team). If not, take a moment to review what's in this folder first.
+
+      Claude Code'll be able to read, edit, and execute files here.
+
+      Security guide
+
+      ❯ 1. Yes, I trust this folder
+        2. No, exit
+
+      Enter to confirm · Esc to cancel
+      ```
+    - Confirm usage of custom API key from environment variable (Select 1. (Yes)):
+      ```
+      Detected a custom API key in your environment
+
+      ANTHROPIC_API_KEY: sk-ant-...dummy
+
+      Do you want to use this API key?
+
+        1. Yes
+      ❯ 2. No (recommended) ✔
+
+      Enter to confirm · Esc to cancel
+      ```
+    - You should now see the Claude Code CLI:
+      ```
+
+      ╭─── Claude Code v2.1.25 ────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+      │                                                   │ Tips for getting started                                                       │
+      │                   Welcome back!                   │ Run /init to create a CLAUDE.md file with instructions for Claude              │
+      │                                                   │ ─────────────────────────────────────────────────────────────────              │
+      │                                                   │ Recent activity                                                                │
+      │                      ▐▛███▜▌                      │ No recent activity                                                             │
+      │                     ▝▜█████▛▘                     │                                                                                │
+      │                       ▘▘ ▝▝                       │                                                                                │
+      │      openai/gpt-oss-20b · API Usage Billing       │                                                                                │
+      │   ~/…/model-deployment/claude_integration_proxy   │                                                                                │
+      ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+        /model to try Opus 4.5
+
+      ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      ❯ Try "refactor <filepath>"
+      ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        ? for shortcuts                                                                    Update available! Run: brew upgrade claude-code
+      ```
+    - Example Query and Output:
+      ```
+      ╭─── Claude Code v2.1.25 ────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+      │                                                   │ Tips for getting started                                                       │
+      │                   Welcome back!                   │ Run /init to create a CLAUDE.md file with instructions for Claude              │
+      │                                                   │ ─────────────────────────────────────────────────────────────────              │
+      │                                                   │ Recent activity                                                                │
+      │                      ▐▛███▜▌                      │ No recent activity                                                             │
+      │                     ▝▜█████▛▘                     │                                                                                │
+      │                       ▘▘ ▝▝                       │                                                                                │
+      │      openai/gpt-oss-20b · API Usage Billing       │                                                                                │
+      │   ~/…/model-deployment/claude_integration_proxy   │                                                                                │
+      ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+        /model to try Opus 4.5
+
+      ❯ Create a python function to print "Hello, World!" ten times.
+
+      ⏺ Searched for 3 patterns (ctrl+o to expand)
+
+      ⏺ Write(hello_world.py)
+        ⎿  Wrote 4 lines to hello_world.py
+            1 def print_hello_world():
+            2     for _ in range(10):
+            3         print("Hello, World!")
+
+      ⏺ A new file hello_world.py has been created with the requested function:
+
+        def print_hello_world():
+            for _ in range(10):
+                print("Hello, World!")
+
+        You can now import and run print_hello_world() in your Python environment.
+
+      ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      ❯
+      ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        1 file +0 -0                                                                       Update available! Run: brew upgrade claude-code
+      ```
+## 8. Install & Run Manually
 
 If you prefer direct commands:
 
@@ -74,7 +233,7 @@ node proxy-sdk.js > proxy.log 2>&1 &
 tail -f proxy.log
 ```
 
-## 8. Smoke Test
+## 9. Smoke Test
 
 ```bash
 curl -s "http://127.0.0.1:${PORT}/v1/messages?beta=true" \
@@ -84,19 +243,20 @@ curl -s "http://127.0.0.1:${PORT}/v1/messages?beta=true" \
 
 Expect an Anthropic-compatible JSON response or streaming payload.
 
-## 9. Using with Claude
+## 10. Using with Claude
 
 When `make run-claude` is not used, export the same variables manually and start `claude`. Ensure the selected workspace model matches the OCI deployment.
 
-## 10. Troubleshooting Quick Hits
+## 11. Troubleshooting Quick Hits
 
 - **401/403 from upstream** – refresh the OCI session, verify profile names, confirm system clock accuracy.
 - **404 from upstream** - Ensure model deployment endpoint is correct and accessible.
+- **502 from upstream/gateway** - Ensure correctness of Environment Variables including `ANTHROPIC_BASE_URL` and `OCI_BASE_URL`.
 - **`MODULE_NOT_FOUND`** – re-run `npm install` in the bundle folder.
 - **Connection refused** – confirm the proxy log shows `listening` and that `ANTHROPIC_BASE_URL` matches `http://127.0.0.1:<PORT>`.
 - **`count_tokens` errors** – retry with valid JSON; the proxy shims the endpoint locally.
 - **Corporate proxy interference** – use `make run-claude` to launch with proxy bypass environment.
 
-## 11. Clean Up
+## 12. Clean Up
 
 Stop the proxy (`make stop-proxy`) and delete temporary logs when finished. OCI session tokens expire automatically; re-run `oci session authenticate` as needed.
