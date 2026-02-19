@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "oci-common": "^2.125.0",
+    "undici": "^7.20.0"
+  }
+}
