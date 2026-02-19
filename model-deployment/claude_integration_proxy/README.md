@@ -100,129 +100,129 @@ make proxy-and-claude
 
         3. 3rd-party platform · Amazon Bedrock, Microsoft Foundry, or Vertex AI
     ```
-  - Claude Code will walk through multiple selections during first time usage.
-    - Select desired theme:
-      ```
-      Welcome to Claude Code v2.1.25
-      …………………………………………………………………………………………………………………………………………………………
+- Claude Code will walk through multiple selections during first time usage.
+  - Select desired theme:
+    ```
+    Welcome to Claude Code v2.1.25
+    …………………………………………………………………………………………………………………………………………………………
 
-          *                                       █████▓▓░
-                                      *         ███▓░     ░░
-                  ░░░░░░                        ███▓░
-          ░░░   ░░░░░░░░░░                      ███▓░
-        ░░░░░░░░░░░░░░░░░░░    *                ██▓░░      ▓
-                                                  ░▓▓███▓▓░
-      *                                 ░░░░
-                                      ░░░░░░░░
-                                    ░░░░░░░░░░░░░░░░
-            █████████                                        *
-            ██▄█████▄██                        *
-            █████████      *
-      …………………█ █   █ █………………………………………………………………………………………………………………
-      Let's get started.
+        *                                       █████▓▓░
+                                    *         ███▓░     ░░
+                ░░░░░░                        ███▓░
+        ░░░   ░░░░░░░░░░                      ███▓░
+      ░░░░░░░░░░░░░░░░░░░    *                ██▓░░      ▓
+                                                ░▓▓███▓▓░
+    *                                 ░░░░
+                                    ░░░░░░░░
+                                  ░░░░░░░░░░░░░░░░
+          █████████                                        *
+          ██▄█████▄██                        *
+          █████████      *
+    …………………█ █   █ █………………………………………………………………………………………………………………
+    Let's get started.
 
-      Choose the text style that looks best with your terminal
-      To change this later, run /theme
+    Choose the text style that looks best with your terminal
+    To change this later, run /theme
 
-        1. Dark mode ✔
-        2. Light mode
-        3. Dark mode (colorblind-friendly)
-        4. Light mode (colorblind-friendly)
-        5. Dark mode (ANSI colors only)
-        6. Light mode (ANSI colors only)
+      1. Dark mode ✔
+      2. Light mode
+      3. Dark mode (colorblind-friendly)
+      4. Light mode (colorblind-friendly)
+      5. Dark mode (ANSI colors only)
+      6. Light mode (ANSI colors only)
 
-      1  function greet() {
-      2 -  console.log("Hello, World!");
-      2 +  console.log("Hello, Claude!");
-      3  }
-      ```
-    - Confirm or Deny trust in the current working directory (Select 1):
-      ```
-      Quick safety check: Is this a project you created or one you trust? (Like your own code, a well-known open source project, or work from your team). If not, take a moment to review what's in this folder first.
+    1  function greet() {
+    2 -  console.log("Hello, World!");
+    2 +  console.log("Hello, Claude!");
+    3  }
+    ```
+  - Confirm or Deny trust in the current working directory (Select 1):
+    ```
+    Quick safety check: Is this a project you created or one you trust? (Like your own code, a well-known open source project, or work from your team). If not, take a moment to review what's in this folder first.
 
-      Claude Code'll be able to read, edit, and execute files here.
+    Claude Code'll be able to read, edit, and execute files here.
 
-      Security guide
+    Security guide
 
-      ❯ 1. Yes, I trust this folder
-        2. No, exit
+    ❯ 1. Yes, I trust this folder
+      2. No, exit
 
-      Enter to confirm · Esc to cancel
-      ```
-    - Confirm usage of custom API key from environment variable (Select 1. (Yes)):
-      ```
-      Detected a custom API key in your environment
+    Enter to confirm · Esc to cancel
+    ```
+  - Confirm usage of custom API key from environment variable (Select 1. (Yes)):
+    ```
+    Detected a custom API key in your environment
 
-      ANTHROPIC_API_KEY: sk-ant-...dummy
+    ANTHROPIC_API_KEY: sk-ant-...dummy
 
-      Do you want to use this API key?
+    Do you want to use this API key?
 
-        1. Yes
-      ❯ 2. No (recommended) ✔
+      1. Yes
+    ❯ 2. No (recommended) ✔
 
-      Enter to confirm · Esc to cancel
-      ```
-    - You should now see the Claude Code CLI:
-      ```
+    Enter to confirm · Esc to cancel
+    ```
+  - You should now see the Claude Code CLI:
+    ```
 
-      ╭─── Claude Code v2.1.25 ────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-      │                                                   │ Tips for getting started                                                       │
-      │                   Welcome back!                   │ Run /init to create a CLAUDE.md file with instructions for Claude              │
-      │                                                   │ ─────────────────────────────────────────────────────────────────              │
-      │                                                   │ Recent activity                                                                │
-      │                      ▐▛███▜▌                      │ No recent activity                                                             │
-      │                     ▝▜█████▛▘                     │                                                                                │
-      │                       ▘▘ ▝▝                       │                                                                                │
-      │      openai/gpt-oss-20b · API Usage Billing       │                                                                                │
-      │   ~/…/model-deployment/claude_integration_proxy   │                                                                                │
-      ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+    ╭─── Claude Code v2.1.25 ────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+    │                                                   │ Tips for getting started                                                       │
+    │                   Welcome back!                   │ Run /init to create a CLAUDE.md file with instructions for Claude              │
+    │                                                   │ ─────────────────────────────────────────────────────────────────              │
+    │                                                   │ Recent activity                                                                │
+    │                      ▐▛███▜▌                      │ No recent activity                                                             │
+    │                     ▝▜█████▛▘                     │                                                                                │
+    │                       ▘▘ ▝▝                       │                                                                                │
+    │      openai/gpt-oss-20b · API Usage Billing       │                                                                                │
+    │   ~/…/model-deployment/claude_integration_proxy   │                                                                                │
+    ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
-        /model to try Opus 4.5
+      /model to try Opus 4.5
 
-      ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-      ❯ Try "refactor <filepath>"
-      ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-        ? for shortcuts                                                                    Update available! Run: brew upgrade claude-code
-      ```
-    - Example Query and Output:
-      ```
-      ╭─── Claude Code v2.1.25 ────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-      │                                                   │ Tips for getting started                                                       │
-      │                   Welcome back!                   │ Run /init to create a CLAUDE.md file with instructions for Claude              │
-      │                                                   │ ─────────────────────────────────────────────────────────────────              │
-      │                                                   │ Recent activity                                                                │
-      │                      ▐▛███▜▌                      │ No recent activity                                                             │
-      │                     ▝▜█████▛▘                     │                                                                                │
-      │                       ▘▘ ▝▝                       │                                                                                │
-      │      openai/gpt-oss-20b · API Usage Billing       │                                                                                │
-      │   ~/…/model-deployment/claude_integration_proxy   │                                                                                │
-      ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+    ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+    ❯ Try "refactor <filepath>"
+    ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      ? for shortcuts                                                                    Update available! Run: brew upgrade claude-code
+    ```
+  - Example Query and Output:
+    ```
+    ╭─── Claude Code v2.1.25 ────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+    │                                                   │ Tips for getting started                                                       │
+    │                   Welcome back!                   │ Run /init to create a CLAUDE.md file with instructions for Claude              │
+    │                                                   │ ─────────────────────────────────────────────────────────────────              │
+    │                                                   │ Recent activity                                                                │
+    │                      ▐▛███▜▌                      │ No recent activity                                                             │
+    │                     ▝▜█████▛▘                     │                                                                                │
+    │                       ▘▘ ▝▝                       │                                                                                │
+    │      openai/gpt-oss-20b · API Usage Billing       │                                                                                │
+    │   ~/…/model-deployment/claude_integration_proxy   │                                                                                │
+    ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
-        /model to try Opus 4.5
+      /model to try Opus 4.5
 
-      ❯ Create a python function to print "Hello, World!" ten times.
+    ❯ Create a python function to print "Hello, World!" ten times.
 
-      ⏺ Searched for 3 patterns (ctrl+o to expand)
+    ⏺ Searched for 3 patterns (ctrl+o to expand)
 
-      ⏺ Write(hello_world.py)
-        ⎿  Wrote 4 lines to hello_world.py
-            1 def print_hello_world():
-            2     for _ in range(10):
-            3         print("Hello, World!")
+    ⏺ Write(hello_world.py)
+      ⎿  Wrote 4 lines to hello_world.py
+          1 def print_hello_world():
+          2     for _ in range(10):
+          3         print("Hello, World!")
 
-      ⏺ A new file hello_world.py has been created with the requested function:
+    ⏺ A new file hello_world.py has been created with the requested function:
 
-        def print_hello_world():
-            for _ in range(10):
-                print("Hello, World!")
+      def print_hello_world():
+          for _ in range(10):
+              print("Hello, World!")
 
-        You can now import and run print_hello_world() in your Python environment.
+      You can now import and run print_hello_world() in your Python environment.
 
-      ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-      ❯
-      ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-        1 file +0 -0                                                                       Update available! Run: brew upgrade claude-code
-      ```
+    ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+    ❯
+    ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      1 file +0 -0                                                                       Update available! Run: brew upgrade claude-code
+    ```
 ## 8. Install & Run Manually
 
 If you prefer direct commands:
