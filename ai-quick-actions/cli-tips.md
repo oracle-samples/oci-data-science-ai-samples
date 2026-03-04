@@ -552,7 +552,7 @@ ads aqua deployment create \
 
 ### Description
 
-Creates a new Aqua model deployment on custom container(BYOR).
+Creates a new Aqua model deployment on custom container(BYOC).
 
 ### Usage
 
