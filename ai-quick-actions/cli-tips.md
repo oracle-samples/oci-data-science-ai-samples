@@ -364,11 +364,11 @@ ads aqua model register \
 
 # Model Deployment
 
-## Create Model Deployment
+## Create Model Deployment on Service Managed Container
 
 ### Description
 
-Creates a new Aqua model deployment.
+Creates a new Aqua model deployment on service managed container.
 
 ### Usage
 
@@ -547,6 +547,172 @@ ads aqua deployment create \
     --env_var '{"MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/chat/completions", "PARAMS": "--max-model-len 6000 "}'
    
 ```
+
+## Create Model Deployment on Custom Container
+
+### Description
+
+Creates a new Aqua model deployment on custom container(BYOC).
+
+### Usage
+
+```bash
+ads aqua deployment create [OPTIONS]
+```
+
+### Required Parameters
+
+`--model_id [str]`
+
+The model OCID to deploy.
+
+`--instance_shape [str]`
+
+The shape of the instance used for model deployment. <br>
+Example: ` VM.GPU.A10.1, VM.GPU.A10.2, BM.GPU.A10.4, BM.GPU4.8, BM.GPU.A100-v2.8`.
+
+`--display_name [str]`
+
+The name of model deployment.
+
+
+### Optional Parameters
+
+`--compartment_id [str]`
+
+The compartment OCID where model deployment is to be created. If not provided, then it defaults to user's compartment.
+
+`--project_id [str]`
+
+The project OCID where model deployment is to be created. If not provided, then it defaults to user's project.
+
+`--description [str]`
+
+The description of the model deployment. Defaults to None.
+
+`--instance_count [int]`
+
+The number of instance used for model deployment. Defaults to 1.
+
+`--log_group_id [str]`
+
+The oci logging group id. The access log and predict log share the same log group.
+
+`--access_log_id [str]`
+
+The access log OCID for the access logs. Check [model deployment logging](https://docs.oracle.com/en-us/iaas/data-science/using/model_dep_using_logging.htm) for more details.
+
+`--predict_log_id [str]`
+
+The predict log OCID for the predict logs. Check [model deployment logging](https://docs.oracle.com/en-us/iaas/data-science/using/model_dep_using_logging.htm) for more details.
+
+`--web_concurrency [int]`
+
+The number of worker processes/threads to handle incoming requests.
+
+`--server_port [int]`
+
+The server port for docker container image. Defaults to 8080.
+
+`--health_check_port [int]`
+
+The health check port for docker container image. Defaults to 8080.
+
+`--env_var [dict]`
+
+Environment variable for the model deployment, defaults to None.
+
+`--memory_in_gbs [float]`
+
+The memory in gbs for the shape selected, applicable only for Flex shape supported for deploying GGUF models.
+
+`--ocpus [float]`
+
+The ocpu count for the shape selected, applicable only for Flex shape supported for deploying GGUF models.
+
+`--model_file [str]`
+
+The model file name for GGUF models. If the file is inside a folder within the artifact location, then folder
+prefix should be added as well. This parameter is only required for GGUF models. The default value
+is already set at the model level, but user can choose to override.
+
+`--private_endpoint_id [str]`
+
+The private endpoint id of model deployment.
+
+`--container_image_uri [str]`
+
+The URI of the inference container associated with the model being registered. This is available for 
+models that will be registered and deployed using Bring Your Own Container (BYOC) approach.
+
+`--cmd_var [List[str]]`
+
+The cmd of model deployment container runtime. This is available for 
+models that will be registered and deployed using Bring Your Own Container (BYOC) approach.
+
+### Example
+
+```bash
+ads aqua deployment create \
+  --model_id "ocid1.datasciencemodel.oc1.iad.<ocid>" \
+  --instance_shape "VM.GPU.A10.1" \
+  --display_name "modelDeployment_Mistral-7B-v0.1_custom" \
+  --container_image_uri "<container_image_url>" \
+  --predict_log_id "ocid1.log.oc1.iad.<ocid>" \
+  --access_log_id "ocid1.log.oc1.iad.<ocid>" \
+  --log_group_id "ocid1.loggroup.oc1.iad.<ocid>"
+```
+
+#### CLI Output
+
+```json
+{
+    "id": "ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "display_name": "modelDeployment_Mistral-7B-v0.1_custom",
+    "aqua_service_model": false,
+    "aqua_model_name": "Mistral-7B-v0.1 FT Model EXT",
+    "state": "ACTIVE",
+    "description": null,
+    "created_on": "2024-10-30 04:58:16.931000+00:00",
+    "created_by": "ocid1.datasciencenotebooksession.oc1.iad.<ocid>",
+    "endpoint": "https://modeldeployment.us-ashburn-1.oci.oc-test.com/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>",
+    "private_endpoint_id": "",
+    "console_link": "https://cloud.oracle.com/data-science/model-deployments/ocid1.datasciencemodeldeployment.oc1.iad.<ocid>?region=us-ashburn-1",
+    "lifecycle_details": "Model Deployment is Active.",
+    "shape_info": {
+        "instance_shape": "VM.GPU.A10.1",
+        "instance_count": 1,
+        "ocpus": null,
+        "memory_in_gbs": null
+    },
+    "tags": {
+        "aqua_fine_tuned_model": "ocid1.datasciencemodel.oc1.iad.<ocid>#Mistral-7B-v0.1",
+        "OCI_AQUA": "active",
+        "aqua_model_name": "Mistral-7B-v0.1 FT Model EXT"
+    },
+    "environment_variables": {
+        "PARAMS": "--served-model-name odsc-llm --seed 42  --max-model-len 4096",
+        "MODEL_DEPLOY_PREDICT_ENDPOINT": "/v1/completions",
+        "BASE_MODEL": "service_models/Mistral-7B-v0.1/78814a9/artifact",
+        "FT_MODEL": "ui-test/ocid1.datasciencejob.oc1.iad.<ocid>",
+        "MODEL_DEPLOY_ENABLE_STREAMING": "true",
+        "PORT": "8080",
+        "HEALTH_CHECK_PORT": "8080"
+    },
+    "cmd": [],
+    "log_group": {
+        "id": "ocid1.loggroup.oc1.iad.<ocid>",
+        "name": "aqua-model-deploy-log-group",
+        "url": "https://cloud.oracle.com/logging/log-groups/ocid1.loggroup.oc1.iad.<ocid>?region=us-ashburn-1"
+    },
+    "log": {
+        "id": "ocid1.log.oc1.iad.<ocid>",
+        "name": "aqua-model-deploy-logs",
+        "url": "https://cloud.oracle.com/logging/search?searchQuery=search \"ocid1.compartment.oc1..<ocid>/ocid1.loggroup.oc1.iad.<ocid>/ocid1.log.oc1.iad.<ocid>\" | source='ocid1.datasciencemodeldeployment.oc1.iad.<ocid>' | sort by datetime desc&regions=us-ashburn-1"
+    }
+}
+```
+
 ## List Model Deployments
 
 ### Description
