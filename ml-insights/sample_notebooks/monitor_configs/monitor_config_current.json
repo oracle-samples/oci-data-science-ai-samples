@@ -15,7 +15,7 @@
   "reader": {
     "type": "CSVNativeDataReader",
     "params": {
-      "file_path": ["input_data/diabetes_prediction/2023-06-27/2023-06-27.csv"]
+      "file_path": ["input_data/house_price_prediction_dataset/2023-06-27/house_price_prediction(2).csv"]
     }
   },
   "engine_detail": {
