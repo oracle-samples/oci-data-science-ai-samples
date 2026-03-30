@@ -1,6 +1,6 @@
 # Active Service Conda Environments for OCI Data Science
 
-This page is the customer-facing source of truth for the **currently active service conda environments** available for OCI Data Science workflows.
+This page contains the list of currently active service conda environments available for OCI Data Science workflows.
 
 Deprecated environments are not listed here. When multiple active revisions exist for the same environment family, this page shows only the latest active version for that Python version and platform.
 
@@ -33,9 +33,7 @@ For most customers, this is the easiest way to discover, install, and start usin
 
 ## Scope of this page
 
-This page is intentionally not a historical inventory of every conda environment ever published.
-
-It is a concise reference for the **active environments customers should see as available today**, based on the current production-published inventory and the corresponding environment manifests in this repository.
+Below is reference for the active environments customers should see as available today, based on the current production-published inventory and the corresponding environment manifests in this repository. This does not include deprecated conda environments.
 
 ## Active environments
 
