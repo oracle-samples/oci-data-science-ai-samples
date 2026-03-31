@@ -69,22 +69,21 @@ Minimally `runtime.yaml` should contain the following fields:
 MODEL_ARTIFACT_VERSION: '3.0'
 MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
-    INFERENCE_ENV_PATH: <conda-environment-path-on-object-storage> # For example: "oci://service_conda_packs@ociodscdev/service_pack/cpu/General Machine Learning for CPUs/1.0/mlcpuv1"
-    INFERENCE_PYTHON_VERSION: '3.7' #
+    INFERENCE_ENV_PATH: <conda-environment-path-on-object-storage> # For example: "oci://service-conda-packs@ociodscdev/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.12/1.0/generalml_p312_cpu_x86_64_v1"
+    INFERENCE_PYTHON_VERSION: '3.12' #
 ```
 
 Go to this page [link](https://docs.oracle.com/en-us/iaas/data-science/using/model_runtime_yaml.htm) for a definition of all the parameters that can be included in `runtime.yaml`.  
 
-As an example, here's a complete `runtime.yaml` for a data_science conda environment (mlcpuv1) used as a runtime environment for model deployment.
+As an example, here's a complete `runtime.yaml` for the `generalml_p312_cpu_x86_64_v1` data science conda environment used as a runtime environment for model deployment.
 In most cases the runtime environment for model deployment should be the same as the conda environment used to train the model.
 
 ```
 MODEL_ARTIFACT_VERSION: '3.0'
 MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
-    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/General
-      Machine Learning for CPUs/1.0/mlcpuv1
-    INFERENCE_PYTHON_VERSION: 3.6.11
+    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.12/1.0/generalml_p312_cpu_x86_64_v1
+    INFERENCE_PYTHON_VERSION: 3.12
 ```
 
 ## (OPTIONAL) Step 5. Provide Model Input and Output Data Schema

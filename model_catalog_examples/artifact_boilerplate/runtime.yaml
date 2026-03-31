@@ -4,7 +4,7 @@ MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
     # Replace with the object storage path of the conda environment you want to use.
     # Go to https://docs.oracle.com/en-us/iaas/data-science/using/conda_environ_list.htm for a list of data_science conda environments you can use out-of-the-box
-    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/Data Exploration and Manipulation for CPU Python 3.7/2.0/dataexpl_p37_cpu_v2
+    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.12/1.0/generalml_p312_cpu_x86_64_v1
 
     # Provide the Python version of the environment.
-    INFERENCE_PYTHON_VERSION: 3.7
+    INFERENCE_PYTHON_VERSION: 3.12
