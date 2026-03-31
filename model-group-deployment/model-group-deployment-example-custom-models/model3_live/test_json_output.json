@@ -53,14 +53,14 @@
         "description": "Check that field MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION is set to a value of 3.6 or higher",
         "error_msg": "In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_PYTHON_VERSION must be set to a value of 3.6 or higher.",
         "success": true,
-        "value": "3.11"
+        "value": "3.12"
     },
     "runtime_env_path": {
         "category": "conda_env",
         "description": "Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set",
         "error_msg": "In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH must have a value.",
         "success": true,
-        "value": "oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.11/1.0/generalml_p311_cpu_x86_64_v1"
+        "value": "oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.12/1.0/generalml_p312_cpu_x86_64_v1"
     },
     "runtime_path_exist": {
         "category": "conda_env",

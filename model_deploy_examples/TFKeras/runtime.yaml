@@ -1,7 +1,7 @@
 MODEL_ARTIFACT_VERSION: '3.0'
 MODEL_DEPLOYMENT:
   INFERENCE_CONDA_ENV:
-    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/cpu/Tensorflow for CPU Python 3.7/1.0/tensorflow23_p37_cpu_v1
-    INFERENCE_ENV_SLUG: generalmachinelearningforcpusv2
+    INFERENCE_ENV_PATH: oci://service-conda-packs@id19sfcrra6z/service_pack/gpu/TensorFlow_2.20_for_GPU_on_Python_3.12/1.0/tensorflow220_p312_gpu_x86_64_v1
+    INFERENCE_ENV_SLUG: tensorflow220_p312_gpu_x86_64_v1
     INFERENCE_ENV_TYPE: data_science
-    INFERENCE_PYTHON_VERSION: 3.7
+    INFERENCE_PYTHON_VERSION: 3.12
