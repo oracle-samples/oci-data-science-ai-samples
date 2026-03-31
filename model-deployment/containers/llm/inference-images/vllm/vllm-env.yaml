@@ -1,5 +1,5 @@
 dependencies:
-  - main::python=3.8
+  - main::python=3.12
   - main::pip
   - nvidia::cuda-cccl=11.8.89
   - nvidia::cuda-compiler=11.8.0

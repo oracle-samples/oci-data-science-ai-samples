@@ -339,6 +339,54 @@
       "create_date": "Tue, May 04, 2021, 22:22:29  UTC",
       "size_mb": "1627.98",
       "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/TensorFlow for GPU Python 3.7/1.0/tensorflow23_p37_gpu_v1"]
+    },
+    {
+      "slug": "generalml_p312_cpu_x86_64_v1",
+      "name": "General Machine Learning for CPUs on Python 3.12",
+      "version": "1.0",
+      "manifest_version": "1.0",
+      "python": "3.12",
+      "arch_type": "CPU",
+      "type": "data_science",
+      "pack_path": [
+        "oci://service-conda-packs@ociodscdev/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.12/1.0/generalml_p312_cpu_x86_64_v1"
+      ]
+    },
+    {
+      "slug": "onnxruntime_p312_gpu_x86_64_v1",
+      "name": "ONNX Runtime on Python 3.12 with GPU support",
+      "version": "1.0",
+      "manifest_version": "1.0",
+      "python": "3.12",
+      "arch_type": "GPU",
+      "type": "data_science",
+      "pack_path": [
+        "oci://service-conda-packs@ociodscdev/service_pack/gpu/ONNX_Runtime_on_Python_3.12_with_GPU_support/1.0/onnxruntime_p312_gpu_x86_64_v1"
+      ]
+    },
+    {
+      "slug": "pytorch28_p312_gpu_x86_64_v1",
+      "name": "PyTorch 2.8 for GPU on Python 3.12",
+      "version": "1.0",
+      "manifest_version": "1.0",
+      "python": "3.12",
+      "arch_type": "GPU",
+      "type": "data_science",
+      "pack_path": [
+        "oci://service-conda-packs@ociodscdev/service_pack/gpu/PyTorch_2.8_for_GPU_on_Python_3.12/1.0/pytorch28_p312_gpu_x86_64_v1"
+      ]
+    },
+    {
+      "slug": "tensorflow220_p312_gpu_x86_64_v1",
+      "name": "TensorFlow 2.20 for GPU on Python 3.12",
+      "version": "1.0",
+      "manifest_version": "1.0",
+      "python": "3.12",
+      "arch_type": "GPU",
+      "type": "data_science",
+      "pack_path": [
+        "oci://service-conda-packs@ociodscdev/service_pack/gpu/TensorFlow_2.20_for_GPU_on_Python_3.12/1.0/tensorflow220_p312_gpu_x86_64_v1"
+      ]
     }
   ]
 }

@@ -26,7 +26,6 @@ TESTS_PATH = os.path.join(_cwd, 'resources', 'tests.yaml')
 HTML_PATH = os.path.join(_cwd, 'resources', 'template.html')
 CONFIG_PATH = os.path.join(_cwd, 'resources', 'config.yaml')
 INDEX_PATH = os.path.dirname(__file__)+'/index.json'
-PYTHON_VER_PATTERN = "^([3])(\.[6-9])(\.\d+)?$"
 TESTS = {
     'score_py': {'key': 'score_py', 'category': 'Mandatory Files Check', 'description': 'Check that the file "score.py" exists and is in the top level directory of the artifact directory', 'error_msg': 'The file \'score.py\' is missing.'},
     'runtime_yaml': {'category': 'Mandatory Files Check', 'description': 'Check that the file "runtime.yaml" exists and is in the top level directory of the artifact directory', 'error_msg': 'The file \'runtime.yaml\' is missing.'},
@@ -40,6 +39,22 @@ TESTS = {
     'runtime_env_path': {'category': 'conda_env', 'description': 'Check that field MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is set', 'error_msg': 'In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH must have a value.'},
     'runtime_path_exist': {'category': 'conda_env', 'description': 'check that the file path in MODEL_DEPLOYMENT.INFERENCE_ENV_PATH is correct.', 'error_msg': "In runtime.yaml, the key MODEL_DEPLOYMENT.INFERENCE_ENV_PATH does not exist."},
     }
+
+
+def is_supported_python_version(value) -> bool:
+    '''
+    Accept Python 3.6+ versions, including double-digit minors like 3.12.
+    '''
+    try:
+        parts = [int(part) for part in str(value).split('.')]
+    except ValueError:
+        return False
+
+    if len(parts) < 2:
+        return False
+
+    major, minor = parts[0], parts[1]
+    return major == 3 and minor >= 6
 
 def combine_msgs(test_list) -> str:
     '''
@@ -60,8 +75,7 @@ def model_deployment_find_fields(cfg) -> None:
             TESTS['runtime_env_path']['success'] = True
             TESTS['runtime_env_path']['value'] = value
         elif key == 'INFERENCE_PYTHON_VERSION':
-            m = re.match(PYTHON_VER_PATTERN, str(value))
-            if m and m.group():
+            if is_supported_python_version(value):
                 TESTS['runtime_env_python']['success'] = True
                 TESTS['runtime_env_python']['value'] = value
         else:
@@ -106,8 +120,7 @@ def check_runtime_yml(file_path) -> Tuple[bool, str]:
     if msg:
         return False, msg
     try:
-        m = re.match(PYTHON_VER_PATTERN, str(TESTS['runtime_env_python']['value']))
-        if m and m.group():
+        if is_supported_python_version(TESTS['runtime_env_python']['value']):
             TESTS['runtime_env_python']['success']  = True
             try:
                 with open(INDEX_PATH, "r") as index_file:
