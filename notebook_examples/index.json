@@ -1,6 +1,6 @@
 [
   {
-    "developed_on": "automlx_p38_cpu_v2",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "automlx-anomaly_detection.ipynb",
     "keywords": [
       "automlx",
@@ -14,7 +14,7 @@
     "title": "Building and Explaining an Anomaly Detector using AutoMLx - Experimental"
   },
   {
-    "developed_on": "automlx_p38_cpu_v3",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "automlx-classifier.ipynb",
     "keywords": [
       "automlx",
@@ -29,7 +29,7 @@
     "title": "Building and Explaining a Classifier using AutoMLx"
   },
   {
-    "developed_on": "automlx_p38_cpu_v3",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "automlx-fairness.ipynb",
     "keywords": [
       "automlx",
@@ -43,7 +43,7 @@
     "title": "Fairness with AutoMLx"
   },
   {
-    "developed_on": "automlx_p38_cpu_v3",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "automlx-regression.ipynb",
     "keywords": [
       "automlx",
@@ -57,7 +57,7 @@
     "title": "Building and Explaining a Regressor using AutoMLx"
   },
   {
-    "developed_on": "automlx_p38_cpu_v3",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "automlx-text_classification.ipynb",
     "keywords": [
       "automlx",
@@ -72,7 +72,7 @@
     "title": "Building and Explaining a Text Classifier using AutoMLx"
   },
   {
-    "developed_on": "computervision_p37_cpu_v1",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "audi-autonomous_driving-oracle_open_data.ipynb",
     "keywords": [
       "autonomous driving",
@@ -85,7 +85,7 @@
     "title": "Audi Autonomous Driving Dataset Repository"
   },
   {
-    "developed_on": "pyspark30_p37_cpu_v5",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "big_data_service-(BDS)-livy.ipynb",
     "keywords": [
       "bds",
@@ -99,7 +99,7 @@
     "title": "Using Livy on the Big Data Service"
   },
   {
-    "developed_on": "pyspark30_p37_cpu_v5",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "read-write-big_data_service-(BDS).ipynb",
     "keywords": [
       "bds",
@@ -112,7 +112,7 @@
     "title": "How to Read Data with fsspec from Oracle Big Data Service (BDS)"
   },
   {
-    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "aqua-deploy-llm-byoc.ipynb",
     "keywords": [
       "byoc",
@@ -127,7 +127,7 @@
     "title": "Deploy LLM Models using BYOC"
   },
   {
-    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "use_of_cohere_embed_models_for_semantic_search_in_oci_opensearch.ipynb",
     "keywords": [
       "cohere",
@@ -142,7 +142,7 @@
     "title": "Retrieval Augmented Generative Question Answer Using OCI OpenSearch as Retriever"
   },
   {
-    "developed_on": "pyspark30_p37_cpu_v5",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "pyspark-data_catalog-hive_metastore-data_flow.ipynb",
     "keywords": [
       "data catalog metastore",
@@ -155,7 +155,7 @@
     "title": "Using Data Catalog Metastore with DataFlow"
   },
   {
-    "developed_on": "nlp_p37_cpu_v2",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "data_labeling-text_classification.ipynb",
     "keywords": [
       "data labeling",
@@ -168,7 +168,7 @@
     "title": "Text Classification with Data Labeling Service Integration"
   },
   {
-    "developed_on": "pyspark30_p37_cpu_v5",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "pyspark-data_catalog-hive_metastore.ipynb",
     "keywords": [
       "dcat",
@@ -182,7 +182,7 @@
     "title": "Using Data Catalog Metastore with PySpark"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_quickstart.ipynb",
     "keywords": [
       "feature store"
@@ -194,7 +194,7 @@
     "title": "Using feature store for feature ingestion and feature querying"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_embeddings.ipynb",
     "keywords": [
       "feature store",
@@ -208,7 +208,7 @@
     "title": "Using feature store for storage, retrieval, versioning and time travel of embeddings"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_pii_redaction_and_transformation.ipynb",
     "keywords": [
       "feature store",
@@ -221,7 +221,7 @@
     "title": "Use feature store to perform PII data redaction, summarization, translation using openai"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_schema_evolution.ipynb",
     "keywords": [
       "feature store",
@@ -236,7 +236,7 @@
     "title": "Schema Enforcement and Schema Evolution in Feature Store"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_spark_magic.ipynb",
     "keywords": [
       "feature store",
@@ -251,7 +251,7 @@
     "title": "Data Flow Studio : Big Data Operations in Feature Store."
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_querying.ipynb",
     "keywords": [
       "feature store",
@@ -264,7 +264,7 @@
     "title": "Feature store handling querying operations"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_medical_synthetic_data_openai.ipynb",
     "keywords": [
       "feature store",
@@ -278,7 +278,7 @@
     "title": "Using feature store for synthetic data generation using openai"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_embeddings_openai.ipynb",
     "keywords": [
       "feature store",
@@ -291,7 +291,7 @@
     "title": "Using feature store for feature querying using pandas like interface for query and join"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_ehr_data.ipynb",
     "keywords": [
       "feature store",
@@ -304,7 +304,7 @@
     "title": "Using feature store for feature querying using pandas like interface for query and join"
   },
   {
-    "developed_on": "fspyspark32_p38_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "feature_store_streaming_data_frame.ipynb",
     "keywords": [
       "feature store",
@@ -318,7 +318,7 @@
     "title": "Enhancing Real-time Capabilities: Streaming Use Cases in Feature Store."
   },
   {
-    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "train-register-deploy-other-frameworks.ipynb",
     "keywords": [
       "generic model",
@@ -333,7 +333,7 @@
     "title": "Train, Register, and Deploy a Generic Model"
   },
   {
-    "developed_on": "pypgx2310_p38_cpu_v1",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "graph_insight-autonomous_database.ipynb",
     "keywords": [
       "graph_insight",
@@ -346,7 +346,7 @@
     "title": "Bank Graph Example Notebook"
   },
   {
-    "developed_on": "pytorch110_p38_cpu_v1",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "train-register-deploy-huggingface-pipeline.ipynb",
     "keywords": [
       "huggingface",
@@ -361,7 +361,7 @@
     "title": "Train, register, and deploy HuggingFace Pipeline"
   },
   {
-    "developed_on": "sklearnex202130_p37_cpu_v1",
+    "developed_on": "tensorflow220_p312_gpu_x86_64_v1",
     "filename": "accelerate-scikit_learn-with-intel_extension.ipynb",
     "keywords": [
       "intel",
@@ -376,7 +376,7 @@
     "title": "Intel Extension for Scikit-Learn"
   },
   {
-    "developed_on": "pyspark30_p37_cpu_v5",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "big_data_service-(BDS)-kerberos.ipynb",
     "keywords": [
       "kerberos",
@@ -390,7 +390,7 @@
     "title": "Connect to Oracle Big Data Service"
   },
   {
-    "developed_on": "pytorch21_p39_gpu_v1",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "deploy-langchain-as-oci-data-science-model-deployment.ipynb",
     "keywords": [
       "langchain",
@@ -405,7 +405,7 @@
     "title": "Deploy LangChain Application as OCI Data Science Model Deployment"
   },
   {
-    "developed_on": "automlx_p38_cpu_v3",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "automlx-forecasting.ipynb",
     "keywords": [
       "language services",
@@ -427,7 +427,7 @@
     "title": "Building a Forecaster using AutoMLx"
   },
   {
-    "developed_on": "nlp_p37_cpu_v2",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "natural_language_processing.ipynb",
     "keywords": [
       "language services",
@@ -448,7 +448,7 @@
     "title": "Natural Language Processing"
   },
   {
-    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "train-register-deploy-lightgbm.ipynb",
     "keywords": [
       "lightgbm",
@@ -463,7 +463,7 @@
     "title": "Train, Register, and Deploy a LightGBM Model"
   },
   {
-    "developed_on": "dbexp_p38_cpu_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "model_version_set.ipynb",
     "keywords": [
       "model",
@@ -494,7 +494,7 @@
     "title": "Model Evaluation with ADSEvaluator"
   },
   {
-    "developed_on": "nlp_p37_cpu_v2",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "text_classification-model_explanation-lime.ipynb",
     "keywords": [
       "nlp",
@@ -510,7 +510,7 @@
     "title": "Text Classification and Model Explanations using LIME"
   },
   {
-    "developed_on": "nlp_p37_cpu_v2",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "onnx-integration-ads.ipynb",
     "keywords": [
       "onnx",
@@ -523,7 +523,7 @@
     "title": "ONNX Integration with the Accelerated Data Science (ADS) SDK"
   },
   {
-    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "pipelines-ml_lifecycle.ipynb",
     "keywords": [
       "pipelines",
@@ -537,7 +537,7 @@
     "title": "Working with Pipelines"
   },
   {
-    "developed_on": "pypgx2310_p38_cpu_v1",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "pypgx-graph_analytics-machine_learning.ipynb",
     "keywords": [
       "pypgx",
@@ -551,7 +551,7 @@
     "title": "Graph Analytics and Graph Machine Learning with PyPGX"
   },
   {
-    "developed_on": "pyspark24_p37_cpu_v3",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "pyspark-data_flow-application.ipynb",
     "keywords": [
       "pyspark",
@@ -564,7 +564,7 @@
     "title": "PySpark"
   },
   {
-    "developed_on": "pyspark32_p38_cpu_v2",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "pyspark-data_flow_studio-introduction.ipynb",
     "keywords": [
       "pyspark",
@@ -577,7 +577,7 @@
     "title": "Introduction to the Oracle Cloud Infrastructure Data Flow Studio"
   },
   {
-    "developed_on": "pyspark32_p38_cpu_v1",
+    "developed_on": "pyspark35_p312_cpu_x86_64_v1",
     "filename": "pyspark-data_flow_studio-spark_nlp.ipynb",
     "keywords": [
       "pyspark",
@@ -590,7 +590,7 @@
     "title": "Spark NLP within Oracle Cloud Infrastructure Data Flow Studio"
   },
   {
-    "developed_on": "pytorch110_p38_cpu_v1",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "train-register-deploy-pytorch.ipynb",
     "keywords": [
       "pytorch",
@@ -605,7 +605,7 @@
     "title": "Train, Register, and Deploy a PyTorch Model"
   },
   {
-    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "aqua-batch-inferencing.ipynb",
     "keywords": [
       "quick action",
@@ -620,7 +620,7 @@
     "title": "AI Quick Action - Batch inferencing"
   },
   {
-    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "train-register-deploy-sklearn.ipynb",
     "keywords": [
       "scikit-learn",
@@ -635,7 +635,7 @@
     "title": "Train, register, and deploy Sklearn Model"
   },
   {
-    "developed_on": "dataexpl_p37_cpu_v3",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "streaming-service-introduction.ipynb",
     "keywords": [
       "streaming",
@@ -648,7 +648,7 @@
     "title": "Introduction to Streaming"
   },
   {
-    "developed_on": "tensorflow28_p38_cpu_v1",
+    "developed_on": "tensorflow220_p312_gpu_x86_64_v1",
     "filename": "train-register-deploy-tensorflow.ipynb",
     "keywords": [
       "tensorflow",
@@ -663,7 +663,7 @@
     "title": "Train, Register, and Deploy a TensorFlow Model"
   },
   {
-    "developed_on": "nlp_p37_cpu_v2",
+    "developed_on": "pytorch28_p312_gpu_x86_64_v1",
     "filename": "document-text_extraction.ipynb",
     "keywords": [
       "text extraction",
@@ -676,7 +676,7 @@
     "title": "Text Extraction Using the Accelerated Data Science (ADS) SDK"
   },
   {
-    "developed_on": "rapids2110_p37_gpu_v1",
+    "developed_on": "generalml_p311_cpu_x86_64_v3",
     "filename": "xgboost-with-rapids.ipynb",
     "keywords": [
       "xgboost",
@@ -692,7 +692,7 @@
     "title": "XGBoost with RAPIDS"
   },
   {
-    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "train-register-deploy-xgboost.ipynb",
     "keywords": [
       "xgboost",
@@ -707,7 +707,7 @@
     "title": "Train, Register, and Deploy an XGBoost Model"
   },
     {
-    "developed_on": "generalml_p311_cpu_x86_64_v1",
+    "developed_on": "generalml_p312_cpu_x86_64_v1",
     "filename": "train-mysql-heatwave-deploy-xgboost.ipynb",
     "keywords": [
       "xgboost",

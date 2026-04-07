@@ -82,7 +82,7 @@ spec:
       replicas: 6
       conda:
         type: service
-        slug: pytorch20_p39_gpu_v2
+        slug: pytorch28_p312_gpu_x86_64_v1
       dependencies:
         pipPackages: >-
           --extra-index-url https://download.pytorch.org/whl/cu118 torch==2.1.0
@@ -154,7 +154,7 @@ spec:
       replicas: 3
       conda:
         type: service
-        slug: pytorch20_p39_gpu_v2
+        slug: pytorch28_p312_gpu_x86_64_v1
       dependencies:
         pipPackages: >-
           --extra-index-url https://download.pytorch.org/whl/cu118 torch==2.1.0
@@ -195,8 +195,8 @@ Notice, we used directly the [finetuning.py](https://github.com/facebookresearch
 To launch the distributed fine-tuning, open a Terminal in your OCI Data Science Notebook, install and activate a Conda environment with the latest Oracle ADS Library and then run the ADS OPCTL CLI. For example to launch the 7b model fine-tuning:
 
 ```bash
-odsc conda install -s pytorch20_p39_gpu_v2
-activate /home/datascience/conda/pytorch20_p39_gpu_v2
+odsc conda install -s pytorch28_p312_gpu_x86_64_v1
+activate /home/datascience/conda/pytorch28_p312_gpu_x86_64_v1
 ads opctl run -f llama2-7b-hf-ft-job.yaml
 ```
 
@@ -229,7 +229,7 @@ job = (
     )
     .with_runtime(
         PyTorchDistributedRuntime()
-        .with_service_conda("pytorch20_p39_gpu_v2")
+        .with_service_conda("pytorch28_p312_gpu_x86_64_v1")
         .with_git(
           url="https://github.com/facebookresearch/llama-recipes.git",
           commit: "1aecd00924738239f8d86f342b36bacad180d2b3"

@@ -35,7 +35,7 @@ A notebook has been prepared containing all the necessary Python code to explore
 
   1. Open the notebook **1-model-training.ipynb** (double-click on it). A new tab opens in the workspace on the right.
 
-     Notice in the upper right corner of the notebook tab, it displays the name of the conda environment being used by this notebook. Confirm that the name you see the slugname of the TensorFlow conda environment (`tensorflow27_p37_cpu_v1`)
+     Notice in the upper right corner of the notebook tab, it displays the name of the conda environment being used by this notebook. Confirm that the name you see the slugname of the TensorFlow conda environment (`tensorflow220_p312_gpu_x86_64_v1`)
 
   ![](./images/confirm-kernel.png)
 

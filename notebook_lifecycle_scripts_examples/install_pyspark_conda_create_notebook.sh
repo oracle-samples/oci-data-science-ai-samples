@@ -5,7 +5,7 @@
 # enable conda commands
 source /etc/profile.d/enableconda.sh
 
-ENV_NAME=pyspark32_p38_cpu_v3
+ENV_NAME=pyspark35_p312_cpu_x86_64_v1
 
 # Path to the conda environment folder
 ENV_FOLDER="$HOME/conda"
@@ -28,7 +28,7 @@ echo "Conda environment '$ENV_NAME' is now activated."
 
 cat << EOF > pyscript.py
 import os
-os.system("source activate conda/pyspark32_p38_cpu_v3")
+os.system("source activate conda/pyspark35_p312_cpu_x86_64_v1")
 import subprocess
 
 import nbformat as nbf

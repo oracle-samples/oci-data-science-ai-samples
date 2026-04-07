@@ -17,7 +17,7 @@
       "type": "data_science",
       "create_date": "Fri, Dec 11, 2020, 00:56:41  UTC",
       "size_mb": "1842.45",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Classic CPU Notebook Session Kernel/1.0/classic_cpu", "oci://service_conda_packs@ociodscdev/service_pack/cpu/Data Exploration and Manipulation for CPU Python 3.7/1.0/dataexpl_p37_cpu_v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Classic CPU Notebook Session Kernel/1.0/classic_cpu", "oci://service_conda_packs@ociodscdev/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.12/1.0/generalml_p312_cpu_x86_64_v1"]
     },
     {
       "arch_type": "CPU",
@@ -25,15 +25,15 @@
       "libraries": ["ads-lite (v2.2.1)", "pandas (v1.2.3)", "pandarallel (v1.5.1)", "dask (v2.30.0)", "kafka-python (v2.0.0)", "seaborn (v0.10.1)", "matplotlib (v3.3.1)", "plotly (v4.9.0)"],
       "logo": "data_exploration",
       "manifest_version": "1.0",
-      "name": "Data Exploration and Manipulation for CPU Python 3.7",
-      "notebooks": ["notebooks/dataexpl_p37_cpu_v1/"],
+      "name": "General Machine Learning for CPUs on Python 3.12",
+      "notebooks": ["notebooks/generalml_p312_cpu_x86_64_v1/"],
       "python": "3.7",
-      "slug": "dataexpl_p37_cpu_v1",
+      "slug": "generalml_p312_cpu_x86_64_v1",
       "type": "data_science",
       "version": "1.0",
       "create_date": "Wed, May 26, 2021, 21:32:13  UTC",
       "size_mb": "412.71",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Data Exploration and Manipulation for CPU Python 3.7/1.0/dataexpl_p37_cpu_v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.12/1.0/generalml_p312_cpu_x86_64_v1"]
     },
     {
       "slug": "explv1",
@@ -52,20 +52,20 @@
       "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Data Exploration and Manipulation/1.0/explv1"]
     },
     {
-      "slug": "mlcpuv1",
-      "name": "General Machine Learning for CPUs",
+      "slug": "generalml_p311_cpu_x86_64_v3",
+      "name": "General Machine Learning for CPUs on Python 3.11",
       "version": "1.0",
       "manifest_version": "1.0",
       "arch_type": "CPU",
       "libraries": ["ADS (v2.1.0)", "Oracle AutoML (v0.5.2)", "Oracle MLX (v1.0.16)", "scikit-learn (v0.23)", "xgboost (v1.2.0)", "lightgbm (v2.3)", "TensorFlow (v2.3.1)", "category-encoders (v2.2.2)"],
-      "description": "The General Machine Learning for CPUs conda environment includes libraires for data manipulation, supervised machine learning through sklearn, xgboost, lightGBM,  Keras (with TensorFlow), and Oracle AutoML. The environment also includes a model explainability library (Oracle MLX) as well as the full distribution of ADS.  This environment provides a good baseline for generic machine learning tasks and comes with multiple notebook examples to help you get started.To get started with the General Machine Learning environment, open and review the notebook example **notebooks/mlcpuv1/getting-started.ipynb** by clicking on the **Notebook Examples launcher button**.",
+      "description": "The General Machine Learning for CPUs on Python 3.11 conda environment includes libraires for data manipulation, supervised machine learning through sklearn, xgboost, lightGBM,  Keras (with TensorFlow), and Oracle AutoML. The environment also includes a model explainability library (Oracle MLX) as well as the full distribution of ADS.  This environment provides a good baseline for generic machine learning tasks and comes with multiple notebook examples to help you get started.To get started with the General Machine Learning environment, open and review the notebook example **notebooks/generalml_p311_cpu_x86_64_v3/getting-started.ipynb** by clicking on the **Notebook Examples launcher button**.",
       "logo": "machine_learning",
       "python": "3.6",
       "notebooks": ["notebooks/ml/1.0/"],
       "type": "data_science",
       "create_date": "Fri, Dec 11, 2020, 01:37:57  UTC",
       "size_mb": "1756.98",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/General Machine Learning for CPUs/1.0/mlcpuv1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.11/3.0/generalml_p311_cpu_x86_64_v3"]
     },
     {
       "arch_type": "CPU",
@@ -73,36 +73,20 @@
       "libraries": ["ads-lite (v2.2.1)", "pytorch-lightning (v1.2.8)", "nltk (v3.6.1)", "transformers (v4.5.1)", "eli5 (v0.11.0)", "lime (v0.2.0.1)", "simpletransformers (v0.61.4)", "umap-learn (v0.5.1)", "keybert (v0.2.0)"],
       "logo": "nlp",
       "manifest_version": "1.0",
-      "name": "Natural Language Processing for CPU Python 3.7",
-      "notebooks": ["notebooks/nlp_p37_cpu_v1/"],
+      "name": "PyTorch 2.8 for GPU on Python 3.12",
+      "notebooks": ["notebooks/pytorch28_p312_gpu_x86_64_v1/"],
       "python": "3.7.8",
-      "slug": "nlp_p37_cpu_v1",
+      "slug": "pytorch28_p312_gpu_x86_64_v1",
       "type": "data_science",
       "version": "1.0",
       "create_date": "Wed, May 05, 2021, 01:46:48  UTC",
       "size_mb": "1655.93",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Natural Language Processing for CPU Python 3.7/1.0/nlp_p37_cpu_v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/PyTorch_2.8_for_GPU_on_Python_3.12/1.0/pytorch28_p312_gpu_x86_64_v1"]
     },
     {
       "arch_type": "CPU",
       "description": "This environment includes ads-lite, onnx, onnxruntime, and their dependencies. The purpose of this environment is to offer a test runtime for your onnx model artifacts.  `ONNX` is an open source, open model format which allows you to save a model from different ML libraires into a single, portable format that is independent of the training library.   ONNX models can be deployed through Oracle Functions or the upcoming Data Science Model Deployment feature. You can use this conda to convert models from different ML libraries  into ONNX format, including AutoML model.  You can apply ONNX runtime for inferencing.  Also, can use ONNX to plot out a graph of your machine learning model workflow. To get started with the ONNX environment, review the notebook example **getting-started.ipynb** in the **Notebook Examples launcher button**.",
       "libraries": ["ads-lite (v2.2.1)", "onnx (v1.7.0)", "onnxruntime (v1.4.0)", "onnxmltools (v1.7.0)", "onnxconverter-common (v1.7.0)"],
-      "logo": "onnx",
-      "manifest_version": "1.0",
-      "name": "Onnx for CPU Python 3.7",
-      "notebooks": ["notebooks/onnx17_p37_cpu_v1/"],
-      "python": "3.7",
-      "slug": "onnx17_p37_cpu_v1",
-      "type": "data_science",
-      "version": "1.0",
-      "create_date": "Fri, Apr 30, 2021, 19:23:18  UTC",
-      "size_mb": "404.44",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Onnx for CPU Python 3.7/1.0/onnx17_p37_cpu_v1"]
-    },
-    {
-      "arch_type": "CPU",
-      "description": "This environment includes ads-lite, onnx, onnxruntime, and their dependencies. The purpose of this environment is to offer a test runtime for your onnx model artifacts.  `ONNX` is an open source, open model format which allows you to save a model from different ML libraires into a single, portable format that is independent of the training library.   ONNX models can be deployed through Oracle Functions or the upcoming Data Science Model Deployment feature. You can use this conda to convert models from different ML libraries  into ONNX format, including AutoML model.  You can apply ONNX runtime for inferencing.  Also, can use ONNX to plot out a graph of your machine learning model workflow. To get started with the ONNX environment, review the notebook example **getting-started.ipynb** in the **Notebook Examples launcher button**.",
-      "libraries": ["ads-lite (v2.2.0)", "onnx (v1.7.0)", "onnxruntime (v1.4.0)", "onnxmltools (v1.7.0)", "onnxconverter-common (v1.7.0)"],
       "logo": "onnx",
       "manifest_version": "1.0",
       "name": "Onnx130 for CPU Python 3.7",
@@ -111,9 +95,25 @@
       "slug": "onnx17_p37_cpu_v1.0",
       "type": "data_science",
       "version": "1.0",
+      "create_date": "Fri, Apr 30, 2021, 19:23:18  UTC",
+      "size_mb": "404.44",
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Onnx130 for CPU Python 3.7/1.0/onnx17_p37_cpu_v1.0"]
+    },
+    {
+      "arch_type": "CPU",
+      "description": "This environment includes ads-lite, onnx, onnxruntime, and their dependencies. The purpose of this environment is to offer a test runtime for your onnx model artifacts.  `ONNX` is an open source, open model format which allows you to save a model from different ML libraires into a single, portable format that is independent of the training library.   ONNX models can be deployed through Oracle Functions or the upcoming Data Science Model Deployment feature. You can use this conda to convert models from different ML libraries  into ONNX format, including AutoML model.  You can apply ONNX runtime for inferencing.  Also, can use ONNX to plot out a graph of your machine learning model workflow. To get started with the ONNX environment, review the notebook example **getting-started.ipynb** in the **Notebook Examples launcher button**.",
+      "libraries": ["ads-lite (v2.2.0)", "onnx (v1.7.0)", "onnxruntime (v1.4.0)", "onnxmltools (v1.7.0)", "onnxconverter-common (v1.7.0)"],
+      "logo": "onnx",
+      "manifest_version": "1.0",
+      "name": "ONNX Runtime on Python 3.12 with GPU support",
+      "notebooks": ["notebooks/onnxruntime_p312_gpu_x86_64_v1/"],
+      "python": "3.7",
+      "slug": "onnxruntime_p312_gpu_x86_64_v1",
+      "type": "data_science",
+      "version": "1.0",
       "create_date": "Wed, Apr 14, 2021, 08:10:27  UTC",
       "size_mb": "386.06",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Onnx130 for CPU Python 3.7/1.0/onnx17_p37_cpu_v1.0"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/ONNX_Runtime_on_Python_3.12_with_GPU_support/1.0/onnxruntime_p312_gpu_x86_64_v1"]
     },
     {
       "arch_type": "CPU",
@@ -121,15 +121,15 @@
       "libraries": ["ads-lite (v2.2.1)", "cx-Oracle (v8.0.1)", "ipython-sql (v0.4.0)", "mysql-connector-python (v8.0.21)", "SQLAlchemy (v1.3.19)"],
       "logo": "database",
       "manifest_version": "1.0",
-      "name": "Oracle Database for CPU Python 3.7",
-      "notebooks": ["notebooks/database_p37_cpu_v1/"],
+      "name": "General Machine Learning for CPUs on Python 3.12",
+      "notebooks": ["notebooks/generalml_p312_cpu_x86_64_v1/"],
       "python": "3.7",
-      "slug": "database_p37_cpu_v1",
+      "slug": "generalml_p312_cpu_x86_64_v1",
       "type": "data_science",
       "version": "1.0",
       "create_date": "Tue, May 04, 2021, 20:14:52  UTC",
       "size_mb": "423.02",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Oracle Database for CPU Python 3.7/1.0/database_p37_cpu_v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.12/1.0/generalml_p312_cpu_x86_64_v1"]
     },
     {
       "slug": "dbv1",
@@ -185,15 +185,15 @@
       "libraries": ["ads-lite (v2.2.1)", "category-encoders (v2.2.2)", "daal4py (v2021.1)", "pandas (v1.2.3)", "scikit-learn (v0.23.2)"],
       "logo": "machine_learning",
       "manifest_version": "1.0",
-      "name": "PyTorch for CPU Python 3.7",
+      "name": "PyTorch 2.8 for GPU on Python 3.12",
       "notebooks": ["notebooks/pytorch18_p37_v1/"],
       "python": "3.7",
-      "slug": "pytorch18_p37_cpu_v1",
+      "slug": "pytorch28_p312_gpu_x86_64_v1",
       "type": "data_science",
       "version": "1.0",
       "create_date": "Fri, Apr 30, 2021, 19:25:21  UTC",
       "size_mb": "4238.73",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/PyTorch for CPU Python 3.7/1.0/pytorch18_p37_cpu_v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/PyTorch_2.8_for_GPU_on_Python_3.12/1.0/pytorch28_p312_gpu_x86_64_v1"]
     },
     {
       "arch_type": "CPU",
@@ -201,23 +201,23 @@
       "libraries": ["ads-lite (v2.2.1)", "category-encoders (v2.2.2)", "pandas (v1.2.3)", "scikit-learn (v0.23.2)", "tensorboard (v2.4.1)", "tensorflow (v2.3.2)"],
       "logo": "machine_learning",
       "manifest_version": "1.0",
-      "name": "Tensorflow for CPU Python 3.7",
+      "name": "TensorFlow 2.20 for GPU on Python 3.12",
       "notebooks": ["notebooks/tensorflow23_p37_v1/"],
       "python": "3.7",
-      "slug": "tensorflow23_p37_cpu_v1",
+      "slug": "tensorflow220_p312_gpu_x86_64_v1",
       "type": "data_science",
       "version": "1.0",
       "create_date": "Fri, Apr 30, 2021, 19:27:29  UTC",
       "size_mb": "857.6",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/Tensorflow for CPU Python 3.7/1.0/tensorflow23_p37_cpu_v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/TensorFlow_2.20_for_GPU_on_Python_3.12/1.0/tensorflow220_p312_gpu_x86_64_v1"]
     },
     {
-      "name": "onnx130",
+      "name": "ONNX Runtime on Python 3.12 with GPU support",
       "version": "1.0",
-      "slug": "onnx13v1",
+      "slug": "onnxruntime_p312_gpu_x86_64_v1",
       "manifest_version": "1.0",
       "libraries": ["ads-lite (v2.1.0)", "onnx (v1.7.0)", "onnxruntime (v1.4.0)", "onnxmltools (v1.7.0)", "onnxconverter-common (v1.7.0)"],
-      "description": "This environment includes ads-lite, onnx, onnxruntime, and their dependencies. The purpose of this environment is to offer a test runtime for your onnx model artifacts.  `ONNX` is an open source, open model format which allows you to save a model from different ML libraires into a single, portable format that is independent of the training library.   ONNX models can be deployed through Oracle Functions or the upcoming Data Science Model Deployment feature. You can use this conda to convert models from different ML libraries  into ONNX format, including AutoML model.  You can apply ONNX runtime for inferencing.  Also, can use ONNX to plot out a graph of your machine learning model workflow. To get started with the ONNX environment, open and review the notebook example **notebooks/onnx13v1/getting-started.ipynb** by clicking on the **Notebook Examples launcher button**.",
+      "description": "This environment includes ads-lite, onnx, onnxruntime, and their dependencies. The purpose of this environment is to offer a test runtime for your onnx model artifacts.  `ONNX` is an open source, open model format which allows you to save a model from different ML libraires into a single, portable format that is independent of the training library.   ONNX models can be deployed through Oracle Functions or the upcoming Data Science Model Deployment feature. You can use this conda to convert models from different ML libraries  into ONNX format, including AutoML model.  You can apply ONNX runtime for inferencing.  Also, can use ONNX to plot out a graph of your machine learning model workflow. To get started with the ONNX environment, open and review the notebook example **notebooks/onnxruntime_p312_gpu_x86_64_v1/getting-started.ipynb** by clicking on the **Notebook Examples launcher button**.",
       "logo": "onnx",
       "python": "3.6",
       "arch_type": "CPU",
@@ -225,24 +225,24 @@
       "type": "data_science",
       "create_date": "Thu, Dec 10, 2020, 23:24:41  UTC",
       "size_mb": "383.3",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/onnx130/1.0/onnx13v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/ONNX_Runtime_on_Python_3.12_with_GPU_support/1.0/onnxruntime_p312_gpu_x86_64_v1"]
     },
     {
-      "slug": "pyspv10",
+      "slug": "pyspark35_p312_cpu_x86_64_v1",
       "name": "pyspark",
       "version": "1.0",
       "manifest_version": "1.0",
       "python": "3.6",
       "arch_type": "CPU",
       "libraries": ["ads-lite (v2.1.0)", "oraclejdk (v8)", "pyspark (v2.4.4)", "scikit-learn (v0.23.2)", "sparksql-magic (v0.0.3)"],
-      "description": "This conda allows data scientists to leverage Apache Spark. It can be used to access the full computational power  of a notebook session by using parallel computing. For larger jobs, you can develop Spark applications and submit them with  ADS to the Oracle Cloud Infrastructure Data Flow service without blocking the notebook session.  PySpark MLlib implements a  wide collection of machine learning algorithms. Use the SQL-like language of PySparkSQL to analyze structure and  semi-structured data stored in Oracle Cloud Infrastructure Object Storage.  To get started with the PySpark environment, open and review the notebook example **notebooks/pyspv10/getting-started.ipynb** by clicking on the **Notebook Examples launcher button**.",
+      "description": "This conda allows data scientists to leverage Apache Spark. It can be used to access the full computational power  of a notebook session by using parallel computing. For larger jobs, you can develop Spark applications and submit them with  ADS to the Oracle Cloud Infrastructure Data Flow service without blocking the notebook session.  PySpark MLlib implements a  wide collection of machine learning algorithms. Use the SQL-like language of PySparkSQL to analyze structure and  semi-structured data stored in Oracle Cloud Infrastructure Object Storage.  To get started with the PySpark environment, open and review the notebook example **notebooks/pyspark35_p312_cpu_x86_64_v1/getting-started.ipynb** by clicking on the **Notebook Examples launcher button**.",
       "logo": "pyspark",
       "notebooks": ["notebooks/pyspark/1.0/"],
       "type": "data_science",
       "create_date": "Thu, Dec 10, 2020, 23:37:40  UTC",
       "size_mb": "680.5",
       "deprecated": "True",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/pyspark/1.0/pyspv10"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/PySpark_3.5_and_Data_Flow_on_Python_3.12/1.0/pyspark35_p312_cpu_x86_64_v1"]
     },
     {
       "slug": "classic_gpu",
@@ -263,35 +263,35 @@
       "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/Classic GPU Notebook Session Kernel/1.0/classic_gpu"]
     },
     {
-      "slug": "mlgpuv1",
-      "name": "General Machine Learning for GPUs",
+      "slug": "generalml_p311_cpu_x86_64_v3",
+      "name": "General Machine Learning for CPUs on Python 3.11",
       "version": "1.0",
       "manifest_version": "1.0",
       "arch_type": "GPU",
       "libraries": ["ADS (v2.1.0)", "Oracle AutoML (v0.5.2)", "Oracle MLX (v1.0.16)", "scikit-learn (v0.23)", "xgboost (v1.2.0)", "lightgbm (v2.3)", "pandas (v1.1.0)", "tensorflow (v2.3.1)"],
-      "description": "The General Machine Learning conda environment includes libraires for data manipulation, supervised machine learning through sklearn, xgboost, lightGBM,  TensorFlow, and Oracle AutoML. The environment also includes a model explainability library (Oracle MLX) as well as the full distribution of ADS.  This environment provides a good baseline for generic machine learning tasks and comes with multiple notebook examples to help you get started.To get started with the General Machine Learning environment for GPUs, open and review the notebook example **notebooks/mlgpuv1/getting-started.ipynb** by clicking on the **Notebook Examples launcher button**.",
+      "description": "The General Machine Learning conda environment includes libraires for data manipulation, supervised machine learning through sklearn, xgboost, lightGBM,  TensorFlow, and Oracle AutoML. The environment also includes a model explainability library (Oracle MLX) as well as the full distribution of ADS.  This environment provides a good baseline for generic machine learning tasks and comes with multiple notebook examples to help you get started.To get started with the General Machine Learning environment for GPUs, open and review the notebook example **notebooks/generalml_p311_cpu_x86_64_v3/getting-started.ipynb** by clicking on the **Notebook Examples launcher button**.",
       "logo": "machine_learning",
       "python": "3.6",
       "notebooks": ["notebooks/mlgpu/1.0/"],
       "type": "data_science",
       "create_date": "Fri, Dec 11, 2020, 00:08:34  UTC",
       "size_mb": "2621.44",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/General Machine Learning for GPUs/1.0/mlgpuv1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.11/3.0/generalml_p311_cpu_x86_64_v3"]
     },
     {
-      "slug": "rapidsgpuv1",
-      "name": "NVIDIA RAPIDS 0.16",
+      "slug": "generalml_p311_cpu_x86_64_v3",
+      "name": "General Machine Learning for CPUs on Python 3.11",
       "version": "1.0",
       "manifest_version": "1.0",
       "arch_type": "GPU",
-      "libraries": ["cudf (v0.16)", "cuml (v0.16)", "cugraph (v0.16)", "cusignal (v0.16)", "cuspatial (v0.16)", "ads-lite (v2.1.0)", "xgboost(1.2.0)"], "description": "This environment contains the NVIDIA RAPIDS framework which includes a collection of libraries for executing end-to-end data science pipelines in the GPU. It has a familiar look and feel to scikit-learn and pandas. RAPIDS include libraries such as cuDF, cuML, and cuGraph. In addition to the NVIDIA RAPIDS libraries, we also included ADS in the environment. To get started with the RAPIDs environment, review the notebook example **notebooks/rapidsgpuv1/getting-started.ipynb** in the **Notebook Examples launcher button**.",
+      "libraries": ["cudf (v0.16)", "cuml (v0.16)", "cugraph (v0.16)", "cusignal (v0.16)", "cuspatial (v0.16)", "ads-lite (v2.1.0)", "xgboost(1.2.0)"], "description": "This environment contains the NVIDIA RAPIDS framework which includes a collection of libraries for executing end-to-end data science pipelines in the GPU. It has a familiar look and feel to scikit-learn and pandas. RAPIDS include libraries such as cuDF, cuML, and cuGraph. In addition to the NVIDIA RAPIDS libraries, we also included ADS in the environment. To get started with the RAPIDs environment, review the notebook example **notebooks/generalml_p311_cpu_x86_64_v3/getting-started.ipynb** in the **Notebook Examples launcher button**.",
       "logo": "rapids",
       "python": "3.7",
       "notebooks": ["notebooks/rapidsgpu/1.0/"],
       "type": "data_science",
       "create_date": "Fri, Dec 11, 2020, 00:52:17  UTC",
       "size_mb": "3324.51",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/NVIDIA RAPIDS 0.16/1.0/rapidsgpuv1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/cpu/General_Machine_Learning_for_CPUs_on_Python_3.11/3.0/generalml_p311_cpu_x86_64_v3"]
     },
     {
       "arch_type": "GPU",
@@ -299,15 +299,15 @@
       "libraries": ["ads-lite (v2.2.1)", "pytorch-lightning (v1.2.8)", "nltk (v3.6.1)", "transformers (v4.5.1)", "eli5 (v0.11.0)", "lime (v0.2.0.1)", "simpletransformers (v0.61.4)", "umap-learn (v0.5.1)", "keybert (v0.2.0)"],
       "logo": "nlp",
       "manifest_version": "1.0",
-      "name": "Natural Language Processing for GPU Python 3.7",
-      "notebooks": ["notebooks/nlp_p37_gpu_v1/"],
+      "name": "PyTorch 2.8 for GPU on Python 3.12",
+      "notebooks": ["notebooks/pytorch28_p312_gpu_x86_64_v1/"],
       "python": "3.7.8",
-      "slug": "nlp_p37_gpu_v1",
+      "slug": "pytorch28_p312_gpu_x86_64_v1",
       "type": "data_science",
       "version": "1.0",
       "create_date": "Wed, May 05, 2021, 01:48:55  UTC",
       "size_mb": "3464.99",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/Natural Language Processing for GPU Python 3.7/1.0/nlp_p37_gpu_v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/PyTorch_2.8_for_GPU_on_Python_3.12/1.0/pytorch28_p312_gpu_x86_64_v1"]
     },
     {
       "arch_type": "GPU",
@@ -315,15 +315,15 @@
       "libraries": ["ads-lite (v2.2.1)", "PyTorch (v1.8.1)", "scikit-learn (v0.23.2)", "xgboost (v1.3.0)", "pandas (v1.2.3)"],
       "logo": "machine_learning",
       "manifest_version": "1.0",
-      "name": "PyTorch for GPU Python 3.7",
-      "notebooks": ["notebooks/pytorch18_p37_gpu_v1/"],
+      "name": "PyTorch 2.8 for GPU on Python 3.12",
+      "notebooks": ["notebooks/pytorch28_p312_gpu_x86_64_v1/"],
       "python": "3.7",
-      "slug": "pytorch18_p37_gpu_v1",
+      "slug": "pytorch28_p312_gpu_x86_64_v1",
       "type": "data_science",
       "version": "1.0",
       "create_date": "Tue, May 04, 2021, 22:20:46  UTC",
       "size_mb": "2551.11",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/PyTorch for GPU Python 3.7/1.0/pytorch18_p37_gpu_v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/PyTorch_2.8_for_GPU_on_Python_3.12/1.0/pytorch28_p312_gpu_x86_64_v1"]
     },
     {
       "arch_type": "GPU",
@@ -331,14 +331,14 @@
       "libraries": ["ads-lite (v2.2.1)", "category-encoders (v2.2.2)", "pandas (v1.2.3)", "scikit-learn (v0.23.2)", "tensorboard (v2.4.1)", "tensorflow (v2.3.2)"],
       "logo": "machine_learning",
       "manifest_version": "1.0",
-      "name": "TensorFlow for GPU Python 3.7",
-      "notebooks": ["notebooks/tensorflow23_p37_gpu_v1/"],
-      "python": "3.7", "slug": "tensorflow23_p37_gpu_v1",
+      "name": "TensorFlow 2.20 for GPU on Python 3.12",
+      "notebooks": ["notebooks/tensorflow220_p312_gpu_x86_64_v1/"],
+      "python": "3.7", "slug": "tensorflow220_p312_gpu_x86_64_v1",
       "type": "data_science",
       "version": "1.0",
       "create_date": "Tue, May 04, 2021, 22:22:29  UTC",
       "size_mb": "1627.98",
-      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/TensorFlow for GPU Python 3.7/1.0/tensorflow23_p37_gpu_v1"]
+      "pack_path": ["oci://service_conda_packs@ociodscdev/service_pack/gpu/TensorFlow_2.20_for_GPU_on_Python_3.12/1.0/tensorflow220_p312_gpu_x86_64_v1"]
     },
     {
       "slug": "generalml_p312_cpu_x86_64_v1",

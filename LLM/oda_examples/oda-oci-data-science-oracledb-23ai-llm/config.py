@@ -60,7 +60,7 @@ PHX_PORT = "7777"
 PHX_HOST = "0.0.0.0"
 
 #RAG Additional config
-CONDA_PACK_PATH = "oci://<bucket>@<namespace>/rag-oracle23db-poc_v3/gpu/PyTorch 2.0 for GPU on Python 3.9/2.0/pytorch20_p39_gpu_v2"
+CONDA_PACK_PATH = "oci://<bucket>@<namespace>/rag-oracle23db-poc_v3/gpu/PyTorch_2.8_for_GPU_on_Python_3.12/1.0/pytorch28_p312_gpu_x86_64_v1"
 
 LOG_GROUP_ID="ocid1.loggroup.oc1.<ocid>"
 

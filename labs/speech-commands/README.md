@@ -24,18 +24,18 @@ Your notebook needs internet access.
 1. Open a Data Science Notebook session (i.e. JupyterLab).
 1. Open a file terminal by clicking on File -> New -> Terminal.
 1. In the terminal run the following commands:
-    1. `odsc conda install -s mlcpuv1` to install the General Machine Learning for CPUs conda.
-    1. `conda activate /home/datascience/conda/mlcpuv1` to activate the conda.
+    1. `odsc conda install -s generalml_p311_cpu_x86_64_v3` to install the General Machine Learning for CPUs on Python 3.11 conda.
+    1. `conda activate /home/datascience/conda/generalml_p311_cpu_x86_64_v3` to activate the conda.
     1. `pip install oci` to install the OCI Python SDK.
 1. Copy the `notebooks` folder into the notebook session.
 1. Copy the `data` folder into the notebook session.
 1. Open the notebook `notebooks/1-intro-to-audio-data.ipynb`.
-1. Change the notebook kernel to `Python [conda env:mlcpuv1]`.
+1. Change the notebook kernel to `Python [conda env:generalml_p311_cpu_x86_64_v3]`.
 1. Read the notebook and execute each cell.
 1. Open the notebook `notebooks/2-cnn-model-with-keras.ipynb`.
-1. Change the notebook kernel to `Python [conda env:mlcpuv1]`.
+1. Change the notebook kernel to `Python [conda env:generalml_p311_cpu_x86_64_v3]`.
 1. Read the notebook and execute each cell.
 1. Open the notebook `notebooks/3-testing-model-deployment.ipynb`.
-1. Change the notebook kernel to `Python [conda env:mlcpuv1]`.
+1. Change the notebook kernel to `Python [conda env:generalml_p311_cpu_x86_64_v3]`.
 1. Read the notebook and execute each cell.
 

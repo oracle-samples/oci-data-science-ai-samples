@@ -14,12 +14,12 @@ Your notebook needs internet access.
 1. Open a Data Science Notebook session (i.e. JupyterLab).
 1. Open a file terminal by clicking on File -> New -> Terminal.
 1. In the terminal run the following commands:
-    1. `odsc conda install -s pytorch18_p37_cpu_v1` to install the  PyTorch for CPU Python 3.7 conda.
-    1. `conda activate /home/datascience/conda/pytorch18_p37_cpu_v1` to activate the conda.
+    1. `odsc conda install -s pytorch28_p312_gpu_x86_64_v1` to install the  PyTorch 2.8 for GPU on Python 3.12 conda.
+    1. `conda activate /home/datascience/conda/pytorch28_p312_gpu_x86_64_v1` to activate the conda.
     1. `pip install oci` to install the OCI Python SDK.
 1. Copy the `model-deployment.ipynb` into the notebook session.
 1. Open the notebook.
-1. Change the notebook kernel to `Python [conda env:pytorch18_p37_cpu_v1]`.
+1. Change the notebook kernel to `Python [conda env:pytorch28_p312_gpu_x86_64_v1]`.
 1. Read the notebook and execute each cell.
 
 Note:
