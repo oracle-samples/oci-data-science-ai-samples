@@ -15,19 +15,19 @@ The code can be executed and tested locally before running as a Job on OCI Data 
 - For Linux and [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)
 
 ```bash
-curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
+curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -o Miniforge3-Linux-x86_64.sh
 ```
 
 - MacOS Intel
 
 ```bash
-curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -o Miniconda3-latest-MacOSX-x86_64.sh
+curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh -o Miniforge3-MacOSX-x86_64.sh
 ```
 
 - MacOS Apple Silicon
 
 ```bash
-curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o Miniconda3-latest-MacOSX-arm64.sh
+curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh -o Miniforge3-MacOSX-arm64.sh
 ```
 
 - Run the installer
@@ -35,7 +35,7 @@ curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o Mi
 Depending on your host system, get the one that much:
 
 ```bash
-bash Miniconda3-latest-<Linux|MacOSX>-<x86_64|arm64>.sh
+bash Miniforge3-<Linux|MacOSX>-<x86_64|arm64>.sh
 ```
 
 You may need to restart your terminal or run `source ~/.bashrc` or `~/.zshrc` to enable the conda command. Use `conda -V` to test if it is installed successfully.
@@ -73,7 +73,7 @@ Successfully installed py-cpuinfo-9.0.0
 File to execute: /Users/lypelov/development/oci-data-science-ai-samples/jobs/tutorials/job-exec-code-with-subprocess/get-cpu-info.py
 
 
-Running command: ['/Users/lypelov/anaconda/envs/subprocess/bin/python', '/Users/lypelov/development/oci-data-science-ai-samples/jobs/tutorials/job-exec-code-with-subprocess/get-cpu-info.py']
+Running command: ['/Users/lypelov/conda/envs/subprocess/bin/python', '/Users/lypelov/development/oci-data-science-ai-samples/jobs/tutorials/job-exec-code-with-subprocess/get-cpu-info.py']
 Getting CPU info...
 
 ...

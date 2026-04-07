@@ -5,7 +5,7 @@
 ***:scream: Problem***
 Horovod Job runs fails with the following message:
 
-```/miniconda/envs/env/lib/python3.8/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 15 leaked semaphore objects to clean up at shutdown 2022-07-05 10:50:18 - Exiting with exit code: 1```
+```/opt/conda/envs/env/lib/python3.8/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 15 leaked semaphore objects to clean up at shutdown 2022-07-05 10:50:18 - Exiting with exit code: 1```
 
 ***:sparkles: Solution***
 This generally indicates an issue with the network communication. Please ensure that for Horovod, all traffic within the subnet is enabled.
@@ -37,33 +37,33 @@ This could be because of a wrong image name or incorrect policies for the contai
 `ads opctl run` fails with the error:
 
 ```bash
-ApplyLayer exit status 1 stdout:  stderr: write /miniconda/pkgs/perl-5.32.1-0_h7f98852_perl5/lib/perl5/5.32/core_perl/auto/Encode/JP/JP.so: no space left on device
+ApplyLayer exit status 1 stdout:  stderr: write /opt/conda/pkgs/perl-5.32.1-0_h7f98852_perl5/lib/perl5/5.32/core_perl/auto/Encode/JP/JP.so: no space left on device
 Traceback (most recent call last):
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/runpy.py", line 194, in _run_module_as_main
     return _run_code(code, main_globals, None,
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/runpy.py", line 87, in _run_code
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/runpy.py", line 87, in _run_code
     exec(code, run_globals)
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/ads/cli.py", line 35, in <module>
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/ads/cli.py", line 35, in <module>
     cli()
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 829, in __call__
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 829, in __call__
     return self.main(*args, **kwargs)
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 782, in main
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 782, in main
     rv = self.invoke(ctx)
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
     return _process_result(sub_ctx.command.invoke(sub_ctx))
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
     return _process_result(sub_ctx.command.invoke(sub_ctx))
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
     return _process_result(sub_ctx.command.invoke(sub_ctx))
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 1066, in invoke
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 1066, in invoke
     return ctx.invoke(self.callback, **ctx.params)
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 610, in invoke
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/click/core.py", line 610, in invoke
     return callback(*args, **kwargs)
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/ads/opctl/distributed/cli.py", line 178, in build_image
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/ads/opctl/distributed/cli.py", line 178, in build_image
     docker_build_cmd(ini)
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/ads/opctl/distributed/cmds.py", line 355, in docker_build_cmd
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/ads/opctl/distributed/cmds.py", line 355, in docker_build_cmd
     return run_cmd(cmd)
-  File "/home/opc/miniconda3/envs/dtv15-1/lib/python3.8/site-packages/ads/opctl/distributed/cmds.py", line 406, in run_cmd
+  File "/home/opc/conda/envs/dtv15-1/lib/python3.8/site-packages/ads/opctl/distributed/cmds.py", line 406, in run_cmd
     raise RuntimeError(f"Docker build failed.")
 RuntimeError: Docker build failed.
 ```
@@ -97,31 +97,31 @@ sudo chown <user>:<group> <private-key-name>.pem
 invalid argument "iad.ocir.io/namespace/dt:1.0:latest" for "-t, --tag" flag: invalid reference format
 See 'docker build --help'.
 Traceback (most recent call last):
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/runpy.py", line 194, in _run_module_as_main
     return _run_code(code, main_globals, None,
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/runpy.py", line 87, in _run_code
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/runpy.py", line 87, in _run_code
     exec(code, run_globals)
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/ads/cli.py", line 35, in <module>
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/ads/cli.py", line 35, in <module>
     cli()
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 829, in __call__
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 829, in __call__
     return self.main(*args, **kwargs)
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 782, in main
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 782, in main
     rv = self.invoke(ctx)
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
     return _process_result(sub_ctx.command.invoke(sub_ctx))
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
     return _process_result(sub_ctx.command.invoke(sub_ctx))
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 1259, in invoke
     return _process_result(sub_ctx.command.invoke(sub_ctx))
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 1066, in invoke
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 1066, in invoke
     return ctx.invoke(self.callback, **ctx.params)
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 610, in invoke
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/click/core.py", line 610, in invoke
     return callback(*args, **kwargs)
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/ads/opctl/distributed/cli.py", line 178, in build_image
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/ads/opctl/distributed/cli.py", line 178, in build_image
     docker_build_cmd(ini)
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/ads/opctl/distributed/cmds.py", line 354, in docker_build_cmd
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/ads/opctl/distributed/cmds.py", line 354, in docker_build_cmd
     return run_cmd(cmd)
-  File "/home/oci/miniconda3/envs/distributed-training/lib/python3.8/site-packages/ads/opctl/distributed/cmds.py", line 405, in run_cmd
+  File "/home/oci/conda/envs/distributed-training/lib/python3.8/site-packages/ads/opctl/distributed/cmds.py", line 405, in run_cmd
     raise RuntimeError(f"Docker build failed.")
 RuntimeError: Docker build failed.
 ```
