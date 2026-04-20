@@ -192,7 +192,7 @@ model.fit(
 
 ## Local or Notebooks Test
 
-`You can test this example by using our Oracle Cloud Infrastructure Data Science Notebooks with the` **tensorflow28_p38_cpu_v1** `activated!`. For a local test make sure you either install and use TensorFlow locally, via Conda or using our ADS OPCTL for local job runs: <https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/opctl/localdev/local_jobs.html>
+`You can test this example by using our Oracle Cloud Infrastructure Data Science Notebooks with the` **tensorflow220_p312_gpu_x86_64_v1** `activated!`. For a local test make sure you either install and use TensorFlow locally, via Conda or using our ADS OPCTL for local job runs: <https://accelerated-data-science.readthedocs.io/en/latest/user_guide/cli/opctl/localdev/local_jobs.html>
 
 **Stop** on **loss** function `0.05`
 
@@ -275,4 +275,4 @@ We would use following job environment variables:
 In our case we would use one of the pre-configured OCI Data Science Service Conda Environments, which can be set with the following environment variables on the job:
 
 `CONDA_ENV_TYPE=service`
-`CONDA_ENV_SLUG=tensorflow28_p38_cpu_v1`
+`CONDA_ENV_SLUG=tensorflow220_p312_gpu_x86_64_v1`

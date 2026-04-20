@@ -236,7 +236,7 @@ class MJobs:
             #       "JOB_RUN_ENTRYPOINT": "job_arch/entry.py"
             #       "CONTAINER_CUSTOM_IMAGE": "iad.ocir.io/tenancy-name/repo-name:tag"
             #       "CONDA_ENV_TYPE": "service",
-            #       "CONDA_ENV_SLUG": "dataexpl_p37_cpu_v2",
+            #       "CONDA_ENV_SLUG": "generalml_p312_cpu_x86_64_v1",
             #       "MY_ENV_VAR": "abcde"
             #   },
             # },

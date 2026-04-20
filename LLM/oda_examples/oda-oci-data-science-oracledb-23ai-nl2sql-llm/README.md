@@ -102,7 +102,7 @@ The key prerequisites that you would need to set up before you can proceed to ru
 
 - Notebook session used to initiate the distributed training and to access the fine-tuned model. For more information, see [Notebook session](https://docs.oracle.com/en-us/iaas/data-science/using/manage-notebook-sessions.htm).
 
-- Install "PyTorch 2.0 for GPU on Python 3.9" conda and install required dependencies mentioned in requirements.txt
+- Install "PyTorch 2.8 for GPU on Python 3.12" conda and install required dependencies mentioned in requirements.txt
 
   ```
   pip install -r requirements.txt

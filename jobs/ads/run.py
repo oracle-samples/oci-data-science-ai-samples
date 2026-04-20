@@ -49,7 +49,7 @@ def run_and_monitor(artifact_name):
         )
         .with_runtime(
             PythonRuntime()
-            .with_service_conda("pytorch110_p38_cpu_v1")
+            .with_service_conda("pytorch28_p312_gpu_x86_64_v1")
             .with_source(f"oci://{BUCKET_NAME}@{BUCKET_NAMESPACE}/tmp/{artifact_name}")
         )
     )

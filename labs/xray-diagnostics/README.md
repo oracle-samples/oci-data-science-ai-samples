@@ -16,8 +16,8 @@ Your notebook needs internet access.
 1. Open a Data Science Notebook session (i.e. JupyterLab).
 1. Open a file terminal by clicking on File -> New -> Terminal.
 1. In the terminal run the following commands:
-1. `odsc conda install -s mlcpuv1` to install the General Machine Learning for CPUs conda.
-    1. `conda activate /home/datascience/conda/mlcpuv1` to activate the conda.
+1. `odsc conda install -s generalml_p311_cpu_x86_64_v3` to install the General Machine Learning for CPUs on Python 3.11 conda.
+    1. `conda activate /home/datascience/conda/generalml_p311_cpu_x86_64_v3` to activate the conda.
     1. `pip install oci` to install the OCI Python SDK.
     1. `pip install scikit-image`
     1. `pip install keras`
@@ -25,13 +25,13 @@ Your notebook needs internet access.
 1. Copy the `notebooks` folder into the notebook session.
 1. Copy the `data` folder into the notebook session.
 1. Open the notebook `notebook/ChestXrays_Train.ipynb`.
-1. Change the notebook kernel to `Python [conda env:mlcpuv1]`.
+1. Change the notebook kernel to `Python [conda env:generalml_p311_cpu_x86_64_v3]`.
 1. Read the notebook and execute each cell. The data will be stored in a folder called `./data` and a model artifact is created under `./model_artifact`.
 1. Before you `prepare()` the artifact, publish your conda environment. In the terminal, run the command `odsc conda publish -s xray-demo`.
 1. To confirm that the conda was published, click on File -> New Launcher and look for the conda environment.
 1. Complete the rest of the notebook.
 1. Open the notebook `notebook/ChestXrays_Validate.ipynb`.
-1. Change the notebook kernel to `Python [conda env:mlcpuv1]`.
+1. Change the notebook kernel to `Python [conda env:generalml_p311_cpu_x86_64_v3]`.
 1. Read the notebook and execute each cell.
 
 

@@ -37,7 +37,7 @@ class JobRunner:
                     # "JOB_RUN_ENTRYPOINT": "job_arch/entry.py"
                     # "CONTAINER_CUSTOM_IMAGE": "iad.ocir.io/oci/fn:1.0"
                     # "CONDA_ENV_TYPE": "service",
-                    # "CONDA_ENV_SLUG": "mlcpuv1",
+                    # "CONDA_ENV_SLUG": "generalml_p311_cpu_x86_64_v3",
                     # "MY_ENV_VAR": "abcde"
                 },
             },

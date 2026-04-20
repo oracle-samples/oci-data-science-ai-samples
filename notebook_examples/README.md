@@ -76,7 +76,7 @@ The ADS SDK can be downloaded from [PyPi](https://pypi.org/project/oracle-ads/),
  
 Build an anomaly detection model using the experimental, fully unsupervised anomaly detection pipeline in Oracle AutoMLx for the public Credit Card Fraud dataset.
 
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `automlx`  `anomaly detection`
@@ -92,7 +92,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v2`
  
 Build a classifier using the Oracle AutoMLx tool and binary data set of Census income data.
 
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `automlx`  `classification`  `classifier`
@@ -108,7 +108,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
  
 Develop a model and evaluate its fairness
 
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `automlx`  `fairness`
@@ -124,7 +124,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
  
 Build a regressor using Oracle AutoMLx and a pricing data set. Training options will be explored and the resulting AutoMLx models will be evaluated.
 
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `automlx`  `regression`
@@ -140,7 +140,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
  
 build a classifier using the Oracle AutoMLx tool for the public 20newsgroup dataset
 
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `automlx`  `text classification`  `text classifier`
@@ -156,7 +156,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
  
 Download, process and display autonomous driving data, and map LiDAR data onto images.
 
-This notebook was developed on the conda pack with slug: `computervision_p37_cpu_v1`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `autonomous driving`  `oracle open data`
@@ -172,7 +172,7 @@ This notebook was developed on the conda pack with slug: `computervision_p37_cpu
  
 Work interactively with a BDS cluster using Livy and two different connection techniques, SparkMagic (for a notebook environment) and with REST.
 
-This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `bds`  `big data service`  `livy`
@@ -188,7 +188,7 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
  
 Manage data using fsspec file system. Read and save data using pandas and pyarrow through fsspec file system.
 
-This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `bds`  `fsspec`
@@ -204,7 +204,7 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
  
 Deploy and perform inferencing using AI Quick Action models.
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `byoc`  `llm`  `quick action`  `deploy`
@@ -220,7 +220,7 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
  
 Set up a retrieval-augmented generative QA using OCI OpenSearch as a retriever.
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `cohere`  `OpenSearch`  `RAG`  `Retrieval Augmented Generative`
@@ -236,7 +236,7 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
  
 Write and test a Data Flow batch application using the Oracle Cloud Infrastructure (OCI) Data Catalog Metastore. Configure the job, run the application and clean up resources.
 
-This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `data catalog metastore`  `data flow`
@@ -252,7 +252,7 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
  
 Use the Oracle Cloud Infrastructure (OCI) Data Labeling service to efficiently build enriched, labeled datasets for the purpose of accurately training AI/ML models. This notebook demonstrates operations that can be performed using the Advanced Data Science (ADS) Data Labeling module.
 
-This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `data labeling`  `text classification`
@@ -268,7 +268,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
  
 Configure and use PySpark to process data in the Oracle Cloud Infrastructure (OCI) Data Catalog metastore, including common operations like creating and loading data from the metastore.
 
-This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `dcat`  `data catalog metastore`  `pyspark`
@@ -284,7 +284,7 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
  
 Introduction to the Oracle Cloud Infrastructure Feature Store.Use feature store for feature ingestion        and feature querying
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`
@@ -300,7 +300,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Feature store to store embeddings, version embeddings and time travel of embeddings.
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`  `llm`  `embeddings`
@@ -316,7 +316,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Use feature store to perform PII data redaction, summarization, translation using openai.
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`  `querying`
@@ -332,7 +332,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Perform Schema Enforcement and Schema Evolution in Feature Store when materialising the data.
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`  `querying`  `schema enforcement`  `schema evolution`
@@ -348,7 +348,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Run Feature Store on interactive Spark workloads on a long lasting Data Flow Cluster.
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`  `querying`  `spark magic`  `data flow`
@@ -364,7 +364,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Using feature store to transform, store and query your data using pandas like interface to query and join
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`  `querying`
@@ -380,7 +380,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Feature store quickstart guide to perform synthetic data generation using openai
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`  `querying`  `synthetic data generation`
@@ -396,7 +396,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Feature store quickstart guide to perform feature querying using pandas like interface for query and join.
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`  `querying`
@@ -412,7 +412,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Feature store quickstart guide to perform feature querying using pandas like interface for query and join.
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`  `querying`
@@ -428,7 +428,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Carrying out schema enforcement and schema evolution on Feature Store.
 
-This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `feature store`  `querying`  `streaming`
@@ -444,7 +444,7 @@ This notebook was developed on the conda pack with slug: `fspyspark32_p38_cpu_v3
  
 Train, register, and deploy a generic model
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `generic model`  `deploy model`  `register model`  `train model`
@@ -460,7 +460,7 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
  
 Access
 
-This notebook was developed on the conda pack with slug: `pypgx2310_p38_cpu_v1`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `graph_insight`  `autonomous_database`
@@ -476,7 +476,7 @@ This notebook was developed on the conda pack with slug: `pypgx2310_p38_cpu_v1`
  
 Train, register, and deploy a huggingface pipeline.
 
-This notebook was developed on the conda pack with slug: `pytorch110_p38_cpu_v1`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `huggingface`  `deploy model`  `register model`  `train model`
@@ -492,7 +492,7 @@ This notebook was developed on the conda pack with slug: `pytorch110_p38_cpu_v1`
  
 Enhance performance of scikit-learn models using the Intel(R) oneAPI Data Analytics Library. Train a k-means model using both sklearn and the accelerated Intel library and compare performance.
 
-This notebook was developed on the conda pack with slug: `sklearnex202130_p37_cpu_v1`
+This notebook was developed on the conda pack with slug: `tensorflow220_p312_gpu_x86_64_v1`
 
  
 `intel`  `intel extension`  `scikit-learn`  `scikit learn`
@@ -508,7 +508,7 @@ This notebook was developed on the conda pack with slug: `sklearnex202130_p37_cp
  
 Connect to Oracle Big Data services using Kerberos.
 
-This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `kerberos`  `big data service`  `bds`
@@ -524,7 +524,7 @@ This notebook was developed on the conda pack with slug: `pyspark30_p37_cpu_v5`
  
 Deploy LangChain applications as OCI data science model deployment
 
-This notebook was developed on the conda pack with slug: `pytorch21_p39_gpu_v1`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `langchain`  `deploy model`  `register model`  `LLM`
@@ -540,7 +540,7 @@ This notebook was developed on the conda pack with slug: `pytorch21_p39_gpu_v1`
  
 Use Oracle AutoMLx to build a forecast model with real-world data sets.
 
-This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
@@ -556,7 +556,7 @@ This notebook was developed on the conda pack with slug: `automlx_p38_cpu_v3`
  
 Use the ADS SDK to process and manipulate strings. This notebook includes regular expression matching and natural language (NLP) parsing, including part-of-speech tagging, named entity recognition, and sentiment analysis. It also shows how to create and use custom plugins specific to your specific needs.
 
-This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `language services`  `string manipulation`  `regex`  `regular expression`  `natural language processing`  `NLP`  `part-of-speech tagging`  `named entity recognition`  `sentiment analysis`  `custom plugins`
@@ -572,7 +572,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
  
 Train, register, and deploy a LightGBM model.
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `lightgbm`  `deploy model`  `register model`  `train model`
@@ -588,7 +588,7 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
  
 A model version set is a way to track the relationships between models. As a container, the model version set takes a collection of models. Those models are assigned a sequential version number based on the order they are entered into the model version set.
 
-This notebook was developed on the conda pack with slug: `dbexp_p38_cpu_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `model`  `model experiments`  `model version set`
@@ -620,7 +620,7 @@ This notebook was developed on the conda pack with slug: `generalml_p38_cpu_v1`
  
 Perform model explanations on an NLP classifier using the locally interpretable model explanations technique (LIME).
 
-This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `nlp`  `lime`  `model_explanation`  `text_classification`  `text_explanation`
@@ -636,7 +636,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
  
 Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.
 
-This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `onnx`  `deploy model`
@@ -652,7 +652,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
  
 Create and use ML pipelines through the entire machine learning lifecycle
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `pipelines`  `pipeline step`  `jobs pipeline`
@@ -668,7 +668,7 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
  
 Use Oracle's Graph Analytics libraries to demonstrate graph algorithms, graph machine learning models, and use the property graph query language (PGQL)
 
-This notebook was developed on the conda pack with slug: `pypgx2310_p38_cpu_v1`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `pypgx`  `graph analytics`  `pgx`
@@ -684,7 +684,7 @@ This notebook was developed on the conda pack with slug: `pypgx2310_p38_cpu_v1`
  
 Develop local PySpark applications and work with remote clusters using Data Flow.
 
-This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `pyspark`  `data flow`
@@ -700,7 +700,7 @@ This notebook was developed on the conda pack with slug: `pyspark24_p37_cpu_v3`
  
 Run interactive Spark workloads on a long lasting Oracle Cloud Infrastructure Data Flow Spark cluster through Apache Livy integration. Data Flow Spark Magic is used for interactively working with remote Spark clusters through Livy, a Spark REST server, in Jupyter notebooks. It includes a set of magic commands for interactively running Spark code.
 
-This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v2`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `pyspark`  `data flow`
@@ -716,7 +716,7 @@ This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v2`
  
 Demonstrates how to use Spark NLP within a long lasting Oracle Cloud Infrastructure Data Flow cluster.
 
-This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v1`
+This notebook was developed on the conda pack with slug: `pyspark35_p312_cpu_x86_64_v1`
 
  
 `pyspark`  `data flow`
@@ -732,7 +732,7 @@ This notebook was developed on the conda pack with slug: `pyspark32_p38_cpu_v1`
  
 Train, register, and deploy a PyTorch model.
 
-This notebook was developed on the conda pack with slug: `pytorch110_p38_cpu_v1`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `pytorch`  `deploy model`  `register model`  `train model`
@@ -748,7 +748,7 @@ This notebook was developed on the conda pack with slug: `pytorch110_p38_cpu_v1`
  
 Perform batch inferencing on LLMs using AI Quick Actions.
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `quick action`  `batch`  `inferencing`  `llm`
@@ -764,7 +764,7 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
  
 Train, register, and deploy an scikit-learn model.
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `scikit-learn`  `deploy model`  `register model`  `train model`
@@ -780,7 +780,7 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
  
 Connect to Oracle Cloud Insfrastructure (OCI) Streaming service with kafka.
 
-This notebook was developed on the conda pack with slug: `dataexpl_p37_cpu_v3`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `streaming`  `kafka`
@@ -796,7 +796,7 @@ This notebook was developed on the conda pack with slug: `dataexpl_p37_cpu_v3`
  
 Train, register, and deploy a TensorFlow model.
 
-This notebook was developed on the conda pack with slug: `tensorflow28_p38_cpu_v1`
+This notebook was developed on the conda pack with slug: `tensorflow220_p312_gpu_x86_64_v1`
 
  
 `tensorflow`  `deploy model`  `register model`  `train model`
@@ -812,7 +812,7 @@ This notebook was developed on the conda pack with slug: `tensorflow28_p38_cpu_v
  
 Extract text from common formats (e.g. PDF and Word) into plain text. Customize this process for individual use cases.
 
-This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
+This notebook was developed on the conda pack with slug: `pytorch28_p312_gpu_x86_64_v1`
 
  
 `text extraction`  `nlp`
@@ -828,7 +828,7 @@ This notebook was developed on the conda pack with slug: `nlp_p37_cpu_v2`
  
 Compare training time between CPU and GPU trained models using XGBoost
 
-This notebook was developed on the conda pack with slug: `rapids2110_p37_gpu_v1`
+This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v3`
 
  
 `xgboost`  `rapids`  `gpu`  `machine learning`  `classification`
@@ -844,7 +844,7 @@ This notebook was developed on the conda pack with slug: `rapids2110_p37_gpu_v1`
  
 Train, register, and deploy an XGBoost model.
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `xgboost`  `deploy model`  `register model`  `train model`
@@ -861,7 +861,7 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
  
 Train and Deploy an XGBoost Model for OCI MySQL Heatwave
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `xgboost`  `deploy model`  `heatwave`  `train model` `mysql`
@@ -879,7 +879,7 @@ This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86
  
 Train and Deploy an XGBoost Model for OCI NoSQL
 
-This notebook was developed on the conda pack with slug: `generalml_p311_cpu_x86_64_v1`
+This notebook was developed on the conda pack with slug: `generalml_p312_cpu_x86_64_v1`
 
  
 `xgboost`  `deploy model`  `heatwave`  `train model` `mysql`
