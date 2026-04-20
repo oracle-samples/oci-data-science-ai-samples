@@ -1,9 +1,9 @@
 FROM ghcr.io/oracle/oraclelinux:9-slim
 
-RUN curl -L -o ./miniconda.sh -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && chmod +x ./miniconda.sh \
-    && ./miniconda.sh -b -p /opt/conda \
-    && rm ./miniconda.sh \
+RUN curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -o ./miniforge.sh \
+    && chmod +x ./miniforge.sh \
+    && ./miniforge.sh -b -p /opt/conda \
+    && rm ./miniforge.sh \
     && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
     && /opt/conda/bin/conda update python cryptography \
     && /opt/conda/bin/conda clean -ya

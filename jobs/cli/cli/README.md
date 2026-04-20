@@ -9,13 +9,13 @@ If you want to try this samples on your local machine, we would recommend you to
 
 ### Using Conda
 
-Download and install the Conda.
+Download and install Miniforge, a conda-forge-based Conda distribution.
 
 ```bash
-curl -L https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh >> miniconda.sh
-bash ./miniconda.sh -b -p $HOME/miniconda
-cd $HOME/miniconda
-./conda init <zsh or shell>
+curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh -o miniforge.sh
+bash ./miniforge.sh -b -p $HOME/conda
+source "$HOME/conda/etc/profile.d/conda.sh"
+conda init <zsh or shell>
 ```
 
 Create new conda environment with Python 3.7
