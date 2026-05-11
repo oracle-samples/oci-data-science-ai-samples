@@ -1,5 +1,10 @@
 # The OCI SDK must be installed for this example to function properly.
 # Installation instructions can be found here: https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm
+#
+# Multiple Inference Endpoints (MIE): use the non-streaming predict prefix and your
+# registered suffix (for example OpenAI chat completions):
+#   POST https://<model-deployment-host>/<model-deployment-ocid>/predict/v1/chat/completions
+# Replace <suffix> with the path your deployment exposes (framework or custom).
 
 import requests
 import oci
@@ -23,12 +28,12 @@ auth = Signer(
 # private_key = oci.signer.load_private_key_from_file(config['key_file'])
 # auth = oci.auth.signers.SecurityTokenSigner(token, private_key)
 
-endpoint = "<your-endpoint>"
-# Use your appropriate body here
+endpoint = "https://<model-deployment-host>/<model-deployment-ocid>/predict/v1/chat/completions"
+# Use your appropriate body here (schema depends on the route / container)
 body = {
     "model":"odsc-llm",
-    "prompt":"Who invented Internet", 
-     "max_tokens":5, 
+    "prompt":"Who invented Internet",
+     "max_tokens":5,
      "stream": False
 }
 

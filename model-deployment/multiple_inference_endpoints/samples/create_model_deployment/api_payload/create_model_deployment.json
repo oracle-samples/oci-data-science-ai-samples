@@ -1,0 +1,51 @@
+{
+  "displayName": "MIE-REST-Text",
+  "description": "Sample model deployment with MIE (OpenAI framework + custom HTTP endpoints)",
+  "projectId": "<PROJECT_OCID>",
+  "compartmentId": "<COMPARTMENT_OCID>",
+  "freeformTags": {},
+  "definedTags": {},
+  "modelDeploymentConfigurationDetails": {
+    "deploymentType": "SINGLE_MODEL",
+    "modelConfigurationDetails": {
+      "modelId": "<MODEL_OCID>"
+    },
+    "infrastructureConfigurationDetails": {
+      "infrastructureType": "INSTANCE_POOL",
+      "instanceConfiguration": {
+        "instanceShapeName": "VM.Standard.E4.Flex",
+        "modelDeploymentInstanceShapeConfigDetails": {
+          "ocpus": 1,
+          "memoryInGBs": 16,
+          "cpuBaseline": "BASELINE_1_1"
+        }
+      },
+      "scalingPolicy": {
+        "policyType": "FIXED_SIZE",
+        "instanceCount": 1
+      }
+    },
+    "environmentConfigurationDetails": {
+      "environmentConfigurationType": "OCIR_CONTAINER",
+      "environmentVariables": {
+        "EXAMPLE_KEY_eSrrI": "EXAMPLE_VALUE_K27qWX7kLrt6ZTDIGtdJ"
+      },
+      "image": "<OCIR_CONTAINER_IMAGE>",
+      "imageDigest": "<IMAGE_DIGEST>",
+      "serverPort": "8000",
+      "healthCheckPort": "8000",
+      "entrypoint": [],
+      "predictApiSpecification": "openai",
+      "customHttpEndpoints": [
+        {
+          "endpointUriSuffix": "/v1/custom/completions",
+          "httpMethods": ["GET", "POST"]
+        },
+        {
+          "endpointUriSuffix": "/models/{}",
+          "httpMethods": ["GET", "POST"]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "displayName": "MIE-REST-Text-Update",
+  "description": "Sample update for MIE via REST payload",
+  "modelDeploymentConfigurationDetails": {
+    "deploymentType": "SINGLE_MODEL",
+    "environmentConfigurationDetails": {
+      "environmentConfigurationType": "OCIR_CONTAINER",
+      "serverPort": "8000",
+      "healthCheckPort": "8000",
+      "predictApiSpecification": "openai",
+      "customHttpEndpoints": [
+        {
+          "endpointUriSuffix": "/v1/custom/completions",
+          "httpMethods": ["GET", "POST"]
+        }
+      ],
+      "image": "<OCIR_CONTAINER_IMAGE>",
+      "imageDigest": "<IMAGE_DIGEST>",
+      "entrypoint": [],
+      "environmentVariables": {
+        "EXAMPLE_KEY_eSrrI": "EXAMPLE_VALUE_K27qWX7kLrt6ZTDIGtdJ"
+      }
+    }
+  }
+}

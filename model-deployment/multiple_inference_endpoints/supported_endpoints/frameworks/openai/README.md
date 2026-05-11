@@ -44,8 +44,10 @@ This list is the **source of truth** for the OpenAI framework on OCI Data Scienc
 
 ## Related samples
 
-* [Create a Model Deployment with MIE](../../../api_approach_samples/create_mie_md.py)
-* [Update a Model Deployment with MIE](../../../api_approach_samples/update_mie_md.py)
-* [Inference (non-streaming)](../../../api_approach_samples/inference_mie.py)
-* [Inference (streaming)](../../../api_approach_samples/inference_mie_streaming.py)
+* [Create a model deployment with MIE (SDK)](../../../samples/create_model_deployment/sdk/create_mie_md.py)
+* [Create a model deployment with MIE (REST JSON + script)](../../../samples/create_model_deployment/api_payload/)
+* [Update a model deployment with MIE (SDK)](../../../samples/update_model_deployment/sdk/update_mie_md.py)
+* [Update a model deployment with MIE (REST JSON + script)](../../../samples/update_model_deployment/api_payload/)
+* [Inference (non-streaming)](../../../samples/inference/non_streaming/inference_mie.py)
+* [Inference (streaming)](../../../samples/inference/streaming/inference_mie_streaming.py)
 * [OpenAI SDK auth samples](../../../openai_sdk_auth/README.md)
