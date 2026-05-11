@@ -1,12 +1,13 @@
 # This is an automatically generated code sample.
+# MIE: update environment_configuration_details (predict_api_specification, custom_http_endpoints).
+# Active deployments use a rolling update (UPDATING -> ACTIVE). See samples/README.md.
 # To make this code sample work in your Oracle Cloud tenancy,
 # please replace the values for any parameters whose current values do not fit
 # your use case (such as resource IDs, strings containing ‘EXAMPLE’ or ‘unique_id’, and
 # boolean, number, and enum parameters with values not fitting your use case).
 
-from http import HTTPMethod
 import oci
-import sys
+from http import HTTPMethod
 
 print(oci.__version__)
 # sys.exit()
@@ -34,28 +35,14 @@ data_science_client = oci.data_science.DataScienceClient(config, signer=signer)
 
 # Send the request to service, some parameters are not required, see API
 # doc for more info
-create_model_deployment_response = data_science_client.create_model_deployment(
-    create_model_deployment_details=oci.data_science.models.CreateModelDeploymentDetails(
-        project_id="ocid1.datascienceproject.oc1.iad.amaaaaaav66vvniaqsyu2nufljutkn4rzth2nz4q3zqslirct7eayl5ojpma",
-        compartment_id="ocid1.tenancy.oc1..aaaaaaaahzy3x4boh7ipxyft2rowu2xeglvanlfewudbnueugsieyuojkldq",
-        model_deployment_configuration_details=oci.data_science.models.SingleModelDeploymentConfigurationDetails(
+update_model_deployment_response = data_science_client.update_model_deployment(
+    model_deployment_id="ocid1.datasciencemodeldeployment.oc1.iad.amaaaaaav66vvniawqof2ppnqeocdyrkqto2ntkem2cbrm2fqebfx7cqmysq",
+    update_model_deployment_details=oci.data_science.models.UpdateModelDeploymentDetails(
+        display_name="MIE-Python-SDK-Text-Update",
+        description="Sample update for python sdk for MIE",
+        model_deployment_configuration_details=oci.data_science.models.UpdateSingleModelDeploymentConfigurationDetails(
             deployment_type="SINGLE_MODEL",
-            model_configuration_details=oci.data_science.models.ModelConfigurationDetails(
-                model_id="ocid1.datasciencemodel.oc1.iad.amaaaaaav66vvnia36wjp3kb542uicbssflwid55wqf6zzzbxk5ekhhja4eq",
-                instance_configuration=oci.data_science.models.InstanceConfiguration(
-                    instance_shape_name="VM.Standard.E4.Flex",
-                    model_deployment_instance_shape_config_details=oci.data_science.models.ModelDeploymentInstanceShapeConfigDetails(
-                        ocpus=1,
-                        memory_in_gbs=16,
-                        cpu_baseline="BASELINE_1_1"),
-                    ),
-                scaling_policy=oci.data_science.models.FixedSizeScalingPolicy(
-                    policy_type="FIXED_SIZE",
-                    instance_count=1
-                ),
-                bandwidth_mbps=10,
-            ),
-            environment_configuration_details=oci.data_science.models.OcirModelDeploymentEnvironmentConfigurationDetails(
+            environment_configuration_details=oci.data_science.models.UpdateOcirModelDeploymentEnvironmentConfigurationDetails(
                 environment_configuration_type="OCIR_CONTAINER",
                 server_port=8000,
                 health_check_port=8000,
@@ -73,11 +60,11 @@ create_model_deployment_response = data_science_client.create_model_deployment(
                 image_digest='sha256:6522a4728d8030f97a686b46c416797f7106ccef7e2687d6fa9b594e41809200',
                 entrypoint=[],
                 environment_variables={
-                    'EXAMPLE_KEY_eSrrI': 'EXAMPLE_VALUE_K27qWX7kLrt6ZTDIGtdJ'})),
-        display_name="MIE-Python-SDK-Text",
-        description="Testing preview python sdk for MIE",
+                    'EXAMPLE_KEY_eSrrI': 'EXAMPLE_VALUE_K27qWX7kLrt6ZTDIGtdJ'}
+            )
         ),
     )
+)
 
 # Get the data from response
-print(create_model_deployment_response.data)
+print(update_model_deployment_response.headers)
