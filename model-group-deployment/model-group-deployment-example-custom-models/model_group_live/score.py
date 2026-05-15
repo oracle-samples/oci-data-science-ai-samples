@@ -1,5 +1,6 @@
 import os
 import sys
+import gc
 import json
 import pandas as pd
 import numpy as np
@@ -157,3 +158,31 @@ def predict(data, model, input_schema_path=os.path.join(os.path.dirname(os.path.
     #yhat = post_inference(model.predict(input))
     yhat = model.predict(data)
     return {'prediction': yhat}
+
+def unload_model(model=None):
+    """
+    Cleanup hook for model group live update, model removal/replacement,
+    or container shutdown.
+
+    This function should be safe to call even when no cleanup is required.
+    """
+
+    if model is not None:
+        try:
+            if hasattr(model, "close"):
+                model.close()
+            elif hasattr(model, "shutdown"):
+                model.shutdown()
+            elif hasattr(model, "unload"):
+                model.unload()
+        except Exception as ex:
+            logging.warning("Exception occurred while unloading model: %s", ex)
+
+    # Clear cached models loaded through load_model().
+    try:
+        load_model.cache_clear()
+    except Exception as ex:
+        logging.warning("Exception occurred while clearing model cache: %s", ex)
+
+    gc.collect()
+    print("Model cleanup completed")
