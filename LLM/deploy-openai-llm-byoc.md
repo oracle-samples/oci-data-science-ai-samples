@@ -69,10 +69,33 @@ To prepare Model artifacts for LLM model deployment:
 huggingface-cli download openai/gpt-oss-120b --local-dir models/gpt-oss-120b --exclude metal/*
 ```
 
-Download the titoken file - 
+Prepare the tiktoken cache file for offline model deployment:
 
 ```shell
-wget -P models/gpt-oss-120b https://openaipublic.blob.core.windows.net/encodings/o200k_base.tiktoken
+python -m pip install tiktoken
+
+python - <<'PY'
+import os
+import shutil
+import tempfile
+from pathlib import Path
+
+cache_dir = Path(tempfile.mkdtemp(prefix="tiktoken-cache-"))
+os.environ["TIKTOKEN_CACHE_DIR"] = str(cache_dir)
+
+import tiktoken
+
+tiktoken.get_encoding("o200k_base")
+
+cached_files = [path for path in cache_dir.iterdir() if path.is_file()]
+if len(cached_files) != 1:
+    raise RuntimeError(f"Expected one cached tokenizer file, found {len(cached_files)}")
+
+target = Path("models/gpt-oss-120b/o200k_base.tiktoken")
+target.parent.mkdir(parents=True, exist_ok=True)
+shutil.copyfile(cached_files[0], target)
+print(f"Cached tokenizer file at {target}")
+PY
 ```
 ## Upload Model to OCI Object Storage
 
