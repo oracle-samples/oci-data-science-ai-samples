@@ -28,6 +28,10 @@ OCI Data Science supports LLMs in several ways:
 
 The [Model Catalog](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/user_guide/modelcatalog/modelcatalog.html) offers a managed and centralized storage space for models. ADS helps you create the artifacts you need to use this service. However, you must provide a [`score.py`](https://docs.oracle.com/en-us/iaas/data-science/using/model_score_py.htm) file that loads the model and a function that makes predictions. The [`runtime.yaml`](https://docs.oracle.com/en-us/iaas/data-science/using/model_runtime_yaml.htm) provides information about the runtime conda environment if you want to deploy the model. You can also document a comprehensive set of metadata about the provenance of the model. This section provides examples of how to create your `score.py` and `runtime.yaml` files for various common machine learning models and configurations. 
 
+### [Compute Targets](compute-target/)
+
+Compute Targets let supported OCI Data Science workloads run on reusable managed compute capacity. This section provides OCI Python SDK samples for creating a Managed Compute Cluster Compute Target and creating a model deployment that uses an existing Compute Target.
+
 ### [Jobs](jobs/)
 
 Oracle Cloud Infrastructure (OCI) [Data Science Jobs](https://docs.oracle.com/en-us/iaas/data-science/using/jobs-about.htm) is a powerful tool that allows you to define and run repeatable machine learning tasks on a fully managed infrastructure. With Jobs, you have the flexibility to apply custom tasks to meet your specific use cases, such as data preparation, model training, hyperparameter optimization, batch inference, large model training and more.
