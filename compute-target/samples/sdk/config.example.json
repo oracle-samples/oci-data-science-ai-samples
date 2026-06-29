@@ -1,0 +1,58 @@
+{
+  "config_file": "~/.oci/config",
+  "profile_name": "DEFAULT",
+  "auth": "api_key",
+  "compartment_id": "ocid1.compartment.oc1..<unique_id>",
+  "compute_target": {
+    "display_name": "sample-managed-compute-cluster",
+    "description": "Managed Compute Cluster Compute Target created with the OCI Python SDK.",
+    "instance_configuration": {
+      "instance_shape": "VM.Standard.E4.Flex",
+      "ocpus": 10,
+      "memory_in_gbs": 32,
+      "boot_volume_size_in_gbs": 100
+    },
+    "scaling": {
+      "type": "AUTOSCALING",
+      "cool_down_in_seconds": 300,
+      "minimum_instance_count": 1,
+      "maximum_instance_count": 3,
+      "initial_instance_count": 1,
+      "rules": [
+        {
+          "type": "CUSTOM_EXPRESSION",
+          "scale_out_configuration": {
+            "query": "ComputeTargetUnschedulableWorkloadInstances[1m]{resourceId = \"COMPUTE_TARGET_OCID\"}.grouping().mean() > 0",
+            "pending_duration": "PT5M",
+            "instance_count_adjustment": 1
+          },
+          "scale_in_configuration": {
+            "query": "ComputeTargetIdleInstances[1h]{resourceId = \"COMPUTE_TARGET_OCID\"}.grouping().mean() > 1",
+            "pending_duration": "PT10M",
+            "instance_count_adjustment": 1
+          }
+        }
+      ]
+    }
+  },
+  "compute_target_update": {
+    "compute_target_id": "ocid1.datasciencecomputetarget.oc1..<unique_id>",
+    "display_name": "sample-managed-compute-cluster-updated",
+    "description": "Updated display metadata for a Managed Compute Cluster Compute Target.",
+    "metadata": {
+      "owner": "data-science"
+    },
+    "freeform_tags": {
+      "sample": "compute-target",
+      "operation": "update"
+    },
+    "defined_tags": {}
+  },
+  "compute_target_delete": {
+    "compute_target_id": "ocid1.datasciencecomputetarget.oc1..<unique_id>"
+  },
+  "freeform_tags": {
+    "sample": "compute-target"
+  },
+  "defined_tags": {}
+}

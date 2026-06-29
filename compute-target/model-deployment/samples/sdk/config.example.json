@@ -1,0 +1,127 @@
+{
+  "config_file": "~/.oci/config",
+  "profile_name": "DEFAULT",
+  "auth": "api_key",
+  "compartment_id": "ocid1.compartment.oc1..<unique_id>",
+  "model_deployment": {
+    "project_id": "ocid1.datascienceproject.oc1..<unique_id>",
+    "model_id": "ocid1.datasciencemodel.oc1..<unique_id>",
+    "compute_target_id": "ocid1.datasciencecomputetarget.oc1..<unique_id>",
+    "display_name": "sample-model-deployment-on-compute-target",
+    "description": "Model Deployment on a Managed Compute Cluster Compute Target.",
+    "container_image": "dsmc://odsc-vllm-serving:0.19.1.265",
+    "container_image_digest": null,
+    "server_port": 8080,
+    "health_check_port": 8080,
+    "environment_variables": {
+      "DEPLOYMENT_SCHEDULING_TIMEOUT": "30",
+      "ENABLE_REQUEST_BUFFERING": "true"
+    },
+    "resource_request": {
+      "ocpus": 1,
+      "memory_in_gbs": 6,
+      "gpus": null
+    },
+    "resource_limit": {
+      "ocpus": 2,
+      "memory_in_gbs": 12
+    },
+    "scaling": {
+      "type": "AUTOSCALING",
+      "autoscaling": {
+        "minimum_instance_count": 1,
+        "maximum_instance_count": 3,
+        "initial_instance_count": 1,
+        "rules": [
+          {
+            "type": "TARGET_CUSTOM_EXPRESSION",
+            "query": "CpuUtilization[1m]{resourceId = \"MODEL_DEPLOYMENT_OCID\"}.grouping().mean()",
+            "threshold": 70.0
+          },
+          {
+            "type": "TARGET_CUSTOM_EXPRESSION",
+            "query": "PredictRequestCount[1h]{resourceId = \"MODEL_DEPLOYMENT_OCID\"}.grouping().sum()",
+            "threshold": 1.0
+          }
+        ],
+        "scale_out_policy": {
+          "pending_duration": "PT1M",
+          "instance_count_adjustment": 1,
+          "cool_down_in_seconds": 300
+        },
+        "scale_in_policy": {
+          "pending_duration": "PT10M",
+          "instance_count_adjustment": 1,
+          "cool_down_in_seconds": 300
+        }
+      }
+    }
+  },
+  "model_deployment_update": {
+    "model_deployment_id": "ocid1.datasciencemodeldeployment.oc1..<unique_id>",
+    "display_name": "sample-model-deployment-on-compute-target-updated",
+    "description": "Updated model deployment metadata and workload configuration.",
+    "model_id": "ocid1.datasciencemodel.oc1..<new_unique_id>",
+    "environment_configuration": {
+      "container_image": "dsmc://odsc-vllm-serving:0.19.1.265",
+      "container_image_digest": null,
+      "server_port": 8080,
+      "health_check_port": 8080,
+      "environment_variables": {
+        "DEPLOYMENT_SCHEDULING_TIMEOUT": "30",
+        "ENABLE_REQUEST_BUFFERING": "true"
+      }
+    },
+    "resource_request": {
+      "ocpus": 1,
+      "memory_in_gbs": 6,
+      "gpus": null
+    },
+    "resource_limit": {
+      "ocpus": 2,
+      "memory_in_gbs": 12
+    },
+    "scaling": {
+      "type": "AUTOSCALING",
+      "autoscaling": {
+        "minimum_instance_count": 1,
+        "maximum_instance_count": 3,
+        "initial_instance_count": 1,
+        "rules": [
+          {
+            "type": "TARGET_CUSTOM_EXPRESSION",
+            "query": "CpuUtilization[1m]{resourceId = \"MODEL_DEPLOYMENT_OCID\"}.grouping().mean()",
+            "threshold": 70.0
+          },
+          {
+            "type": "TARGET_CUSTOM_EXPRESSION",
+            "query": "PredictRequestCount[1h]{resourceId = \"MODEL_DEPLOYMENT_OCID\"}.grouping().sum()",
+            "threshold": 1.0
+          }
+        ],
+        "scale_out_policy": {
+          "pending_duration": "PT1M",
+          "instance_count_adjustment": 1,
+          "cool_down_in_seconds": 300
+        },
+        "scale_in_policy": {
+          "pending_duration": "PT10M",
+          "instance_count_adjustment": 1,
+          "cool_down_in_seconds": 300
+        }
+      }
+    },
+    "freeform_tags": {
+      "sample": "compute-target",
+      "operation": "update-model-deployment"
+    },
+    "defined_tags": {}
+  },
+  "model_deployment_delete": {
+    "model_deployment_id": "ocid1.datasciencemodeldeployment.oc1..<unique_id>"
+  },
+  "freeform_tags": {
+    "sample": "compute-target"
+  },
+  "defined_tags": {}
+}
