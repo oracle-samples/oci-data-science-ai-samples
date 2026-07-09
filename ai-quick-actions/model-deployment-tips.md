@@ -40,7 +40,11 @@ form to quickly deploy the model:
 
 ![Deploy Model](web_assets/deploy-model.png)
 
-### Compute Shape
+### Infrastructure
+
+AQUA supports two types of infrastructure resources for deploying a single model: Compute Shape and Compute Target (Managed Computer Cluster). When deploying a model, you can either specify a compute shape or choose a compute target.
+
+#### Compute Shape
 
 The compute shape selection is critical, the list available is selected to be suitable for the
 chosen model.
@@ -54,6 +58,21 @@ For a full list of shapes and their definitions see the [compute shape docs](htt
 
 The relationship between model parameter size and GPU memory is roughly 2x parameter count in GB, so for example a model that has 7B parameters will need a minimum of 14 GB for inference. At runtime the
 memory is used for both holding the weights, along with the concurrent contexts for the user's requests.
+
+#### Compute Target
+
+A Data Science Compute Target manages the underlying compute, networking, and Kubernetes infrastructure, ensuring security and compliance. Each Compute Target is supported by dedicated compute capacity within a multi-tenant Kubernetes environment.
+
+To deploy a model on a managed compute cluster, you must first create a Compute Target and reference it in AQUA during model deployment creation. When select Compute Target as infrastructure, it's also required to specify the resource configurations, including the number of GPUs, OCPUs, and memory (in GB).
+
+```bash
+--compute_target_details '{"compute_target_id":"ocid1.datasciencecomputetargetint.oc1.iad.<ocid>", "gpu_count":2, "ocpus": "15", "memory_in_gbs": 240}'
+```
+
+For more details regarding compute target creation and required policy, refer to [Data Science Compute Target](<url_placeholder>).
+
+**Note:** Currently AQUA only supports deploying service managed models on Compute Target.
+
 
 #### Quantization Support
 
