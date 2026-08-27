@@ -1,8 +1,12 @@
 # Active Service Conda Environments for OCI Data Science
 
-This page contains the list of currently active service conda environments available for OCI Data Science workflows.
+This page lists the current service conda environment revisions in the OL9 migration inventory. Deprecated environments are not included.
 
-Deprecated environments are not listed here. When multiple active revisions exist for the same environment family, this page shows only the latest active version for that Python version and platform.
+During the Oracle Linux 9 migration, both an Oracle Linux 8 (OL8)-built revision and an Oracle Linux 9 (OL9)-built revision can be active for the same environment family. When both are active, the tables below show the latest active revision for each build base.
+
+**Last reviewed:** August 26, 2026.
+
+> **Regional availability:** Catalog publication is rolled out by region and realm. A revision in the migration inventory is not a guarantee that it has reached every production region. Use Environment Explorer in your OCI Data Science notebook session to confirm which revisions are available in your region.
 
 ## What service conda environments are
 
@@ -12,72 +16,103 @@ They give you a ready-to-use starting point so you do not need to assemble and v
 
 ## Why customers use them
 
-Service conda environments matter because they help you:
+Service conda environments help you:
 
-- start faster with a known-good environment,
+- start faster with a curated environment,
 - choose an environment aligned to a common workflow,
 - keep notebook-based work consistent across teams, and
-- avoid unnecessary package and dependency setup work.
+- reduce package and dependency setup work.
 
 ## Notebook sessions and Environment Explorer
 
-These environments are used most often in **notebook sessions**, which open in JupyterLab.
+These environments are used most often in **notebook sessions**, which open in JupyterLab. In Environment Explorer, you can:
 
-In OCI Data Science notebook sessions, you can use **Environment Explorer** to:
-
-- view available service conda environments,
+- view the service conda environments available in your region,
 - install an environment into your notebook session, and
-- use the installed environment as a notebook kernel for your work.
+- use the installed environment as a notebook kernel.
 
 For most customers, this is the easiest way to discover, install, and start using a service conda environment.
 
-## Scope of this page
+## Oracle Linux build base
 
-Below is reference for the active environments customers should see as available today, based on the current production-published inventory and the corresponding environment manifests in this repository. This does not include deprecated conda environments.
+For the migration pairs on this page, the **Build base** column identifies the Oracle Linux container used to build the SCE. It is separate from the environment's Python version, processor architecture, and CPU or GPU type. It does not change the runtime image beneath your workload, and it does not mean that the SCE can run only with the same runtime-image version.
+
+The latest active OL8-built migration revisions listed here are intended to run with both OL8 and OL9 runtime images. This supports a staged migration: you can move an existing workload to an OL9 runtime image while continuing to use its OL8-built SCE, and then migrate the SCE separately.
+
+OL9-built revisions target the OL9 runtime image and may depend on newer system libraries, such as a newer GLIBC version, so they are not intended for the OL8 runtime image. For new workloads on OL9, prefer the corresponding **OL9-built** revision. Existing workloads can continue using the OL8-built revision while migrating and testing. Validate application dependencies and user-installed native packages before production use.
+
+OL8-built revisions remain available during the migration, but they will be deprecated over time. New service conda environment revisions will be built on OL9 only. No deprecation date is implied by this page; follow OCI service notices for lifecycle dates.
+
+For a direct lookup from an active OL8-built revision to its OL9-built replacement, see [Migrate from an OL8-built Service Conda Environment to an OL9-built Revision](./ol8-to-ol9-service-conda-environments.md).
+
+The trailing `_v1`, `_v2`, and similar values in a slug are pack revisions. Do not use the revision number alone to infer the build base; use the **Build base** column.
 
 ## Active environments
 
 ### Base environments
 
-| Environment | Slug | Primary use case | Description |
-|---|---|---|---|
-| Python 3.10 Base environment | `python_p310_any_x86_64_v2` | Start from a minimal Python environment and add your own packages | Base Python 3.10 environment for customization. |
-| Python 3.11 Base environment | `python_p311_any_x86_64_v3` | Start from a minimal Python environment and add your own packages | Base Python 3.11 environment for customization. |
-| Python 3.12 Base environment | `python_p312_any_x86_64_v2` | Start from a minimal Python environment and add your own packages | Base Python 3.12 environment for customization. |
+| Environment | Slug | Build base | Primary use case | Description |
+|---|---|---|---|---|
+| Python 3.10 Base environment | `python_p310_any_x86_64_v3` | Oracle Linux 9 (OL9) | Start from a minimal Python environment and add your own packages | Base Python 3.10 environment for customization. |
+| Python 3.10 Base environment | `python_p310_any_x86_64_v2` | Oracle Linux 8 (OL8) | Start from a minimal Python environment and add your own packages | Base Python 3.10 environment for customization. |
+| Python 3.11 Base environment | `python_p311_any_x86_64_v4` | Oracle Linux 9 (OL9) | Start from a minimal Python environment and add your own packages | Base Python 3.11 environment for customization. |
+| Python 3.11 Base environment | `python_p311_any_x86_64_v3` | Oracle Linux 8 (OL8) | Start from a minimal Python environment and add your own packages | Base Python 3.11 environment for customization. |
+| Python 3.12 Base environment | `python_p312_any_x86_64_v3` | Oracle Linux 9 (OL9) | Start from a minimal Python environment and add your own packages | Base Python 3.12 environment for customization. |
+| Python 3.12 Base environment | `python_p312_any_x86_64_v2` | Oracle Linux 8 (OL8) | Start from a minimal Python environment and add your own packages | Base Python 3.12 environment for customization. |
 
 ### General-purpose machine learning
 
-| Environment | Slug | Primary use case | Description |
-|---|---|---|---|
-| General Machine Learning for CPUs on Python 3.11 | `generalml_p311_cpu_x86_64_v3` | Broad CPU-based machine learning and data science workflows | General-purpose machine learning environment with Oracle data-access libraries plus core ML packages such as scikit-learn, XGBoost, and LightGBM. |
-| General Machine Learning for CPUs on Python 3.12 | `generalml_p312_cpu_x86_64_v1` | Broad CPU-based machine learning and data science workflows | General-purpose machine learning environment on Python 3.12 with Oracle integrations and common ML libraries for tabular and classical ML work. |
+| Environment | Slug | Build base | Primary use case | Description |
+|---|---|---|---|---|
+| General Machine Learning for CPUs on Python 3.11 | `generalml_p311_cpu_x86_64_v6` | Oracle Linux 9 (OL9) | Broad CPU-based machine learning and data science workflows | General-purpose machine learning environment with Oracle data-access libraries and core ML packages such as scikit-learn, XGBoost, and LightGBM. |
+| General Machine Learning for CPUs on Python 3.11 | `generalml_p311_cpu_x86_64_v5` | Oracle Linux 8 (OL8) | Broad CPU-based machine learning and data science workflows | General-purpose machine learning environment with Oracle data-access libraries and core ML packages such as scikit-learn, XGBoost, and LightGBM. |
+| General Machine Learning for CPUs on Python 3.12 | `generalml_p312_cpu_x86_64_v4` | Oracle Linux 9 (OL9) | Broad CPU-based machine learning and data science workflows | General-purpose machine learning environment on Python 3.12 with Oracle integrations and common ML libraries for tabular and classical ML work. |
+| General Machine Learning for CPUs on Python 3.12 | `generalml_p312_cpu_x86_64_v3` | Oracle Linux 8 (OL8) | Broad CPU-based machine learning and data science workflows | General-purpose machine learning environment on Python 3.12 with Oracle integrations and common ML libraries for tabular and classical ML work. |
+| General Machine Learning for CPUs on Python 3.13 | `generalml_p313_cpu_x86_64_v1` | Oracle Linux 9 (OL9) | Broad CPU-based machine learning and data science workflows | General-purpose machine learning environment for Python 3.13. No active OL8-built revision is available. |
+| General Machine Learning for CPUs on Python 3.14 | `generalml_p314_cpu_x86_64_v1` | Oracle Linux 9 (OL9) | Broad CPU-based machine learning and data science workflows | General-purpose machine learning environment for Python 3.14. No active OL8-built revision is available. |
 
 ### GPU deep learning and inference
 
-| Environment | Slug | Primary use case | Description |
-|---|---|---|---|
-| PyTorch 2.8 for GPU on Python 3.12 | `pytorch28_p312_gpu_x86_64_v1` | PyTorch-based model training, fine-tuning, and modern deep learning workflows | GPU environment for PyTorch workloads, including CUDA support and commonly used libraries for transformer and LLM-oriented development. |
-| TensorFlow 2.20 for GPU on Python 3.12 | `tensorflow220_p312_gpu_x86_64_v1` | TensorFlow training and inference on GPU | GPU environment for TensorFlow-based deep learning workflows, including TensorFlow, TensorBoard, and core data science packages. |
-| ONNX Runtime on Python 3.12 with GPU support | `onnxruntime_p312_gpu_x86_64_v1` | GPU-backed ONNX inference workloads | Environment focused on ONNX model inference, including GPU-enabled ONNX Runtime and support for inference scenarios such as embeddings and text generation. |
+| Environment | Slug | Build base | Primary use case | Description |
+|---|---|---|---|---|
+| PyTorch 2.8 for GPU on Python 3.12 | `pytorch28_p312_gpu_x86_64_v2` | Oracle Linux 9 (OL9) | PyTorch-based model training, fine-tuning, and deep learning workflows | GPU environment for PyTorch workloads, including CUDA support and commonly used libraries for transformer and LLM-oriented development. |
+| PyTorch 2.8 for GPU on Python 3.12 | `pytorch28_p312_gpu_x86_64_v1` | Oracle Linux 8 (OL8) | PyTorch-based model training, fine-tuning, and deep learning workflows | GPU environment for PyTorch workloads, including CUDA support and commonly used libraries for transformer and LLM-oriented development. |
+| TensorFlow 2.20 for GPU on Python 3.12 | `tensorflow220_p312_gpu_x86_64_v2` | Oracle Linux 9 (OL9) | TensorFlow training and inference on GPU | GPU environment for TensorFlow-based deep learning workflows, including TensorFlow, TensorBoard, and core data science packages. |
+| TensorFlow 2.20 for GPU on Python 3.12 | `tensorflow220_p312_gpu_x86_64_v1` | Oracle Linux 8 (OL8) | TensorFlow training and inference on GPU | GPU environment for TensorFlow-based deep learning workflows, including TensorFlow, TensorBoard, and core data science packages. |
+| ONNX Runtime on Python 3.12 with GPU support | `onnxruntime_p312_gpu_x86_64_v2` | Oracle Linux 9 (OL9) | GPU-backed ONNX inference workloads | Environment focused on ONNX model inference, with GPU-enabled ONNX Runtime and support for inference scenarios such as embeddings and text generation. |
+| ONNX Runtime on Python 3.12 with GPU support | `onnxruntime_p312_gpu_x86_64_v1` | Oracle Linux 8 (OL8) | GPU-backed ONNX inference workloads | Environment focused on ONNX model inference, with GPU-enabled ONNX Runtime and support for inference scenarios such as embeddings and text generation. |
 
 ### Spark and Data Flow
 
-| Environment | Slug | Primary use case | Description |
-|---|---|---|---|
-| PySpark 3.5 and Data Flow on Python 3.11 | `pyspark35_p311_cpu_x86_64_v1` | Spark, Data Flow, and large-scale data processing workflows | PySpark environment with Data Flow magic commands for working with remote Data Flow sessions from notebook sessions. |
-| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v1` | Spark, Data Flow, and large-scale data processing workflows | PySpark environment on Python 3.12 with Data Flow integration for notebook-based Spark and distributed data processing. |
+| Environment | Slug | Build base | Primary use case | Description |
+|---|---|---|---|---|
+| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v2` | Oracle Linux 9 (OL9) | Spark, Data Flow, and large-scale data processing workflows | PySpark environment on Python 3.12 with Data Flow integration for notebook-based Spark and distributed data processing. |
+| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v1` | Oracle Linux 8 (OL8) | Spark, Data Flow, and large-scale data processing workflows | PySpark environment on Python 3.12 with Data Flow integration for notebook-based Spark and distributed data processing. |
 
 ### Operator-focused environments
 
-| Environment | Slug | Primary use case | Description |
-|---|---|---|---|
-| AI Forecasting Operator | `forecast_p311_cpu_x86_64_v13` | Time-series forecasting workflows with Oracle ADS operator support | Environment focused on forecasting workflows, including Oracle ADS, AutoMLX, and forecasting libraries such as Prophet, NeuralProphet, AutoTS, and pmdARIMA. |
+| Environment | Slug | Build base | Primary use case | Description |
+|---|---|---|---|---|
+| AI Forecasting Operator | `forecast_p311_cpu_x86_64_v18` | Oracle Linux 9 (OL9) | Time-series forecasting workflows with Oracle ADS operator support | Forecasting environment with Oracle ADS, AutoMLX, and forecasting libraries such as Prophet, NeuralProphet, AutoTS, and pmdARIMA. |
+| AI Forecasting Operator | `forecast_p311_cpu_x86_64_v17` | Oracle Linux 8 (OL8) | Time-series forecasting workflows with Oracle ADS operator support | Forecasting environment with Oracle ADS, AutoMLX, and forecasting libraries such as Prophet, NeuralProphet, AutoTS, and pmdARIMA. |
+| AI Forecasting Operator Light | `forecast_light_p311_cpu_x86_64_v7` | Oracle Linux 9 (OL9) | Lightweight time-series forecasting workflows | Lighter forecasting environment for common time-series workflows with a smaller package set. |
+| AI Forecasting Operator Light | `forecast_light_p311_cpu_x86_64_v6` | Oracle Linux 8 (OL8) | Lightweight time-series forecasting workflows | Lighter forecasting environment for common time-series workflows with a smaller package set. |
 
 ### ARM environments
 
-| Environment | Slug | Primary use case | Description |
-|---|---|---|---|
-| ARM Pack for Machine Learning on Python 3.12 | `armml_p312_cpu_aarch64_v1` | Machine learning workflows on ARM-based notebook, job, pipeline, and deployment shapes | ARM-targeted machine learning environment for data access, classical ML, and ONNX-related workflows on ARM infrastructure. |
+| Environment | Slug | Build base | Primary use case | Description |
+|---|---|---|---|---|
+| ARM Pack for Machine Learning on Python 3.12 | `armml_p312_cpu_aarch64_v2` | Oracle Linux 9 (OL9) | Machine learning workflows on ARM-based notebook, job, pipeline, and deployment shapes | ARM-targeted machine learning environment for data access, classical ML, and ONNX-related workflows on ARM infrastructure. |
+| ARM Pack for Machine Learning on Python 3.12 | `armml_p312_cpu_aarch64_v1` | Oracle Linux 8 (OL8) | Machine learning workflows on ARM-based notebook, job, pipeline, and deployment shapes | ARM-targeted machine learning environment for data access, classical ML, and ONNX-related workflows on ARM infrastructure. |
+
+### Other catalog entries
+
+The following revisions are active in the catalog snapshot used for this update but are not included in the OL9 migration test plan. Their build base is therefore not confirmed here.
+
+| Environment | Slug | Build base | Primary use case | Description |
+|---|---|---|---|---|
+| AI Anomaly Detection Operator | `anomaly_p311_cpu_x86_64_v2` | Not confirmed | Anomaly detection workflows with Oracle ADS operator support | Operator-focused environment for building and running anomaly-detection workflows. |
+| PySpark 3.5 and Data Flow on Python 3.11 | `pyspark35_p311_cpu_x86_64_v1` | Not confirmed | Spark, Data Flow, and large-scale data processing workflows | PySpark environment with Data Flow magic commands for working with remote Data Flow sessions from notebook sessions. |
 
 ## How to choose an environment
 
@@ -85,5 +120,7 @@ Below is reference for the active environments customers should see as available
 - Choose **General Machine Learning** if you want a broad default environment for CPU-based data science and machine learning work.
 - Choose **PyTorch**, **TensorFlow**, or **ONNX Runtime** when your workflow is tied to one of those frameworks and you want a GPU-ready setup.
 - Choose **PySpark and Data Flow** if your work depends on Spark sessions, distributed processing, or OCI Data Flow integration.
-- Choose **AI Forecasting Operator** if your workflow is centered on time-series forecasting with the Oracle ADS operator stack.
+- Choose an **AI Forecasting Operator** environment for time-series forecasting with the Oracle ADS operator stack.
 - Choose **ARM Pack for Machine Learning** only when you are working on ARM-based infrastructure.
+
+After choosing an environment family, use the compatibility information above to select the appropriate build base, and validate the workload before production use.

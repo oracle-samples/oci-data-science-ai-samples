@@ -1,8 +1,11 @@
 # Guide to migrate Data Science workloads to new service conda environments
 
-OCI Data Science is deprecating legacy service conda environments to a new set of environments. The list of conda environments that will be deprecated and their replacements are listed [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/conda-environments/compatibility-matrix.md).
+This guide explains how to update a Data Science Notebook, Model Deployment, or Job after you select a new service conda environment.
 
-If you have a Data Science Notebook, Model Deployment or Job using one of the deprecated conda environments, follow the instructions to update your workload.
+- If you use a deprecated legacy environment, find its replacement in the [SCE compatibility matrix](./compatibility-matrix.md).
+- If you use a latest active OL8-built environment, find its OL9-built revision in the [OL8-to-OL9 SCE migration lookup](./ol8-to-ol9-service-conda-environments.md).
+
+After you identify the target SCE slug, follow the applicable workload instructions below.
 
 ## Data Science Notebook
 Open the environment explorer inside the notebook and select one of the new supported conda environments.  Install the environment with the ```odsc conda install command``` inside a terminal.  Change the kernel to the new environment in the top right corner of the notebook.
@@ -14,7 +17,7 @@ For model deployments that use conda environments, the inference [conda environm
 - [Update model deployment](https://docs.oracle.com/iaas/Content/data-science/using/model-dep-edit.htm) to use new model.
 
 ## Job
-Jobs can run an entire Python project archived into a single file or [use one of the Data Science service conda environments](https://docs.oracle.com/en-us/iaas/Content/data-science/using/jobs-other.htm) as specified by the user. For a Job created with a deprecated conda environment configuration, follow the instructions.
+Jobs can run an entire Python project archived into a single file or [use one of the Data Science service conda environments](https://docs.oracle.com/en-us/iaas/Content/data-science/using/jobs-other.htm) as specified by the user. For a job whose service conda environment needs to be changed, follow these instructions.
 - Either [create a job](https://docs.oracle.com/iaas/Content/data-science/using/jobs-create.htm#jobs-create-console) and add this [custom environment variable](https://docs.oracle.com/en-us/iaas/Content/data-science/using/jobs-env-vars.htm) to specify a new supported Data Science conda environment
 ```
 CONDA_ENV_TYPE => "service"
