@@ -6,27 +6,26 @@ OCI Data Science is rolling out an updated service runtime image based on Oracle
 
 An SCE's **build base** identifies the Oracle Linux container used to build the SCE. It is different from the **runtime image** that OCI Data Science uses to run a notebook session, job, pipeline, or model deployment.
 
-> **Wait for your notification:** The OL9 runtime image will not become available in every region and realm at the same time. Wait until you receive the OCI notification for your realm or region before changing a production workload. The appearance of an OL9-built SCE in Environment Explorer does not by itself confirm that the runtime-image rollout is complete in that location.
-
 ## Is customer action required?
 
-No action is required solely because of the runtime-image change. Customers can optionally review these parts of their workloads for OL9 compatibility:
+Most customers do not need to change an SCE solely because of the runtime-image change. Customers can review these parts of their workloads for OL9 compatibility:
 
 - custom conda environments and native packages used with notebook sessions;
 - bring-your-own-container images, libraries, and dependencies used by jobs or model deployments; and
 - scripts or external integrations that depend on operating-system-specific behavior.
 
-This page focuses on OCI-provided service conda environments (SCEs). The latest OL8-built revisions listed here are intended to run with both OL8 and OL9 runtime images. If your OL8-built SCE continues to work, you can keep using it during the migration period. OL8-built revisions will eventually be deprecated, and future SCE revisions will be built on OL9 only, so plan and test the corresponding OL9-built revision when you are ready.
+This page focuses on OCI-provided service conda environments (SCEs). The latest OL8-built revisions listed here are generally intended to run with both OL8 and OL9 runtime images. Review documented exceptions, including the PySpark Jobs issue below. If your OL8-built SCE continues to work, you can keep using it during the migration period. OL8-built revisions will eventually be deprecated and deleted after a notified migration period. Future SCE revisions will be built on OL9 only, so plan and test the corresponding OL9-built revision when you are ready.
+
+> **Required for PySpark 3.5 Jobs:** Jobs that use `pyspark35_p312_cpu_x86_64_v1` must move to `pyspark35_p312_cpu_x86_64_v2` before running on the OL9 Jobs runtime image. The OL8-built `v1` revision failed OL9 Jobs validation because of a GDAL compatibility issue. The OL9-built `v2` revision passed Jobs, Model Deployment, and Notebook validation.
 
 ## When to consider an OL9-built SCE
 
 Consider migrating the SCE when:
 
 - you are creating or updating a workload that will use the OL9 runtime image;
+- your Job uses `pyspark35_p312_cpu_x86_64_v1` and will run on the OL9 Jobs runtime image;
 - you encounter GLIBC, shared-library, native-package, or similar compatibility errors; or
 - an OCI notification directs you to use an OL9-built SCE.
-
-**Last reviewed:** August 26, 2026.
 
 ## Find the corresponding OL9-built revision
 
@@ -39,7 +38,7 @@ The following table contains confirmed OL8-to-OL9 migration pairs. When you choo
 | Python 3.12 Base environment | `python_p312_any_x86_64_v2` | `python_p312_any_x86_64_v3` | Python 3.12, x86_64 | User-installed packages, compiled extensions, and operating-system library dependencies. |
 | General Machine Learning for CPUs on Python 3.11 | `generalml_p311_cpu_x86_64_v5` | `generalml_p311_cpu_x86_64_v6` | Python 3.11, CPU, x86_64 | ADS and database connectivity, scikit-learn, XGBoost, LightGBM, model serialization, and native packages. |
 | General Machine Learning for CPUs on Python 3.12 | `generalml_p312_cpu_x86_64_v3` | `generalml_p312_cpu_x86_64_v4` | Python 3.12, CPU, x86_64 | ADS and database connectivity, scikit-learn, XGBoost, LightGBM, model serialization, and native packages. |
-| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v1` | `pyspark35_p312_cpu_x86_64_v2` | Python 3.12, CPU, x86_64 | Spark session creation, Data Flow magic commands, Java integration, dependency archives, and representative Spark jobs. |
+| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v1` | `pyspark35_p312_cpu_x86_64_v2` | Python 3.12, CPU, x86_64 | Use `v2` for Jobs on the OL9 runtime image. The OL8-built `v1` failed OL9 Jobs validation because of a GDAL compatibility issue; `v2` passed Jobs, Model Deployment, and Notebook validation. |
 | PyTorch 2.8 for GPU on Python 3.12 | `pytorch28_p312_gpu_x86_64_v1` | `pytorch28_p312_gpu_x86_64_v2` | Python 3.12, GPU, x86_64 | GPU detection, CUDA, model loading, training and inference, Transformers, PEFT, and custom extensions. |
 | TensorFlow 2.20 for GPU on Python 3.12 | `tensorflow220_p312_gpu_x86_64_v1` | `tensorflow220_p312_gpu_x86_64_v2` | Python 3.12, GPU, x86_64 | GPU detection, model loading and saving, training and inference, TensorBoard, and custom operations. |
 | ONNX Runtime on Python 3.12 with GPU support | `onnxruntime_p312_gpu_x86_64_v1` | `onnxruntime_p312_gpu_x86_64_v2` | Python 3.12, GPU, x86_64 | CUDA and cuDNN compatibility, GPU execution providers, model loading, inference outputs, and Transformers. |
@@ -55,18 +54,17 @@ OL9-built SCEs target the OL9 runtime image and can depend on newer system libra
 
 ## Migrate and validate safely
 
-1. Wait for the OCI notification confirming the OL9 runtime-image rollout for the workload's realm or region.
-2. Confirm that the OL9-built slug is available in Environment Explorer in that region.
-3. Prepare a separate test path for the workload:
+1. Confirm that the OL9-built slug is available in Environment Explorer in your region.
+2. Prepare a separate test path for the workload:
    - For a notebook session, install the OL9-built SCE without removing the working OL8-built SCE, and select it as the test notebook kernel.
    - For a job or pipeline, create a test configuration or run that references the OL9-built slug without changing the production configuration.
    - For a model deployment, prepare and save a test model artifact whose `runtime.yaml` references the OL9-built slug, and then create a non-production model deployment from that model.
-4. Run import and startup checks for the libraries used by the workload.
-5. Test data access, authentication, secrets, network access, and external service integrations.
-6. Run a representative notebook, job, pipeline, training, or inference workflow end to end.
-7. For GPU or native dependencies, verify device discovery and runtime library linkage.
-8. After validation succeeds, update or promote the production kernel, configuration, pipeline step, or model artifact.
-9. Keep the previous OL8-built configuration available as a rollback option during the migration period.
+3. Run import and startup checks for the libraries used by the workload.
+4. Test data access, authentication, secrets, network access, and external service integrations.
+5. Run a representative notebook, job, pipeline, training, or inference workflow end to end.
+6. For GPU or native dependencies, verify device discovery and runtime library linkage.
+7. After validation succeeds, update or promote the production kernel, configuration, pipeline step, or model artifact.
+8. Keep the previous OL8-built configuration available as a rollback option during the migration period.
 
 For update instructions for notebook sessions, model deployments, and jobs, see the [service conda environment migration guide](./migration-guide.md).
 

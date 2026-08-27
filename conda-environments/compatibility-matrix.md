@@ -3,13 +3,15 @@
 ## Overview
 OCI Data Science is migrating customers from **legacy Service Conda Environments (SCEs)** to a new, supported set of **rebuilt SCEs**.
 
-To minimize disruption, the migration follows a **soft deprecation** approach:
-- Legacy SCEs will be **deprecated and may later be hidden** to prevent new adoption, but they will **remain available for existing consumers** while you migrate.
+To minimize disruption, the migration follows a staged deprecation approach:
+- Legacy SCEs are **deprecated and will be permanently deleted from the service after the migration period**. After deletion, workloads that still reference them can fail when restarted, redeployed, or patched.
 - You will receive **at least 30 days’ notice** before changes, along with replacement recommendations and migration guidance.
 
 This page provides a **compatibility matrix** that maps each legacy SCE to the recommended new SCE, plus notes on expected differences and migration considerations.
 
-Each replacement cell lists the latest active **OL9-built** revision first and the latest active **OL8-built** revision second. For new workloads using the OL9 runtime image, prefer the OL9-built revision. The OL8-built revision is intended to run with both OL8 and OL9 runtime images and can be used while services move from OL8 to OL9. OL9-built revisions may depend on newer system libraries and are not intended for the OL8 runtime image.
+Each replacement cell lists the latest active **OL9-built** revision first and the latest active **OL8-built** revision second. For new workloads using the OL9 runtime image, prefer the OL9-built revision. The OL8-built revision is generally intended to run with both OL8 and OL9 runtime images and can be used while services move from OL8 to OL9. Review documented exceptions, including the PySpark Jobs issue below. OL9-built revisions may depend on newer system libraries and are not intended for the OL8 runtime image.
+
+> **PySpark 3.5 Jobs on OL9:** Jobs that use the OL8-built `pyspark35_p312_cpu_x86_64_v1` must move to the OL9-built `pyspark35_p312_cpu_x86_64_v2` before running on the OL9 Jobs runtime image. The OL8-built revision failed OL9 Jobs validation because of a GDAL compatibility issue. The OL9-built revision passed Jobs, Model Deployment, and Notebook validation.
 
 The **Key differences** column summarizes the move from the legacy SCE to the OL9-built replacement. The corresponding OL8-built revision can contain earlier package versions. Validate application dependencies and user-installed native packages before production use. Availability can vary by region; confirm both revisions in Environment Explorer.
 
@@ -33,7 +35,7 @@ If you already use a latest active OL8-built SCE and want its corresponding OL9-
 - **CPU/GPU + Architecture**: whether it’s CPU/GPU, and x86_64 vs aarch64.
 - **Primary use-case**: general ML, PyTorch, TensorFlow, Spark, etc.
 - **Key differences**: notable package/runtime shifts.
-- **Support / deprecation status**: the lifecycle state of the legacy and replacement SCEs. Deprecated and hidden are distinct states.
+- **Support / deprecation status**: the lifecycle state of the legacy and replacement SCEs. Deprecated SCEs are scheduled for deletion after the migration period.
 
 
 | Legacy SCE | Replacement SCE | Replacement build bases | Python (old → new) | CPU/GPU + Arch | Primary use-case | Key differences | Support / deprecation status |
