@@ -1,0 +1,2 @@
+# Dependencies used only for local unit tests.
+pytest>=8.0,<9.0

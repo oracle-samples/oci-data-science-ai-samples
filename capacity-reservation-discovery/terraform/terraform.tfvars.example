@@ -1,0 +1,4 @@
+# Requires a Python environment with a public OCI SDK that exposes the required Data Science API fields.
+compartment_id = "ocid1.compartment.oc1..example"
+profile        = "DEFAULT"
+region         = "<region>"

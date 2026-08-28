@@ -1,0 +1,5 @@
+# Latest public OCI Python SDK and OCI CLI from PyPI.
+# The discovery entry points verify that the installed clients expose the required
+# Data Science capacity-reservation API fields before they make an OCI request.
+oci
+oci-cli

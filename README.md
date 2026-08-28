@@ -32,6 +32,10 @@ The [Model Catalog](https://docs.oracle.com/en-us/iaas/tools/ads-sdk/latest/user
 
 Compute Targets let supported OCI Data Science workloads run on reusable managed compute capacity. This section provides OCI Python SDK samples for creating a Managed Compute Cluster Compute Target and creating a model deployment that uses an existing Compute Target.
 
+### [Capacity Reservation Discovery](capacity-reservation-discovery/)
+
+Read-only tools for reporting explicitly configured OCI Data Science capacity-reservation associations. The sample follows the latest public OCI Python SDK and CLI releases and validates that they expose the required API fields before running discovery.
+
 ### [Jobs](jobs/)
 
 Oracle Cloud Infrastructure (OCI) [Data Science Jobs](https://docs.oracle.com/en-us/iaas/data-science/using/jobs-about.htm) is a powerful tool that allows you to define and run repeatable machine learning tasks on a fully managed infrastructure. With Jobs, you have the flexibility to apply custom tasks to meet your specific use cases, such as data preparation, model training, hyperparameter optimization, batch inference, large model training and more.
