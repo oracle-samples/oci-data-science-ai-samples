@@ -98,6 +98,8 @@ After the stack is created and its Stack details page opens, click Plan from the
 
   Allow dynamic-group aqua-dynamic-group to inspect compartments in tenancy
 
+  Allow dynamic-group aqua-dynamic-group to manage data-science-compute-targets in compartment <your-compartment-name>
+
   Allow dynamic-group aqua-dynamic-group to manage object-family in compartment <your-compartment-name> where any {target.bucket.name='<your-bucket-name>'}
 
   Allow dynamic-group <dynamic-group-name> to read repos in compartment <your-compartment-name> where any {request.operation='ReadDockerRepositoryMetadata',request.operation='ReadDockerRepositoryManifest',request.operation='PullDockerLayer'}
