@@ -21,7 +21,7 @@ humanfriendly==10.0
 langchain==0.2.5
 langchain-community==0.2.19
 langchain-core==0.2.7
-langchain-text-splitters==0.2.1
+langchain-text-splitters==1.0.0a1
 langsmith==0.1.77
 llama-index==0.12.4
 llama-index-agent-openai==0.2.7
