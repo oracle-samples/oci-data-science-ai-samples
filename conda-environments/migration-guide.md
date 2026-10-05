@@ -19,7 +19,7 @@ For model deployments that use conda environments, the inference [conda environm
 ## Job
 Jobs can run an entire Python project archived into a single file or [use one of the Data Science service conda environments](https://docs.oracle.com/en-us/iaas/Content/data-science/using/jobs-other.htm) as specified by the user. For a job whose service conda environment needs to be changed, follow these instructions.
 
-> **PySpark 3.5 on the OL9 Jobs runtime:** If a Job uses `pyspark35_p312_cpu_x86_64_v1`, update it to `pyspark35_p312_cpu_x86_64_v2`. The OL8-built `v1` revision failed OL9 Jobs validation because of a GDAL compatibility issue; the OL9-built `v2` revision passed Jobs validation.
+> **PySpark 3.5 on the OL9 Jobs runtime:** If a Job uses `pyspark35_p312_cpu_x86_64_v1`, update it to `pyspark35_p312_cpu_x86_64_v3`. The OL8-built `v1` revision failed OL9 Jobs validation because of a GDAL compatibility issue.
 
 - Either [create a job](https://docs.oracle.com/iaas/Content/data-science/using/jobs-create.htm#jobs-create-console) and add this [custom environment variable](https://docs.oracle.com/en-us/iaas/Content/data-science/using/jobs-env-vars.htm) to specify a new supported Data Science conda environment
 ```

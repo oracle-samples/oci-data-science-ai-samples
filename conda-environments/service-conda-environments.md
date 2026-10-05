@@ -37,7 +37,7 @@ For the migration pairs on this page, the **Build base** column identifies the O
 
 The latest active OL8-built migration revisions listed here are generally intended to run with both OL8 and OL9 runtime images. Review documented exceptions, including the PySpark Jobs issue below. This supports a staged migration: you can move an existing workload to an OL9 runtime image while continuing to use its OL8-built SCE, and then migrate the SCE separately.
 
-> **Required for PySpark 3.5 Jobs:** Jobs that use `pyspark35_p312_cpu_x86_64_v1` must move to `pyspark35_p312_cpu_x86_64_v2` before running on the OL9 Jobs runtime image. The OL8-built `v1` revision failed OL9 Jobs validation because of a GDAL compatibility issue. The OL9-built `v2` revision passed Jobs, Model Deployment, and Notebook validation.
+> **Required for PySpark 3.5 Jobs:** Jobs that use `pyspark35_p312_cpu_x86_64_v1` must move to `pyspark35_p312_cpu_x86_64_v3` before running on the OL9 Jobs runtime image. The OL8-built `v1` revision failed OL9 Jobs validation because of a GDAL compatibility issue.
 
 OL9-built revisions target the OL9 runtime image and may depend on newer system libraries, such as a newer GLIBC version, so they are not intended for the OL8 runtime image. For new workloads on OL9, prefer the corresponding **OL9-built** revision. Existing workloads can continue using the OL8-built revision while migrating and testing. Validate application dependencies and user-installed native packages before production use.
 
@@ -86,8 +86,8 @@ The trailing `_v1`, `_v2`, and similar values in a slug are pack revisions. Do n
 
 | Environment | Slug | Build base | Primary use case | Description |
 |---|---|---|---|---|
-| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v2` | Oracle Linux 9 (OL9) | Spark, Data Flow, and large-scale data processing workflows | Recommended for Jobs on the OL9 runtime image. This revision passed Jobs, Model Deployment, and Notebook validation. |
-| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v1` | Oracle Linux 8 (OL8) | Spark, Data Flow, and large-scale data processing workflows | Do not use this revision for Jobs on the OL9 runtime image. It failed OL9 Jobs validation because of a GDAL compatibility issue; use `pyspark35_p312_cpu_x86_64_v2` instead. |
+| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v3` | Oracle Linux 9 (OL9) | Spark, Data Flow, and large-scale data processing workflows | Recommended for Jobs on the OL9 runtime image. |
+| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v1` | Oracle Linux 8 (OL8) | Spark, Data Flow, and large-scale data processing workflows | Do not use this revision for Jobs on the OL9 runtime image. It failed OL9 Jobs validation because of a GDAL compatibility issue; use `pyspark35_p312_cpu_x86_64_v3` instead. |
 
 ### Operator-focused environments
 
