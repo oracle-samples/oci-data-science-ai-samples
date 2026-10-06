@@ -16,7 +16,7 @@ Most customers do not need to change an SCE solely because of the runtime-image 
 
 This page focuses on OCI-provided service conda environments (SCEs). The latest OL8-built revisions listed here are generally intended to run with both OL8 and OL9 runtime images. Review documented exceptions, including the PySpark Jobs issue below. If your OL8-built SCE continues to work, you can keep using it during the migration period. OL8-built revisions will eventually be deprecated and deleted after a notified migration period. Future SCE revisions will be built on OL9 only, so plan and test the corresponding OL9-built revision when you are ready.
 
-> **Required for PySpark 3.5 Jobs:** Jobs that use `pyspark35_p312_cpu_x86_64_v1` must move to `pyspark35_p312_cpu_x86_64_v2` before running on the OL9 Jobs runtime image. The OL8-built `v1` revision failed OL9 Jobs validation because of a GDAL compatibility issue. The OL9-built `v2` revision passed Jobs, Model Deployment, and Notebook validation.
+> **Required for PySpark 3.5 Jobs:** Jobs that use `pyspark35_p312_cpu_x86_64_v1` must move to `pyspark35_p312_cpu_x86_64_v3` before running on the OL9 Jobs runtime image. The OL8-built `v1` revision failed OL9 Jobs validation because of a GDAL compatibility issue.
 
 ## When to consider an OL9-built SCE
 
@@ -38,7 +38,7 @@ The following table contains confirmed OL8-to-OL9 migration pairs. When you choo
 | Python 3.12 Base environment | `python_p312_any_x86_64_v2` | `python_p312_any_x86_64_v3` | Python 3.12, x86_64 | User-installed packages, compiled extensions, and operating-system library dependencies. |
 | General Machine Learning for CPUs on Python 3.11 | `generalml_p311_cpu_x86_64_v5` | `generalml_p311_cpu_x86_64_v6` | Python 3.11, CPU, x86_64 | ADS and database connectivity, scikit-learn, XGBoost, LightGBM, model serialization, and native packages. |
 | General Machine Learning for CPUs on Python 3.12 | `generalml_p312_cpu_x86_64_v3` | `generalml_p312_cpu_x86_64_v4` | Python 3.12, CPU, x86_64 | ADS and database connectivity, scikit-learn, XGBoost, LightGBM, model serialization, and native packages. |
-| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v1` | `pyspark35_p312_cpu_x86_64_v2` | Python 3.12, CPU, x86_64 | Use `v2` for Jobs on the OL9 runtime image. The OL8-built `v1` failed OL9 Jobs validation because of a GDAL compatibility issue; `v2` passed Jobs, Model Deployment, and Notebook validation. |
+| PySpark 3.5 and Data Flow on Python 3.12 | `pyspark35_p312_cpu_x86_64_v1` | `pyspark35_p312_cpu_x86_64_v3` | Python 3.12, CPU, x86_64 | Use `v3` for Jobs on the OL9 runtime image. The OL8-built `v1` failed OL9 Jobs validation because of a GDAL compatibility issue. |
 | PyTorch 2.8 for GPU on Python 3.12 | `pytorch28_p312_gpu_x86_64_v1` | `pytorch28_p312_gpu_x86_64_v2` | Python 3.12, GPU, x86_64 | GPU detection, CUDA, model loading, training and inference, Transformers, PEFT, and custom extensions. |
 | TensorFlow 2.20 for GPU on Python 3.12 | `tensorflow220_p312_gpu_x86_64_v1` | `tensorflow220_p312_gpu_x86_64_v2` | Python 3.12, GPU, x86_64 | GPU detection, model loading and saving, training and inference, TensorBoard, and custom operations. |
 | ONNX Runtime on Python 3.12 with GPU support | `onnxruntime_p312_gpu_x86_64_v1` | `onnxruntime_p312_gpu_x86_64_v2` | Python 3.12, GPU, x86_64 | CUDA and cuDNN compatibility, GPU execution providers, model loading, inference outputs, and Transformers. |
