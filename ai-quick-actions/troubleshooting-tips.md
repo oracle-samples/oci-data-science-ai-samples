@@ -11,6 +11,7 @@
       - [Out of Memory (OOM) Error](#out-of-memory-oom-error)
       - [Trusting Remote Code](#trusting-remote-code)
       - [Architecture Not Supported](#architecture-not-supported)
+    - [Deprecated or Unavailable Model or Retired Container](#deprecated-or-unavailable-model-or-retired-container)
     - [Capacity Issues](#capacity-issues)
     - [Chat payload is Not Working](#chat-payload-is-not-working)
     - [Image Payload is Not Working](#image-payload-is-not-working)
@@ -143,8 +144,19 @@ Exiting vLLM.
 ```
 In such cases, you will have to follow [BYOC](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/LLM/deploy-llm-byoc.md) approach. Check [here](https://github.com/oracle-samples/oci-data-science-ai-samples/blob/main/ai-quick-actions/ai-quick-actions-containers.md) for the supported containers by AI Quick Actions.
 
-Visit [vLLM supported models](https://docs.vllm.ai/en/latest/models/supported_models.html) to know what models are supported.
-If you are using Text Generation Inference, visit [TGI Support models page](https://huggingface.co/docs/text-generation-inference/en/supported_models)
+Check the [vLLM supported models](https://docs.vllm.ai/en/latest/models/supported_models.html) documentation for the version used by your deployment. Upstream framework support does not by itself establish AQUA service-model availability. For lifecycle and retired-container issues, see [Deprecated or Unavailable Model or Retired Container](#deprecated-or-unavailable-model-or-retired-container).
+
+### Deprecated or Unavailable Model or Retired Container
+
+Use this section when a model is unavailable in AQUA Model Explorer or a deployment reports an unsupported model or retired container. An unavailable model or a deployment failure alone does not establish that the model is deprecated.
+
+1. **Identify the model and container.** Record the exact model/checkpoint, container version, shape, and region. Check the deployment details, work request error, and [logs](#logs) to identify the failure.
+2. **Check lifecycle and availability.** Review [Deprecated Models and Replacement Options](deprecated-models.md) and the [Supported Container List](ai-quick-actions-containers.md). Confirm the applicable lifecycle status, effective date, and supported model/container/shape combination in your region. For authorization errors, follow [Authorization Issues](#authorization-issues).
+3. **Migrate an affected model.** Select a validated, capability-appropriate replacement and follow the [migration checklist](deprecated-models.md#migration-checklist). Register and deploy it through the supported workflows, test representative requests, and switch the application only after validation. Existing deployments do not migrate automatically.
+4. **Replace a retired container.** TGI is no longer supported in AQUA. For TGI-based models, follow the applicable instructions in the [TGI migration guide](guide_to_upgrade_models_following_tgi_deprecation.md). For other retired containers, confirm a supported replacement for the exact model before changing the deployment configuration.
+5. **Get help when no validated path is available.** Contact support with the model/checkpoint, container version, shape, region, and relevant error details to confirm an approved replacement or temporary path. Agree a supported recovery path before switching; do not assume a deprecated model or retired container can be restarted or redeployed as a fallback.
+
+**Capacity is a separate issue.** A message stating that there is no capacity for the selected shape does not mean the model is deprecated or incompatible. Follow [Capacity Issues](#capacity-issues) for that error. Likewise, model deprecation or container retirement does not by itself establish that every existing deployment will fail on restart; check the guidance for the specific lifecycle change.
 
 ### Capacity Issues
 
@@ -153,13 +165,78 @@ You see a message "There is currently no capacity for the specified shape. Choos
 The shapes are provisioned from a common pool by default. You could create a capacity reservation for more predictable availability of the shape. More information [here](https://docs.oracle.com/en-us/iaas/data-science/using/gpu-using.htm#gpu-use-reserve)
 
 ### Chat payload is Not Working
-TODO
+
+Check that the request format matches the inference endpoint. Chat completions use `messages` with `role` and `content`, rather than a completion-style `prompt`.
+
+Start with a minimal request body for a single-model vLLM service deployment:
+
+```json
+{
+  "model": "odsc-llm",
+  "messages": [
+    {"role": "user", "content": "Explain what an activation function does in one sentence."}
+  ],
+  "max_tokens": 128,
+  "temperature": 0
+}
+```
+
+1. **Check the endpoint and route.** Select `/v1/chat/completions` as the inference mode. For deployments supporting route overrides, send the request to the deployment's `/predict` URL with `Content-Type: application/json` and `route: /v1/chat/completions`. See [Multiple Inference Endpoints](model-deployment-tips.md#multiple-inference-endpoints). A `404` can indicate an incorrect URL or route; inspect the response body before diagnosing a model failure.
+2. **Check the model name and chat format.** The example uses `odsc-llm` for a single-model service deployment. For [multi-model deployments](multimodel-deployment-tips.md), use the configured model name. Confirm the model has a suitable chat template and supports the roles you send. If the response reports an unsupported `system` role, start with a user-only message and follow the model's documented format.
+3. **Check the error details.** Inspect the HTTP status and response body, not just the generated-text field. For validation errors, check required fields, JSON types, and the combined input/output token budget against the deployment's configured context limit. Use [logs](#logs) for server-side failures and the [startup troubleshooting steps](#service-timeout-error) if the container is not ready.
+4. **Check authentication.** Requests require OCI authentication even when the deployment endpoint is public. For authentication or permission failures, check your signer/session and follow [Authorization Issues](#authorization-issues).
 
 ### Image Payload is Not Working
-TODO
+
+Confirm that the selected model and deployed container support image input. A text-only model cannot process images simply because it accepts chat requests. See [Working with Multimodal Models](multimodal-models-tips.md) for model-specific guidance.
+
+Use `/v1/chat/completions` with a text prompt and an `image_url` entry inside `messages[].content`:
+
+```json
+{
+  "model": "odsc-llm",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {"type": "text", "text": "What is shown in this image?"},
+        {
+          "type": "image_url",
+          "image_url": {"url": "data:image/png;base64,<BASE64_IMAGE_BYTES>"}
+        }
+      ]
+    }
+  ],
+  "max_tokens": 128,
+  "temperature": 0
+}
+```
+
+Replace `<BASE64_IMAGE_BYTES>` with the base64 encoding of an actual image file before sending the request.
+
+1. **Check routing and authentication.** Use the [chat request checks](#chat-payload-is-not-working), including `route: /v1/chat/completions` when a route override is needed. A request sent to the wrong endpoint may return `404` before the model processes the image.
+2. **Check the image encoding.** Encode the file's bytes, not its path, and match the MIME type to the file format (`image/png` for PNG or `image/jpeg` for JPEG). If using an HTTPS image URL instead, ensure the inference container can access it; a URL accessible only from your browser may not be accessible from the deployment.
+3. **Check model-specific requirements.** Confirm the required vision adapter and processor are configured. Follow the selected model/container's prompt format; do not copy tokens such as `<|image_1|>` into every model's prompt. Check the permitted image count, formats, resolution, and context limits for that deployment.
+4. **Reduce the request to isolate the failure.** Start with one small, valid image and a short question. Image processing consumes tokens and GPU memory. For processor errors, inspect the response and [logs](#logs); for GPU memory failures, follow [Out of Memory (OOM) Error](#out-of-memory-oom-error).
 
 ### Prompt Completion Payload is Not Working
-TODO
+
+Text completions use a string `prompt` with `/v1/completions`. Do not send a chat-style `messages` body to this endpoint.
+
+```json
+{
+  "model": "odsc-llm",
+  "prompt": "An activation function is",
+  "max_tokens": 128,
+  "temperature": 0
+}
+```
+
+1. **Match the payload to the route.** Confirm the deployed model/container supports `/v1/completions`. Select that inference mode or, where route overrides are supported, send the request to `/predict` with `Content-Type: application/json` and `route: /v1/completions`. Follow the [endpoint routing guide](model-deployment-tips.md#multiple-inference-endpoints).
+2. **Use the appropriate prompt format.** For instruction-tuned chat models, prefer [chat completions](#chat-payload-is-not-working) when the deployment provides the model's chat template. If using text completions, supply the prompt format required by that model rather than assuming that the container will format a plain prompt as a chat conversation.
+3. **Check token limits and stopping conditions.** The tokenized prompt plus the requested output must fit within the deployment's configured context window. Reduce the prompt or `max_tokens` if the error reports a context limit. For an empty or unexpectedly short answer, inspect the returned `finish_reason` and any configured stop sequences.
+4. **Inspect failures before changing the prompt.** Check the response status/body and configured model name. For authentication, routing, or container failures, follow the [shared chat request checks](#chat-payload-is-not-working), using the completions route and payload shown above.
+
 # Authorization Issues
 
 Authorization issues arise due to missing policy and/or using non-versioned OCI Object Storage Buckets with AQUA.
@@ -275,4 +352,3 @@ Allow dynamic-group <Your dynamic group> to use tag-namespaces in tenancy
     ```
     Allow dynamic-group <Your dynamic group> to use virtual-network-family in compartment <your-compartment-name>
     ```
-

@@ -1,17 +1,27 @@
 # Working with Multimodal Models
 
-Currently we support all llama 3.2 family of vision models and `microsoft/Phi-3-vision-128k-instruct`. 
+Multimodal models accept inputs such as images or audio in addition to text. The following models are available in the supported AQUA model catalog. The linked publisher model cards describe their capabilities; the modalities and endpoints available in a deployment depend on its container and configuration.
 
-## Llama 3.2 Models
+## Supported multimodal models
 
-* Go to "Ready To Register" tab on AI Quick Actions and select the desired llama 3.2 model.
-* Click on Regsiter button and follow the on screen instructions
+| Model | Revision | Input modalities | Output | Usage |
+| --- | --- | --- | --- | --- |
+| [meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8](https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8) | `ec4f1f9` | Text and images | Text | Instruction-based chat and image understanding. |
+| [meta-llama/Llama-4-Scout-17B-16E-Instruct](https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E-Instruct) | `c2b440b` | Text and images | Text | Instruction-based chat and image understanding. |
+| [meta-llama/Llama-4-Scout-17B-16E](https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E) | `14d516b` | Text and images | Text | Pretrained base model; do not assume instruction-tuned chat behavior. |
+| [microsoft/Phi-3-vision-128k-instruct](https://huggingface.co/microsoft/Phi-3-vision-128k-instruct) | `fea3f11` | Text and images | Text | Image understanding, OCR, and chart/table questions; best suited to a single image per prompt. |
+| [microsoft/Phi-3.5-vision-instruct](https://huggingface.co/microsoft/Phi-3.5-vision-instruct) | `4a0d683` | Text and images | Text | Image understanding, OCR, and multi-image comparison. |
+| [microsoft/Phi-4-multimodal-instruct](https://huggingface.co/microsoft/Phi-4-multimodal-instruct) | `0af439b` | Text, images, and audio | Text | Image understanding and speech tasks; confirm the required adapters and endpoint configuration for each modality. |
+| [ibm-granite/granite-vision-3.2-2b](https://huggingface.co/ibm-granite/granite-vision-3.2-2b) | `936cfb0` | Text and images | Text | Visual document understanding, including tables, charts, and diagrams. |
+| [ibm-granite/granite-speech-3.3-8b](https://huggingface.co/ibm-granite/granite-speech-3.3-8b) | `df28cad` | Text and audio | Text | Speech recognition and speech translation; does not accept images. |
 
-## Phi-3-vision
+For affected service models and migration considerations, see [Deprecated Models and Replacement Options](deprecated-models.md).
 
-* Proceed to Deploy section. There is no need to register
+Select the desired model in AQUA Model Explorer. If registration is required, follow the [model registration guide](register-tips.md); otherwise proceed to deployment. Confirm the supported shape, container, and inference mode for the selected model using the [model deployment guide](model-deployment-tips.md).
 
 ## Deploy
+
+The following steps cover instruction-tuned vision models using an image-capable chat completions endpoint. For the Scout base model, use the supported prompt format and inference mode for that deployment. Audio input for Phi-4 and Granite Speech requires a compatible audio endpoint and payload; the image example below does not apply to audio requests.
 
 * Go to AI Quick Actions
 * Click on Deployments
@@ -24,7 +34,7 @@ Currently we support all llama 3.2 family of vision models and `microsoft/Phi-3-
 
 ## Sample code 
 
-The following python code demonstrates how to submit multi-modal inference payload.
+The following Python code demonstrates an image inference payload for `microsoft/Phi-3-vision-128k-instruct`. The `<|image_1|>` prompt token is model-specific; adapt the prompt format for other vision models.
 
 ```
 import requests

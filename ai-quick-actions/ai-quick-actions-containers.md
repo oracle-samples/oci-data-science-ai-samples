@@ -2,7 +2,7 @@
 
 | Server                                                                                                          | Version     |Supported Formats|Supported Shapes| Supported Models/Architectures                                                                                                  |
 |-----------------------------------------------------------------------------------------------------------------|-------------|-----------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
-| [vLLM](https://github.com/vllm-project/vllm/releases/tag/v0.22.1)                                                | 0.22.1       |safe-tensors|A10, A100, H100, H200| [v0.22.1 supported models](https://docs.vllm.ai/en/v0.22.1/models/supported_models.html)                                          |
+| [vLLM](https://github.com/vllm-project/vllm/releases/tag/v0.27.1)                                                | 0.27.1       |safe-tensors|A10, A100, H100, H200| [v0.27.1 supported models](https://docs.vllm.ai/en/v0.27.1/models/supported_models/)                                          |
 | [Llama-cpp](https://github.com/abetlen/llama-cpp-python/releases/tag/v0.3.16)                                    | 0.3.16       |gguf|Amphere ARM| [v0.3.16 supported models](https://github.com/abetlen/llama-cpp-python/tree/v0.3.16)                                              |
 
 
