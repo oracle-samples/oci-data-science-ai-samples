@@ -17,13 +17,15 @@ Table of Contents:
 
 ## Introduction to Model Inference and Serving
 
-The Data Science server has prebuilt service containers that make deploying and serving a large
-language model very easy. Either one of [vLLM](https://github.com/vllm-project/vllm) (a high-throughput and memory-efficient inference and serving
-engine for LLMs) or [TGI](https://github.com/huggingface/text-generation-inference) (a high-performance text generation server for the popular open-source LLMs) is used in the service container to host the model, the end point created
-supports the OpenAI API protocol.  This allows the model deployment to be used as a drop-in
-replacement for applications using OpenAI API. Model deployments are a managed resource in
+The Data Science service provides prebuilt service containers for deploying and serving large
+language models. The [vLLM](https://github.com/vllm-project/vllm) container provides high-throughput,
+memory-efficient inference with OpenAI-compatible endpoints. See the [Supported Container List](ai-quick-actions-containers.md)
+for available containers and supported model formats. Model deployments are a managed resource in
 the OCI Data Science service. For more details about Model Deployment and managing it through
 the OCI console please see the [OCI docs](https://docs.oracle.com/en-us/iaas/data-science/using/model-dep-about.htm).
+
+TGI is no longer supported in AQUA. For existing TGI-based models, see the
+[TGI migration guide](guide_to_upgrade_models_following_tgi_deprecation.md).
 
 
 ### Prerequisites
@@ -67,12 +69,12 @@ You may click on the "Show Advanced Options" to configure options for "inference
 
 ### Inference Container Configuration
 
-The service allows for model deployment configuration to be overridden when creating a model deployment. Depending on
-the type of inference container used for deployment, i.e. vLLM or TGI, the parameters vary and need to be passed with the format
-`(--param-name, param-value)`.
+The service allows model deployment configuration to be overridden when creating a model deployment.
+Use parameters supported by the selected inference container and version. For vLLM deployments,
+pass command-line options such as `--max-model-len 4096`.
 
-For more details, please visit [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server) or
-[TGI](https://huggingface.co/docs/text-generation-inference/en/basic_tutorials/launcher) documentation to know more about the parameters accepted by the respective containers.
+For details on vLLM parameters, see the [vLLM documentation](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html#command-line-arguments-for-the-server)
+for the version used by your deployment.
 
 ### Inference Mode
 
@@ -463,12 +465,12 @@ print(response.content)
 
 ## Multiple Inference endpoints
 
-The support for multiple model deployment inference endpoints ensures flexibility and enables users to perform inferencing on any endpoint, regardless of the endpoint specified during deployment creation.
+Multiple inference endpoints allow requests to endpoints supported by the deployed model and container, regardless of the endpoint specified during deployment creation.
 
-To access the supported endpoint by TGI/vLLM, you need to include `--request-headers '{"route":"<inference_endpoint>"}'` in the command and update the `--request-body`  according to the endpoint's contract.
+To access a supported vLLM endpoint, include `--request-headers '{"route":"<inference_endpoint>"}'` in the command and update `--request-body` according to the endpoint's contract.
 
 ```bash
-oci raw-request --http-method POST --target-uri <model_deployment_url>/predict --request-headers '{"route":<inference_endpoint>}' --request-body  <request_body> --auth <auth_method>
+oci raw-request --http-method POST --target-uri <model_deployment_url>/predict --request-headers '{"route":"<inference_endpoint>"}' --request-body <request_body> --auth <auth_method>
 ```
 
 ```bash
@@ -571,23 +573,21 @@ such as memory and OCPU settings.
 [shapes supported](https://docs.oracle.com/en-us/iaas/data-science/using/supported-shapes.htm) by
 the OCI Data Science platform, you can directly edit this `deployment_config.json` file.
 
-6. The `configuration` field in this json file can also support parameters for vLLM and TGI inference containers. For example,
-if a model can be deployed by either one of these containers, and you want to set the server parameters through configuration file, then
-you can add the corresponding shape along with the parameter value inside the `configuration` field. You can achieve the same
-using [Advanced Deployment Options](#advanced-deployment-options) from AI Quick Actions UI as well.
+6. For a vLLM deployment, set server parameters using `VLLM_PARAMS` under the corresponding shape
+inside the `configuration` field. The example below sets the maximum model length to 4096 tokens.
+You can also configure server parameters using [Advanced Options](#advanced-options) in the AI Quick Actions UI.
 
 
-```
+```json
+{
   "configuration": {
     "VM.GPU.A10.1": {
       "parameters": {
-        "TGI_PARAMS": "--max-stop-sequences 6",
         "VLLM_PARAMS": "--max-model-len 4096"
       }
     }
-    ...
-    ...
   }
+}
 ```
 
 ## Recommended Configurations
